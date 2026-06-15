@@ -16,3 +16,16 @@ What changed in this mobile version:
 - PDF output is still clean A4.
 
 No server, no login, no database. User data is saved locally on the device.
+
+
+3D PREVIEW UPDATE
+- B-Cube GALAXY now includes an integrated 3D preview section under the form.
+- The 3D model reads Width, Projection and Height values in cm, then displays the model in mm.
+- Use Generate / Update 3D Preview after changing dimensions.
+- The 3D viewer needs internet access because it loads Three.js from a CDN.
+
+Latest changes:
+- Removed Print / Save PDF button from the PDF action area.
+- Moved New Request button to the top header.
+- Order Name / No starts blank; if empty, PDF uses CustomerCode-ProductCode-WidthxProjection.
+- Added sticky horizontal quick navigation for main sections.

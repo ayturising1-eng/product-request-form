@@ -34,6 +34,7 @@ body {
 }
 
 .app-header h1 { margin: 0; font-size: 22px; }
+.header-actions { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; justify-content: flex-end; }
 .eyebrow { margin: 0 0 4px; font-size: 12px; letter-spacing: .12em; text-transform: uppercase; color: #cbd5e1; }
 
 .app-shell {
@@ -355,7 +356,33 @@ td:first-child { width: 42%; font-weight: 800; background: #f9fafb; }
 html { scroll-behavior: smooth; }
 body { -webkit-tap-highlight-color: transparent; }
 .mobile-subtitle { display: none; margin: 2px 0 0; color: #cbd5e1; font-size: 12px; }
-.mobile-quick-nav { display: none; }
+.mobile-quick-nav {
+  position: sticky;
+  top: 74px;
+  z-index: 19;
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  padding: 10px 14px;
+  background: rgba(255,255,255,.96);
+  border-bottom: 1px solid #e5e7eb;
+  backdrop-filter: blur(10px);
+  scrollbar-width: none;
+}
+.mobile-quick-nav::-webkit-scrollbar { display: none; }
+.mobile-quick-nav a {
+  flex: 0 0 auto;
+  padding: 9px 12px;
+  border: 1px solid #d1d5db;
+  border-radius: 999px;
+  color: #111827;
+  text-decoration: none;
+  text-align: center;
+  font-weight: 800;
+  font-size: 12px;
+  background: #fff;
+}
+section, .dynamic-section, #pdfPreview { scroll-margin-top: 142px; }
 
 .dynamic-section {
   padding: 16px;
@@ -390,32 +417,18 @@ input:focus, textarea:focus, select:focus {
   }
   .app-header h1 { font-size: 17px; line-height: 1.15; }
   .mobile-subtitle { display: block; }
-  #installBtn { padding: 10px 11px; font-size: 12px; }
+  .header-actions { gap: 6px; }
+  #installBtn, #resetOrderTopBtn { padding: 10px 10px; font-size: 11px; }
 
   .mobile-quick-nav {
-    position: sticky;
-    top: 0;
-    z-index: 18;
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 6px;
-    padding: 8px 12px;
-    background: rgba(255,255,255,.95);
-    border-bottom: 1px solid #e5e7eb;
-    backdrop-filter: blur(10px);
+    top: 64px;
+    padding: 8px 10px;
   }
   .mobile-quick-nav a {
-    display: block;
-    padding: 9px 8px;
-    border: 1px solid #d1d5db;
-    border-radius: 999px;
-    color: #111827;
-    text-decoration: none;
-    text-align: center;
-    font-weight: 800;
-    font-size: 12px;
-    background: #fff;
+    padding: 8px 10px;
+    font-size: 11px;
   }
+  section, .dynamic-section, #pdfPreview { scroll-margin-top: 118px; }
 
   .app-shell { padding: 10px 10px 96px; }
   .panel {
@@ -490,7 +503,6 @@ input:focus, textarea:focus, select:focus {
     padding: 10px;
     font-size: 12px;
   }
-  #printBtn, #resetOrderBtn { display: none; }
 
   .preview-panel { padding-left: 8px; padding-right: 8px; }
   .a4-sheet {
@@ -514,4 +526,42 @@ input:focus, textarea:focus, select:focus {
   .two-col { grid-template-columns: 1fr; gap: 10px; }
   td, th { padding: 7px; font-size: 11px; }
   td:first-child { width: 48%; }
+}
+
+
+.three-d-section {
+  background: linear-gradient(180deg, #ffffff, #f8fafc);
+}
+.three-d-help {
+  margin: -4px 0 12px;
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.45;
+}
+.three-d-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+.three-d-note {
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 700;
+}
+.three-d-frame {
+  width: 100%;
+  height: 520px;
+  border: 1px solid #d1d5db;
+  border-radius: 16px;
+  background: #0f172a;
+  overflow: hidden;
+}
+
+@media (max-width: 640px) {
+  .three-d-toolbar { display: grid; grid-template-columns: 1fr; }
+  .three-d-toolbar button { width: 100%; }
+  .three-d-frame { height: 380px; border-radius: 14px; }
+  .three-d-help { font-size: 12px; }
 }

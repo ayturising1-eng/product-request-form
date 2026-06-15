@@ -7,7 +7,7 @@ const state = {
 };
 
 const STORAGE_PROFILE = 'prf_profile_v2';
-const STORAGE_ORDER = 'prf_order_v3';
+const STORAGE_ORDER = 'prf_order_v4';
 
 const fields = {
   companyName: $('#companyName'),
@@ -170,6 +170,7 @@ function createChoiceField(field) {
 function createFormSection(title, items, className = 'grid two') {
   const section = document.createElement('div');
   section.className = 'dynamic-section';
+  section.id = `section_${safeId(title)}`;
   const h3 = document.createElement('h3');
   h3.textContent = title;
   const grid = document.createElement('div');
@@ -183,6 +184,7 @@ function createFormSection(title, items, className = 'grid two') {
 function createCheckboxSection(title, fieldName, items) {
   const section = document.createElement('div');
   section.className = 'dynamic-section';
+  section.id = `section_${safeId(title)}`;
   const h3 = document.createElement('h3');
   h3.textContent = title;
   const grid = document.createElement('div');
@@ -286,6 +288,34 @@ function formatValue(value, unit, unitAuto) {
   return clean;
 }
 
+function codePart(text, fallback = 'XX') {
+  const cleaned = ascii(text || '').replace(/[^A-Za-z0-9]/g, '').toUpperCase();
+  return (cleaned.slice(0, 2) || fallback).padEnd(2, 'X');
+}
+
+function uniqueProductCode(productName) {
+  const name = ascii(productName || '').toUpperCase();
+  const keys = ['GALAXY', 'FREEDOM', 'URBAN', 'MINIMA', 'TECTONA'];
+  const hit = keys.find((key) => name.includes(key));
+  return codePart(hit || name, 'PR');
+}
+
+function cleanDimensionForOrderNo(value) {
+  const raw = String(value || '').replace(',', '.').trim();
+  if (!raw) return '0';
+  const n = Number(raw);
+  if (Number.isFinite(n)) return String(raw).replace(/[^0-9.]/g, '').replace(/\.0+$/, '');
+  return ascii(raw).replace(/[^A-Za-z0-9]/g, '') || '0';
+}
+
+function generatedOrderNo(profile, productName, values) {
+  const customer = codePart(profile.companyName || profile.contactPerson, 'CU');
+  const product = uniqueProductCode(productName);
+  const width = cleanDimensionForOrderNo(values.width || values.frontH || values.quantity);
+  const projection = cleanDimensionForOrderNo(values.projection);
+  return `${customer}-${product}-${width}x${projection}`;
+}
+
 function getFieldValue(field) {
   const radios = $$(`input[type="radio"][name="dyn_${field.id}"]`);
   if (radios.length) {
@@ -345,21 +375,25 @@ function getOrderData() {
   const product = getProduct();
   const group = getGroup(product);
   const dynamic = isGalaxy(product) ? galaxyRows() : genericRows();
+  const profile = {
+    companyName: fields.companyName.value.trim(),
+    contactPerson: fields.contactPerson.value.trim(),
+    phone: fields.phone.value.trim(),
+    email: fields.email.value.trim(),
+    address: fields.address.value.trim()
+  };
+  const values = getDynamicValues();
+  const manualOrderNo = fields.orderNo.value.trim();
 
   return {
-    profile: {
-      companyName: fields.companyName.value.trim(),
-      contactPerson: fields.contactPerson.value.trim(),
-      phone: fields.phone.value.trim(),
-      email: fields.email.value.trim(),
-      address: fields.address.value.trim()
-    },
-    orderNo: fields.orderNo.value.trim(),
+    profile,
+    orderNo: manualOrderNo || generatedOrderNo(profile, product.name, values),
+    manualOrderNo,
     orderDate: fields.orderDate.value,
     productName: product.name,
     productGroup: group.label,
     sections: dynamic.sections,
-    values: getDynamicValues(),
+    values,
     notes: fields.notes.value.trim()
   };
 }
@@ -438,7 +472,7 @@ function saveOrderDraft() {
   const data = getOrderData();
   localStorage.setItem(STORAGE_ORDER, JSON.stringify({
     selectedProductId: state.selectedProductId,
-    orderNo: data.orderNo,
+    orderNo: data.manualOrderNo,
     orderDate: data.orderDate,
     notes: data.notes,
     values: data.values,
@@ -455,7 +489,7 @@ function loadOrderDraft() {
       renderProducts();
       renderForm();
     }
-    fields.orderNo.value = saved.orderNo || autoOrderNo();
+    fields.orderNo.value = saved.orderNo || '';
     fields.orderDate.value = saved.orderDate || todayISO();
     fields.notes.value = saved.notes || '';
     Object.entries(saved.values || {}).forEach(([id, value]) => {
@@ -475,7 +509,7 @@ function setChecked(name, values) {
 
 function resetOrder() {
   localStorage.removeItem(STORAGE_ORDER);
-  fields.orderNo.value = autoOrderNo();
+  fields.orderNo.value = '';
   fields.orderDate.value = todayISO();
   fields.notes.value = '';
   renderForm();
@@ -677,8 +711,7 @@ function registerEvents() {
   $('#clearProfileBtn').addEventListener('click', clearProfile);
   $('#downloadPdfBtn').addEventListener('click', downloadPdf);
   $('#sharePdfBtn').addEventListener('click', () => sharePdf().catch(() => toast('Share cancelled or unsupported.')));
-  $('#printBtn').addEventListener('click', () => window.print());
-  $('#resetOrderBtn').addEventListener('click', resetOrder);
+  $('#resetOrderTopBtn').addEventListener('click', resetOrder);
 }
 
 let deferredInstallPrompt;
@@ -704,7 +737,7 @@ async function initPwa() {
 
 function init() {
   fields.orderDate.value = todayISO();
-  fields.orderNo.value = autoOrderNo();
+  fields.orderNo.value = '';
   loadProfile();
   renderProducts();
   renderForm();

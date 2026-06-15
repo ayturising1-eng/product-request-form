@@ -1,5 +1,5 @@
-const CACHE = 'product-request-mobile-v1';
-const ASSETS = ['./', './index.html', './style.css', './app.js', './products.js', './manifest.webmanifest'];
+const CACHE = 'product-request-mobile-v2';
+const ASSETS = ['./', './index.html', './style.css', './app.js', './products.js', './viewer3d.js', './manifest.webmanifest'];
 
 self.addEventListener('install', (event) => {
   self.skipWaiting();
