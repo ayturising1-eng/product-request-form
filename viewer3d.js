@@ -65,41 +65,12 @@
 <title>B-Cube GALAXY 3D Preview</title>
 <style>
   html, body { margin:0; height:100%; overflow:hidden; background:radial-gradient(circle at top,#334155,#0f172a 62%); font-family:Inter,Segoe UI,Arial,sans-serif; color:#e5e7eb; }
-  #ui { position:absolute; top:12px; left:12px; right:12px; max-width:370px; padding:12px; z-index:10; border-radius:16px; background:rgba(15,23,42,.78); border:1px solid rgba(255,255,255,.16); box-shadow:0 18px 40px rgba(0,0,0,.35); backdrop-filter:blur(12px); }
-  h1 { margin:0 0 8px; font-size:16px; color:#7dd3fc; }
-  .stat { display:flex; justify-content:space-between; gap:12px; margin:4px 0; font-size:12px; }
-  .stat span:last-child { font-weight:800; color:#fff; }
-  .actions { display:grid; grid-template-columns:1fr 1fr; gap:7px; margin-top:10px; }
-  button { padding:8px 9px; border-radius:10px; border:1px solid #2563eb; background:#3b82f6; color:#fff; font-weight:800; cursor:pointer; }
-  button.alt { background:rgba(255,255,255,.08); border-color:rgba(255,255,255,.25); }
-  #status { margin-top:8px; color:#fbbf24; font-size:11px; line-height:1.35; }
-  .legend { margin-top:8px; font-size:11px; line-height:1.5; color:#cbd5e1; }
-  .dot { display:inline-block; width:9px; height:9px; border-radius:50%; margin-right:6px; vertical-align:middle; }
   #fallback { display:none; position:absolute; inset:0; place-items:center; padding:22px; text-align:center; line-height:1.5; background:#0f172a; color:#e5e7eb; }
-  @media(max-width:560px){ #ui{max-width:none; padding:10px;} h1{font-size:14px;} .legend{display:none;} .actions{grid-template-columns:1fr;} }
 </style>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></scr` + `ipt>
 <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></scr` + `ipt>
 </head>
 <body>
-<div id="ui">
-  <h1>B-Cube GALAXY 3D Preview</h1>
-  <div class="stat"><span>Width</span><span>${W} mm</span></div>
-  <div class="stat"><span>Projection</span><span>${D} mm</span></div>
-  <div class="stat"><span>Height</span><span>${H} mm</span></div>
-  <div class="stat"><span>Lamella count</span><span>${lamellaCount}</span></div>
-  <div class="actions">
-    <button id="replayBtn" type="button">Replay assembly</button>
-    <button id="openBtn" class="alt" type="button">Open / close panels</button>
-  </div>
-  <div id="status">Drag to rotate. Use mouse wheel or pinch to zoom.</div>
-  <div class="legend">
-    <span class="dot" style="background:#ff00ff"></span>Posts &nbsp;
-    <span class="dot" style="background:#2563eb"></span>Beams &nbsp;
-    <span class="dot" style="background:#ff8c00"></span>Gutter &nbsp;
-    <span class="dot" style="background:#7cfc00"></span>Panels
-  </div>
-</div>
 <div id="fallback">3D viewer could not load. Please check internet connection because Three.js is loaded from CDN.</div>
 <script>
 (function(){
@@ -224,9 +195,7 @@
       panel.rotation.x = open ? THREE.MathUtils.degToRad(-62) : 0;
       panel.position.y = H - 395 + (open ? index * 2 : 0);
     });
-    document.getElementById('status').textContent = open
-      ? 'Panels are shown open. This is a visual preview for B-Cube GALAXY.'
-      : 'Panels are shown closed. This is a visual preview for B-Cube GALAXY.';
+    
   }
 
   let replayTimer = null;
@@ -234,20 +203,18 @@
     parts.forEach((part) => part.visible = false);
     let step = 0;
     clearInterval(replayTimer);
-    document.getElementById('status').textContent = 'Assembly animation is playing...';
+    
     replayTimer = setInterval(() => {
       if (step < parts.length) {
         parts[step].visible = true;
         step += 1;
       } else {
         clearInterval(replayTimer);
-        document.getElementById('status').textContent = 'Assembly completed. Drag to rotate, zoom, or open/close panels.';
+        
       }
     }, 95);
   }
 
-  document.getElementById('replayBtn').addEventListener('click', replayAssembly);
-  document.getElementById('openBtn').addEventListener('click', () => setPanelsOpen(!open));
 
   function setIsometricCamera() {
     camera.position.set(W * 0.88, H * 0.72, D * 1.08);

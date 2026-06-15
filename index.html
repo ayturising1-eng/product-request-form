@@ -14,19 +14,19 @@
 <body>
   <header class="app-header no-print">
     <div>
-      
       <h1>Product Request Form</h1>
       <p class="mobile-subtitle">Mobile PDF request app</p>
     </div>
-    <button id="installBtn" class="ghost hidden" type="button" >Add to Home Screen</button>
+    <div class="header-actions">
+      <button id="resetOrderTopBtn" class="danger" type="button">New Request</button>
+      <button id="installBtn" class="ghost hidden" type="button">Add to Home Screen</button>
+    </div>
   </header>
 
   <nav class="mobile-quick-nav no-print" aria-label="Quick actions">
     <a href="#companySection">Company</a>
     <a href="#productSection">Product</a>
     <a href="#orderSection">Order</a>
-    <a href="#formArea">Project</a>
-    <a href="#section_project_details">Measurement</a>
     <a href="#galaxy3dSection">3D</a>
     <a href="#pdfSection">PDF</a>
   </nav>
@@ -129,10 +129,8 @@
       </div>
 
       <div class="actions sticky-actions no-print">
-        <button id="downloadPdfBtn" type="button" >Create / Download PDF</button>
-        <button id="sharePdfBtn" class="secondary" type="button" >Share PDF</button>
-        <button id="printBtn" class="ghost" type="button" >Print / Save PDF</button>
-        <button id="resetOrderBtn" class="danger" type="button" >New Request</button>
+        <button id="downloadPdfBtn" type="button">Create / Download PDF</button>
+        <button id="sharePdfBtn" class="secondary" type="button">Share PDF</button>
       </div>
 
       <article id="pdfPreview" class="a4-sheet">
