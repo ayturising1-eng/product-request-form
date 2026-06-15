@@ -81,8 +81,8 @@
 
   const W=${W}, D=${D}, H=${H}, LAMELLA_COUNT=${lamellaCount};
   const scene = new THREE.Scene();
-  const camera = new THREE.PerspectiveCamera(42, innerWidth / innerHeight, 1, 30000);
-  camera.position.set(W * 1.12, H * 1.28, D * 1.16);
+  const camera = new THREE.PerspectiveCamera(40, innerWidth / innerHeight, 1, 30000);
+  camera.position.set(W * 1.22, H * 1.52, D * 1.22);
 
   const renderer = new THREE.WebGLRenderer({ antialias:true, alpha:true, preserveDrawingBuffer:true });
   renderer.setPixelRatio(Math.min(devicePixelRatio || 1, 2));
@@ -91,7 +91,7 @@
   document.body.appendChild(renderer.domElement);
 
   const controls = new THREE.OrbitControls(camera, renderer.domElement);
-  controls.target.set(0, H * 0.42, 0);
+  controls.target.set(0, H * 0.38, 0);
   controls.enableDamping = true;
   controls.dampingFactor = 0.08;
 
@@ -217,9 +217,9 @@
 
 
   function setIsometricCamera() {
-    camera.position.set(W * 1.12, H * 1.28, D * 1.16);
-    controls.target.set(0, H * 0.42, 0);
-    camera.fov = 42;
+    camera.position.set(W * 1.22, H * 1.52, D * 1.22);
+    controls.target.set(0, H * 0.38, 0);
+    camera.fov = 40;
     camera.updateProjectionMatrix();
     controls.update();
   }
