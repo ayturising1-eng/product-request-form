@@ -1,0 +1,167 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>Product Request Form</title>
+  <link rel="manifest" href="manifest.webmanifest" />
+  <link rel="stylesheet" href="style.css" />
+  <meta name="theme-color" content="#111827" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="mobile-web-app-capable" content="yes" />
+</head>
+<body>
+  <header class="app-header no-print">
+    <div>
+      
+      <h1>Product Request Form</h1>
+      <p class="mobile-subtitle">Mobile PDF request app</p>
+    </div>
+    <button id="installBtn" class="ghost hidden" type="button" >Add to Home Screen</button>
+  </header>
+
+  <nav class="mobile-quick-nav no-print" aria-label="Quick actions">
+    <a href="#productSelect">Product</a>
+    <a href="#formArea">Form</a>
+    <a href="#pdfPreview">Preview</a>
+  </nav>
+
+  <main class="app-shell">
+    <section class="panel no-print">
+      <div class="section-title">
+        <span class="step">1</span>
+        <div>
+          <h2>Company Details</h2>
+          <p>Fill once. Saved on this device.</p>
+        </div>
+      </div>
+
+      <div class="grid two">
+        <label>Company Name
+          <input id="companyName" autocomplete="organization" placeholder="Company name" />
+        </label>
+        <label>Contact Person
+          <input id="contactPerson" autocomplete="name" placeholder="Contact person" />
+        </label>
+        <label>Phone
+          <input id="phone" autocomplete="tel" placeholder="Phone" />
+        </label>
+        <label>E-mail
+          <input id="email" autocomplete="email" placeholder="E-mail" />
+        </label>
+        <label class="wide">Address
+          <input id="address" autocomplete="street-address" placeholder="Address" />
+        </label>
+      </div>
+      <div class="actions compact">
+        <button id="saveProfileBtn" type="button" >Save Company Details</button>
+        <button id="clearProfileBtn" class="secondary" type="button" >Clear</button>
+      </div>
+    </section>
+
+    <section class="panel no-print">
+      <div class="section-title">
+        <span class="step">2</span>
+        <div>
+          <h2>Select Product</h2>
+          <p>Fields change automatically by product.</p>
+        </div>
+      </div>
+      <div class="product-select-wrap">
+        <label>Product
+          <select id="productSelect"></select>
+        </label>
+        <p id="productGroupHint" class="product-hint"></p>
+      </div>
+    </section>
+
+    <section class="panel no-print">
+      <div class="section-title">
+        <span class="step">3</span>
+        <div>
+          <h2>Measurements & Options</h2>
+          <p>Related fields are grouped under the same heading.</p>
+        </div>
+      </div>
+
+      <div class="dynamic-section order-section">
+        <h3>Order Details</h3>
+        <div class="grid two">
+          <label>Order Name / No
+            <input id="orderNo" placeholder="Auto / manual" />
+          </label>
+          <label>Order Date
+            <input id="orderDate" type="date" />
+          </label>
+        </div>
+      </div>
+
+      <div id="formArea"></div>
+
+      <label class="notes-input wide">Notes
+        <textarea id="notes" rows="3" placeholder="Optional notes"></textarea>
+      </label>
+    </section>
+
+    <section class="panel preview-panel">
+      <div class="section-title no-print">
+        <span class="step">4</span>
+        <div>
+          <h2>PDF Preview</h2>
+          <p>Create a clean A4 PDF and download or share it.</p>
+        </div>
+      </div>
+
+      <div class="actions sticky-actions no-print">
+        <button id="downloadPdfBtn" type="button" >Create / Download PDF</button>
+        <button id="sharePdfBtn" class="secondary" type="button" >Share PDF</button>
+        <button id="printBtn" class="ghost" type="button" >Print / Save PDF</button>
+        <button id="resetOrderBtn" class="danger" type="button" >New Request</button>
+      </div>
+
+      <article id="pdfPreview" class="a4-sheet">
+        <div class="pdf-header">
+          <div class="logo-box">LOGO</div>
+          <div>
+            <h2>PRODUCT REQUEST FORM</h2>
+            
+          </div>
+          <div class="pdf-meta">
+            <p><strong>Date:</strong> <span data-preview="orderDate"></span></p>
+            <p><strong>Order:</strong> <span data-preview="orderNo"></span></p>
+          </div>
+        </div>
+
+        <div class="pdf-section two-col">
+          <div>
+            <h3>Company</h3>
+            <p><strong>Company:</strong> <span data-preview="companyName"></span></p>
+            <p><strong>Contact:</strong> <span data-preview="contactPerson"></span></p>
+            <p><strong>Phone:</strong> <span data-preview="phone"></span></p>
+            <p><strong>E-mail:</strong> <span data-preview="email"></span></p>
+            <p><strong>Address:</strong> <span data-preview="address"></span></p>
+          </div>
+          <div>
+            <h3>Product</h3>
+            <p><strong>Group:</strong> <span data-preview="productGroup"></span></p>
+            <p><strong>Product:</strong> <span data-preview="productName"></span></p>
+          </div>
+        </div>
+
+        <div id="previewSections"></div>
+
+        <div class="pdf-section notes-box">
+          <h3>Notes</h3>
+          <p data-preview="notes"></p>
+        </div>
+      </article>
+    </section>
+  </main>
+
+  <div id="toast" class="toast no-print"></div>
+
+  <script src="products.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
