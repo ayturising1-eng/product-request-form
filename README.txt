@@ -29,3 +29,7 @@ Latest changes:
 - Moved New Request button to the top header.
 - Order Name / No starts blank; if empty, PDF uses CustomerCode-ProductCode-WidthxProjection.
 - Added sticky horizontal quick navigation for main sections.
+
+V3 changes:
+- The PDF export captures an isometric 3D preview image and places it in the Company / Product area.
+- Quick navigation is simplified to Company / Product / Order / Project / Measurement / 3D / PDF.

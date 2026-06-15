@@ -113,7 +113,7 @@
   const camera = new THREE.PerspectiveCamera(45, innerWidth / innerHeight, 1, 30000);
   camera.position.set(W * 0.88, H * 0.72, D * 1.08);
 
-  const renderer = new THREE.WebGLRenderer({ antialias:true, alpha:true });
+  const renderer = new THREE.WebGLRenderer({ antialias:true, alpha:true, preserveDrawingBuffer:true });
   renderer.setPixelRatio(Math.min(devicePixelRatio || 1, 2));
   renderer.setSize(innerWidth, innerHeight);
   renderer.shadowMap.enabled = true;
@@ -248,6 +248,29 @@
 
   document.getElementById('replayBtn').addEventListener('click', replayAssembly);
   document.getElementById('openBtn').addEventListener('click', () => setPanelsOpen(!open));
+
+  function setIsometricCamera() {
+    camera.position.set(W * 0.88, H * 0.72, D * 1.08);
+    controls.target.set(0, H * 0.35, 0);
+    controls.update();
+  }
+
+  window.captureGalaxy3D = function() {
+    clearInterval(replayTimer);
+    parts.forEach((part) => part.visible = true);
+    setPanelsOpen(false);
+    setIsometricCamera();
+    renderer.render(scene, camera);
+    try {
+      return {
+        dataUrl: renderer.domElement.toDataURL('image/jpeg', 0.88),
+        width: renderer.domElement.width,
+        height: renderer.domElement.height
+      };
+    } catch (error) {
+      return null;
+    }
+  };
 
   addEventListener('resize', () => {
     camera.aspect = innerWidth / innerHeight;

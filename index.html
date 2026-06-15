@@ -18,25 +18,17 @@
       <h1>Product Request Form</h1>
       <p class="mobile-subtitle">Mobile PDF request app</p>
     </div>
-    <div class="header-actions">
-      <button id="resetOrderTopBtn" class="danger" type="button">New Request</button>
-      <button id="installBtn" class="ghost hidden" type="button" >Add to Home Screen</button>
-    </div>
+    <button id="installBtn" class="ghost hidden" type="button" >Add to Home Screen</button>
   </header>
 
-  <nav class="mobile-quick-nav no-print" aria-label="Quick navigation">
+  <nav class="mobile-quick-nav no-print" aria-label="Quick actions">
     <a href="#companySection">Company</a>
     <a href="#productSection">Product</a>
     <a href="#orderSection">Order</a>
-    <a href="#section_project_details">Project</a>
-    <a href="#section_color_details">Color</a>
-    <a href="#section_motor_remote_control">Motor</a>
-    <a href="#section_panel_options">Panel</a>
-    <a href="#section_lighting">Lighting</a>
-    <a href="#section_sensors">Sensors</a>
-    <a href="#section_heater_packaging">Heater</a>
+    <a href="#formArea">Project</a>
+    <a href="#section_project_details">Measurement</a>
     <a href="#galaxy3dSection">3D</a>
-    <a href="#pdfPreview">PDF</a>
+    <a href="#pdfSection">PDF</a>
   </nav>
 
   <main class="app-shell">
@@ -88,7 +80,7 @@
       </div>
     </section>
 
-    <section id="formSection" class="panel no-print">
+    <section class="panel no-print">
       <div class="section-title">
         <span class="step">3</span>
         <div>
@@ -101,7 +93,7 @@
         <h3>Order Details</h3>
         <div class="grid two">
           <label>Order Name / No
-            <input id="orderNo" placeholder="Optional - auto generated in PDF if empty" />
+            <input id="orderNo" placeholder="Auto / manual" />
           </label>
           <label>Order Date
             <input id="orderDate" type="date" />
@@ -127,7 +119,7 @@
       </label>
     </section>
 
-    <section class="panel preview-panel">
+    <section id="pdfSection" class="panel preview-panel">
       <div class="section-title no-print">
         <span class="step">4</span>
         <div>
@@ -139,6 +131,8 @@
       <div class="actions sticky-actions no-print">
         <button id="downloadPdfBtn" type="button" >Create / Download PDF</button>
         <button id="sharePdfBtn" class="secondary" type="button" >Share PDF</button>
+        <button id="printBtn" class="ghost" type="button" >Print / Save PDF</button>
+        <button id="resetOrderBtn" class="danger" type="button" >New Request</button>
       </div>
 
       <article id="pdfPreview" class="a4-sheet">

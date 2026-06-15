@@ -7,7 +7,7 @@ const state = {
 };
 
 const STORAGE_PROFILE = 'prf_profile_v2';
-const STORAGE_ORDER = 'prf_order_v4';
+const STORAGE_ORDER = 'prf_order_v5';
 
 const fields = {
   companyName: $('#companyName'),
@@ -555,7 +555,38 @@ function wrapText(text, maxChars) {
   return lines.length ? lines : ['-'];
 }
 
-function buildOrderPdf(data) {
+
+function sleep(ms) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+function dataUrlToImage(dataUrl, width, height) {
+  if (!dataUrl || !dataUrl.startsWith('data:image/jpeg;base64,')) return null;
+  const base64 = dataUrl.split(',')[1];
+  const binary = atob(base64);
+  const bytes = new Uint8Array(binary.length);
+  for (let i = 0; i < binary.length; i += 1) bytes[i] = binary.charCodeAt(i);
+  return { bytes, width: Math.max(1, Math.round(width || 1)), height: Math.max(1, Math.round(height || 1)) };
+}
+
+async function capture3DPreviewForPdf() {
+  if (!isGalaxy()) return null;
+  if (window.refreshGalaxy3DPreview) {
+    window.refreshGalaxy3DPreview();
+    await sleep(900);
+  }
+  const frame = $('#galaxy3dFrame');
+  for (let attempt = 0; attempt < 8; attempt += 1) {
+    try {
+      const capture = frame?.contentWindow?.captureGalaxy3D?.();
+      if (capture?.dataUrl) return dataUrlToImage(capture.dataUrl, capture.width, capture.height);
+    } catch {}
+    await sleep(250);
+  }
+  return null;
+}
+
+function buildOrderPdf(data, previewImage = null) {
   const W = 595.28;
   const H = 841.89;
   const margin = 36;
@@ -575,6 +606,10 @@ function buildOrderPdf(data) {
   };
   const line = (x1, y1, x2, y2) => {
     cmd(`${x1.toFixed(2)} ${topY(y1).toFixed(2)} m ${x2.toFixed(2)} ${topY(y2).toFixed(2)} l S`);
+  };
+  const drawImage = (x, yTop, w, h) => {
+    if (!previewImage) return;
+    cmd(`q ${w.toFixed(2)} 0 0 ${h.toFixed(2)} ${x.toFixed(2)} ${topY(yTop + h).toFixed(2)} cm /Im1 Do Q`);
   };
 
   const section = (title) => {
@@ -620,7 +655,36 @@ function buildOrderPdf(data) {
     ['Group', data.productGroup || '-'],
     ['Product', data.productName || '-']
   ];
-  y = tableRows(productRows, margin, y, W - margin * 2) + 2;
+  const companyStartY = y;
+  const tableWidth = previewImage ? 322 : W - margin * 2;
+  const tableEndY = tableRows(productRows, margin, y, tableWidth);
+  let imageEndY = tableEndY;
+  if (previewImage) {
+    const boxX = margin + tableWidth + 12;
+    const boxY = companyStartY;
+    const boxW = W - margin - boxX;
+    const titleH = 16;
+    const imageBoxH = 94;
+    rect(boxX, boxY, boxW, titleH + imageBoxH + 8);
+    fillRect(boxX, boxY, boxW, titleH, 0.97);
+    text(boxX + 6, boxY + 10.5, '3D PREVIEW', 7.3, true);
+    const innerX = boxX + 7;
+    const innerY = boxY + titleH + 6;
+    const innerW = boxW - 14;
+    const innerH = imageBoxH - 4;
+    const ratio = previewImage.width / previewImage.height;
+    let drawW = innerW;
+    let drawH = drawW / ratio;
+    if (drawH > innerH) {
+      drawH = innerH;
+      drawW = drawH * ratio;
+    }
+    const drawX = innerX + (innerW - drawW) / 2;
+    const drawY = innerY + (innerH - drawH) / 2;
+    drawImage(drawX, drawY, drawW, drawH);
+    imageEndY = boxY + titleH + imageBoxH + 8;
+  }
+  y = Math.max(tableEndY, imageEndY) + 2;
 
   data.sections.forEach((sectionData) => {
     section(sectionData.title);
@@ -632,34 +696,61 @@ function buildOrderPdf(data) {
   rect(margin, y, W - margin * 2, 58);
   noteLines.forEach((ln, idx) => text(margin + 8, y + 14 + idx * 10, ln, 8.5));
 
-  return createPdf(commands.join('\n'), W, H);
+  return createPdf(commands.join('\n'), W, H, previewImage);
 }
 
-function createPdf(content, width, height) {
+function createPdf(content, width, height, previewImage = null) {
   const encoder = new TextEncoder();
+  const encode = (value) => encoder.encode(value);
+  const contentBytes = encode(content);
+  const hasImage = Boolean(previewImage?.bytes?.length);
+  const pageResources = hasImage
+    ? `<< /Font << /F1 4 0 R /F2 5 0 R >> /XObject << /Im1 7 0 R >> >>`
+    : `<< /Font << /F1 4 0 R /F2 5 0 R >> >>`;
+
   const objects = [
-    '<< /Type /Catalog /Pages 2 0 R >>',
-    '<< /Type /Pages /Kids [3 0 R] /Count 1 >>',
-    `<< /Type /Page /Parent 2 0 R /MediaBox [0 0 ${width} ${height}] /Resources << /Font << /F1 4 0 R /F2 5 0 R >> >> /Contents 6 0 R >>`,
-    '<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>',
-    '<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica-Bold >>',
-    `<< /Length ${encoder.encode(content).length} >>\nstream\n${content}\nendstream`
+    [encode('<< /Type /Catalog /Pages 2 0 R >>')],
+    [encode('<< /Type /Pages /Kids [3 0 R] /Count 1 >>')],
+    [encode(`<< /Type /Page /Parent 2 0 R /MediaBox [0 0 ${width} ${height}] /Resources ${pageResources} /Contents 6 0 R >>`)],
+    [encode('<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>')],
+    [encode('<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica-Bold >>')],
+    [encode(`<< /Length ${contentBytes.length} >>\nstream\n`), contentBytes, encode('\nendstream')]
   ];
 
-  let pdf = '%PDF-1.4\n';
-  const offsets = [0];
-  objects.forEach((obj, index) => {
-    offsets.push(encoder.encode(pdf).length);
-    pdf += `${index + 1} 0 obj\n${obj}\nendobj\n`;
-  });
-  const xrefOffset = encoder.encode(pdf).length;
-  pdf += `xref\n0 ${objects.length + 1}\n`;
-  pdf += '0000000000 65535 f \n';
-  for (let i = 1; i <= objects.length; i++) {
-    pdf += `${String(offsets[i]).padStart(10, '0')} 00000 n \n`;
+  if (hasImage) {
+    objects.push([
+      encode(`<< /Type /XObject /Subtype /Image /Width ${previewImage.width} /Height ${previewImage.height} /ColorSpace /DeviceRGB /BitsPerComponent 8 /Filter /DCTDecode /Length ${previewImage.bytes.length} >>\nstream\n`),
+      previewImage.bytes,
+      encode('\nendstream')
+    ]);
   }
-  pdf += `trailer\n<< /Size ${objects.length + 1} /Root 1 0 R >>\nstartxref\n${xrefOffset}\n%%EOF`;
-  return new Blob([pdf], { type: 'application/pdf' });
+
+  const chunks = [];
+  const offsets = [0];
+  let length = 0;
+  const push = (chunk) => {
+    chunks.push(chunk);
+    length += chunk.length;
+  };
+  const pushText = (value) => push(encode(value));
+
+  pushText('%PDF-1.4\n');
+  objects.forEach((objChunks, index) => {
+    offsets.push(length);
+    pushText(`${index + 1} 0 obj\n`);
+    objChunks.forEach(push);
+    pushText('\nendobj\n');
+  });
+
+  const xrefOffset = length;
+  pushText(`xref\n0 ${objects.length + 1}\n`);
+  pushText('0000000000 65535 f \n');
+  for (let i = 1; i <= objects.length; i += 1) {
+    pushText(`${String(offsets[i]).padStart(10, '0')} 00000 n \n`);
+  }
+  pushText(`trailer\n<< /Size ${objects.length + 1} /Root 1 0 R >>\nstartxref\n${xrefOffset}\n%%EOF`);
+
+  return new Blob(chunks, { type: 'application/pdf' });
 }
 
 function filenameFromData(data) {
@@ -681,14 +772,16 @@ function downloadBlob(blob, filename) {
 
 async function downloadPdf() {
   const data = getOrderData();
-  const blob = buildOrderPdf(data);
+  const previewImage = await capture3DPreviewForPdf();
+  const blob = buildOrderPdf(data, previewImage);
   downloadBlob(blob, filenameFromData(data));
-  toast('PDF created.');
+  toast(previewImage ? 'PDF created with 3D preview.' : 'PDF created. 3D preview could not be captured.');
 }
 
 async function sharePdf() {
   const data = getOrderData();
-  const blob = buildOrderPdf(data);
+  const previewImage = await capture3DPreviewForPdf();
+  const blob = buildOrderPdf(data, previewImage);
   const filename = filenameFromData(data);
   const file = new File([blob], filename, { type: 'application/pdf' });
   if (navigator.canShare && navigator.canShare({ files: [file] })) {
