@@ -33,3 +33,7 @@ Latest changes:
 V3 changes:
 - The PDF export captures an isometric 3D preview image and places it in the Company / Product area.
 - Quick navigation is simplified to Company / Product / Order / Project / Measurement / 3D / PDF.
+
+
+NO 3D VERSION
+- 3D preview has been removed from the application and PDF export.

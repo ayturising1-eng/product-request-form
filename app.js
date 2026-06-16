@@ -569,23 +569,6 @@ function dataUrlToImage(dataUrl, width, height) {
   return { bytes, width: Math.max(1, Math.round(width || 1)), height: Math.max(1, Math.round(height || 1)) };
 }
 
-async function capture3DPreviewForPdf() {
-  if (!isGalaxy()) return null;
-  if (window.refreshGalaxy3DPreview) {
-    window.refreshGalaxy3DPreview();
-    await sleep(900);
-  }
-  const frame = $('#galaxy3dFrame');
-  for (let attempt = 0; attempt < 8; attempt += 1) {
-    try {
-      const capture = frame?.contentWindow?.captureGalaxy3D?.();
-      if (capture?.dataUrl) return dataUrlToImage(capture.dataUrl, capture.width, capture.height);
-    } catch {}
-    await sleep(250);
-  }
-  return null;
-}
-
 function buildOrderPdf(data, previewImage = null) {
   const W = 595.28;
   const H = 841.89;
@@ -772,16 +755,14 @@ function downloadBlob(blob, filename) {
 
 async function downloadPdf() {
   const data = getOrderData();
-  const previewImage = await capture3DPreviewForPdf();
-  const blob = buildOrderPdf(data, previewImage);
+  const blob = buildOrderPdf(data);
   downloadBlob(blob, filenameFromData(data));
-  toast(previewImage ? 'PDF created with 3D preview.' : 'PDF created. 3D preview could not be captured.');
+  toast('PDF created.');
 }
 
 async function sharePdf() {
   const data = getOrderData();
-  const previewImage = await capture3DPreviewForPdf();
-  const blob = buildOrderPdf(data, previewImage);
+  const blob = buildOrderPdf(data);
   const filename = filenameFromData(data);
   const file = new File([blob], filename, { type: 'application/pdf' });
   if (navigator.canShare && navigator.canShare({ files: [file] })) {
