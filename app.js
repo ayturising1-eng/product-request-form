@@ -3,6 +3,9 @@ const $ = (selector) => document.querySelector(selector);
 const $$ = (selector) => Array.from(document.querySelectorAll(selector));
 
 const state = {
+  selectedFamilyId: 'bioclimatic',
+  selectedGroupId: 'bcube',
+  selectedSubGroupId: 'galaxy',
   selectedProductId: 'galaxy'
 };
 
@@ -43,41 +46,160 @@ function safeId(text) {
 }
 
 function getProduct() {
-  return DATA.products.find((p) => p.id === state.selectedProductId) || DATA.products[0];
+  return DATA.products.find((p) => p.id === state.selectedProductId) || null;
 }
 
 function getGroup(product = getProduct()) {
-  return DATA.groups[product.group];
+  return product ? DATA.groups[product.group] : null;
 }
 
-function isGalaxy(product = getProduct()) {
-  return product.specialForm === 'galaxy';
+function cloneData(value) {
+  return JSON.parse(JSON.stringify(value));
+}
+
+function mergeProductForm(baseForm, override = {}) {
+  const merged = cloneData(baseForm);
+  Object.entries(override).forEach(([key, value]) => {
+    merged[key] = cloneData(value);
+  });
+  return merged;
+}
+
+function getProductForm(product = getProduct()) {
+  if (!product?.formTemplate) return null;
+  const baseForm = DATA[product.formTemplate];
+  if (!baseForm) return null;
+  return mergeProductForm(baseForm, DATA.productFormOverrides?.[product.id] || {});
+}
+
+function hasProductForm(product = getProduct()) {
+  return Boolean(getProductForm(product));
+}
+
+function optionMarkup(items, selectedId, placeholder = 'Seçiniz') {
+  return [
+    `<option value="">${placeholder}</option>`,
+    ...items.map((item) => `<option value="${item.id}"${item.id === selectedId ? ' selected' : ''}>${item.label}</option>`)
+  ].join('');
+}
+
+function treeGroups(familyId = state.selectedFamilyId) {
+  return DATA.productTree.groups[familyId] || [];
+}
+
+function treeSubGroups(groupId = state.selectedGroupId) {
+  return DATA.productTree.subGroups[groupId] || [];
+}
+
+function treeLabel(collection, id) {
+  return (collection || []).find((item) => item.id === id)?.label || '';
+}
+
+function syncSelectionFromProduct(product = getProduct()) {
+  if (!product) return;
+  state.selectedFamilyId = product.family || '';
+  state.selectedGroupId = product.productGroup || '';
+  state.selectedSubGroupId = product.subGroup || '';
+}
+
+function updateSelectedProductFromTree() {
+  const subGroup = treeSubGroups().find((item) => item.id === state.selectedSubGroupId);
+  const product = DATA.products.find((item) => item.id === subGroup?.productId)
+    || DATA.products.find((item) => (
+      item.family === state.selectedFamilyId &&
+      item.productGroup === state.selectedGroupId &&
+      item.subGroup === state.selectedSubGroupId
+    ));
+  state.selectedProductId = product?.id || '';
+}
+
+function firstId(items) {
+  return items[0]?.id || '';
+}
+
+function selectFirstAvailableForFamily() {
+  const groups = treeGroups();
+  state.selectedGroupId = firstId(groups);
+  state.selectedSubGroupId = firstId(treeSubGroups(state.selectedGroupId));
+  updateSelectedProductFromTree();
+}
+
+function selectFirstAvailableForGroup() {
+  state.selectedSubGroupId = firstId(treeSubGroups());
+  updateSelectedProductFromTree();
+}
+
+function currentProductSelectionLabels() {
+  const family = treeLabel(DATA.productTree.families, state.selectedFamilyId);
+  const group = treeLabel(treeGroups(), state.selectedGroupId);
+  const subGroup = treeLabel(treeSubGroups(), state.selectedSubGroupId);
+  return { family, group, subGroup };
 }
 
 function renderProducts() {
-  const select = $('#productSelect');
-  select.innerHTML = DATA.products.map((product) => {
-    const groupLabel = DATA.groups[product.group].label;
-    return `<option value="${product.id}">${product.name} — ${groupLabel}</option>`;
-  }).join('');
-  select.value = state.selectedProductId;
+  syncSelectionFromProduct();
+
+  const familySelect = $('#productFamilySelect');
+  const groupSelect = $('#productGroupSelect');
+  const subGroupSelect = $('#productSubGroupSelect');
+  const groups = treeGroups();
+  const subGroups = treeSubGroups();
+
+  familySelect.innerHTML = optionMarkup(DATA.productTree.families, state.selectedFamilyId);
+  familySelect.value = state.selectedFamilyId;
+
+  groupSelect.innerHTML = optionMarkup(groups, state.selectedGroupId);
+  groupSelect.value = state.selectedGroupId;
+  groupSelect.disabled = groups.length === 0;
+
+  subGroupSelect.innerHTML = optionMarkup(subGroups, state.selectedSubGroupId);
+  subGroupSelect.value = state.selectedSubGroupId;
+  subGroupSelect.disabled = subGroups.length === 0;
+
   updateProductHint();
 }
 
 function updateProductHint() {
   const product = getProduct();
-  const group = getGroup(product);
-  $('#productGroupHint').textContent = isGalaxy(product)
-    ? `${group.label} | Special B-Cube GALAXY form active`
-    : group.label;
+  const selection = currentProductSelectionLabels();
+  if (!state.selectedFamilyId) {
+    $('#productGroupHint').textContent = 'Ürün ailesi seçiniz.';
+    return;
+  }
+  if (!product) {
+    const path = [selection.family, selection.group, selection.subGroup].filter(Boolean).join(' / ');
+    $('#productGroupHint').textContent = `${path || 'Selected family'} için ürün formu sonraki aşamada eklenecek.`;
+    return;
+  }
+  const formNote = hasProductForm(product) ? ' | Galaxy taban formu aktif' : '';
+  $('#productGroupHint').textContent = `${selection.family} / ${selection.group} / ${selection.subGroup}${formNote}`;
 }
 
-function onProductChange() {
-  state.selectedProductId = $('#productSelect').value;
-  updateProductHint();
+function applyProductSelection() {
   renderForm();
   saveOrderDraft();
   updatePreview();
+}
+
+function onProductFamilyChange() {
+  state.selectedFamilyId = $('#productFamilySelect').value;
+  selectFirstAvailableForFamily();
+  renderProducts();
+  applyProductSelection();
+}
+
+function onProductGroupChange() {
+  state.selectedGroupId = $('#productGroupSelect').value;
+  selectFirstAvailableForGroup();
+  renderProducts();
+  applyProductSelection();
+}
+
+function onProductSubGroupChange() {
+  state.selectedSubGroupId = $('#productSubGroupSelect').value;
+  updateSelectedProductFromTree();
+  renderProducts();
+  applyProductSelection();
 }
 
 function createInputField(field) {
@@ -211,7 +333,11 @@ function createCheckboxSection(title, fieldName, items) {
 
 function renderGalaxyForm() {
   const wrap = $('#formArea');
-  const form = DATA.galaxyForm;
+  const form = getProductForm();
+  if (!form) {
+    renderGenericForm();
+    return;
+  }
   wrap.innerHTML = '';
   wrap.appendChild(createFormSection('Project Details', form.projectDetails, 'grid two'));
   wrap.appendChild(createFormSection('Color Details', form.colorDetails, 'grid two'));
@@ -229,6 +355,18 @@ function renderGenericForm() {
   const group = getGroup(product);
   const wrap = $('#formArea');
   wrap.innerHTML = '';
+
+  if (!product || !group) {
+    const selection = currentProductSelectionLabels();
+    const path = [selection.family, selection.group, selection.subGroup].filter(Boolean).join(' / ');
+    wrap.innerHTML = `
+      <div class="dynamic-section empty-product-state">
+        <h3>Product Form</h3>
+        <p>${path || 'Selected product'} form details will be added in the next step.</p>
+      </div>
+    `;
+    return;
+  }
 
   const projectItems = [
     { id: 'quantity', label: 'Quantity', type: 'number' },
@@ -255,7 +393,7 @@ function renderGenericForm() {
 }
 
 function renderForm() {
-  if (isGalaxy()) renderGalaxyForm();
+  if (hasProductForm()) renderGalaxyForm();
   else renderGenericForm();
 }
 
@@ -333,6 +471,7 @@ function fieldRows(fieldList) {
 
 function genericRows() {
   const group = getGroup();
+  if (!group) return { systemQuantity: '-', sections: [] };
   const projectFields = [
     { id: 'quantity', label: 'Quantity' },
     ...DATA.common.dimensionFields.map((f) => ({ id: f.id, label: f.label, unit: f.unit }))
@@ -355,7 +494,8 @@ function genericRows() {
 }
 
 function galaxyRows() {
-  const form = DATA.galaxyForm;
+  const form = getProductForm();
+  if (!form) return { systemQuantity: '-', sections: [] };
   return {
     systemQuantity: formatValue($('#dyn_systemQuantity')?.value || ''),
     sections: [
@@ -374,7 +514,8 @@ function galaxyRows() {
 function getOrderData() {
   const product = getProduct();
   const group = getGroup(product);
-  const dynamic = isGalaxy(product) ? galaxyRows() : genericRows();
+  const dynamic = hasProductForm(product) ? galaxyRows() : genericRows();
+  const selection = currentProductSelectionLabels();
   const profile = {
     companyName: fields.companyName.value.trim(),
     contactPerson: fields.contactPerson.value.trim(),
@@ -387,11 +528,13 @@ function getOrderData() {
 
   return {
     profile,
-    orderNo: manualOrderNo || generatedOrderNo(profile, product.name, values),
+    orderNo: manualOrderNo || generatedOrderNo(profile, product?.name || selection.subGroup || selection.group, values),
     manualOrderNo,
     orderDate: fields.orderDate.value,
-    productName: product.name,
-    productGroup: group.label,
+    productName: product?.name || '-',
+    productFamily: selection.family || '-',
+    productGroup: selection.group || group?.label || '-',
+    productSubGroup: selection.subGroup || '-',
     sections: dynamic.sections,
     values,
     notes: fields.notes.value.trim()
@@ -435,7 +578,9 @@ function updatePreview() {
   setText('orderDate', data.orderDate);
   setText('orderNo', data.orderNo);
   setText('productName', data.productName);
+  setText('productFamily', data.productFamily);
   setText('productGroup', data.productGroup);
+  setText('productSubGroup', data.productSubGroup);
   setText('notes', data.notes || '-');
   renderPreviewSections(data.sections);
 }
@@ -471,6 +616,9 @@ function clearProfile() {
 function saveOrderDraft() {
   const data = getOrderData();
   localStorage.setItem(STORAGE_ORDER, JSON.stringify({
+    selectedFamilyId: state.selectedFamilyId,
+    selectedGroupId: state.selectedGroupId,
+    selectedSubGroupId: state.selectedSubGroupId,
     selectedProductId: state.selectedProductId,
     orderNo: data.manualOrderNo,
     orderDate: data.orderDate,
@@ -486,9 +634,15 @@ function loadOrderDraft() {
     const saved = JSON.parse(localStorage.getItem(STORAGE_ORDER) || '{}');
     if (saved.selectedProductId && DATA.products.some((p) => p.id === saved.selectedProductId)) {
       state.selectedProductId = saved.selectedProductId;
-      renderProducts();
-      renderForm();
+      syncSelectionFromProduct();
+    } else {
+      state.selectedFamilyId = saved.selectedFamilyId || state.selectedFamilyId;
+      state.selectedGroupId = saved.selectedGroupId || state.selectedGroupId;
+      state.selectedSubGroupId = saved.selectedSubGroupId || state.selectedSubGroupId;
+      updateSelectedProductFromTree();
     }
+    renderProducts();
+    renderForm();
     fields.orderNo.value = saved.orderNo || '';
     fields.orderDate.value = saved.orderDate || todayISO();
     fields.notes.value = saved.notes || '';
@@ -635,7 +789,9 @@ function buildOrderPdf(data, previewImage = null) {
     ['Phone', data.profile.phone || '-'],
     ['E-mail', data.profile.email || '-'],
     ['Address', data.profile.address || '-'],
+    ['Family', data.productFamily || '-'],
     ['Group', data.productGroup || '-'],
+    ['Sub Group', data.productSubGroup || '-'],
     ['Product', data.productName || '-']
   ];
   const companyStartY = y;
@@ -780,7 +936,9 @@ async function sharePdf() {
 
 function registerEvents() {
   Object.values(fields).forEach((el) => el.addEventListener('input', onAnyInput));
-  $('#productSelect').addEventListener('change', onProductChange);
+  $('#productFamilySelect').addEventListener('change', onProductFamilyChange);
+  $('#productGroupSelect').addEventListener('change', onProductGroupChange);
+  $('#productSubGroupSelect').addEventListener('change', onProductSubGroupChange);
   $('#saveProfileBtn').addEventListener('click', () => { saveProfile(); onAnyInput(); });
   $('#clearProfileBtn').addEventListener('click', clearProfile);
   $('#downloadPdfBtn').addEventListener('click', downloadPdf);

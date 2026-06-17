@@ -72,9 +72,17 @@
         </div>
       </div>
       <div class="product-select-wrap">
-        <label>Product
-          <select id="productSelect"></select>
-        </label>
+        <div class="product-select-grid">
+          <label>Ürün Ailesi
+            <select id="productFamilySelect"></select>
+          </label>
+          <label>Ürün Grubu
+            <select id="productGroupSelect"></select>
+          </label>
+          <label>Ürün Alt Grubu
+            <select id="productSubGroupSelect"></select>
+          </label>
+        </div>
         <p id="productGroupHint" class="product-hint"></p>
       </div>
     </section>
@@ -146,7 +154,9 @@
           </div>
           <div>
             <h3>Product</h3>
+            <p><strong>Family:</strong> <span data-preview="productFamily"></span></p>
             <p><strong>Group:</strong> <span data-preview="productGroup"></span></p>
+            <p><strong>Sub Group:</strong> <span data-preview="productSubGroup"></span></p>
             <p><strong>Product:</strong> <span data-preview="productName"></span></p>
           </div>
         </div>

@@ -1,4 +1,4 @@
-const CACHE = 'product-request-demo-v20';
+const CACHE = 'product-request-demo-v21';
 const ASSETS = ['./', './index.html', './style.css', './app.js', './products.js', './manifest.webmanifest'];
 
 self.addEventListener('install', (event) => {

@@ -3,12 +3,14 @@
   const section = document.getElementById('galaxy3dSection');
   const button = document.getElementById('generate3dBtn');
   const note = document.getElementById('galaxy3dNote');
-  const productSelect = document.getElementById('productSelect');
+  const familySelect = document.getElementById('productFamilySelect');
+  const groupSelect = document.getElementById('productGroupSelect');
+  const subGroupSelect = document.getElementById('productSubGroupSelect');
 
-  if (!frame || !section || !button || !productSelect) return;
+  if (!frame || !section || !button || !familySelect || !groupSelect || !subGroupSelect) return;
 
   function isGalaxy() {
-    return productSelect.value === 'galaxy';
+    return familySelect.value === 'bioclimatic' && groupSelect.value === 'bcube' && Boolean(subGroupSelect.value);
   }
 
   function parseCm(fieldId, fallback) {
@@ -262,7 +264,9 @@
   }
 
   button.addEventListener('click', refreshGalaxy3DPreview);
-  productSelect.addEventListener('change', () => setTimeout(refreshGalaxy3DPreview, 250));
+  [familySelect, groupSelect, subGroupSelect].forEach((select) => {
+    select.addEventListener('change', () => setTimeout(refreshGalaxy3DPreview, 250));
+  });
   document.addEventListener('input', (event) => {
     if (event.target && ['dyn_width', 'dyn_projection', 'dyn_heightTopOfGutter'].includes(event.target.id)) {
       scheduleRefresh();
