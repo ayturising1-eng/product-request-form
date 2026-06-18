@@ -13,8 +13,17 @@
 </head>
 <body>
   <header class="app-header no-print">
-    <div>
+    <div class="brand-row">
       <h1>Product Request Form</h1>
+      <label class="language-picker">Language
+        <select id="languageSelect" aria-label="PDF preview language">
+          <option value="tr">Türkçe</option>
+          <option value="en" selected>English</option>
+          <option value="de">Deutsch</option>
+          <option value="fr">Français</option>
+          <option value="he">עברית</option>
+        </select>
+      </label>
       <p class="mobile-subtitle">Mobile PDF request app</p>
     </div>
     <div class="header-actions">
@@ -71,20 +80,18 @@
           <p>Fields change automatically by product.</p>
         </div>
       </div>
-      <div class="product-select-wrap">
-        <div class="product-select-grid">
-          <label>Ürün Ailesi
-            <select id="productFamilySelect"></select>
-          </label>
-          <label>Ürün Grubu
-            <select id="productGroupSelect"></select>
-          </label>
-          <label>Ürün Alt Grubu
-            <select id="productSubGroupSelect"></select>
-          </label>
-        </div>
-        <p id="productGroupHint" class="product-hint"></p>
+      <div class="product-select-grid grid three">
+        <label>Ürün Ailesi
+          <select id="productFamilySelect"></select>
+        </label>
+        <label>Ürün Grubu
+          <select id="productGroupSelect"></select>
+        </label>
+        <label>Ürün Alt Grubu
+          <select id="productSubGroupSelect"></select>
+        </label>
       </div>
+      <p id="productGroupHint" class="product-hint"></p>
     </section>
 
     <section class="panel no-print">
@@ -134,37 +141,37 @@
         <div class="pdf-header">
           <div class="logo-box">LOGO</div>
           <div>
-            <h2>PRODUCT REQUEST FORM</h2>
+            <h2 data-i18n-preview="formTitle">PRODUCT REQUEST FORM</h2>
             
           </div>
           <div class="pdf-meta">
-            <p><strong>Date:</strong> <span data-preview="orderDate"></span></p>
-            <p><strong>Order:</strong> <span data-preview="orderNo"></span></p>
+            <p><strong><span data-i18n-preview="date">Date</span>:</strong> <span data-preview="orderDate"></span></p>
+            <p><strong><span data-i18n-preview="order">Order</span>:</strong> <span data-preview="orderNo"></span></p>
           </div>
         </div>
 
         <div class="pdf-section two-col">
           <div>
-            <h3>Company</h3>
-            <p><strong>Company:</strong> <span data-preview="companyName"></span></p>
-            <p><strong>Contact:</strong> <span data-preview="contactPerson"></span></p>
-            <p><strong>Phone:</strong> <span data-preview="phone"></span></p>
-            <p><strong>E-mail:</strong> <span data-preview="email"></span></p>
-            <p><strong>Address:</strong> <span data-preview="address"></span></p>
+            <h3 data-i18n-preview="companySection">Company</h3>
+            <p><strong><span data-i18n-preview="company">Company</span>:</strong> <span data-preview="companyName"></span></p>
+            <p><strong><span data-i18n-preview="contact">Contact</span>:</strong> <span data-preview="contactPerson"></span></p>
+            <p><strong><span data-i18n-preview="phone">Phone</span>:</strong> <span data-preview="phone"></span></p>
+            <p><strong><span data-i18n-preview="email">E-mail</span>:</strong> <span data-preview="email"></span></p>
+            <p><strong><span data-i18n-preview="address">Address</span>:</strong> <span data-preview="address"></span></p>
           </div>
           <div>
-            <h3>Product</h3>
-            <p><strong>Family:</strong> <span data-preview="productFamily"></span></p>
-            <p><strong>Group:</strong> <span data-preview="productGroup"></span></p>
-            <p><strong>Sub Group:</strong> <span data-preview="productSubGroup"></span></p>
-            <p><strong>Product:</strong> <span data-preview="productName"></span></p>
+            <h3 data-i18n-preview="productSection">Product</h3>
+            <p><strong><span data-i18n-preview="productFamily">Product Family</span>:</strong> <span data-preview="productFamily"></span></p>
+            <p><strong><span data-i18n-preview="productGroup">Product Group</span>:</strong> <span data-preview="productGroupName"></span></p>
+            <p><strong><span data-i18n-preview="productSubGroup">Product Sub Group</span>:</strong> <span data-preview="productSubGroup"></span></p>
+            <p><strong><span data-i18n-preview="product">Product</span>:</strong> <span data-preview="productName"></span></p>
           </div>
         </div>
 
         <div id="previewSections"></div>
 
         <div class="pdf-section notes-box">
-          <h3>Notes</h3>
+          <h3 data-i18n-preview="notes">Notes</h3>
           <p data-preview="notes"></p>
         </div>
       </article>

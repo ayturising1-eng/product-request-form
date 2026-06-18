@@ -3,14 +3,12 @@ const $ = (selector) => document.querySelector(selector);
 const $$ = (selector) => Array.from(document.querySelectorAll(selector));
 
 const state = {
-  selectedFamilyId: 'bioclimatic',
-  selectedGroupId: 'bcube',
-  selectedSubGroupId: 'galaxy',
-  selectedProductId: 'galaxy'
+  selectedProductId: 'falcate_minima',
+  language: localStorage.getItem('prf_language_v1') || 'en'
 };
 
 const STORAGE_PROFILE = 'prf_profile_v2';
-const STORAGE_ORDER = 'prf_order_v5';
+const STORAGE_ORDER = 'prf_order_v6';
 
 const fields = {
   companyName: $('#companyName'),
@@ -22,6 +20,103 @@ const fields = {
   orderDate: $('#orderDate'),
   notes: $('#notes')
 };
+
+const PREVIEW_TEXT = {
+  en: {
+    formTitle: 'PRODUCT REQUEST FORM', date: 'Date', order: 'Order', companySection: 'Company', productSection: 'Product',
+    company: 'Company', contact: 'Contact', phone: 'Phone', email: 'E-mail', address: 'Address',
+    productFamily: 'Product Family', productGroup: 'Product Group', productSubGroup: 'Product Sub Group', product: 'Product', notes: 'Notes',
+    none: 'None'
+  },
+  tr: {
+    formTitle: 'ÜRÜN TALEP FORMU', date: 'Tarih', order: 'Sipariş', companySection: 'Firma', productSection: 'Ürün',
+    company: 'Firma', contact: 'Yetkili', phone: 'Telefon', email: 'E-posta', address: 'Adres',
+    productFamily: 'Ürün Ailesi', productGroup: 'Ürün Grubu', productSubGroup: 'Ürün Alt Grubu', product: 'Ürün', notes: 'Notlar',
+    none: 'Yok'
+  },
+  de: {
+    formTitle: 'PRODUKTANFRAGEFORMULAR', date: 'Datum', order: 'Auftrag', companySection: 'Firma', productSection: 'Produkt',
+    company: 'Firma', contact: 'Kontaktperson', phone: 'Telefon', email: 'E-Mail', address: 'Adresse',
+    productFamily: 'Produktfamilie', productGroup: 'Produktgruppe', productSubGroup: 'Produktuntergruppe', product: 'Produkt', notes: 'Notizen',
+    none: 'Keine'
+  },
+  fr: {
+    formTitle: 'FORMULAIRE DE DEMANDE PRODUIT', date: 'Date', order: 'Commande', companySection: 'Entreprise', productSection: 'Produit',
+    company: 'Entreprise', contact: 'Contact', phone: 'Téléphone', email: 'E-mail', address: 'Adresse',
+    productFamily: 'Famille de produit', productGroup: 'Groupe de produit', productSubGroup: 'Sous-groupe de produit', product: 'Produit', notes: 'Notes',
+    none: 'Aucun'
+  },
+  he: {
+    formTitle: 'טופס בקשת מוצר', date: 'תאריך', order: 'הזמנה', companySection: 'חברה', productSection: 'מוצר',
+    company: 'חברה', contact: 'איש קשר', phone: 'טלפון', email: 'דוא״ל', address: 'כתובת',
+    productFamily: 'משפחת מוצר', productGroup: 'קבוצת מוצר', productSubGroup: 'תת-קבוצת מוצר', product: 'מוצר', notes: 'הערות',
+    none: 'אין'
+  }
+};
+
+const LABEL_TRANSLATIONS = {
+  tr: {
+    'Project Details': 'Proje Detayları', 'Color Details': 'Renk Detayları', 'Motor & Remote Control': 'Motor ve Kumanda',
+    'Panel Options': 'Panel Seçenekleri', 'Lighting': 'Aydınlatma', 'Light Dimmers': 'Işık Dimmerleri',
+    'Sensors': 'Sensörler', 'Heater & Packaging': 'Isıtıcı ve Paketleme', 'Colours / System': 'Renkler / Sistem',
+    'Technical Selections': 'Teknik Seçimler', 'Additional Accessories': 'Ek Aksesuarlar', 'Selected': 'Seçilen',
+    'Quantity': 'Adet', 'Width': 'Genişlik', 'Projection': 'Açılım', 'Height (Top of The Gutter)': 'Yükseklik (Oluk Üstü)',
+    'System Quantity': 'Sistem Adedi', 'System Color': 'Sistem Rengi', 'Panel Color': 'Panel Rengi', 'Motor': 'Motor',
+    'Remote Control': 'Kumanda', 'Panel Isolation': 'Panel İzolasyonu', 'Light Dimmer (For Linear LED)': 'Lineer LED Dimmeri',
+    'Light Dimmer (For Spot LED)': 'Spot LED Dimmeri', 'Rain Sensor': 'Yağmur Sensörü', 'Vibration Sensor': 'Titreşim Sensörü',
+    'Wind Sensor': 'Rüzgar Sensörü', 'Wind & Sun Sensor': 'Rüzgar ve Güneş Sensörü', 'Packaging Type': 'Paketleme Tipi',
+    'Heater 2000W 220V Quantity': 'Isıtıcı 2000W 220V Adedi', 'Heater 3000W 220V Quantity': 'Isıtıcı 3000W 220V Adedi',
+    'Front H': 'Ön Yükseklik', 'Back H': 'Arka Yükseklik', 'Back Beam': 'Arka Kiriş', 'Side Beam': 'Yan Kiriş', 'Beam For': 'Kiriş İçin',
+    'Installation Type': 'Montaj Tipi', 'Glass Type': 'Cam Tipi', 'Electric Power': 'Elektrik Gücü', 'Manual Crank': 'Manuel Kol'
+  },
+  de: {
+    'Project Details': 'Projektdetails', 'Color Details': 'Farbangaben', 'Motor & Remote Control': 'Motor und Fernbedienung',
+    'Panel Options': 'Paneloptionen', 'Lighting': 'Beleuchtung', 'Light Dimmers': 'Lichtdimmer', 'Sensors': 'Sensoren',
+    'Heater & Packaging': 'Heizung und Verpackung', 'Colours / System': 'Farben / System', 'Technical Selections': 'Technische Auswahl',
+    'Additional Accessories': 'Zusätzliches Zubehör', 'Selected': 'Ausgewählt', 'Quantity': 'Menge', 'Width': 'Breite', 'Projection': 'Ausladung',
+    'Height (Top of The Gutter)': 'Höhe (Oberkante Rinne)', 'System Quantity': 'Systemmenge', 'System Color': 'Systemfarbe', 'Panel Color': 'Panelfarbe',
+    'Remote Control': 'Fernbedienung', 'Panel Isolation': 'Panelisolierung', 'Rain Sensor': 'Regensensor', 'Vibration Sensor': 'Vibrationssensor',
+    'Wind Sensor': 'Windsensor', 'Wind & Sun Sensor': 'Wind- und Sonnensensor', 'Packaging Type': 'Verpackungsart'
+  },
+  fr: {
+    'Project Details': 'Détails du projet', 'Color Details': 'Détails des couleurs', 'Motor & Remote Control': 'Moteur et télécommande',
+    'Panel Options': 'Options de panneau', 'Lighting': 'Éclairage', 'Light Dimmers': 'Variateurs de lumière', 'Sensors': 'Capteurs',
+    'Heater & Packaging': 'Chauffage et emballage', 'Colours / System': 'Couleurs / Système', 'Technical Selections': 'Sélections techniques',
+    'Additional Accessories': 'Accessoires supplémentaires', 'Selected': 'Sélectionné', 'Quantity': 'Quantité', 'Width': 'Largeur', 'Projection': 'Projection',
+    'Height (Top of The Gutter)': 'Hauteur (haut de gouttière)', 'System Quantity': 'Quantité de système', 'System Color': 'Couleur du système',
+    'Panel Color': 'Couleur du panneau', 'Remote Control': 'Télécommande', 'Panel Isolation': 'Isolation du panneau', 'Rain Sensor': 'Capteur de pluie',
+    'Vibration Sensor': 'Capteur de vibration', 'Wind Sensor': 'Capteur de vent', 'Wind & Sun Sensor': 'Capteur vent et soleil', 'Packaging Type': 'Type d’emballage'
+  },
+  he: {
+    'Project Details': 'פרטי פרויקט', 'Color Details': 'פרטי צבע', 'Motor & Remote Control': 'מנוע ושלט', 'Panel Options': 'אפשרויות פאנל',
+    'Lighting': 'תאורה', 'Light Dimmers': 'עמעמי תאורה', 'Sensors': 'חיישנים', 'Heater & Packaging': 'חימום ואריזה',
+    'Colours / System': 'צבעים / מערכת', 'Technical Selections': 'בחירות טכניות', 'Additional Accessories': 'אביזרים נוספים',
+    'Selected': 'נבחר', 'Quantity': 'כמות', 'Width': 'רוחב', 'Projection': 'בליטה', 'System Quantity': 'כמות מערכות',
+    'System Color': 'צבע מערכת', 'Panel Color': 'צבע פאנל', 'Remote Control': 'שלט', 'Panel Isolation': 'בידוד פאנל',
+    'Rain Sensor': 'חיישן גשם', 'Vibration Sensor': 'חיישן רטט', 'Wind Sensor': 'חיישן רוח', 'Wind & Sun Sensor': 'חיישן רוח ושמש',
+    'Packaging Type': 'סוג אריזה'
+  }
+};
+
+const VALUE_TRANSLATIONS = {
+  tr: { 'None': 'Yok', 'Yes': 'Evet', 'No': 'Hayır', '-': '-' },
+  de: { 'None': 'Keine', 'Yes': 'Ja', 'No': 'Nein', '-': '-' },
+  fr: { 'None': 'Aucun', 'Yes': 'Oui', 'No': 'Non', '-': '-' },
+  he: { 'None': 'אין', 'Yes': 'כן', 'No': 'לא', '-': '-' }
+};
+
+function langText(key) {
+  return (PREVIEW_TEXT[state.language] || PREVIEW_TEXT.en)[key] || PREVIEW_TEXT.en[key] || key;
+}
+
+function trLabel(label) {
+  return (LABEL_TRANSLATIONS[state.language] || {})[label] || label;
+}
+
+function trValue(value) {
+  const raw = String(value || '-');
+  return (VALUE_TRANSLATIONS[state.language] || {})[raw] || raw;
+}
 
 function todayISO() {
   return new Date().toISOString().slice(0, 10);
@@ -46,160 +141,122 @@ function safeId(text) {
 }
 
 function getProduct() {
-  return DATA.products.find((p) => p.id === state.selectedProductId) || null;
+  return DATA.products.find((p) => p.id === state.selectedProductId) || DATA.products[0];
 }
 
 function getGroup(product = getProduct()) {
-  return product ? DATA.groups[product.group] : null;
+  return DATA.systemTypes[product.systemType || product.group];
 }
 
-function cloneData(value) {
-  return JSON.parse(JSON.stringify(value));
+function isGalaxy(product = getProduct()) {
+  return product.specialForm === 'galaxy';
 }
 
-function mergeProductForm(baseForm, override = {}) {
-  const merged = cloneData(baseForm);
-  Object.entries(override).forEach(([key, value]) => {
-    merged[key] = cloneData(value);
+function uniqueValues(values) {
+  return Array.from(new Set(values.filter((value) => value !== undefined && value !== null)));
+}
+
+function productsFor(filter = {}) {
+  return DATA.products.filter((product) => {
+    if (filter.family && product.family !== filter.family) return false;
+    if (filter.productGroup && product.productGroup !== filter.productGroup) return false;
+    if (filter.subGroup !== undefined && (product.subGroup || '') !== filter.subGroup) return false;
+    return true;
   });
-  return merged;
 }
 
-function getProductForm(product = getProduct()) {
-  if (!product?.formTemplate) return null;
-  const baseForm = DATA[product.formTemplate];
-  if (!baseForm) return null;
-  return mergeProductForm(baseForm, DATA.productFormOverrides?.[product.id] || {});
+function optionHtml(value, label = value) {
+  return `<option value="${String(value).replace(/"/g, '&quot;')}">${label}</option>`;
 }
 
-function hasProductForm(product = getProduct()) {
-  return Boolean(getProductForm(product));
-}
-
-function optionMarkup(items, selectedId, placeholder = 'Seçiniz') {
-  return [
-    `<option value="">${placeholder}</option>`,
-    ...items.map((item) => `<option value="${item.id}"${item.id === selectedId ? ' selected' : ''}>${item.label}</option>`)
-  ].join('');
-}
-
-function treeGroups(familyId = state.selectedFamilyId) {
-  return DATA.productTree.groups[familyId] || [];
-}
-
-function treeSubGroups(groupId = state.selectedGroupId) {
-  return DATA.productTree.subGroups[groupId] || [];
-}
-
-function treeLabel(collection, id) {
-  return (collection || []).find((item) => item.id === id)?.label || '';
-}
-
-function syncSelectionFromProduct(product = getProduct()) {
-  if (!product) return;
-  state.selectedFamilyId = product.family || '';
-  state.selectedGroupId = product.productGroup || '';
-  state.selectedSubGroupId = product.subGroup || '';
-}
-
-function updateSelectedProductFromTree() {
-  const subGroup = treeSubGroups().find((item) => item.id === state.selectedSubGroupId);
-  const product = DATA.products.find((item) => item.id === subGroup?.productId)
-    || DATA.products.find((item) => (
-      item.family === state.selectedFamilyId &&
-      item.productGroup === state.selectedGroupId &&
-      item.subGroup === state.selectedSubGroupId
-    ));
-  state.selectedProductId = product?.id || '';
-}
-
-function firstId(items) {
-  return items[0]?.id || '';
-}
-
-function selectFirstAvailableForFamily() {
-  const groups = treeGroups();
-  state.selectedGroupId = firstId(groups);
-  state.selectedSubGroupId = firstId(treeSubGroups(state.selectedGroupId));
-  updateSelectedProductFromTree();
-}
-
-function selectFirstAvailableForGroup() {
-  state.selectedSubGroupId = firstId(treeSubGroups());
-  updateSelectedProductFromTree();
-}
-
-function currentProductSelectionLabels() {
-  const family = treeLabel(DATA.productTree.families, state.selectedFamilyId);
-  const group = treeLabel(treeGroups(), state.selectedGroupId);
-  const subGroup = treeLabel(treeSubGroups(), state.selectedSubGroupId);
-  return { family, group, subGroup };
+function setSelectedProductFromHierarchy() {
+  const family = $('#productFamilySelect').value;
+  const productGroup = $('#productGroupSelect').value;
+  const subValue = $('#productSubGroupSelect').value === '__none__' ? '' : $('#productSubGroupSelect').value;
+  const found = productsFor({ family, productGroup, subGroup: subValue })[0]
+    || productsFor({ family, productGroup })[0]
+    || DATA.products[0];
+  state.selectedProductId = found.id;
 }
 
 function renderProducts() {
-  syncSelectionFromProduct();
-
   const familySelect = $('#productFamilySelect');
   const groupSelect = $('#productGroupSelect');
   const subGroupSelect = $('#productSubGroupSelect');
-  const groups = treeGroups();
-  const subGroups = treeSubGroups();
+  const current = getProduct();
 
-  familySelect.innerHTML = optionMarkup(DATA.productTree.families, state.selectedFamilyId);
-  familySelect.value = state.selectedFamilyId;
+  const families = uniqueValues(DATA.products.map((p) => p.family));
+  familySelect.innerHTML = families.map((family) => optionHtml(family)).join('');
+  familySelect.value = current.family || families[0];
 
-  groupSelect.innerHTML = optionMarkup(groups, state.selectedGroupId);
-  groupSelect.value = state.selectedGroupId;
-  groupSelect.disabled = groups.length === 0;
+  const groupValues = uniqueValues(productsFor({ family: familySelect.value }).map((p) => p.productGroup || ''));
+  groupSelect.innerHTML = groupValues.length
+    ? groupValues.map((group) => optionHtml(group || '__none__', group || 'Yok')).join('')
+    : optionHtml('__none__', 'Yok');
+  groupSelect.disabled = groupValues.length === 0 || (groupValues.length === 1 && groupValues[0] === '');
+  groupSelect.value = current.family === familySelect.value ? (current.productGroup || '__none__') : (groupValues[0] || '__none__');
 
-  subGroupSelect.innerHTML = optionMarkup(subGroups, state.selectedSubGroupId);
-  subGroupSelect.value = state.selectedSubGroupId;
-  subGroupSelect.disabled = subGroups.length === 0;
+  const normalizedGroup = groupSelect.value === '__none__' ? '' : groupSelect.value;
+  const subGroups = uniqueValues(productsFor({ family: familySelect.value, productGroup: normalizedGroup }).map((p) => p.subGroup || ''));
+  const realSubGroups = subGroups.filter(Boolean);
+  subGroupSelect.innerHTML = realSubGroups.length
+    ? realSubGroups.map((sub) => optionHtml(sub)).join('')
+    : optionHtml('__none__', 'Yok');
+  subGroupSelect.disabled = realSubGroups.length === 0;
+  subGroupSelect.value = realSubGroups.includes(current.subGroup) ? current.subGroup : (realSubGroups[0] || '__none__');
 
+  setSelectedProductFromHierarchy();
   updateProductHint();
+}
+
+function rebuildGroupOptions() {
+  const familySelect = $('#productFamilySelect');
+  const groupSelect = $('#productGroupSelect');
+  const groupValues = uniqueValues(productsFor({ family: familySelect.value }).map((p) => p.productGroup || ''));
+  groupSelect.innerHTML = groupValues.length
+    ? groupValues.map((group) => optionHtml(group || '__none__', group || 'Yok')).join('')
+    : optionHtml('__none__', 'Yok');
+  groupSelect.disabled = groupValues.length === 0 || (groupValues.length === 1 && groupValues[0] === '');
+  groupSelect.value = groupValues[0] || '__none__';
+  rebuildSubGroupOptions();
+}
+
+function rebuildSubGroupOptions() {
+  const family = $('#productFamilySelect').value;
+  const productGroup = $('#productGroupSelect').value === '__none__' ? '' : $('#productGroupSelect').value;
+  const subGroupSelect = $('#productSubGroupSelect');
+  const subGroups = uniqueValues(productsFor({ family, productGroup }).map((p) => p.subGroup || ''));
+  const realSubGroups = subGroups.filter(Boolean);
+  subGroupSelect.innerHTML = realSubGroups.length
+    ? realSubGroups.map((sub) => optionHtml(sub)).join('')
+    : optionHtml('__none__', 'Yok');
+  subGroupSelect.disabled = realSubGroups.length === 0;
+  subGroupSelect.value = realSubGroups[0] || '__none__';
 }
 
 function updateProductHint() {
   const product = getProduct();
-  const selection = currentProductSelectionLabels();
-  if (!state.selectedFamilyId) {
-    $('#productGroupHint').textContent = 'Ürün ailesi seçiniz.';
-    return;
-  }
-  if (!product) {
-    const path = [selection.family, selection.group, selection.subGroup].filter(Boolean).join(' / ');
-    $('#productGroupHint').textContent = `${path || 'Selected family'} için ürün formu sonraki aşamada eklenecek.`;
-    return;
-  }
-  const formNote = hasProductForm(product) ? ' | Galaxy taban formu aktif' : '';
-  $('#productGroupHint').textContent = `${selection.family} / ${selection.group} / ${selection.subGroup}${formNote}`;
+  const sub = product.subGroup || 'Yok';
+  const formNote = isGalaxy(product) ? ' | B-Cube GALAXY form active' : '';
+  $('#productGroupHint').textContent = `${product.family} / ${product.productGroup || 'Yok'} / ${sub}${formNote}`;
 }
 
-function applyProductSelection() {
+function onProductChange() {
+  setSelectedProductFromHierarchy();
+  updateProductHint();
   renderForm();
   saveOrderDraft();
   updatePreview();
 }
 
-function onProductFamilyChange() {
-  state.selectedFamilyId = $('#productFamilySelect').value;
-  selectFirstAvailableForFamily();
-  renderProducts();
-  applyProductSelection();
+function onFamilyChange() {
+  rebuildGroupOptions();
+  onProductChange();
 }
 
-function onProductGroupChange() {
-  state.selectedGroupId = $('#productGroupSelect').value;
-  selectFirstAvailableForGroup();
-  renderProducts();
-  applyProductSelection();
-}
-
-function onProductSubGroupChange() {
-  state.selectedSubGroupId = $('#productSubGroupSelect').value;
-  updateSelectedProductFromTree();
-  renderProducts();
-  applyProductSelection();
+function onGroupChange() {
+  rebuildSubGroupOptions();
+  onProductChange();
 }
 
 function createInputField(field) {
@@ -333,11 +390,7 @@ function createCheckboxSection(title, fieldName, items) {
 
 function renderGalaxyForm() {
   const wrap = $('#formArea');
-  const form = getProductForm();
-  if (!form) {
-    renderGenericForm();
-    return;
-  }
+  const form = DATA.galaxyForm;
   wrap.innerHTML = '';
   wrap.appendChild(createFormSection('Project Details', form.projectDetails, 'grid two'));
   wrap.appendChild(createFormSection('Color Details', form.colorDetails, 'grid two'));
@@ -355,18 +408,6 @@ function renderGenericForm() {
   const group = getGroup(product);
   const wrap = $('#formArea');
   wrap.innerHTML = '';
-
-  if (!product || !group) {
-    const selection = currentProductSelectionLabels();
-    const path = [selection.family, selection.group, selection.subGroup].filter(Boolean).join(' / ');
-    wrap.innerHTML = `
-      <div class="dynamic-section empty-product-state">
-        <h3>Product Form</h3>
-        <p>${path || 'Selected product'} form details will be added in the next step.</p>
-      </div>
-    `;
-    return;
-  }
 
   const projectItems = [
     { id: 'quantity', label: 'Quantity', type: 'number' },
@@ -393,7 +434,7 @@ function renderGenericForm() {
 }
 
 function renderForm() {
-  if (hasProductForm()) renderGalaxyForm();
+  if (isGalaxy()) renderGalaxyForm();
   else renderGenericForm();
 }
 
@@ -471,7 +512,6 @@ function fieldRows(fieldList) {
 
 function genericRows() {
   const group = getGroup();
-  if (!group) return { systemQuantity: '-', sections: [] };
   const projectFields = [
     { id: 'quantity', label: 'Quantity' },
     ...DATA.common.dimensionFields.map((f) => ({ id: f.id, label: f.label, unit: f.unit }))
@@ -494,8 +534,7 @@ function genericRows() {
 }
 
 function galaxyRows() {
-  const form = getProductForm();
-  if (!form) return { systemQuantity: '-', sections: [] };
+  const form = DATA.galaxyForm;
   return {
     systemQuantity: formatValue($('#dyn_systemQuantity')?.value || ''),
     sections: [
@@ -514,8 +553,7 @@ function galaxyRows() {
 function getOrderData() {
   const product = getProduct();
   const group = getGroup(product);
-  const dynamic = hasProductForm(product) ? galaxyRows() : genericRows();
-  const selection = currentProductSelectionLabels();
+  const dynamic = isGalaxy(product) ? galaxyRows() : genericRows();
   const profile = {
     companyName: fields.companyName.value.trim(),
     contactPerson: fields.contactPerson.value.trim(),
@@ -528,13 +566,14 @@ function getOrderData() {
 
   return {
     profile,
-    orderNo: manualOrderNo || generatedOrderNo(profile, product?.name || selection.subGroup || selection.group, values),
+    orderNo: manualOrderNo || generatedOrderNo(profile, product.name, values),
     manualOrderNo,
     orderDate: fields.orderDate.value,
-    productName: product?.name || '-',
-    productFamily: selection.family || '-',
-    productGroup: selection.group || group?.label || '-',
-    productSubGroup: selection.subGroup || '-',
+    productName: product.name,
+    productFamily: product.family || '-',
+    productGroupName: product.productGroup || 'None',
+    productSubGroup: product.subGroup || 'None',
+    productSystem: group.label,
     sections: dynamic.sections,
     values,
     notes: fields.notes.value.trim()
@@ -547,12 +586,21 @@ function setText(key, value) {
   });
 }
 
+function refreshPreviewLanguage() {
+  $$('[data-i18n-preview]').forEach((el) => {
+    el.textContent = langText(el.dataset.i18nPreview);
+  });
+  const sheet = $('#pdfPreview');
+  sheet.dir = state.language === 'he' ? 'rtl' : 'ltr';
+  sheet.classList.toggle('rtl-preview', state.language === 'he');
+}
+
 function renderPreviewSections(sections) {
   $('#previewSections').innerHTML = sections.map((section) => `
     <div class="pdf-section">
-      <h3>${section.title}</h3>
+      <h3>${trLabel(section.title)}</h3>
       <table><tbody>
-        ${section.rows.map(([label, value]) => `<tr><td>${label}</td><td>${value || '-'}</td></tr>`).join('')}
+        ${section.rows.map(([label, value]) => `<tr><td>${trLabel(label)}</td><td>${trValue(value || '-')}</td></tr>`).join('')}
       </tbody></table>
     </div>
   `).join('');
@@ -577,10 +625,11 @@ function updatePreview() {
   setText('address', data.profile.address);
   setText('orderDate', data.orderDate);
   setText('orderNo', data.orderNo);
-  setText('productName', data.productName);
+  refreshPreviewLanguage();
   setText('productFamily', data.productFamily);
-  setText('productGroup', data.productGroup);
-  setText('productSubGroup', data.productSubGroup);
+  setText('productGroupName', data.productGroupName === 'None' ? langText('none') : data.productGroupName);
+  setText('productSubGroup', data.productSubGroup === 'None' ? langText('none') : data.productSubGroup);
+  setText('productName', data.productName);
   setText('notes', data.notes || '-');
   renderPreviewSections(data.sections);
 }
@@ -616,10 +665,8 @@ function clearProfile() {
 function saveOrderDraft() {
   const data = getOrderData();
   localStorage.setItem(STORAGE_ORDER, JSON.stringify({
-    selectedFamilyId: state.selectedFamilyId,
-    selectedGroupId: state.selectedGroupId,
-    selectedSubGroupId: state.selectedSubGroupId,
     selectedProductId: state.selectedProductId,
+    language: state.language,
     orderNo: data.manualOrderNo,
     orderDate: data.orderDate,
     notes: data.notes,
@@ -634,15 +681,11 @@ function loadOrderDraft() {
     const saved = JSON.parse(localStorage.getItem(STORAGE_ORDER) || '{}');
     if (saved.selectedProductId && DATA.products.some((p) => p.id === saved.selectedProductId)) {
       state.selectedProductId = saved.selectedProductId;
-      syncSelectionFromProduct();
-    } else {
-      state.selectedFamilyId = saved.selectedFamilyId || state.selectedFamilyId;
-      state.selectedGroupId = saved.selectedGroupId || state.selectedGroupId;
-      state.selectedSubGroupId = saved.selectedSubGroupId || state.selectedSubGroupId;
-      updateSelectedProductFromTree();
+      renderProducts();
+      renderForm();
     }
-    renderProducts();
-    renderForm();
+    if (saved.language) state.language = saved.language;
+    $('#languageSelect').value = state.language;
     fields.orderNo.value = saved.orderNo || '';
     fields.orderDate.value = saved.orderDate || todayISO();
     fields.notes.value = saved.notes || '';
@@ -723,7 +766,7 @@ function dataUrlToImage(dataUrl, width, height) {
   return { bytes, width: Math.max(1, Math.round(width || 1)), height: Math.max(1, Math.round(height || 1)) };
 }
 
-function buildOrderPdf(data, previewImage = null) {
+function buildOrderPdf(data) {
   const W = 595.28;
   const H = 841.89;
   const margin = 36;
@@ -743,10 +786,6 @@ function buildOrderPdf(data, previewImage = null) {
   };
   const line = (x1, y1, x2, y2) => {
     cmd(`${x1.toFixed(2)} ${topY(y1).toFixed(2)} m ${x2.toFixed(2)} ${topY(y2).toFixed(2)} l S`);
-  };
-  const drawImage = (x, yTop, w, h) => {
-    if (!previewImage) return;
-    cmd(`q ${w.toFixed(2)} 0 0 ${h.toFixed(2)} ${x.toFixed(2)} ${topY(yTop + h).toFixed(2)} cm /Im1 Do Q`);
   };
 
   const section = (title) => {
@@ -789,41 +828,12 @@ function buildOrderPdf(data, previewImage = null) {
     ['Phone', data.profile.phone || '-'],
     ['E-mail', data.profile.email || '-'],
     ['Address', data.profile.address || '-'],
-    ['Family', data.productFamily || '-'],
-    ['Group', data.productGroup || '-'],
-    ['Sub Group', data.productSubGroup || '-'],
+    ['Product Family', data.productFamily || '-'],
+    ['Product Group', data.productGroupName || '-'],
+    ['Product Sub Group', data.productSubGroup || '-'],
     ['Product', data.productName || '-']
   ];
-  const companyStartY = y;
-  const tableWidth = previewImage ? 322 : W - margin * 2;
-  const tableEndY = tableRows(productRows, margin, y, tableWidth);
-  let imageEndY = tableEndY;
-  if (previewImage) {
-    const boxX = margin + tableWidth + 12;
-    const boxY = companyStartY;
-    const boxW = W - margin - boxX;
-    const titleH = 16;
-    const imageBoxH = 94;
-    rect(boxX, boxY, boxW, titleH + imageBoxH + 8);
-    fillRect(boxX, boxY, boxW, titleH, 0.97);
-    text(boxX + 6, boxY + 10.5, '3D PREVIEW', 7.3, true);
-    const innerX = boxX + 7;
-    const innerY = boxY + titleH + 6;
-    const innerW = boxW - 14;
-    const innerH = imageBoxH - 4;
-    const ratio = previewImage.width / previewImage.height;
-    let drawW = innerW;
-    let drawH = drawW / ratio;
-    if (drawH > innerH) {
-      drawH = innerH;
-      drawW = drawH * ratio;
-    }
-    const drawX = innerX + (innerW - drawW) / 2;
-    const drawY = innerY + (innerH - drawH) / 2;
-    drawImage(drawX, drawY, drawW, drawH);
-    imageEndY = boxY + titleH + imageBoxH + 8;
-  }
-  y = Math.max(tableEndY, imageEndY) + 2;
+  y = tableRows(productRows, margin, y, W - margin * 2) + 2;
 
   data.sections.forEach((sectionData) => {
     section(sectionData.title);
@@ -835,17 +845,14 @@ function buildOrderPdf(data, previewImage = null) {
   rect(margin, y, W - margin * 2, 58);
   noteLines.forEach((ln, idx) => text(margin + 8, y + 14 + idx * 10, ln, 8.5));
 
-  return createPdf(commands.join('\n'), W, H, previewImage);
+  return createPdf(commands.join('\n'), W, H);
 }
 
-function createPdf(content, width, height, previewImage = null) {
+function createPdf(content, width, height) {
   const encoder = new TextEncoder();
   const encode = (value) => encoder.encode(value);
   const contentBytes = encode(content);
-  const hasImage = Boolean(previewImage?.bytes?.length);
-  const pageResources = hasImage
-    ? `<< /Font << /F1 4 0 R /F2 5 0 R >> /XObject << /Im1 7 0 R >> >>`
-    : `<< /Font << /F1 4 0 R /F2 5 0 R >> >>`;
+  const pageResources = `<< /Font << /F1 4 0 R /F2 5 0 R >> >>`;
 
   const objects = [
     [encode('<< /Type /Catalog /Pages 2 0 R >>')],
@@ -856,13 +863,6 @@ function createPdf(content, width, height, previewImage = null) {
     [encode(`<< /Length ${contentBytes.length} >>\nstream\n`), contentBytes, encode('\nendstream')]
   ];
 
-  if (hasImage) {
-    objects.push([
-      encode(`<< /Type /XObject /Subtype /Image /Width ${previewImage.width} /Height ${previewImage.height} /ColorSpace /DeviceRGB /BitsPerComponent 8 /Filter /DCTDecode /Length ${previewImage.bytes.length} >>\nstream\n`),
-      previewImage.bytes,
-      encode('\nendstream')
-    ]);
-  }
 
   const chunks = [];
   const offsets = [0];
@@ -936,9 +936,15 @@ async function sharePdf() {
 
 function registerEvents() {
   Object.values(fields).forEach((el) => el.addEventListener('input', onAnyInput));
-  $('#productFamilySelect').addEventListener('change', onProductFamilyChange);
-  $('#productGroupSelect').addEventListener('change', onProductGroupChange);
-  $('#productSubGroupSelect').addEventListener('change', onProductSubGroupChange);
+  $('#productFamilySelect').addEventListener('change', onFamilyChange);
+  $('#productGroupSelect').addEventListener('change', onGroupChange);
+  $('#productSubGroupSelect').addEventListener('change', onProductChange);
+  $('#languageSelect').addEventListener('change', () => {
+    state.language = $('#languageSelect').value;
+    localStorage.setItem('prf_language_v1', state.language);
+    saveOrderDraft();
+    updatePreview();
+  });
   $('#saveProfileBtn').addEventListener('click', () => { saveProfile(); onAnyInput(); });
   $('#clearProfileBtn').addEventListener('click', clearProfile);
   $('#downloadPdfBtn').addEventListener('click', downloadPdf);
@@ -970,6 +976,7 @@ async function initPwa() {
 function init() {
   fields.orderDate.value = todayISO();
   fields.orderNo.value = '';
+  $('#languageSelect').value = state.language;
   loadProfile();
   renderProducts();
   renderForm();
