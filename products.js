@@ -15,7 +15,55 @@ window.PRODUCT_DATA = {
       { id: 'beamFor', label: 'Beam For', unit: 'mm' }
     ]
   },
-  systemTypes: {
+  productTree: {
+    families: [
+      { id: 'pergola', label: 'Pergola' },
+      { id: 'bioclimatic', label: 'Bioclimatic' },
+      { id: 'perde', label: 'Perde' }
+    ],
+    groups: {
+      pergola: [
+        { id: 'falcate', label: 'Falcate' },
+        { id: 'subulate', label: 'Subulate' },
+        { id: 'unifoliate', label: 'Unifoliate' }
+      ],
+      bioclimatic: [
+        { id: 'bcube', label: 'B-Cube' },
+        { id: 'rise', label: 'Rise' }
+      ],
+      perde: []
+    },
+    subGroups: {
+      falcate: [
+        { id: 'minima', label: 'Minima', productId: 'falcate_minima' },
+        { id: 'tectona', label: 'Tectona', productId: 'falcate_tectona' },
+        { id: 'pergo_rise', label: 'Pergo Rise', productId: 'falcate_pergo_rise' }
+      ],
+      subulate: [
+        { id: 'minima', label: 'Minima', productId: 'subulate_minima' },
+        { id: 'tectona', label: 'Tectona', productId: 'subulate_tectona' },
+        { id: 'pergo_rise', label: 'Pergo Rise', productId: 'subulate_pergo_rise' }
+      ],
+      unifoliate: [
+        { id: 'minima', label: 'Minima', productId: 'unifoliate_minima' },
+        { id: 'tectona', label: 'Tectona', productId: 'unifoliate_tectona' },
+        { id: 'pergo_rise', label: 'Pergo Rise', productId: 'unifoliate_pergo_rise' }
+      ],
+      bcube: [
+        { id: 'galaxy', label: 'Galaxy', productId: 'galaxy' },
+        { id: 'space', label: 'Space', productId: 'space' },
+        { id: 'galaxy_manual', label: 'Galaxy Manuel', productId: 'galaxy_manual' },
+        { id: 'freedom', label: 'Freedom', productId: 'freedom' },
+        { id: 'classic', label: 'Classic', productId: 'classic' },
+        { id: 'infinity', label: 'Infinity', productId: 'infinity' },
+        { id: 'urban', label: 'Urban', productId: 'urban' },
+        { id: 'freedom_plus', label: 'Freedom Plus', productId: 'freedom_plus' },
+        { id: 'classic_plus', label: 'Classic Plus', productId: 'classic_plus' }
+      ],
+      rise: []
+    }
+  },
+  groups: {
     pergola: {
       label: 'Pergola / Fabric System',
       colorFields: ['Structure', 'Pergola Fabric', 'Screen Fabric'],
@@ -41,19 +89,6 @@ window.PRODUCT_DATA = {
         '2000W Heater',
         '3000W Heater',
         'Dimmer Heater',
-        'Wind Sensor',
-        'Vibration Sensor'
-      ]
-    },
-    bioclimatic: {
-      label: 'Bioclimatic System',
-      colorFields: ['Structure', 'Blade'],
-      lighting: ['Daylight', 'RGB', 'Linear', 'Spot'],
-      accessories: [
-        'Sound System',
-        'Dimmer Light',
-        '2000W Heater',
-        '3000W Heater',
         'Wind Sensor',
         'Vibration Sensor'
       ]
@@ -98,25 +133,35 @@ window.PRODUCT_DATA = {
       { id: 'packagingType', label: 'Packaging Type', type: 'select', options: ['Wooden Box', 'Heavy-Duty Nylon'], defaultValue: 'Wooden Box' }
     ]
   },
+  productFormOverrides: {
+    galaxy: {},
+    space: {},
+    galaxy_manual: {},
+    freedom: {},
+    classic: {},
+    infinity: {},
+    urban: {},
+    freedom_plus: {},
+    classic_plus: {}
+  },
   products: [
-    { id: 'falcate_minima', name: 'FALCATE MINIMA', family: 'Pergola', productGroup: 'Falcate', subGroup: 'Minima', systemType: 'pergola' },
-    { id: 'falcate_tectona', name: 'FALCATE TECTONA', family: 'Pergola', productGroup: 'Falcate', subGroup: 'Tectona', systemType: 'pergola' },
-    { id: 'subulate_minima', name: 'SUBULATE MINIMA', family: 'Pergola', productGroup: 'Subulate', subGroup: 'Minima', systemType: 'pergola' },
-    { id: 'subulate_tectona', name: 'SUBULATE TECTONA', family: 'Pergola', productGroup: 'Subulate', subGroup: 'Tectona', systemType: 'pergola' },
-    { id: 'unifoliate_minima', name: 'UNIFOLIATE MINIMA', family: 'Pergola', productGroup: 'Unifoliate', subGroup: 'Minima', systemType: 'pergola' },
-    { id: 'unifoliate_tectona', name: 'UNIFOLIATE TECTONA', family: 'Pergola', productGroup: 'Unifoliate', subGroup: 'Tectona', systemType: 'pergola' },
-    { id: 'pergo_rise', name: 'PERGO RISE', family: 'Pergola', productGroup: 'Pergo Rise', subGroup: '', systemType: 'pergola' },
-
-    { id: 'bio_rise', name: 'BIO-RISE', family: 'Bioclimatic', productGroup: 'Bio-Rise', subGroup: '', systemType: 'bioclimatic' },
-
-    { id: 'bcube_galaxy', name: 'B-Cube GALAXY', family: 'B-Cube', productGroup: 'B-Cube', subGroup: 'Galaxy', systemType: 'bcube', specialForm: 'galaxy' },
-    { id: 'bcube_space', name: 'B-Cube SPACE', family: 'B-Cube', productGroup: 'B-Cube', subGroup: 'Space', systemType: 'bcube', specialForm: 'galaxy' },
-    { id: 'bcube_galaxy_manuel', name: 'B-Cube GALAXY MANUEL', family: 'B-Cube', productGroup: 'B-Cube', subGroup: 'Galaxy Manuel', systemType: 'bcube', specialForm: 'galaxy' },
-    { id: 'bcube_freedom', name: 'B-Cube FREEDOM', family: 'B-Cube', productGroup: 'B-Cube', subGroup: 'Freedom', systemType: 'bcube', specialForm: 'galaxy' },
-    { id: 'bcube_classic', name: 'B-Cube CLASSIC', family: 'B-Cube', productGroup: 'B-Cube', subGroup: 'Classic', systemType: 'bcube', specialForm: 'galaxy' },
-    { id: 'bcube_infinity', name: 'B-Cube INFINITY', family: 'B-Cube', productGroup: 'B-Cube', subGroup: 'Infinity', systemType: 'bcube', specialForm: 'galaxy' },
-    { id: 'bcube_urban', name: 'B-Cube URBAN', family: 'B-Cube', productGroup: 'B-Cube', subGroup: 'Urban', systemType: 'bcube', specialForm: 'galaxy' },
-    { id: 'bcube_freedom_plus', name: 'B-Cube FREEDOM PLUS', family: 'B-Cube', productGroup: 'B-Cube', subGroup: 'Freedom Plus', systemType: 'bcube', specialForm: 'galaxy' }
+    { id: 'falcate_minima', name: 'FALCATE MINIMA', family: 'pergola', productGroup: 'falcate', subGroup: 'minima', group: 'pergola' },
+    { id: 'falcate_tectona', name: 'FALCATE TECTONA', family: 'pergola', productGroup: 'falcate', subGroup: 'tectona', group: 'pergola' },
+    { id: 'falcate_pergo_rise', name: 'FALCATE PERGO RISE', family: 'pergola', productGroup: 'falcate', subGroup: 'pergo_rise', group: 'pergola' },
+    { id: 'subulate_minima', name: 'SUBULATE MINIMA', family: 'pergola', productGroup: 'subulate', subGroup: 'minima', group: 'pergola' },
+    { id: 'subulate_tectona', name: 'SUBULATE TECTONA', family: 'pergola', productGroup: 'subulate', subGroup: 'tectona', group: 'pergola' },
+    { id: 'subulate_pergo_rise', name: 'SUBULATE PERGO RISE', family: 'pergola', productGroup: 'subulate', subGroup: 'pergo_rise', group: 'pergola' },
+    { id: 'unifoliate_minima', name: 'UNIFOLIATE MINIMA', family: 'pergola', productGroup: 'unifoliate', subGroup: 'minima', group: 'pergola' },
+    { id: 'unifoliate_tectona', name: 'UNIFOLIATE TECTONA', family: 'pergola', productGroup: 'unifoliate', subGroup: 'tectona', group: 'pergola' },
+    { id: 'unifoliate_pergo_rise', name: 'UNIFOLIATE PERGO RISE', family: 'pergola', productGroup: 'unifoliate', subGroup: 'pergo_rise', group: 'pergola' },
+    { id: 'galaxy', name: 'B-Cube GALAXY', family: 'bioclimatic', productGroup: 'bcube', subGroup: 'galaxy', group: 'bcube', formTemplate: 'galaxyForm' },
+    { id: 'space', name: 'B-Cube SPACE', family: 'bioclimatic', productGroup: 'bcube', subGroup: 'space', group: 'bcube', formTemplate: 'galaxyForm' },
+    { id: 'galaxy_manual', name: 'B-Cube GALAXY MANUEL', family: 'bioclimatic', productGroup: 'bcube', subGroup: 'galaxy_manual', group: 'bcube', formTemplate: 'galaxyForm' },
+    { id: 'freedom', name: 'B-Cube FREEDOM', family: 'bioclimatic', productGroup: 'bcube', subGroup: 'freedom', group: 'bcube', formTemplate: 'galaxyForm' },
+    { id: 'classic', name: 'B-Cube CLASSIC', family: 'bioclimatic', productGroup: 'bcube', subGroup: 'classic', group: 'bcube', formTemplate: 'galaxyForm' },
+    { id: 'infinity', name: 'B-Cube INFINITY', family: 'bioclimatic', productGroup: 'bcube', subGroup: 'infinity', group: 'bcube', formTemplate: 'galaxyForm' },
+    { id: 'urban', name: 'B-Cube URBAN', family: 'bioclimatic', productGroup: 'bcube', subGroup: 'urban', group: 'bcube', formTemplate: 'galaxyForm' },
+    { id: 'freedom_plus', name: 'B-Cube FREEDOM PLUS', family: 'bioclimatic', productGroup: 'bcube', subGroup: 'freedom_plus', group: 'bcube', formTemplate: 'galaxyForm' },
+    { id: 'classic_plus', name: 'B-Cube CLASSIC PLUS', family: 'bioclimatic', productGroup: 'bcube', subGroup: 'classic_plus', group: 'bcube', formTemplate: 'galaxyForm' }
   ]
 };
-window.PRODUCT_DATA.groups = window.PRODUCT_DATA.systemTypes;
