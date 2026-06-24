@@ -13,21 +13,30 @@
 </head>
 <body>
   <header class="app-header no-print">
-    <div>
-      <h1>Product Request Form</h1>
-      <p class="mobile-subtitle">Mobile PDF request app</p>
+    <div class="brand-block">
+      <div class="brand-headline">
+        <h1 data-i18n="appTitle">Product Request Form</h1>
+        <div class="language-tabs" aria-label="Language">
+          <button type="button" data-lang="tr">Türkçe</button>
+          <button type="button" data-lang="en">English</button>
+          <button type="button" data-lang="de">Deutsch</button>
+          <button type="button" data-lang="fr">Français</button>
+          <button type="button" data-lang="he">עברית</button>
+        </div>
+      </div>
+      <p class="mobile-subtitle" data-i18n="mobileSubtitle">Mobile PDF request app</p>
     </div>
     <div class="header-actions">
-      <button id="resetOrderTopBtn" class="danger" type="button">New Request</button>
-      <button id="installBtn" class="ghost hidden" type="button">Add to Home Screen</button>
+      <button id="resetOrderTopBtn" class="danger" type="button" data-i18n="newRequest">New Request</button>
+      <button id="installBtn" class="ghost hidden" type="button" data-i18n="install">Add to Home Screen</button>
     </div>
   </header>
 
   <nav class="mobile-quick-nav no-print" aria-label="Quick actions">
-    <a href="#companySection">Company</a>
-    <a href="#productSection">Product</a>
-    <a href="#orderSection">Order</a>
-    <a href="#pdfSection">PDF</a>
+    <a href="#companySection" data-i18n="navCompany">Company</a>
+    <a href="#productSection" data-i18n="navProduct">Product</a>
+    <a href="#orderSection" data-i18n="navOrder">Order</a>
+    <a href="#pdfSection" data-i18n="navPdf">PDF</a>
   </nav>
 
   <main class="app-shell">
@@ -35,31 +44,31 @@
       <div class="section-title">
         <span class="step">1</span>
         <div>
-          <h2>Company Details</h2>
-          <p>Fill once. Saved on this device.</p>
+          <h2 data-i18n="companyDetails">Company Details</h2>
+          <p data-i18n="companyHelp">Fill once. Saved on this device.</p>
         </div>
       </div>
 
       <div class="grid two">
-        <label>Company Name
-          <input id="companyName" autocomplete="organization" placeholder="Company name" />
+        <label><span data-i18n="companyName">Company Name</span>
+          <input id="companyName" autocomplete="organization" placeholder="Company name" data-i18n-placeholder="companyNamePlaceholder" />
         </label>
-        <label>Contact Person
-          <input id="contactPerson" autocomplete="name" placeholder="Contact person" />
+        <label><span data-i18n="contactPerson">Contact Person</span>
+          <input id="contactPerson" autocomplete="name" placeholder="Contact person" data-i18n-placeholder="contactPersonPlaceholder" />
         </label>
-        <label>Phone
-          <input id="phone" autocomplete="tel" placeholder="Phone" />
+        <label><span data-i18n="phone">Phone</span>
+          <input id="phone" autocomplete="tel" placeholder="Phone" data-i18n-placeholder="phonePlaceholder" />
         </label>
-        <label>E-mail
-          <input id="email" autocomplete="email" placeholder="E-mail" />
+        <label><span data-i18n="email">E-mail</span>
+          <input id="email" autocomplete="email" placeholder="E-mail" data-i18n-placeholder="emailPlaceholder" />
         </label>
-        <label class="wide">Address
-          <input id="address" autocomplete="street-address" placeholder="Address" />
+        <label class="wide"><span data-i18n="address">Address</span>
+          <input id="address" autocomplete="street-address" placeholder="Address" data-i18n-placeholder="addressPlaceholder" />
         </label>
       </div>
       <div class="actions compact">
-        <button id="saveProfileBtn" type="button" >Save Company Details</button>
-        <button id="clearProfileBtn" class="secondary" type="button" >Clear</button>
+        <button id="saveProfileBtn" type="button" data-i18n="saveCompany">Save Company Details</button>
+        <button id="clearProfileBtn" class="secondary" type="button" data-i18n="clear">Clear</button>
       </div>
     </section>
 
@@ -67,19 +76,19 @@
       <div class="section-title">
         <span class="step">2</span>
         <div>
-          <h2>Select Product</h2>
-          <p>Fields change automatically by product.</p>
+          <h2 data-i18n="selectProduct">Select Product</h2>
+          <p data-i18n="selectProductHelp">Fields change automatically by product.</p>
         </div>
       </div>
       <div class="product-select-wrap">
         <div class="product-select-grid">
-          <label>Ürün Ailesi
+          <label><span data-i18n="productFamily">Ürün Ailesi</span>
             <select id="productFamilySelect"></select>
           </label>
-          <label>Ürün Grubu
+          <label><span data-i18n="productGroup">Ürün Grubu</span>
             <select id="productGroupSelect"></select>
           </label>
-          <label>Ürün Alt Grubu
+          <label><span data-i18n="productSubGroup">Ürün Alt Grubu</span>
             <select id="productSubGroupSelect"></select>
           </label>
         </div>
@@ -91,18 +100,18 @@
       <div class="section-title">
         <span class="step">3</span>
         <div>
-          <h2>Measurements & Options</h2>
-          <p>Related fields are grouped under the same heading.</p>
+          <h2 data-i18n="measurementsOptions">Measurements & Options</h2>
+          <p data-i18n="measurementsHelp">Related fields are grouped under the same heading.</p>
         </div>
       </div>
 
       <div id="orderSection" class="dynamic-section order-section">
-        <h3>Order Details</h3>
+        <h3 data-i18n="orderDetails">Order Details</h3>
         <div class="grid two">
-          <label>Order Name / No
-            <input id="orderNo" placeholder="Auto / manual" />
+          <label><span data-i18n="orderNoLabel">Order Name / No</span>
+            <input id="orderNo" placeholder="Auto / manual" data-i18n-placeholder="orderNoPlaceholder" />
           </label>
-          <label>Order Date
+          <label><span data-i18n="orderDate">Order Date</span>
             <input id="orderDate" type="date" />
           </label>
         </div>
@@ -111,8 +120,8 @@
       <div id="formArea"></div>
 
 
-      <label class="notes-input wide">Notes
-        <textarea id="notes" rows="3" placeholder="Optional notes"></textarea>
+      <label class="notes-input wide"><span data-i18n="notes">Notes</span>
+        <textarea id="notes" rows="3" placeholder="Optional notes" data-i18n-placeholder="notesPlaceholder"></textarea>
       </label>
     </section>
 
@@ -120,51 +129,51 @@
       <div class="section-title no-print">
         <span class="step">4</span>
         <div>
-          <h2>PDF Preview</h2>
-          <p>Create a clean A4 PDF and download or share it.</p>
+          <h2 data-i18n="pdfPreview">PDF Preview</h2>
+          <p data-i18n="pdfPreviewHelp">Create a clean A4 PDF and download or share it.</p>
         </div>
       </div>
 
       <div class="actions sticky-actions no-print">
-        <button id="downloadPdfBtn" type="button">Create / Download PDF</button>
-        <button id="sharePdfBtn" class="secondary" type="button">Share PDF</button>
+        <button id="downloadPdfBtn" type="button" data-i18n="downloadPdf">Create / Download PDF</button>
+        <button id="sharePdfBtn" class="secondary" type="button" data-i18n="sharePdf">Share PDF</button>
       </div>
 
       <article id="pdfPreview" class="a4-sheet">
         <div class="pdf-header">
           <div class="logo-box">LOGO</div>
           <div>
-            <h2>PRODUCT REQUEST FORM</h2>
+            <h2 data-i18n="pdfTitle">PRODUCT REQUEST FORM</h2>
             
           </div>
           <div class="pdf-meta">
-            <p><strong>Date:</strong> <span data-preview="orderDate"></span></p>
-            <p><strong>Order:</strong> <span data-preview="orderNo"></span></p>
+            <p><strong data-i18n="pdfDate">Date:</strong> <span data-preview="orderDate"></span></p>
+            <p><strong data-i18n="pdfOrder">Order:</strong> <span data-preview="orderNo"></span></p>
           </div>
         </div>
 
         <div class="pdf-section two-col">
           <div>
-            <h3>Company</h3>
-            <p><strong>Company:</strong> <span data-preview="companyName"></span></p>
-            <p><strong>Contact:</strong> <span data-preview="contactPerson"></span></p>
-            <p><strong>Phone:</strong> <span data-preview="phone"></span></p>
-            <p><strong>E-mail:</strong> <span data-preview="email"></span></p>
-            <p><strong>Address:</strong> <span data-preview="address"></span></p>
+            <h3 data-i18n="company">Company</h3>
+            <p><strong data-i18n="pdfCompany">Company:</strong> <span data-preview="companyName"></span></p>
+            <p><strong data-i18n="pdfContact">Contact:</strong> <span data-preview="contactPerson"></span></p>
+            <p><strong data-i18n="pdfPhone">Phone:</strong> <span data-preview="phone"></span></p>
+            <p><strong data-i18n="pdfEmail">E-mail:</strong> <span data-preview="email"></span></p>
+            <p><strong data-i18n="pdfAddress">Address:</strong> <span data-preview="address"></span></p>
           </div>
           <div>
-            <h3>Product</h3>
-            <p><strong>Family:</strong> <span data-preview="productFamily"></span></p>
-            <p><strong>Group:</strong> <span data-preview="productGroup"></span></p>
-            <p><strong>Sub Group:</strong> <span data-preview="productSubGroup"></span></p>
-            <p><strong>Product:</strong> <span data-preview="productName"></span></p>
+            <h3 data-i18n="product">Product</h3>
+            <p><strong data-i18n="pdfFamily">Family:</strong> <span data-preview="productFamily"></span></p>
+            <p><strong data-i18n="pdfGroup">Group:</strong> <span data-preview="productGroup"></span></p>
+            <p><strong data-i18n="pdfSubGroup">Sub Group:</strong> <span data-preview="productSubGroup"></span></p>
+            <p><strong data-i18n="pdfProduct">Product:</strong> <span data-preview="productName"></span></p>
           </div>
         </div>
 
         <div id="previewSections"></div>
 
         <div class="pdf-section notes-box">
-          <h3>Notes</h3>
+          <h3 data-i18n="notes">Notes</h3>
           <p data-preview="notes"></p>
         </div>
       </article>
