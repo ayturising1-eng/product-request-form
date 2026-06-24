@@ -6,11 +6,785 @@ const state = {
   selectedFamilyId: 'bioclimatic',
   selectedGroupId: 'bcube',
   selectedSubGroupId: 'galaxy',
-  selectedProductId: 'galaxy'
+  selectedProductId: 'galaxy',
+  language: 'en',
+  projectPositionCounts: {}
 };
 
 const STORAGE_PROFILE = 'prf_profile_v2';
 const STORAGE_ORDER = 'prf_order_v5';
+const STORAGE_LANGUAGE = 'prf_language_v1';
+
+const LANGUAGE_META = {
+  tr: { label: 'Türkçe', htmlLang: 'tr', dir: 'ltr' },
+  en: { label: 'English', htmlLang: 'en', dir: 'ltr' },
+  de: { label: 'Deutsch', htmlLang: 'de', dir: 'ltr' },
+  fr: { label: 'Français', htmlLang: 'fr', dir: 'ltr' },
+  he: { label: 'עברית', htmlLang: 'he', dir: 'rtl' }
+};
+
+const I18N = {
+  en: {
+    appTitle: 'Product Request Form',
+    mobileSubtitle: 'Mobile PDF request app',
+    newRequest: 'New Request',
+    install: 'Add to Home Screen',
+    navCompany: 'Company',
+    navProduct: 'Product',
+    navOrder: 'Order',
+    navPdf: 'PDF',
+    companyDetails: 'Company Details',
+    companyHelp: 'Fill once. Saved on this device.',
+    companyName: 'Company Name',
+    companyNamePlaceholder: 'Company name',
+    contactPerson: 'Contact Person',
+    contactPersonPlaceholder: 'Contact person',
+    phone: 'Phone',
+    phonePlaceholder: 'Phone',
+    email: 'E-mail',
+    emailPlaceholder: 'E-mail',
+    address: 'Address',
+    addressPlaceholder: 'Address',
+    saveCompany: 'Save Company Details',
+    clear: 'Clear',
+    selectProduct: 'Select Product',
+    selectProductHelp: 'Fields change automatically by product.',
+    productFamily: 'Product Family',
+    productGroup: 'Product Group',
+    productSubGroup: 'Product Sub Group',
+    measurementsOptions: 'Measurements & Options',
+    measurementsHelp: 'Related fields are grouped under the same heading.',
+    orderDetails: 'Order Details',
+    orderNoLabel: 'Order Name / No',
+    orderNoPlaceholder: 'Auto / manual',
+    orderDate: 'Order Date',
+    notes: 'Notes',
+    notesPlaceholder: 'Optional notes',
+    pdfPreview: 'PDF Preview',
+    pdfPreviewHelp: 'Create a clean A4 PDF and download or share it.',
+    downloadPdf: 'Create / Download PDF',
+    sharePdf: 'Share PDF',
+    pdfTitle: 'PRODUCT REQUEST FORM',
+    pdfDate: 'Date:',
+    pdfOrder: 'Order:',
+    company: 'Company',
+    product: 'Product',
+    pdfCompany: 'Company:',
+    pdfContact: 'Contact:',
+    pdfPhone: 'Phone:',
+    pdfEmail: 'E-mail:',
+    pdfAddress: 'Address:',
+    pdfFamily: 'Family:',
+    pdfGroup: 'Group:',
+    pdfSubGroup: 'Sub Group:',
+    pdfProduct: 'Product:',
+    select: 'Select',
+    none: 'None',
+    selectFamilyHint: 'Select a product family.',
+    formWillBeAdded: 'form details will be added in the next step.',
+    baseGalaxyFormActive: 'Galaxy base form active',
+    productForm: 'Product Form',
+    companySaved: 'Company details saved.',
+    companyCleared: 'Company details cleared.',
+    newRequestOpened: 'New request opened.',
+    pdfCreated: 'PDF created.',
+    shareOpened: 'Share sheet opened.',
+    shareUnsupported: 'This browser does not support file sharing. PDF downloaded.',
+    shareCancelled: 'Share cancelled or unsupported.'
+  },
+  tr: {
+    appTitle: 'Ürün Talep Formu',
+    mobileSubtitle: 'Mobil PDF talep uygulaması',
+    newRequest: 'Yeni Talep',
+    install: 'Ana Ekrana Ekle',
+    navCompany: 'Firma',
+    navProduct: 'Ürün',
+    navOrder: 'Sipariş',
+    navPdf: 'PDF',
+    companyDetails: 'Firma Bilgileri',
+    companyHelp: 'Bir kez doldurun. Bu cihazda saklanır.',
+    companyName: 'Firma Adı',
+    companyNamePlaceholder: 'Firma adı',
+    contactPerson: 'İlgili Kişi',
+    contactPersonPlaceholder: 'İlgili kişi',
+    phone: 'Telefon',
+    phonePlaceholder: 'Telefon',
+    email: 'E-posta',
+    emailPlaceholder: 'E-posta',
+    address: 'Adres',
+    addressPlaceholder: 'Adres',
+    saveCompany: 'Firma Bilgilerini Kaydet',
+    clear: 'Temizle',
+    selectProduct: 'Ürün Seçimi',
+    selectProductHelp: 'Alanlar ürüne göre otomatik değişir.',
+    productFamily: 'Ürün Ailesi',
+    productGroup: 'Ürün Grubu',
+    productSubGroup: 'Ürün Alt Grubu',
+    measurementsOptions: 'Ölçüler ve Seçenekler',
+    measurementsHelp: 'İlgili alanlar aynı başlık altında gruplanır.',
+    orderDetails: 'Sipariş Bilgileri',
+    orderNoLabel: 'Sipariş Adı / No',
+    orderNoPlaceholder: 'Otomatik / manuel',
+    orderDate: 'Sipariş Tarihi',
+    notes: 'Notlar',
+    notesPlaceholder: 'Opsiyonel notlar',
+    pdfPreview: 'PDF Ön İzleme',
+    pdfPreviewHelp: 'Temiz bir A4 PDF oluşturun, indirin veya paylaşın.',
+    downloadPdf: 'PDF Oluştur / İndir',
+    sharePdf: 'PDF Paylaş',
+    pdfTitle: 'ÜRÜN TALEP FORMU',
+    pdfDate: 'Tarih:',
+    pdfOrder: 'Sipariş:',
+    company: 'Firma',
+    product: 'Ürün',
+    pdfCompany: 'Firma:',
+    pdfContact: 'İlgili:',
+    pdfPhone: 'Telefon:',
+    pdfEmail: 'E-posta:',
+    pdfAddress: 'Adres:',
+    pdfFamily: 'Aile:',
+    pdfGroup: 'Grup:',
+    pdfSubGroup: 'Alt Grup:',
+    pdfProduct: 'Ürün:',
+    select: 'Seçiniz',
+    none: 'Yok',
+    selectFamilyHint: 'Ürün ailesi seçiniz.',
+    formWillBeAdded: 'için ürün formu sonraki aşamada eklenecek.',
+    baseGalaxyFormActive: 'Galaxy taban formu aktif',
+    productForm: 'Ürün Formu',
+    companySaved: 'Firma bilgileri kaydedildi.',
+    companyCleared: 'Firma bilgileri temizlendi.',
+    newRequestOpened: 'Yeni talep açıldı.',
+    pdfCreated: 'PDF oluşturuldu.',
+    shareOpened: 'Paylaşım ekranı açıldı.',
+    shareUnsupported: 'Bu tarayıcı dosya paylaşımını desteklemiyor. PDF indirildi.',
+    shareCancelled: 'Paylaşım iptal edildi veya desteklenmiyor.'
+  },
+  de: {
+    appTitle: 'Produktanfrageformular',
+    mobileSubtitle: 'Mobile PDF-Anfrage-App',
+    newRequest: 'Neue Anfrage',
+    install: 'Zum Startbildschirm',
+    navCompany: 'Firma',
+    navProduct: 'Produkt',
+    navOrder: 'Auftrag',
+    navPdf: 'PDF',
+    companyDetails: 'Firmendaten',
+    companyHelp: 'Einmal ausfüllen. Auf diesem Gerät gespeichert.',
+    companyName: 'Firmenname',
+    companyNamePlaceholder: 'Firmenname',
+    contactPerson: 'Kontaktperson',
+    contactPersonPlaceholder: 'Kontaktperson',
+    phone: 'Telefon',
+    phonePlaceholder: 'Telefon',
+    email: 'E-Mail',
+    emailPlaceholder: 'E-Mail',
+    address: 'Adresse',
+    addressPlaceholder: 'Adresse',
+    saveCompany: 'Firmendaten speichern',
+    clear: 'Löschen',
+    selectProduct: 'Produkt auswählen',
+    selectProductHelp: 'Felder ändern sich automatisch je nach Produkt.',
+    productFamily: 'Produktfamilie',
+    productGroup: 'Produktgruppe',
+    productSubGroup: 'Produktuntergruppe',
+    measurementsOptions: 'Maße und Optionen',
+    measurementsHelp: 'Zugehörige Felder sind unter derselben Überschrift gruppiert.',
+    orderDetails: 'Auftragsdaten',
+    orderNoLabel: 'Auftragsname / Nr.',
+    orderNoPlaceholder: 'Automatisch / manuell',
+    orderDate: 'Auftragsdatum',
+    notes: 'Notizen',
+    notesPlaceholder: 'Optionale Notizen',
+    pdfPreview: 'PDF-Vorschau',
+    pdfPreviewHelp: 'Sauberes A4-PDF erstellen, herunterladen oder teilen.',
+    downloadPdf: 'PDF erstellen / herunterladen',
+    sharePdf: 'PDF teilen',
+    pdfTitle: 'PRODUKTANFRAGEFORMULAR',
+    pdfDate: 'Datum:',
+    pdfOrder: 'Auftrag:',
+    company: 'Firma',
+    product: 'Produkt',
+    pdfCompany: 'Firma:',
+    pdfContact: 'Kontakt:',
+    pdfPhone: 'Telefon:',
+    pdfEmail: 'E-Mail:',
+    pdfAddress: 'Adresse:',
+    pdfFamily: 'Familie:',
+    pdfGroup: 'Gruppe:',
+    pdfSubGroup: 'Untergruppe:',
+    pdfProduct: 'Produkt:',
+    select: 'Auswählen',
+    none: 'Keine',
+    selectFamilyHint: 'Produktfamilie auswählen.',
+    formWillBeAdded: 'Formulardetails werden im nächsten Schritt hinzugefügt.',
+    baseGalaxyFormActive: 'Galaxy-Basisformular aktiv',
+    productForm: 'Produktformular',
+    companySaved: 'Firmendaten gespeichert.',
+    companyCleared: 'Firmendaten gelöscht.',
+    newRequestOpened: 'Neue Anfrage geöffnet.',
+    pdfCreated: 'PDF erstellt.',
+    shareOpened: 'Teilen-Fenster geöffnet.',
+    shareUnsupported: 'Dieser Browser unterstützt keine Dateifreigabe. PDF wurde heruntergeladen.',
+    shareCancelled: 'Teilen abgebrochen oder nicht unterstützt.'
+  },
+  fr: {
+    appTitle: 'Formulaire de demande produit',
+    mobileSubtitle: 'Application mobile de demande PDF',
+    newRequest: 'Nouvelle demande',
+    install: "Ajouter à l'écran d'accueil",
+    navCompany: 'Société',
+    navProduct: 'Produit',
+    navOrder: 'Commande',
+    navPdf: 'PDF',
+    companyDetails: 'Informations société',
+    companyHelp: 'À remplir une fois. Enregistré sur cet appareil.',
+    companyName: 'Nom de la société',
+    companyNamePlaceholder: 'Nom de la société',
+    contactPerson: 'Contact',
+    contactPersonPlaceholder: 'Contact',
+    phone: 'Téléphone',
+    phonePlaceholder: 'Téléphone',
+    email: 'E-mail',
+    emailPlaceholder: 'E-mail',
+    address: 'Adresse',
+    addressPlaceholder: 'Adresse',
+    saveCompany: 'Enregistrer la société',
+    clear: 'Effacer',
+    selectProduct: 'Sélection du produit',
+    selectProductHelp: 'Les champs changent automatiquement selon le produit.',
+    productFamily: 'Famille de produit',
+    productGroup: 'Groupe de produit',
+    productSubGroup: 'Sous-groupe de produit',
+    measurementsOptions: 'Dimensions et options',
+    measurementsHelp: 'Les champs associés sont regroupés sous le même titre.',
+    orderDetails: 'Détails de commande',
+    orderNoLabel: 'Nom / N° commande',
+    orderNoPlaceholder: 'Automatique / manuel',
+    orderDate: 'Date de commande',
+    notes: 'Notes',
+    notesPlaceholder: 'Notes optionnelles',
+    pdfPreview: 'Aperçu PDF',
+    pdfPreviewHelp: 'Créer, télécharger ou partager un PDF A4 propre.',
+    downloadPdf: 'Créer / Télécharger PDF',
+    sharePdf: 'Partager PDF',
+    pdfTitle: 'FORMULAIRE DE DEMANDE PRODUIT',
+    pdfDate: 'Date :',
+    pdfOrder: 'Commande :',
+    company: 'Société',
+    product: 'Produit',
+    pdfCompany: 'Société :',
+    pdfContact: 'Contact :',
+    pdfPhone: 'Téléphone :',
+    pdfEmail: 'E-mail :',
+    pdfAddress: 'Adresse :',
+    pdfFamily: 'Famille :',
+    pdfGroup: 'Groupe :',
+    pdfSubGroup: 'Sous-groupe :',
+    pdfProduct: 'Produit :',
+    select: 'Sélectionner',
+    none: 'Aucun',
+    selectFamilyHint: 'Sélectionnez une famille de produit.',
+    formWillBeAdded: 'les détails du formulaire seront ajoutés à l’étape suivante.',
+    baseGalaxyFormActive: 'Formulaire de base Galaxy actif',
+    productForm: 'Formulaire produit',
+    companySaved: 'Informations société enregistrées.',
+    companyCleared: 'Informations société effacées.',
+    newRequestOpened: 'Nouvelle demande ouverte.',
+    pdfCreated: 'PDF créé.',
+    shareOpened: 'Fenêtre de partage ouverte.',
+    shareUnsupported: 'Ce navigateur ne prend pas en charge le partage de fichiers. PDF téléchargé.',
+    shareCancelled: 'Partage annulé ou non pris en charge.'
+  },
+  he: {
+    appTitle: 'טופס בקשת מוצר',
+    mobileSubtitle: 'אפליקציית PDF לנייד',
+    newRequest: 'בקשה חדשה',
+    install: 'הוסף למסך הבית',
+    navCompany: 'חברה',
+    navProduct: 'מוצר',
+    navOrder: 'הזמנה',
+    navPdf: 'PDF',
+    companyDetails: 'פרטי חברה',
+    companyHelp: 'מלאו פעם אחת. נשמר במכשיר זה.',
+    companyName: 'שם החברה',
+    companyNamePlaceholder: 'שם החברה',
+    contactPerson: 'איש קשר',
+    contactPersonPlaceholder: 'איש קשר',
+    phone: 'טלפון',
+    phonePlaceholder: 'טלפון',
+    email: 'דוא"ל',
+    emailPlaceholder: 'דוא"ל',
+    address: 'כתובת',
+    addressPlaceholder: 'כתובת',
+    saveCompany: 'שמור פרטי חברה',
+    clear: 'נקה',
+    selectProduct: 'בחירת מוצר',
+    selectProductHelp: 'השדות משתנים אוטומטית לפי המוצר.',
+    productFamily: 'משפחת מוצר',
+    productGroup: 'קבוצת מוצר',
+    productSubGroup: 'תת-קבוצת מוצר',
+    measurementsOptions: 'מידות ואפשרויות',
+    measurementsHelp: 'שדות קשורים מקובצים תחת אותה כותרת.',
+    orderDetails: 'פרטי הזמנה',
+    orderNoLabel: 'שם / מספר הזמנה',
+    orderNoPlaceholder: 'אוטומטי / ידני',
+    orderDate: 'תאריך הזמנה',
+    notes: 'הערות',
+    notesPlaceholder: 'הערות אופציונליות',
+    pdfPreview: 'תצוגה מקדימה PDF',
+    pdfPreviewHelp: 'צור, הורד או שתף PDF נקי בגודל A4.',
+    downloadPdf: 'צור / הורד PDF',
+    sharePdf: 'שתף PDF',
+    pdfTitle: 'טופס בקשת מוצר',
+    pdfDate: 'תאריך:',
+    pdfOrder: 'הזמנה:',
+    company: 'חברה',
+    product: 'מוצר',
+    pdfCompany: 'חברה:',
+    pdfContact: 'איש קשר:',
+    pdfPhone: 'טלפון:',
+    pdfEmail: 'דוא"ל:',
+    pdfAddress: 'כתובת:',
+    pdfFamily: 'משפחה:',
+    pdfGroup: 'קבוצה:',
+    pdfSubGroup: 'תת-קבוצה:',
+    pdfProduct: 'מוצר:',
+    select: 'בחר',
+    none: 'אין',
+    selectFamilyHint: 'בחר משפחת מוצר.',
+    formWillBeAdded: 'פרטי הטופס יתווספו בשלב הבא.',
+    baseGalaxyFormActive: 'טופס בסיס Galaxy פעיל',
+    productForm: 'טופס מוצר',
+    companySaved: 'פרטי החברה נשמרו.',
+    companyCleared: 'פרטי החברה נמחקו.',
+    newRequestOpened: 'בקשה חדשה נפתחה.',
+    pdfCreated: 'PDF נוצר.',
+    shareOpened: 'חלון השיתוף נפתח.',
+    shareUnsupported: 'דפדפן זה אינו תומך בשיתוף קבצים. ה-PDF הורד.',
+    shareCancelled: 'השיתוף בוטל או אינו נתמך.'
+  }
+};
+
+Object.assign(I18N.en, {
+  'Motorlu': 'Motorized',
+  'Manuel': 'Manual'
+});
+
+Object.assign(I18N.tr, {
+  'Motorlu': 'Motorlu',
+  'Manuel': 'Manuel',
+  'Project Details': 'Proje Bilgileri',
+  'Color Details': 'Renk Bilgileri',
+  'Motor & Remote Control': 'Motor ve Kumanda',
+  'Panel Options': 'Panel Seçenekleri',
+  'Lighting': 'Aydınlatma',
+  'Light Dimmers': 'Işık Dimmerleri',
+  'Sensors': 'Sensörler',
+  'Heater & Packaging': 'Isıtıcı ve Ambalaj',
+  'Colours / System': 'Renkler / Sistem',
+  'Technical Selections': 'Teknik Seçimler',
+  'Additional Accessories': 'Ek Aksesuarlar',
+  'Selected': 'Seçilen',
+  'Width': 'Genişlik',
+  'Projection': 'Projeksiyon',
+  'Height (Top of The Gutter)': 'Yükseklik (Oluk Üstü)',
+  'System Quantity': 'Sistem Adedi',
+  'System Color': 'Sistem Rengi',
+  'Panel Color': 'Panel Rengi',
+  'Motor': 'Motor',
+  'Remote Control': 'Kumanda',
+  'Panel Isolation': 'Panel İzolasyonu',
+  'Light Dimmer (For Linear LED)': 'Işık Dimmeri (Linear LED için)',
+  'Light Dimmer (For Spot LED)': 'Işık Dimmeri (Spot LED için)',
+  'Rain Sensor': 'Yağmur Sensörü',
+  'Vibration Sensor': 'Titreşim Sensörü',
+  'Wind Sensor': 'Rüzgar Sensörü',
+  'Wind & Sun Sensor': 'Rüzgar ve Güneş Sensörü',
+  'Heater 2000W 220V Quantity': 'Isıtıcı 2000W 220V Adedi',
+  'Heater 3000W 220V Quantity': 'Isıtıcı 3000W 220V Adedi',
+  'Packaging Type': 'Ambalaj Tipi',
+  'Quantity': 'Adet',
+  'Front H': 'Ön H',
+  'Back H': 'Arka H',
+  'Back Beam': 'Arka Kiriş',
+  'Side Beam': 'Yan Kiriş',
+  'Beam For': 'Kiriş İçin',
+  'Structure': 'Konstrüksiyon',
+  'Pergola Fabric': 'Pergola Kumaşı',
+  'Screen Fabric': 'Screen Kumaşı',
+  'Louver Blade': 'Panel Kanadı',
+  'Panel': 'Panel',
+  'Installation Type': 'Montaj Tipi',
+  'Glass Type': 'Cam Tipi',
+  'Electric Power': 'Elektrik Gücü',
+  'Manual Crank Operation': 'Manuel Kol Operasyonu',
+  'Wall': 'Duvar',
+  'Ceiling': 'Tavan',
+  'Freestanding': 'Serbest Durum',
+  'None': 'Yok',
+  'Tempered Laminated': 'Temperli Lamine',
+  'Clear Tempered': 'Şeffaf Temperli',
+  'Clear Tempered + Air Space': 'Şeffaf Temperli + Hava Boşluğu',
+  'Included': 'Dahil',
+  'Not Included': 'Dahil Değil',
+  'Manual': 'Manuel',
+  'No': 'Hayır',
+  'Yes': 'Evet',
+  '1 Channel': '1 Kanal',
+  '2 Channel': '2 Kanal',
+  '4 Channel': '4 Kanal',
+  '16 Channel': '16 Kanal',
+  'Wooden Box': 'Ahşap Kasa',
+  'Heavy-Duty Nylon': 'Ağır Hizmet Naylon',
+  'Daylight': 'Gün Işığı',
+  'White': 'Beyaz',
+  'Spot': 'Spot',
+  'Linear': 'Lineer',
+  'RGB': 'RGB',
+  'Light on the Gutter (Linear LED)': 'Oluk Üzeri Aydınlatma (Linear LED)',
+  'Light on the Gutter (Linear RGB)': 'Oluk Üzeri Aydınlatma (Linear RGB)',
+  'Light on the Panel (Spot LED)': 'Panel Üzeri Aydınlatma (Spot LED)',
+  'Sound System': 'Ses Sistemi',
+  'Dimmer Light': 'Dimmerli Işık',
+  '2000W Heater': '2000W Isıtıcı',
+  '3000W Heater': '3000W Isıtıcı',
+  'Dimmer Heater': 'Dimmerli Isıtıcı',
+  'Louver Insulation': 'Panel İzolasyonu',
+  'Vibration Sensor': 'Titreşim Sensörü',
+  'Perde': 'Perde'
+});
+
+Object.assign(I18N.de, {
+  'Motorlu': 'Motorisiert',
+  'Manuel': 'Manuell',
+  'Project Details': 'Projektdaten',
+  'Color Details': 'Farbdaten',
+  'Motor & Remote Control': 'Motor und Fernbedienung',
+  'Panel Options': 'Panel-Optionen',
+  'Lighting': 'Beleuchtung',
+  'Light Dimmers': 'Lichtdimmer',
+  'Sensors': 'Sensoren',
+  'Heater & Packaging': 'Heizung und Verpackung',
+  'Colours / System': 'Farben / System',
+  'Technical Selections': 'Technische Auswahl',
+  'Additional Accessories': 'Zusätzliches Zubehör',
+  'Selected': 'Ausgewählt',
+  'Width': 'Breite',
+  'Projection': 'Ausladung',
+  'Height (Top of The Gutter)': 'Höhe (Oberkante Rinne)',
+  'System Quantity': 'Systemanzahl',
+  'System Color': 'Systemfarbe',
+  'Panel Color': 'Panelfarbe',
+  'Motor': 'Motor',
+  'Remote Control': 'Fernbedienung',
+  'Panel Isolation': 'Panelisolierung',
+  'Quantity': 'Menge',
+  'Structure': 'Struktur',
+  'Panel': 'Panel',
+  'Installation Type': 'Montageart',
+  'Glass Type': 'Glasart',
+  'Electric Power': 'Stromversorgung',
+  'Manual Crank Operation': 'Manuelle Kurbelbedienung',
+  'Wall': 'Wand',
+  'Ceiling': 'Decke',
+  'Freestanding': 'Freistehend',
+  'None': 'Keine',
+  'Included': 'Enthalten',
+  'Not Included': 'Nicht enthalten',
+  'Manual': 'Manuell',
+  'No': 'Nein',
+  'Yes': 'Ja',
+  'Wooden Box': 'Holzkiste',
+  'Heavy-Duty Nylon': 'Hochbelastbares Nylon',
+  'Daylight': 'Tageslicht',
+  'White': 'Weiß',
+  'Sound System': 'Soundsystem',
+  'Dimmer Light': 'Dimmerlicht',
+  'Wind Sensor': 'Windsensor',
+  'Vibration Sensor': 'Vibrationssensor',
+  'Perde': 'Vorhang'
+});
+
+Object.assign(I18N.fr, {
+  'Motorlu': 'Motorisé',
+  'Manuel': 'Manuel',
+  'Project Details': 'Détails du projet',
+  'Color Details': 'Détails des couleurs',
+  'Motor & Remote Control': 'Moteur et télécommande',
+  'Panel Options': 'Options de panneau',
+  'Lighting': 'Éclairage',
+  'Light Dimmers': 'Variateurs de lumière',
+  'Sensors': 'Capteurs',
+  'Heater & Packaging': 'Chauffage et emballage',
+  'Colours / System': 'Couleurs / Système',
+  'Technical Selections': 'Sélections techniques',
+  'Additional Accessories': 'Accessoires supplémentaires',
+  'Selected': 'Sélectionné',
+  'Width': 'Largeur',
+  'Projection': 'Projection',
+  'Height (Top of The Gutter)': 'Hauteur (haut de gouttière)',
+  'System Quantity': 'Quantité système',
+  'System Color': 'Couleur système',
+  'Panel Color': 'Couleur panneau',
+  'Motor': 'Moteur',
+  'Remote Control': 'Télécommande',
+  'Panel Isolation': 'Isolation panneau',
+  'Quantity': 'Quantité',
+  'Structure': 'Structure',
+  'Panel': 'Panneau',
+  'Installation Type': 'Type d’installation',
+  'Glass Type': 'Type de verre',
+  'Electric Power': 'Alimentation électrique',
+  'Manual Crank Operation': 'Manivelle manuelle',
+  'Wall': 'Mur',
+  'Ceiling': 'Plafond',
+  'Freestanding': 'Autoportant',
+  'None': 'Aucun',
+  'Included': 'Inclus',
+  'Not Included': 'Non inclus',
+  'Manual': 'Manuel',
+  'No': 'Non',
+  'Yes': 'Oui',
+  'Wooden Box': 'Caisse en bois',
+  'Heavy-Duty Nylon': 'Nylon renforcé',
+  'Daylight': 'Lumière du jour',
+  'White': 'Blanc',
+  'Sound System': 'Système audio',
+  'Dimmer Light': 'Lumière avec variateur',
+  'Wind Sensor': 'Capteur de vent',
+  'Vibration Sensor': 'Capteur de vibration',
+  'Perde': 'Rideau'
+});
+
+Object.assign(I18N.he, {
+  'Motorlu': 'ממונע',
+  'Manuel': 'ידני',
+  'Project Details': 'פרטי פרויקט',
+  'Color Details': 'פרטי צבע',
+  'Motor & Remote Control': 'מנוע ושלט',
+  'Panel Options': 'אפשרויות פנל',
+  'Lighting': 'תאורה',
+  'Light Dimmers': 'עמעמי תאורה',
+  'Sensors': 'חיישנים',
+  'Heater & Packaging': 'חימום ואריזה',
+  'Colours / System': 'צבעים / מערכת',
+  'Technical Selections': 'בחירות טכניות',
+  'Additional Accessories': 'אביזרים נוספים',
+  'Selected': 'נבחר',
+  'Width': 'רוחב',
+  'Projection': 'עומק',
+  'Height (Top of The Gutter)': 'גובה (ראש המרזב)',
+  'System Quantity': 'כמות מערכות',
+  'System Color': 'צבע מערכת',
+  'Panel Color': 'צבע פנל',
+  'Motor': 'מנוע',
+  'Remote Control': 'שלט',
+  'Panel Isolation': 'בידוד פנל',
+  'Quantity': 'כמות',
+  'Structure': 'מבנה',
+  'Panel': 'פנל',
+  'Installation Type': 'סוג התקנה',
+  'Glass Type': 'סוג זכוכית',
+  'Electric Power': 'מתח חשמלי',
+  'Manual Crank Operation': 'הפעלה ידנית',
+  'Wall': 'קיר',
+  'Ceiling': 'תקרה',
+  'Freestanding': 'עצמאי',
+  'None': 'אין',
+  'Included': 'כלול',
+  'Not Included': 'לא כלול',
+  'Manual': 'ידני',
+  'No': 'לא',
+  'Yes': 'כן',
+  'Wooden Box': 'ארגז עץ',
+  'Heavy-Duty Nylon': 'ניילון מחוזק',
+  'Daylight': 'אור יום',
+  'White': 'לבן',
+  'Sound System': 'מערכת שמע',
+  'Dimmer Light': 'תאורה עם דימר',
+  'Wind Sensor': 'חיישן רוח',
+  'Vibration Sensor': 'חיישן רטט',
+  'Perde': 'וילון'
+});
+
+Object.assign(I18N.en, {
+  'Heater & Sound & Packing': 'Heater & Sound & Packing',
+  'Sound System Quantity': 'Sound System Quantity',
+  'Dimmer Heater Quantity': 'Dimmer Heater Quantity'
+});
+
+Object.assign(I18N.tr, {
+  'Heater & Sound & Packing': 'Is\u0131t\u0131c\u0131, Ses ve Ambalaj',
+  'Sound System Quantity': 'Ses Sistemi Adedi',
+  'Dimmer Heater Quantity': 'Dimmerli Is\u0131t\u0131c\u0131 Adedi'
+});
+
+Object.assign(I18N.de, {
+  'Heater & Sound & Packing': 'Heizung, Soundsystem und Verpackung',
+  'Sound System Quantity': 'Soundsystem-Anzahl',
+  'Dimmer Heater': 'Heizungsdimmer',
+  'Dimmer Heater Quantity': 'Heizungsdimmer-Anzahl'
+});
+
+Object.assign(I18N.fr, {
+  'Heater & Sound & Packing': 'Chauffage, son et emballage',
+  'Sound System Quantity': 'Quantit\u00e9 du syst\u00e8me audio',
+  'Dimmer Heater': 'Variateur de chauffage',
+  'Dimmer Heater Quantity': 'Quantit\u00e9 de variateurs de chauffage'
+});
+
+Object.assign(I18N.he, {
+  'Heater & Sound & Packing': '\u05d7\u05d9\u05de\u05d5\u05dd, \u05e9\u05de\u05e2 \u05d5\u05d0\u05e8\u05d9\u05d6\u05d4',
+  'Sound System Quantity': '\u05db\u05de\u05d5\u05ea \u05de\u05e2\u05e8\u05db\u05d5\u05ea \u05e9\u05de\u05e2',
+  'Dimmer Heater': '\u05d3\u05d9\u05de\u05e8 \u05dc\u05d7\u05d9\u05de\u05d5\u05dd',
+  'Dimmer Heater Quantity': '\u05db\u05de\u05d5\u05ea \u05d3\u05d9\u05de\u05e8\u05d9\u05dd \u05dc\u05d7\u05d9\u05de\u05d5\u05dd'
+});
+
+Object.assign(I18N.tr, {
+  '1 Channel': '1 Kanal',
+  '2 Channels': '2 Kanal',
+  '4 Channels': '4 Kanal',
+  '6 Channels': '6 Kanal',
+  '16 Channels': '16 Kanal'
+});
+
+Object.assign(I18N.de, {
+  '1 Channel': '1 Kanal',
+  '2 Channels': '2 Kan\u00e4le',
+  '4 Channels': '4 Kan\u00e4le',
+  '6 Channels': '6 Kan\u00e4le',
+  '16 Channels': '16 Kan\u00e4le'
+});
+
+Object.assign(I18N.fr, {
+  '1 Channel': '1 canal',
+  '2 Channels': '2 canaux',
+  '4 Channels': '4 canaux',
+  '6 Channels': '6 canaux',
+  '16 Channels': '16 canaux'
+});
+
+Object.assign(I18N.he, {
+  '1 Channel': '1 \u05e2\u05e8\u05d5\u05e5',
+  '2 Channels': '2 \u05e2\u05e8\u05d5\u05e6\u05d9\u05dd',
+  '4 Channels': '4 \u05e2\u05e8\u05d5\u05e6\u05d9\u05dd',
+  '6 Channels': '6 \u05e2\u05e8\u05d5\u05e6\u05d9\u05dd',
+  '16 Channels': '16 \u05e2\u05e8\u05d5\u05e6\u05d9\u05dd'
+});
+
+Object.assign(I18N.en, {
+  formActive: 'Form active',
+  'Colours': 'Colours',
+  'Parapet H': 'Parapet H',
+  'Side Beam': 'Side Beam',
+  'Connection': 'Connection',
+  'Left': 'Left',
+  'Right': 'Right',
+  'Both': 'Both',
+  'Fabric': 'Fabric',
+  'Fabric Profile': 'Fabric Profile',
+  'Other': 'Other',
+  'Other Lighting': 'Other Lighting',
+  'Dimmer': 'Dimmer'
+});
+
+Object.assign(I18N.tr, {
+  formActive: 'Form aktif',
+  'Colours': 'Renkler',
+  'Parapet H': 'Parapet Y\u00fcksekli\u011fi',
+  'Side Beam': 'Yan Kiri\u015f',
+  'Connection': 'Ba\u011flant\u0131',
+  'Left': 'Sol',
+  'Right': 'Sa\u011f',
+  'Both': 'Her \u0130kisi',
+  'Fabric': 'Kuma\u015f',
+  'Fabric Profile': 'Kuma\u015f Profili',
+  'Other': 'Di\u011fer',
+  'Other Lighting': 'Di\u011fer Ayd\u0131nlatma',
+  'Dimmer': 'Dimmer',
+  'Front H': '\u00d6n H',
+  'Back H': 'Arka H'
+});
+
+Object.assign(I18N.de, {
+  formActive: 'Formular aktiv',
+  'Colours': 'Farben',
+  'Parapet H': 'Br\u00fcstungsh\u00f6he',
+  'Side Beam': 'Seitentr\u00e4ger',
+  'Connection': 'Anschluss',
+  'Left': 'Links',
+  'Right': 'Rechts',
+  'Both': 'Beide',
+  'Fabric': 'Stoff',
+  'Fabric Profile': 'Stoffprofil',
+  'Other': 'Andere',
+  'Other Lighting': 'Andere Beleuchtung',
+  'Dimmer': 'Dimmer',
+  'Front H': 'H\u00f6he vorne',
+  'Back H': 'H\u00f6he hinten'
+});
+
+Object.assign(I18N.fr, {
+  formActive: 'Formulaire actif',
+  'Colours': 'Couleurs',
+  'Parapet H': 'Hauteur d\u2019all\u00e8ge',
+  'Side Beam': 'Poutre lat\u00e9rale',
+  'Connection': 'Raccordement',
+  'Left': 'Gauche',
+  'Right': 'Droite',
+  'Both': 'Les deux',
+  'Fabric': 'Toile',
+  'Fabric Profile': 'Profil de toile',
+  'Other': 'Autre',
+  'Other Lighting': 'Autre \u00e9clairage',
+  'Dimmer': 'Variateur',
+  'Front H': 'Hauteur avant',
+  'Back H': 'Hauteur arri\u00e8re'
+});
+
+Object.assign(I18N.he, {
+  formActive: '\u05d8\u05d5\u05e4\u05e1 \u05e4\u05e2\u05d9\u05dc',
+  'Colours': '\u05e6\u05d1\u05e2\u05d9\u05dd',
+  'Parapet H': '\u05d2\u05d5\u05d1\u05d4 \u05de\u05e2\u05e7\u05d4',
+  'Side Beam': '\u05e7\u05d5\u05e8\u05ea \u05e6\u05d3',
+  'Connection': '\u05d7\u05d9\u05d1\u05d5\u05e8',
+  'Left': '\u05e9\u05de\u05d0\u05dc',
+  'Right': '\u05d9\u05de\u05d9\u05df',
+  'Both': '\u05e9\u05e0\u05d9\u05d4\u05dd',
+  'Fabric': '\u05d1\u05d3',
+  'Fabric Profile': '\u05e4\u05e8\u05d5\u05e4\u05d9\u05dc \u05d1\u05d3',
+  'Other': '\u05d0\u05d7\u05e8',
+  'Other Lighting': '\u05ea\u05d0\u05d5\u05e8\u05d4 \u05d0\u05d7\u05e8\u05ea',
+  'Dimmer': '\u05d3\u05d9\u05de\u05e8',
+  'Front H': '\u05d2\u05d5\u05d1\u05d4 \u05e7\u05d3\u05de\u05d9',
+  'Back H': '\u05d2\u05d5\u05d1\u05d4 \u05d0\u05d7\u05d5\u05e8\u05d9'
+});
+
+Object.assign(I18N.en, {
+  'Add New Position': 'Add New Position',
+  'Position': 'Position'
+});
+
+Object.assign(I18N.tr, {
+  'Add New Position': 'Yeni Poz Ekle',
+  'Position': 'Poz'
+});
+
+Object.assign(I18N.de, {
+  'Add New Position': 'Neue Position hinzuf\u00fcgen',
+  'Position': 'Position'
+});
+
+Object.assign(I18N.fr, {
+  'Add New Position': 'Ajouter une position',
+  'Position': 'Position'
+});
+
+Object.assign(I18N.he, {
+  'Add New Position': '\u05d4\u05d5\u05e1\u05e3 \u05de\u05d9\u05e7\u05d5\u05dd',
+  'Position': '\u05de\u05d9\u05e7\u05d5\u05dd'
+});
 
 const fields = {
   companyName: $('#companyName'),
@@ -45,6 +819,108 @@ function safeId(text) {
   return String(text).toLowerCase().replace(/[^a-z0-9]+/g, '_').replace(/^_|_$/g, '');
 }
 
+function t(key, lang = state.language) {
+  return I18N[lang]?.[key] ?? I18N.en[key] ?? key;
+}
+
+function translatedText(text, lang = state.language) {
+  return I18N[lang]?.[text] ?? I18N.en[text] ?? text;
+}
+
+function translatedOption(option, lang = state.language) {
+  return option === '' ? t('select', lang) : translatedText(option, lang);
+}
+
+function translatedList(values, lang = state.language) {
+  return values.length ? values.map((value) => translatedText(value, lang)).join(', ') : '-';
+}
+
+function loadLanguage() {
+  const saved = localStorage.getItem(STORAGE_LANGUAGE);
+  if (LANGUAGE_META[saved]) state.language = saved;
+}
+
+function applyLanguage() {
+  const meta = LANGUAGE_META[state.language] || LANGUAGE_META.en;
+  document.documentElement.lang = meta.htmlLang;
+  document.documentElement.dir = meta.dir;
+  document.title = t('appTitle');
+  $$('[data-i18n]').forEach((el) => {
+    el.textContent = t(el.dataset.i18n);
+  });
+  $$('[data-i18n-placeholder]').forEach((el) => {
+    el.placeholder = t(el.dataset.i18nPlaceholder);
+  });
+  $$('.language-tabs button').forEach((button) => {
+    const isActive = button.dataset.lang === state.language;
+    button.classList.toggle('active', isActive);
+    button.setAttribute('aria-pressed', String(isActive));
+  });
+}
+
+function projectPositionKey(product = getProduct()) {
+  return product?.id || 'default';
+}
+
+function getProjectPositionCount(product = getProduct()) {
+  const count = Number(state.projectPositionCounts[projectPositionKey(product)] || 1);
+  return Number.isFinite(count) ? Math.max(1, Math.floor(count)) : 1;
+}
+
+function setProjectPositionCount(count, product = getProduct()) {
+  state.projectPositionCounts[projectPositionKey(product)] = Math.max(1, Math.floor(Number(count) || 1));
+}
+
+function positionFieldId(fieldId, positionIndex) {
+  return positionIndex === 1 ? fieldId : `${fieldId}__pos${positionIndex}`;
+}
+
+function positionedFields(fieldList, positionIndex) {
+  return fieldList.map((field) => {
+    const positioned = { ...field, id: positionFieldId(field.id, positionIndex) };
+    if (field.showWhen) {
+      positioned.showWhen = {
+        ...field.showWhen,
+        field: positionFieldId(field.showWhen.field, positionIndex)
+      };
+    }
+    return positioned;
+  });
+}
+
+function snapshotDynamicState() {
+  return {
+    values: getDynamicValues(),
+    lighting: getChecked('lighting'),
+    accessories: getChecked('accessories')
+  };
+}
+
+function restoreDynamicState(snapshot) {
+  Object.entries(snapshot?.values || {}).forEach(([id, value]) => {
+    const radio = $$(`input[type="radio"][name="dyn_${id}"]`).find((x) => x.value === value);
+    if (radio) radio.checked = true;
+    const el = $(`#dyn_${id}`);
+    if (el) el.value = value;
+  });
+  setChecked('lighting', snapshot?.lighting || []);
+  setChecked('accessories', snapshot?.accessories || []);
+  updateAutoUnits();
+  updateConditionalFields();
+}
+
+function setLanguage(lang) {
+  if (!LANGUAGE_META[lang] || lang === state.language) return;
+  const snapshot = snapshotDynamicState();
+  state.language = lang;
+  localStorage.setItem(STORAGE_LANGUAGE, lang);
+  applyLanguage();
+  renderProducts();
+  renderForm();
+  restoreDynamicState(snapshot);
+  updatePreview();
+}
+
 function getProduct() {
   return DATA.products.find((p) => p.id === state.selectedProductId) || null;
 }
@@ -60,7 +936,15 @@ function cloneData(value) {
 function mergeProductForm(baseForm, override = {}) {
   const merged = cloneData(baseForm);
   Object.entries(override).forEach(([key, value]) => {
+    if (key === 'hiddenItems') return;
     merged[key] = cloneData(value);
+  });
+  Object.entries(override.hiddenItems || {}).forEach(([key, hiddenIds]) => {
+    if (!Array.isArray(merged[key])) return;
+    merged[key] = merged[key].filter((item) => {
+      const id = typeof item === 'string' ? item : item.id;
+      return !hiddenIds.includes(id);
+    });
   });
   return merged;
 }
@@ -69,17 +953,24 @@ function getProductForm(product = getProduct()) {
   if (!product?.formTemplate) return null;
   const baseForm = DATA[product.formTemplate];
   if (!baseForm) return null;
-  return mergeProductForm(baseForm, DATA.productFormOverrides?.[product.id] || {});
+  const variantOverride = DATA.productFormOverrides?.[product.formVariant] || {};
+  const productOverride = DATA.productFormOverrides?.[product.id] || {};
+  return mergeProductForm(mergeProductForm(baseForm, variantOverride), productOverride);
 }
 
 function hasProductForm(product = getProduct()) {
   return Boolean(getProductForm(product));
 }
 
-function optionMarkup(items, selectedId, placeholder = 'Seçiniz') {
+function usesPergolaForm(product = getProduct()) {
+  return product?.formTemplate === 'pergolaForm';
+}
+
+function optionMarkup(items, selectedId) {
+  if (!items.length) return `<option value="" selected>${t('none')}</option>`;
   return [
-    `<option value="">${placeholder}</option>`,
-    ...items.map((item) => `<option value="${item.id}"${item.id === selectedId ? ' selected' : ''}>${item.label}</option>`)
+    `<option value="">${t('select')}</option>`,
+    ...items.map((item) => `<option value="${item.id}"${item.id === selectedId ? ' selected' : ''}>${translatedText(item.label)}</option>`)
   ].join('');
 }
 
@@ -91,8 +982,9 @@ function treeSubGroups(groupId = state.selectedGroupId) {
   return DATA.productTree.subGroups[groupId] || [];
 }
 
-function treeLabel(collection, id) {
-  return (collection || []).find((item) => item.id === id)?.label || '';
+function treeLabel(collection, id, lang = state.language) {
+  const label = (collection || []).find((item) => item.id === id)?.label || '';
+  return translatedText(label, lang);
 }
 
 function syncSelectionFromProduct(product = getProduct()) {
@@ -103,8 +995,12 @@ function syncSelectionFromProduct(product = getProduct()) {
 }
 
 function updateSelectedProductFromTree() {
-  const subGroup = treeSubGroups().find((item) => item.id === state.selectedSubGroupId);
-  const product = DATA.products.find((item) => item.id === subGroup?.productId)
+  const groups = treeGroups();
+  const group = groups.find((item) => item.id === state.selectedGroupId);
+  const subGroups = treeSubGroups();
+  const subGroup = subGroups.find((item) => item.id === state.selectedSubGroupId);
+  const directProductId = subGroup?.productId || (!subGroups.length ? group?.productId : '');
+  const product = DATA.products.find((item) => item.id === directProductId)
     || DATA.products.find((item) => (
       item.family === state.selectedFamilyId &&
       item.productGroup === state.selectedGroupId &&
@@ -129,15 +1025,41 @@ function selectFirstAvailableForGroup() {
   updateSelectedProductFromTree();
 }
 
-function currentProductSelectionLabels() {
-  const family = treeLabel(DATA.productTree.families, state.selectedFamilyId);
-  const group = treeLabel(treeGroups(), state.selectedGroupId);
-  const subGroup = treeLabel(treeSubGroups(), state.selectedSubGroupId);
+function normalizeTreeSelection() {
+  if (!DATA.productTree.families.some((item) => item.id === state.selectedFamilyId)) {
+    state.selectedFamilyId = firstId(DATA.productTree.families);
+  }
+  const groups = treeGroups();
+  if (!groups.length) {
+    state.selectedGroupId = '';
+    state.selectedSubGroupId = '';
+    updateSelectedProductFromTree();
+    return;
+  }
+  if (!groups.some((item) => item.id === state.selectedGroupId)) {
+    state.selectedGroupId = firstId(groups);
+  }
+  const subGroups = treeSubGroups();
+  if (!subGroups.length) {
+    state.selectedSubGroupId = '';
+  } else if (!subGroups.some((item) => item.id === state.selectedSubGroupId)) {
+    state.selectedSubGroupId = firstId(subGroups);
+  }
+  updateSelectedProductFromTree();
+}
+
+function currentProductSelectionLabels(lang = state.language) {
+  const groups = treeGroups();
+  const subGroups = treeSubGroups();
+  const family = treeLabel(DATA.productTree.families, state.selectedFamilyId, lang);
+  const group = groups.length ? treeLabel(groups, state.selectedGroupId, lang) : t('none', lang);
+  const subGroup = subGroups.length ? treeLabel(subGroups, state.selectedSubGroupId, lang) : t('none', lang);
   return { family, group, subGroup };
 }
 
 function renderProducts() {
   syncSelectionFromProduct();
+  normalizeTreeSelection();
 
   const familySelect = $('#productFamilySelect');
   const groupSelect = $('#productGroupSelect');
@@ -163,15 +1085,17 @@ function updateProductHint() {
   const product = getProduct();
   const selection = currentProductSelectionLabels();
   if (!state.selectedFamilyId) {
-    $('#productGroupHint').textContent = 'Ürün ailesi seçiniz.';
+    $('#productGroupHint').textContent = t('selectFamilyHint');
     return;
   }
   if (!product) {
     const path = [selection.family, selection.group, selection.subGroup].filter(Boolean).join(' / ');
-    $('#productGroupHint').textContent = `${path || 'Selected family'} için ürün formu sonraki aşamada eklenecek.`;
+    $('#productGroupHint').textContent = `${path || t('selectFamilyHint')} ${t('formWillBeAdded')}`;
     return;
   }
-  const formNote = hasProductForm(product) ? ' | Galaxy taban formu aktif' : '';
+  const formNote = hasProductForm(product)
+    ? ` | ${usesPergolaForm(product) ? t('formActive') : t('baseGalaxyFormActive')}`
+    : '';
   $('#productGroupHint').textContent = `${selection.family} / ${selection.group} / ${selection.subGroup}${formNote}`;
 }
 
@@ -202,11 +1126,18 @@ function onProductSubGroupChange() {
   applyProductSelection();
 }
 
+function applyFieldCondition(element, field) {
+  if (!field.showWhen) return element;
+  element.dataset.showWhenField = field.showWhen.field;
+  element.dataset.showWhenValues = (field.showWhen.values || []).join('|');
+  return element;
+}
+
 function createInputField(field) {
   if (field.type === 'choice') return createChoiceField(field);
 
   const label = document.createElement('label');
-  label.textContent = field.label;
+  label.textContent = translatedText(field.label);
   label.className = field.unit || field.unitAuto ? 'unit-label' : '';
 
   const wrap = document.createElement('div');
@@ -216,7 +1147,7 @@ function createInputField(field) {
   if (field.type === 'select') {
     control = document.createElement('select');
     control.innerHTML = field.options.map((option) => {
-      const text = option === '' ? 'Select...' : option;
+      const text = translatedOption(option);
       return `<option value="${option}">${text}</option>`;
     }).join('');
     if (field.defaultValue !== undefined) control.value = field.defaultValue;
@@ -224,7 +1155,7 @@ function createInputField(field) {
     control = document.createElement('input');
     control.type = field.type === 'number' ? 'number' : 'text';
     if (field.type === 'number') control.inputMode = 'decimal';
-    control.placeholder = field.unit || field.unitAuto ? 'Enter value' : '';
+    control.placeholder = field.unit || field.unitAuto ? translatedText('Enter value') : '';
     if (field.defaultValue !== undefined) control.value = field.defaultValue;
   }
   control.id = `dyn_${field.id}`;
@@ -251,7 +1182,7 @@ function createInputField(field) {
   }
 
   label.appendChild(wrap);
-  return label;
+  return applyFieldCondition(label, field);
 }
 
 function createChoiceField(field) {
@@ -260,7 +1191,7 @@ function createChoiceField(field) {
 
   const heading = document.createElement('div');
   heading.className = 'field-heading';
-  heading.textContent = field.label;
+  heading.textContent = translatedText(field.label);
 
   const row = document.createElement('div');
   row.className = 'choice-row';
@@ -278,7 +1209,7 @@ function createChoiceField(field) {
     input.dataset.fieldLabel = field.label;
     if (field.defaultValue !== undefined && option === field.defaultValue) input.checked = true;
     input.addEventListener('change', onAnyInput);
-    span.textContent = option;
+    span.textContent = translatedText(option);
     label.appendChild(input);
     label.appendChild(span);
     row.appendChild(label);
@@ -286,7 +1217,15 @@ function createChoiceField(field) {
 
   wrapper.appendChild(heading);
   wrapper.appendChild(row);
-  return wrapper;
+  return applyFieldCondition(wrapper, field);
+}
+
+function updateConditionalFields() {
+  $$('[data-show-when-field]').forEach((element) => {
+    const sourceValue = getFieldValue({ id: element.dataset.showWhenField });
+    const expectedValues = (element.dataset.showWhenValues || '').split('|').filter(Boolean);
+    element.hidden = !expectedValues.includes(sourceValue);
+  });
 }
 
 function createFormSection(title, items, className = 'grid two') {
@@ -294,7 +1233,7 @@ function createFormSection(title, items, className = 'grid two') {
   section.className = 'dynamic-section';
   section.id = `section_${safeId(title)}`;
   const h3 = document.createElement('h3');
-  h3.textContent = title;
+  h3.textContent = translatedText(title);
   const grid = document.createElement('div');
   grid.className = className;
   items.forEach((item) => grid.appendChild(createInputField(item)));
@@ -303,12 +1242,64 @@ function createFormSection(title, items, className = 'grid two') {
   return section;
 }
 
+function addProjectPosition() {
+  const snapshot = snapshotDynamicState();
+  setProjectPositionCount(getProjectPositionCount() + 1);
+  renderForm();
+  restoreDynamicState(snapshot);
+  saveOrderDraft();
+  updatePreview();
+}
+
+function createProjectDetailsSection(items) {
+  const section = document.createElement('div');
+  section.className = 'dynamic-section project-details-section';
+  section.id = 'section_project_details';
+
+  const h3 = document.createElement('h3');
+  h3.textContent = translatedText('Project Details');
+  section.appendChild(h3);
+
+  const positionCount = getProjectPositionCount();
+  for (let positionIndex = 1; positionIndex <= positionCount; positionIndex += 1) {
+    const block = document.createElement('div');
+    block.className = 'project-position';
+    block.dataset.position = String(positionIndex);
+
+    if (positionCount > 1) {
+      const divider = document.createElement('div');
+      divider.className = 'project-position-divider';
+      divider.setAttribute('role', 'separator');
+      const label = document.createElement('span');
+      label.textContent = `${translatedText('Position')} ${positionIndex}`;
+      divider.appendChild(label);
+      block.appendChild(divider);
+    }
+
+    const grid = document.createElement('div');
+    grid.className = 'grid two';
+    positionedFields(items, positionIndex).forEach((item) => grid.appendChild(createInputField(item)));
+    block.appendChild(grid);
+    section.appendChild(block);
+  }
+
+  const addButton = document.createElement('button');
+  addButton.id = 'addProjectPositionBtn';
+  addButton.type = 'button';
+  addButton.className = 'secondary add-position-btn';
+  addButton.textContent = `+ ${translatedText('Add New Position')}`;
+  addButton.addEventListener('click', addProjectPosition);
+  section.appendChild(addButton);
+
+  return section;
+}
+
 function createCheckboxSection(title, fieldName, items) {
   const section = document.createElement('div');
   section.className = 'dynamic-section';
   section.id = `section_${safeId(title)}`;
   const h3 = document.createElement('h3');
-  h3.textContent = title;
+  h3.textContent = translatedText(title);
   const grid = document.createElement('div');
   grid.className = 'checkbox-grid';
   items.forEach((option) => {
@@ -321,7 +1312,7 @@ function createCheckboxSection(title, fieldName, items) {
     input.name = fieldName;
     input.value = option;
     input.addEventListener('change', onAnyInput);
-    span.textContent = option;
+    span.textContent = translatedText(option);
     label.appendChild(input);
     label.appendChild(span);
     grid.appendChild(label);
@@ -339,15 +1330,44 @@ function renderGalaxyForm() {
     return;
   }
   wrap.innerHTML = '';
-  wrap.appendChild(createFormSection('Project Details', form.projectDetails, 'grid two'));
+  wrap.appendChild(createProjectDetailsSection(form.projectDetails));
   wrap.appendChild(createFormSection('Color Details', form.colorDetails, 'grid two'));
-  wrap.appendChild(createFormSection('Motor & Remote Control', form.operation, 'grid two'));
+  if (form.operation?.length) {
+    wrap.appendChild(createFormSection('Motor & Remote Control', form.operation, 'grid two'));
+  }
   wrap.appendChild(createFormSection('Panel Options', form.panelOptions, 'grid two'));
   wrap.appendChild(createCheckboxSection('Lighting', 'lighting', form.lighting));
-  wrap.appendChild(createFormSection('Light Dimmers', form.dimmers, 'grid two'));
-  wrap.appendChild(createFormSection('Sensors', form.sensors, 'grid two'));
-  wrap.appendChild(createFormSection('Heater & Packaging', form.heaterPackaging, 'grid two'));
+  if (form.dimmers?.length) {
+    wrap.appendChild(createFormSection('Light Dimmers', form.dimmers, 'grid two'));
+  }
+  (form.sectionsAfterDimmers || []).forEach((section) => {
+    if (section.fields?.length) {
+      wrap.appendChild(createFormSection(section.title, section.fields, 'grid two'));
+    }
+  });
+  if (form.sensors?.length) {
+    wrap.appendChild(createFormSection('Sensors', form.sensors, 'grid two'));
+  }
+  wrap.appendChild(createFormSection('Heater & Sound & Packing', form.heaterPackaging, 'grid two'));
   updateAutoUnits();
+}
+
+function renderPergolaForm() {
+  const wrap = $('#formArea');
+  const form = getProductForm();
+  if (!form) {
+    renderGenericForm();
+    return;
+  }
+  wrap.innerHTML = '';
+  wrap.appendChild(createProjectDetailsSection(form.projectDetails));
+  wrap.appendChild(createFormSection('Colours', form.colorDetails, 'grid two'));
+  wrap.appendChild(createFormSection('Motor & Remote Control', form.operation, 'grid two'));
+  wrap.appendChild(createFormSection('Lighting', form.lighting, 'grid two'));
+  wrap.appendChild(createFormSection('Dimmer', form.dimmer, 'grid two'));
+  wrap.appendChild(createFormSection('Heater & Sound & Packing', form.heaterPackaging, 'grid two'));
+  updateAutoUnits();
+  updateConditionalFields();
 }
 
 function renderGenericForm() {
@@ -361,8 +1381,8 @@ function renderGenericForm() {
     const path = [selection.family, selection.group, selection.subGroup].filter(Boolean).join(' / ');
     wrap.innerHTML = `
       <div class="dynamic-section empty-product-state">
-        <h3>Product Form</h3>
-        <p>${path || 'Selected product'} form details will be added in the next step.</p>
+        <h3>${t('productForm')}</h3>
+        <p>${path || t('selectProduct')} ${t('formWillBeAdded')}</p>
       </div>
     `;
     return;
@@ -373,7 +1393,7 @@ function renderGenericForm() {
     ...DATA.common.dimensionFields.map((f) => ({ id: f.id, label: f.label, type: 'number', unit: f.unit }))
   ];
   const colorItems = group.colorFields.map((label) => ({ id: safeId(label), label, type: 'text' }));
-  const installItems = [
+  let installItems = [
     { id: 'installationType', label: 'Installation Type', type: 'select', options: DATA.common.installationTypes },
     { id: 'glassType', label: 'Glass Type', type: 'select', options: DATA.common.glassTypes },
     { id: 'electricPower', label: 'Electric Power', type: 'select', options: DATA.common.electricPower },
@@ -381,19 +1401,25 @@ function renderGenericForm() {
     { id: 'remoteControl', label: 'Remote Control', type: 'select', options: DATA.common.remoteControl },
     { id: 'manualCrank', label: 'Manual Crank Operation', type: 'select', options: DATA.common.manualCrank }
   ];
+  if (product.hideOperation) {
+    installItems = installItems.filter((item) => !['motor', 'remoteControl', 'manualCrank'].includes(item.id));
+  }
   const lighting = product.id === 'galaxy'
     ? [...group.lighting, 'Louver LED']
     : group.lighting;
 
-  wrap.appendChild(createFormSection('Project Details', projectItems, 'grid two'));
+  wrap.appendChild(createProjectDetailsSection(projectItems));
   wrap.appendChild(createFormSection('Colours / System', colorItems, 'grid two'));
-  wrap.appendChild(createFormSection('Technical Selections', installItems, 'grid two'));
+  if (installItems.length) {
+    wrap.appendChild(createFormSection('Technical Selections', installItems, 'grid two'));
+  }
   wrap.appendChild(createCheckboxSection('Lighting', 'lighting', lighting));
   wrap.appendChild(createCheckboxSection('Additional Accessories', 'accessories', group.accessories));
 }
 
 function renderForm() {
-  if (hasProductForm()) renderGalaxyForm();
+  if (usesPergolaForm()) renderPergolaForm();
+  else if (hasProductForm()) renderGalaxyForm();
   else renderGenericForm();
 }
 
@@ -414,7 +1440,7 @@ function getChecked(name) {
   return $$(`input[name="${name}"]:checked`).map((x) => x.value);
 }
 
-function formatValue(value, unit, unitAuto) {
+function formatValue(value, unit, unitAuto, lang = state.language) {
   const clean = String(value ?? '').trim();
   if (!clean) return '-';
   if (unit) return `${clean} ${unit}`;
@@ -423,7 +1449,7 @@ function formatValue(value, unit, unitAuto) {
     const suffix = n === 1 ? 'pc' : 'pcs';
     return `${clean} ${suffix}`;
   }
-  return clean;
+  return translatedText(clean, lang);
 }
 
 function codePart(text, fallback = 'XX') {
@@ -463,59 +1489,122 @@ function getFieldValue(field) {
   return el?.value || '';
 }
 
-function fieldRows(fieldList) {
-  return fieldList.map((field) => {
-    return [field.label, formatValue(getFieldValue(field), field.unit || '', field.unitAuto || '')];
+function fieldIsActive(field) {
+  if (!field.showWhen) return true;
+  return (field.showWhen.values || []).includes(getFieldValue({ id: field.showWhen.field }));
+}
+
+function fieldRows(fieldList, lang = state.language) {
+  return fieldList.filter(fieldIsActive).map((field) => {
+    return [
+      translatedText(field.label, lang),
+      formatValue(getFieldValue(field), field.unit || '', field.unitAuto || '', lang)
+    ];
   });
 }
 
-function genericRows() {
-  const group = getGroup();
-  if (!group) return { systemQuantity: '-', sections: [] };
+function projectDetailSections(fieldList, lang = state.language) {
+  const positionCount = getProjectPositionCount();
+  const projectTitle = translatedText('Project Details', lang);
+  const positionLabel = translatedText('Position', lang);
+  return Array.from({ length: positionCount }, (_, index) => {
+    const positionIndex = index + 1;
+    return {
+      title: positionCount > 1 ? `${projectTitle} - ${positionLabel} ${positionIndex}` : projectTitle,
+      rows: fieldRows(positionedFields(fieldList, positionIndex), lang)
+    };
+  });
+}
+
+function genericRows(lang = state.language) {
+  const product = getProduct();
+  const group = getGroup(product);
+  if (!product || !group) return { systemQuantity: '-', sections: [] };
   const projectFields = [
     { id: 'quantity', label: 'Quantity' },
     ...DATA.common.dimensionFields.map((f) => ({ id: f.id, label: f.label, unit: f.unit }))
   ];
   const colorFields = group.colorFields.map((label) => ({ id: safeId(label), label }));
-  const techFields = ['installationType', 'glassType', 'electricPower', 'motor', 'remoteControl', 'manualCrank'].map((id) => {
+  let techIds = ['installationType', 'glassType', 'electricPower', 'motor', 'remoteControl', 'manualCrank'];
+  if (product.hideOperation) {
+    techIds = techIds.filter((id) => !['motor', 'remoteControl', 'manualCrank'].includes(id));
+  }
+  const techFields = techIds.map((id) => {
     const el = $(`#dyn_${id}`);
-    return [el?.dataset.fieldLabel || id, formatValue(el?.value || '')];
+    return [translatedText(el?.dataset.fieldLabel || id, lang), formatValue(el?.value || '', '', '', lang)];
   });
+  const sections = [
+    ...projectDetailSections(projectFields, lang),
+    { title: translatedText('Colours / System', lang), rows: fieldRows(colorFields, lang) }
+  ];
+  if (techFields.length) {
+    sections.push({ title: translatedText('Technical Selections', lang), rows: techFields });
+  }
+  sections.push(
+    { title: translatedText('Lighting', lang), rows: [[translatedText('Selected', lang), translatedList(getChecked('lighting'), lang)]] },
+    { title: translatedText('Additional Accessories', lang), rows: [[translatedText('Selected', lang), translatedList(getChecked('accessories'), lang)]] }
+  );
   return {
-    systemQuantity: formatValue($('#dyn_quantity')?.value || ''),
-    sections: [
-      { title: 'Project Details', rows: fieldRows(projectFields) },
-      { title: 'Colours / System', rows: fieldRows(colorFields) },
-      { title: 'Technical Selections', rows: techFields },
-      { title: 'Lighting', rows: [['Selected', getChecked('lighting').join(', ') || '-']] },
-      { title: 'Additional Accessories', rows: [['Selected', getChecked('accessories').join(', ') || '-']] }
-    ]
+    systemQuantity: formatValue($('#dyn_quantity')?.value || '', '', '', lang),
+    sections
   };
 }
 
-function galaxyRows() {
+function galaxyRows(lang = state.language) {
+  const form = getProductForm();
+  if (!form) return { systemQuantity: '-', sections: [] };
+  const sections = [
+    ...projectDetailSections(form.projectDetails, lang),
+    { title: translatedText('Color Details', lang), rows: fieldRows(form.colorDetails, lang) }
+  ];
+  if (form.operation?.length) {
+    sections.push({ title: translatedText('Motor & Remote Control', lang), rows: fieldRows(form.operation, lang) });
+  }
+  sections.push(
+    { title: translatedText('Panel Options', lang), rows: fieldRows(form.panelOptions, lang) },
+    { title: translatedText('Lighting', lang), rows: [[translatedText('Selected', lang), translatedList(getChecked('lighting'), lang)]] }
+  );
+  if (form.dimmers?.length) {
+    sections.push({ title: translatedText('Light Dimmers', lang), rows: fieldRows(form.dimmers, lang) });
+  }
+  (form.sectionsAfterDimmers || []).forEach((section) => {
+    if (section.fields?.length) {
+      sections.push({ title: translatedText(section.title, lang), rows: fieldRows(section.fields, lang) });
+    }
+  });
+  if (form.sensors?.length) {
+    sections.push({ title: translatedText('Sensors', lang), rows: fieldRows(form.sensors, lang) });
+  }
+  sections.push({ title: translatedText('Heater & Sound & Packing', lang), rows: fieldRows(form.heaterPackaging, lang) });
+  return {
+    systemQuantity: formatValue($('#dyn_systemQuantity')?.value || '', '', '', lang),
+    sections
+  };
+}
+
+function pergolaRows(lang = state.language) {
   const form = getProductForm();
   if (!form) return { systemQuantity: '-', sections: [] };
   return {
-    systemQuantity: formatValue($('#dyn_systemQuantity')?.value || ''),
+    systemQuantity: '-',
     sections: [
-      { title: 'Project Details', rows: fieldRows(form.projectDetails) },
-      { title: 'Color Details', rows: fieldRows(form.colorDetails) },
-      { title: 'Motor & Remote Control', rows: fieldRows(form.operation) },
-      { title: 'Panel Options', rows: fieldRows(form.panelOptions) },
-      { title: 'Lighting', rows: [['Selected', getChecked('lighting').join(', ') || '-']] },
-      { title: 'Light Dimmers', rows: fieldRows(form.dimmers) },
-      { title: 'Sensors', rows: fieldRows(form.sensors) },
-      { title: 'Heater & Packaging', rows: fieldRows(form.heaterPackaging) }
+      ...projectDetailSections(form.projectDetails, lang),
+      { title: translatedText('Colours', lang), rows: fieldRows(form.colorDetails, lang) },
+      { title: translatedText('Motor & Remote Control', lang), rows: fieldRows(form.operation, lang) },
+      { title: translatedText('Lighting', lang), rows: fieldRows(form.lighting, lang) },
+      { title: translatedText('Dimmer', lang), rows: fieldRows(form.dimmer, lang) },
+      { title: translatedText('Heater & Sound & Packing', lang), rows: fieldRows(form.heaterPackaging, lang) }
     ]
   };
 }
 
-function getOrderData() {
+function getOrderData(lang = state.language) {
   const product = getProduct();
   const group = getGroup(product);
-  const dynamic = hasProductForm(product) ? galaxyRows() : genericRows();
-  const selection = currentProductSelectionLabels();
+  const dynamic = usesPergolaForm(product)
+    ? pergolaRows(lang)
+    : (hasProductForm(product) ? galaxyRows(lang) : genericRows(lang));
+  const selection = currentProductSelectionLabels(lang);
   const profile = {
     companyName: fields.companyName.value.trim(),
     contactPerson: fields.contactPerson.value.trim(),
@@ -533,7 +1622,7 @@ function getOrderData() {
     orderDate: fields.orderDate.value,
     productName: product?.name || '-',
     productFamily: selection.family || '-',
-    productGroup: selection.group || group?.label || '-',
+    productGroup: selection.group || translatedText(group?.label || '', lang) || '-',
     productSubGroup: selection.subGroup || '-',
     sections: dynamic.sections,
     values,
@@ -569,7 +1658,7 @@ function updateAutoUnits() {
 
 function updatePreview() {
   updateAutoUnits();
-  const data = getOrderData();
+  const data = getOrderData(state.language);
   setText('companyName', data.profile.companyName);
   setText('contactPerson', data.profile.contactPerson);
   setText('phone', data.profile.phone);
@@ -594,7 +1683,7 @@ function saveProfile() {
     address: fields.address.value.trim()
   };
   localStorage.setItem(STORAGE_PROFILE, JSON.stringify(profile));
-  toast('Company details saved.');
+  toast(t('companySaved'));
 }
 
 function loadProfile() {
@@ -610,7 +1699,7 @@ function clearProfile() {
   localStorage.removeItem(STORAGE_PROFILE);
   ['companyName', 'contactPerson', 'phone', 'email', 'address'].forEach((key) => fields[key].value = '');
   onAnyInput();
-  toast('Company details cleared.');
+  toast(t('companyCleared'));
 }
 
 function saveOrderDraft() {
@@ -620,6 +1709,7 @@ function saveOrderDraft() {
     selectedGroupId: state.selectedGroupId,
     selectedSubGroupId: state.selectedSubGroupId,
     selectedProductId: state.selectedProductId,
+    projectPositionCounts: state.projectPositionCounts,
     orderNo: data.manualOrderNo,
     orderDate: data.orderDate,
     notes: data.notes,
@@ -632,6 +1722,9 @@ function saveOrderDraft() {
 function loadOrderDraft() {
   try {
     const saved = JSON.parse(localStorage.getItem(STORAGE_ORDER) || '{}');
+    state.projectPositionCounts = saved.projectPositionCounts && typeof saved.projectPositionCounts === 'object'
+      ? saved.projectPositionCounts
+      : {};
     if (saved.selectedProductId && DATA.products.some((p) => p.id === saved.selectedProductId)) {
       state.selectedProductId = saved.selectedProductId;
       syncSelectionFromProduct();
@@ -654,6 +1747,7 @@ function loadOrderDraft() {
     });
     setChecked('lighting', saved.lighting || []);
     setChecked('accessories', saved.accessories || []);
+    updateConditionalFields();
   } catch {}
 }
 
@@ -663,15 +1757,17 @@ function setChecked(name, values) {
 
 function resetOrder() {
   localStorage.removeItem(STORAGE_ORDER);
+  state.projectPositionCounts = {};
   fields.orderNo.value = '';
   fields.orderDate.value = todayISO();
   fields.notes.value = '';
   renderForm();
   updatePreview();
-  toast('New request opened.');
+  toast(t('newRequestOpened'));
 }
 
 function onAnyInput() {
+  updateConditionalFields();
   updateAutoUnits();
   saveOrderDraft();
   updatePreview();
@@ -910,14 +2006,14 @@ function downloadBlob(blob, filename) {
 }
 
 async function downloadPdf() {
-  const data = getOrderData();
+  const data = getOrderData('en');
   const blob = buildOrderPdf(data);
   downloadBlob(blob, filenameFromData(data));
-  toast('PDF created.');
+  toast(t('pdfCreated'));
 }
 
 async function sharePdf() {
-  const data = getOrderData();
+  const data = getOrderData('en');
   const blob = buildOrderPdf(data);
   const filename = filenameFromData(data);
   const file = new File([blob], filename, { type: 'application/pdf' });
@@ -927,10 +2023,10 @@ async function sharePdf() {
       text: `${data.productName} - ${data.orderNo}`,
       files: [file]
     });
-    toast('Share sheet opened.');
+    toast(t('shareOpened'));
   } else {
     downloadBlob(blob, filename);
-    toast('This browser does not support file sharing. PDF downloaded.');
+    toast(t('shareUnsupported'));
   }
 }
 
@@ -942,8 +2038,11 @@ function registerEvents() {
   $('#saveProfileBtn').addEventListener('click', () => { saveProfile(); onAnyInput(); });
   $('#clearProfileBtn').addEventListener('click', clearProfile);
   $('#downloadPdfBtn').addEventListener('click', downloadPdf);
-  $('#sharePdfBtn').addEventListener('click', () => sharePdf().catch(() => toast('Share cancelled or unsupported.')));
+  $('#sharePdfBtn').addEventListener('click', () => sharePdf().catch(() => toast(t('shareCancelled'))));
   $('#resetOrderTopBtn').addEventListener('click', resetOrder);
+  $$('.language-tabs button').forEach((button) => {
+    button.addEventListener('click', () => setLanguage(button.dataset.lang));
+  });
 }
 
 let deferredInstallPrompt;
@@ -968,6 +2067,8 @@ async function initPwa() {
 }
 
 function init() {
+  loadLanguage();
+  applyLanguage();
   fields.orderDate.value = todayISO();
   fields.orderNo.value = '';
   loadProfile();
