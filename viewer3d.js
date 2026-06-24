@@ -13,7 +13,7 @@
     return familySelect.value === 'bioclimatic' && groupSelect.value === 'bcube' && Boolean(subGroupSelect.value);
   }
 
-  function parseCm(fieldId, fallback) {
+  function parseMm(fieldId, fallback) {
     const el = document.getElementById(`dyn_${fieldId}`);
     const raw = String(el?.value || '').replace(',', '.');
     const n = Number(raw);
@@ -25,14 +25,14 @@
   }
 
   function readDimensions() {
-    const widthCm = parseCm('width', 400);
-    const projectionCm = parseCm('projection', 350);
-    const heightCm = parseCm('heightTopOfGutter', 260);
+    const widthMm = parseMm('width', 4000);
+    const projectionMm = parseMm('projection', 3500);
+    const heightMm = parseMm('heightTopOfGutter', 2600);
 
     return {
-      W: clamp(Math.round(widthCm * 10), 1200, 12000),
-      D: clamp(Math.round(projectionCm * 10), 1200, 10000),
-      H: clamp(Math.round(heightCm * 10), 1800, 5000)
+      W: clamp(Math.round(widthMm), 1200, 12000),
+      D: clamp(Math.round(projectionMm), 1200, 10000),
+      H: clamp(Math.round(heightMm), 1800, 5000)
     };
   }
 
