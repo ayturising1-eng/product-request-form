@@ -1,10 +1,18 @@
+const HEATER_SOUND_PACKING_FIELDS = [
+  { id: 'heater2000Quantity', label: 'Heater 2000W 220V Quantity', type: 'number', unitAuto: 'pcpcs' },
+  { id: 'heater3000Quantity', label: 'Heater 3000W 220V Quantity', type: 'number', unitAuto: 'pcpcs' },
+  { id: 'soundSystemQuantity', label: 'Sound System Quantity', type: 'number', unitAuto: 'pcpcs' },
+  { id: 'dimmerHeater', label: 'Dimmer Heater', type: 'choice', options: ['Yes', 'No'] },
+  { id: 'packagingType', label: 'Packaging Type', type: 'select', options: ['Wooden Box', 'Heavy-Duty Nylon'], defaultValue: 'Wooden Box' }
+];
+
 window.PRODUCT_DATA = {
   common: {
     installationTypes: ['', 'Wall', 'Ceiling', 'Freestanding'],
     glassTypes: ['None', 'Tempered Laminated', 'Clear Tempered', 'Clear Tempered + Air Space'],
     electricPower: ['', '220 V', '110 V'],
     motor: ['', 'Included', 'Not Included'],
-    remoteControl: ['', '1 Channel', '4 Channel', '16 Channel'],
+    remoteControl: ['', '1 Channel', '4 Channels', '16 Channels'],
     manualCrank: ['', 'No', 'Yes'],
     dimensionFields: [
       { id: 'frontH', label: 'Front H', unit: 'mm' },
@@ -18,37 +26,34 @@ window.PRODUCT_DATA = {
   productTree: {
     families: [
       { id: 'pergola', label: 'Pergola' },
-      { id: 'bioclimatic', label: 'Bioclimatic' },
-      { id: 'perde', label: 'Perde' }
+      { id: 'bioclimatic', label: 'Bioclimatic' }
     ],
     groups: {
       pergola: [
         { id: 'falcate', label: 'Falcate' },
         { id: 'subulate', label: 'Subulate' },
-        { id: 'unifoliate', label: 'Unifoliate' }
+        { id: 'unifoliate', label: 'Unifoliate' },
+        { id: 'pergo_rise', label: 'Pergo Rise', productId: 'pergo_rise' }
       ],
       bioclimatic: [
         { id: 'bcube', label: 'B-Cube' },
-        { id: 'rise', label: 'Rise' }
-      ],
-      perde: []
+        { id: 'bio_rise', label: 'Bio-Rise' }
+      ]
     },
     subGroups: {
       falcate: [
         { id: 'minima', label: 'Minima', productId: 'falcate_minima' },
-        { id: 'tectona', label: 'Tectona', productId: 'falcate_tectona' },
-        { id: 'pergo_rise', label: 'Pergo Rise', productId: 'falcate_pergo_rise' }
+        { id: 'tectona', label: 'Tectona', productId: 'falcate_tectona' }
       ],
       subulate: [
         { id: 'minima', label: 'Minima', productId: 'subulate_minima' },
-        { id: 'tectona', label: 'Tectona', productId: 'subulate_tectona' },
-        { id: 'pergo_rise', label: 'Pergo Rise', productId: 'subulate_pergo_rise' }
+        { id: 'tectona', label: 'Tectona', productId: 'subulate_tectona' }
       ],
       unifoliate: [
         { id: 'minima', label: 'Minima', productId: 'unifoliate_minima' },
-        { id: 'tectona', label: 'Tectona', productId: 'unifoliate_tectona' },
-        { id: 'pergo_rise', label: 'Pergo Rise', productId: 'unifoliate_pergo_rise' }
+        { id: 'tectona', label: 'Tectona', productId: 'unifoliate_tectona' }
       ],
+      pergo_rise: [],
       bcube: [
         { id: 'galaxy', label: 'Galaxy', productId: 'galaxy' },
         { id: 'space', label: 'Space', productId: 'space' },
@@ -60,7 +65,10 @@ window.PRODUCT_DATA = {
         { id: 'freedom_plus', label: 'Freedom Plus', productId: 'freedom_plus' },
         { id: 'classic_plus', label: 'Classic Plus', productId: 'classic_plus' }
       ],
-      rise: []
+      bio_rise: [
+        { id: 'motorlu', label: 'Motorlu', productId: 'bio_rise_motorlu' },
+        { id: 'manuel', label: 'Manuel', productId: 'bio_rise_manuel' }
+      ]
     }
   },
   groups: {
@@ -92,7 +100,54 @@ window.PRODUCT_DATA = {
         'Wind Sensor',
         'Vibration Sensor'
       ]
+    },
+    bioRise: {
+      label: 'Bio-Rise',
+      colorFields: ['Structure', 'Panel'],
+      lighting: ['Daylight', 'RGB'],
+      accessories: [
+        'Sound System',
+        'Dimmer Light',
+        '2000W Heater',
+        '3000W Heater',
+        'Dimmer Heater',
+        'Wind Sensor',
+        'Vibration Sensor'
+      ]
     }
+  },
+  pergolaForm: {
+    projectDetails: [
+      { id: 'width', label: 'Width', type: 'number', unit: 'cm' },
+      { id: 'projection', label: 'Projection', type: 'number', unit: 'cm' },
+      { id: 'backH', label: 'Back H', type: 'number', unit: 'cm' },
+      { id: 'frontH', label: 'Front H', type: 'number', unit: 'cm' },
+      { id: 'parapetH', label: 'Parapet H', type: 'number', unit: 'cm' },
+      { id: 'sideBeam', label: 'Side Beam', type: 'choice', options: ['Left', 'Right', 'Both', 'No'], defaultValue: 'No' },
+      { id: 'connection', label: 'Connection', type: 'choice', options: ['Wall', 'Ceiling', 'Freestanding'] }
+    ],
+    colorDetails: [
+      { id: 'structure', label: 'Structure', type: 'text' },
+      { id: 'fabric', label: 'Fabric', type: 'text' },
+      { id: 'fabricProfile', label: 'Fabric Profile', type: 'text' }
+    ],
+    operation: [
+      { id: 'motor', label: 'Motor', type: 'select', options: ['No', 'Somfy RTS', 'Somfy IO'], defaultValue: 'No' },
+      {
+        id: 'remoteControlSomfy',
+        label: 'Remote Control',
+        type: 'choice',
+        options: ['1 Channel', '2 Channels', '4 Channels', '16 Channels']
+      }
+    ],
+    lighting: [
+      { id: 'lightingType', label: 'Lighting', type: 'choice', options: ['No', 'Daylight', 'White', 'RGB', 'Other'], defaultValue: 'No' },
+      { id: 'lightingOther', label: 'Other Lighting', type: 'text', showWhen: { field: 'lightingType', values: ['Other'] } }
+    ],
+    dimmer: [
+      { id: 'dimmer', label: 'Dimmer', type: 'choice', options: ['Yes', 'No'], defaultValue: 'No' }
+    ],
+    heaterPackaging: HEATER_SOUND_PACKING_FIELDS
   },
   galaxyForm: {
     projectDetails: [
@@ -106,8 +161,8 @@ window.PRODUCT_DATA = {
       { id: 'panelColor', label: 'Panel Color', type: 'text' }
     ],
     operation: [
-      { id: 'motor', label: 'Motor', type: 'select', options: ['No', 'Somfy RTS', 'Somfy IO', 'Manual'], defaultValue: 'Somfy RTS' },
-      { id: 'remoteControl', label: 'Remote Control', type: 'choice', options: ['1 Channel', '2 Channel', '4 Channel', '16 Channel'] }
+      { id: 'motor', label: 'Motor', type: 'select', options: ['No', 'Somfy RTS', 'Somfy IO'], defaultValue: 'Somfy RTS' },
+      { id: 'remoteControl', label: 'Remote Control', type: 'choice', options: ['1 Channel', '2 Channels', '4 Channels', '16 Channels'] }
     ],
     panelOptions: [
       { id: 'panelIsolation', label: 'Panel Isolation', type: 'choice', options: ['Yes', 'No'] }
@@ -127,33 +182,103 @@ window.PRODUCT_DATA = {
       { id: 'windSensor', label: 'Wind Sensor', type: 'choice', options: ['Yes', 'No'] },
       { id: 'windSunSensor', label: 'Wind & Sun Sensor', type: 'choice', options: ['Yes', 'No'] }
     ],
-    heaterPackaging: [
-      { id: 'heater2000Quantity', label: 'Heater 2000W 220V Quantity', type: 'number', unitAuto: 'pcpcs' },
-      { id: 'heater3000Quantity', label: 'Heater 3000W 220V Quantity', type: 'number', unitAuto: 'pcpcs' },
-      { id: 'packagingType', label: 'Packaging Type', type: 'select', options: ['Wooden Box', 'Heavy-Duty Nylon'], defaultValue: 'Wooden Box' }
-    ]
+    heaterPackaging: HEATER_SOUND_PACKING_FIELDS
   },
   productFormOverrides: {
     galaxy: {},
     space: {},
-    galaxy_manual: {},
-    freedom: {},
-    classic: {},
-    infinity: {},
-    urban: {},
-    freedom_plus: {},
-    classic_plus: {}
+    galaxy_manual: {
+      operation: [],
+      sensors: [],
+      sectionsAfterDimmers: [
+        {
+          title: 'Remote Control',
+          fields: [
+            { id: 'remoteControl', label: 'Remote Control', type: 'choice', options: ['1 Channel', '2 Channels', '4 Channels', '16 Channels'] }
+          ]
+        }
+      ]
+    },
+    bio_rise_motorlu: {
+      operation: [
+        { id: 'motor', label: 'Motor', type: 'select', options: ['No', 'Rising Motor'], defaultValue: 'Rising Motor' },
+        { id: 'remoteControl', label: 'Remote Control', type: 'choice', options: ['1 Channel', '6 Channels'] }
+      ]
+    },
+    bio_rise_manuel: {
+      sectionsAfterDimmers: [
+        {
+          title: 'Remote Control',
+          fields: [
+            { id: 'remoteControl', label: 'Remote Control', type: 'choice', options: ['1 Channel', '6 Channels'] }
+          ]
+        }
+      ]
+    },
+    pergo_rise: {
+      operation: [
+        { id: 'motor', label: 'Motor', type: 'select', options: ['No', 'Somfy RTS', 'Somfy IO', 'Rising Motor'], defaultValue: 'No' },
+        {
+          id: 'remoteControlSomfy',
+          label: 'Remote Control',
+          type: 'choice',
+          options: ['1 Channel', '2 Channels', '4 Channels', '16 Channels'],
+          showWhen: { field: 'motor', values: ['No', 'Somfy RTS', 'Somfy IO'] }
+        },
+        {
+          id: 'remoteControlRising',
+          label: 'Remote Control',
+          type: 'choice',
+          options: ['1 Channel', '6 Channels'],
+          showWhen: { field: 'motor', values: ['Rising Motor'] }
+        }
+      ]
+    },
+    freedom: {
+      hiddenItems: {
+        lighting: ['Light on the Panel (Spot LED)'],
+        dimmers: ['lightDimmerSpot']
+      }
+    },
+    classic: {
+      hiddenItems: {
+        lighting: ['Light on the Panel (Spot LED)'],
+        dimmers: ['lightDimmerSpot']
+      }
+    },
+    infinity: {
+      hiddenItems: {
+        lighting: ['Light on the Panel (Spot LED)'],
+        dimmers: ['lightDimmerSpot']
+      }
+    },
+    urban: {
+      hiddenItems: {
+        lighting: ['Light on the Panel (Spot LED)'],
+        dimmers: ['lightDimmerSpot']
+      }
+    },
+    freedom_plus: {
+      hiddenItems: {
+        lighting: ['Light on the Panel (Spot LED)'],
+        dimmers: ['lightDimmerSpot']
+      }
+    },
+    classic_plus: {
+      hiddenItems: {
+        lighting: ['Light on the Panel (Spot LED)'],
+        dimmers: ['lightDimmerSpot']
+      }
+    }
   },
   products: [
-    { id: 'falcate_minima', name: 'FALCATE MINIMA', family: 'pergola', productGroup: 'falcate', subGroup: 'minima', group: 'pergola' },
-    { id: 'falcate_tectona', name: 'FALCATE TECTONA', family: 'pergola', productGroup: 'falcate', subGroup: 'tectona', group: 'pergola' },
-    { id: 'falcate_pergo_rise', name: 'FALCATE PERGO RISE', family: 'pergola', productGroup: 'falcate', subGroup: 'pergo_rise', group: 'pergola' },
-    { id: 'subulate_minima', name: 'SUBULATE MINIMA', family: 'pergola', productGroup: 'subulate', subGroup: 'minima', group: 'pergola' },
-    { id: 'subulate_tectona', name: 'SUBULATE TECTONA', family: 'pergola', productGroup: 'subulate', subGroup: 'tectona', group: 'pergola' },
-    { id: 'subulate_pergo_rise', name: 'SUBULATE PERGO RISE', family: 'pergola', productGroup: 'subulate', subGroup: 'pergo_rise', group: 'pergola' },
-    { id: 'unifoliate_minima', name: 'UNIFOLIATE MINIMA', family: 'pergola', productGroup: 'unifoliate', subGroup: 'minima', group: 'pergola' },
-    { id: 'unifoliate_tectona', name: 'UNIFOLIATE TECTONA', family: 'pergola', productGroup: 'unifoliate', subGroup: 'tectona', group: 'pergola' },
-    { id: 'unifoliate_pergo_rise', name: 'UNIFOLIATE PERGO RISE', family: 'pergola', productGroup: 'unifoliate', subGroup: 'pergo_rise', group: 'pergola' },
+    { id: 'falcate_minima', name: 'FALCATE MINIMA', family: 'pergola', productGroup: 'falcate', subGroup: 'minima', group: 'pergola', formTemplate: 'pergolaForm' },
+    { id: 'falcate_tectona', name: 'FALCATE TECTONA', family: 'pergola', productGroup: 'falcate', subGroup: 'tectona', group: 'pergola', formTemplate: 'pergolaForm' },
+    { id: 'subulate_minima', name: 'SUBULATE MINIMA', family: 'pergola', productGroup: 'subulate', subGroup: 'minima', group: 'pergola', formTemplate: 'pergolaForm' },
+    { id: 'subulate_tectona', name: 'SUBULATE TECTONA', family: 'pergola', productGroup: 'subulate', subGroup: 'tectona', group: 'pergola', formTemplate: 'pergolaForm' },
+    { id: 'unifoliate_minima', name: 'UNIFOLIATE MINIMA', family: 'pergola', productGroup: 'unifoliate', subGroup: 'minima', group: 'pergola', formTemplate: 'pergolaForm' },
+    { id: 'unifoliate_tectona', name: 'UNIFOLIATE TECTONA', family: 'pergola', productGroup: 'unifoliate', subGroup: 'tectona', group: 'pergola', formTemplate: 'pergolaForm' },
+    { id: 'pergo_rise', name: 'PERGO RISE', family: 'pergola', productGroup: 'pergo_rise', subGroup: '', group: 'pergola', formTemplate: 'pergolaForm' },
     { id: 'galaxy', name: 'B-Cube GALAXY', family: 'bioclimatic', productGroup: 'bcube', subGroup: 'galaxy', group: 'bcube', formTemplate: 'galaxyForm' },
     { id: 'space', name: 'B-Cube SPACE', family: 'bioclimatic', productGroup: 'bcube', subGroup: 'space', group: 'bcube', formTemplate: 'galaxyForm' },
     { id: 'galaxy_manual', name: 'B-Cube GALAXY MANUEL', family: 'bioclimatic', productGroup: 'bcube', subGroup: 'galaxy_manual', group: 'bcube', formTemplate: 'galaxyForm' },
@@ -162,6 +287,8 @@ window.PRODUCT_DATA = {
     { id: 'infinity', name: 'B-Cube INFINITY', family: 'bioclimatic', productGroup: 'bcube', subGroup: 'infinity', group: 'bcube', formTemplate: 'galaxyForm' },
     { id: 'urban', name: 'B-Cube URBAN', family: 'bioclimatic', productGroup: 'bcube', subGroup: 'urban', group: 'bcube', formTemplate: 'galaxyForm' },
     { id: 'freedom_plus', name: 'B-Cube FREEDOM PLUS', family: 'bioclimatic', productGroup: 'bcube', subGroup: 'freedom_plus', group: 'bcube', formTemplate: 'galaxyForm' },
-    { id: 'classic_plus', name: 'B-Cube CLASSIC PLUS', family: 'bioclimatic', productGroup: 'bcube', subGroup: 'classic_plus', group: 'bcube', formTemplate: 'galaxyForm' }
+    { id: 'classic_plus', name: 'B-Cube CLASSIC PLUS', family: 'bioclimatic', productGroup: 'bcube', subGroup: 'classic_plus', group: 'bcube', formTemplate: 'galaxyForm' },
+    { id: 'bio_rise_motorlu', name: 'BIO-RISE MOTORLU', family: 'bioclimatic', productGroup: 'bio_rise', subGroup: 'motorlu', group: 'bioRise', formTemplate: 'galaxyForm', formVariant: 'galaxy' },
+    { id: 'bio_rise_manuel', name: 'BIO-RISE MANUEL', family: 'bioclimatic', productGroup: 'bio_rise', subGroup: 'manuel', group: 'bioRise', formTemplate: 'galaxyForm', formVariant: 'galaxy_manual' }
   ]
 };
