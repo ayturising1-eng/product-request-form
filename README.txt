@@ -20,7 +20,7 @@ No server, no login, no database. User data is saved locally on the device.
 
 3D PREVIEW UPDATE
 - B-Cube GALAXY now includes an integrated 3D preview section under the form.
-- The 3D model reads Width, Projection and Height values in cm, then displays the model in mm.
+- The 3D model reads and displays Width, Projection and Height values in mm.
 - Use Generate / Update 3D Preview after changing dimensions.
 - The 3D viewer needs internet access because it loads Three.js from a CDN.
 
