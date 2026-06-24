@@ -43,8 +43,6 @@ const I18N = {
     phonePlaceholder: 'Phone',
     email: 'E-mail',
     emailPlaceholder: 'E-mail',
-    address: 'Address',
-    addressPlaceholder: 'Address',
     saveCompany: 'Save Company Details',
     clear: 'Clear',
     selectProduct: 'Select Product',
@@ -73,7 +71,6 @@ const I18N = {
     pdfContact: 'Contact:',
     pdfPhone: 'Phone:',
     pdfEmail: 'E-mail:',
-    pdfAddress: 'Address:',
     pdfFamily: 'Family:',
     pdfGroup: 'Group:',
     pdfSubGroup: 'Sub Group:',
@@ -111,8 +108,6 @@ const I18N = {
     phonePlaceholder: 'Telefon',
     email: 'E-posta',
     emailPlaceholder: 'E-posta',
-    address: 'Adres',
-    addressPlaceholder: 'Adres',
     saveCompany: 'Firma Bilgilerini Kaydet',
     clear: 'Temizle',
     selectProduct: 'Ürün Seçimi',
@@ -141,7 +136,6 @@ const I18N = {
     pdfContact: 'İlgili:',
     pdfPhone: 'Telefon:',
     pdfEmail: 'E-posta:',
-    pdfAddress: 'Adres:',
     pdfFamily: 'Aile:',
     pdfGroup: 'Grup:',
     pdfSubGroup: 'Alt Grup:',
@@ -179,8 +173,6 @@ const I18N = {
     phonePlaceholder: 'Telefon',
     email: 'E-Mail',
     emailPlaceholder: 'E-Mail',
-    address: 'Adresse',
-    addressPlaceholder: 'Adresse',
     saveCompany: 'Firmendaten speichern',
     clear: 'Löschen',
     selectProduct: 'Produkt auswählen',
@@ -209,7 +201,6 @@ const I18N = {
     pdfContact: 'Kontakt:',
     pdfPhone: 'Telefon:',
     pdfEmail: 'E-Mail:',
-    pdfAddress: 'Adresse:',
     pdfFamily: 'Familie:',
     pdfGroup: 'Gruppe:',
     pdfSubGroup: 'Untergruppe:',
@@ -247,8 +238,6 @@ const I18N = {
     phonePlaceholder: 'Téléphone',
     email: 'E-mail',
     emailPlaceholder: 'E-mail',
-    address: 'Adresse',
-    addressPlaceholder: 'Adresse',
     saveCompany: 'Enregistrer la société',
     clear: 'Effacer',
     selectProduct: 'Sélection du produit',
@@ -277,7 +266,6 @@ const I18N = {
     pdfContact: 'Contact :',
     pdfPhone: 'Téléphone :',
     pdfEmail: 'E-mail :',
-    pdfAddress: 'Adresse :',
     pdfFamily: 'Famille :',
     pdfGroup: 'Groupe :',
     pdfSubGroup: 'Sous-groupe :',
@@ -315,8 +303,6 @@ const I18N = {
     phonePlaceholder: 'טלפון',
     email: 'דוא"ל',
     emailPlaceholder: 'דוא"ל',
-    address: 'כתובת',
-    addressPlaceholder: 'כתובת',
     saveCompany: 'שמור פרטי חברה',
     clear: 'נקה',
     selectProduct: 'בחירת מוצר',
@@ -345,7 +331,6 @@ const I18N = {
     pdfContact: 'איש קשר:',
     pdfPhone: 'טלפון:',
     pdfEmail: 'דוא"ל:',
-    pdfAddress: 'כתובת:',
     pdfFamily: 'משפחה:',
     pdfGroup: 'קבוצה:',
     pdfSubGroup: 'תת-קבוצה:',
@@ -676,6 +661,8 @@ Object.assign(I18N.he, {
 Object.assign(I18N.en, {
   formActive: 'Form active',
   'Colours': 'Colours',
+  'Product Quantity': 'Product Quantity',
+  'Motor Direction': 'Motor Direction',
   'Parapet H': 'Parapet H',
   'Side Beam': 'Side Beam',
   'Connection': 'Connection',
@@ -692,6 +679,8 @@ Object.assign(I18N.en, {
 Object.assign(I18N.tr, {
   formActive: 'Form aktif',
   'Colours': 'Renkler',
+  'Product Quantity': '\u00dcr\u00fcn Adedi',
+  'Motor Direction': 'Motor Y\u00f6n\u00fc',
   'Parapet H': 'Parapet Y\u00fcksekli\u011fi',
   'Side Beam': 'Yan Kiri\u015f',
   'Connection': 'Ba\u011flant\u0131',
@@ -710,6 +699,8 @@ Object.assign(I18N.tr, {
 Object.assign(I18N.de, {
   formActive: 'Formular aktiv',
   'Colours': 'Farben',
+  'Product Quantity': 'Produktmenge',
+  'Motor Direction': 'Motorseite',
   'Parapet H': 'Br\u00fcstungsh\u00f6he',
   'Side Beam': 'Seitentr\u00e4ger',
   'Connection': 'Anschluss',
@@ -728,6 +719,8 @@ Object.assign(I18N.de, {
 Object.assign(I18N.fr, {
   formActive: 'Formulaire actif',
   'Colours': 'Couleurs',
+  'Product Quantity': 'Quantit\u00e9 de produits',
+  'Motor Direction': 'C\u00f4t\u00e9 du moteur',
   'Parapet H': 'Hauteur d\u2019all\u00e8ge',
   'Side Beam': 'Poutre lat\u00e9rale',
   'Connection': 'Raccordement',
@@ -746,6 +739,8 @@ Object.assign(I18N.fr, {
 Object.assign(I18N.he, {
   formActive: '\u05d8\u05d5\u05e4\u05e1 \u05e4\u05e2\u05d9\u05dc',
   'Colours': '\u05e6\u05d1\u05e2\u05d9\u05dd',
+  'Product Quantity': '\u05db\u05de\u05d5\u05ea \u05de\u05d5\u05e6\u05e8\u05d9\u05dd',
+  'Motor Direction': '\u05e6\u05d3 \u05d4\u05de\u05e0\u05d5\u05e2',
   'Parapet H': '\u05d2\u05d5\u05d1\u05d4 \u05de\u05e2\u05e7\u05d4',
   'Side Beam': '\u05e7\u05d5\u05e8\u05ea \u05e6\u05d3',
   'Connection': '\u05d7\u05d9\u05d1\u05d5\u05e8',
@@ -791,7 +786,6 @@ const fields = {
   contactPerson: $('#contactPerson'),
   phone: $('#phone'),
   email: $('#email'),
-  address: $('#address'),
   orderNo: $('#orderNo'),
   orderDate: $('#orderDate'),
   notes: $('#notes')
@@ -936,9 +930,12 @@ function cloneData(value) {
 function mergeProductForm(baseForm, override = {}) {
   const merged = cloneData(baseForm);
   Object.entries(override).forEach(([key, value]) => {
-    if (key === 'hiddenItems') return;
+    if (key === 'hiddenItems' || key === 'projectDetailsAppend') return;
     merged[key] = cloneData(value);
   });
+  if (Array.isArray(merged.projectDetails) && Array.isArray(override.projectDetailsAppend)) {
+    merged.projectDetails.push(...cloneData(override.projectDetailsAppend));
+  }
   Object.entries(override.hiddenItems || {}).forEach(([key, hiddenIds]) => {
     if (!Array.isArray(merged[key])) return;
     merged[key] = merged[key].filter((item) => {
@@ -1609,8 +1606,7 @@ function getOrderData(lang = state.language) {
     companyName: fields.companyName.value.trim(),
     contactPerson: fields.contactPerson.value.trim(),
     phone: fields.phone.value.trim(),
-    email: fields.email.value.trim(),
-    address: fields.address.value.trim()
+    email: fields.email.value.trim()
   };
   const values = getDynamicValues();
   const manualOrderNo = fields.orderNo.value.trim();
@@ -1663,7 +1659,6 @@ function updatePreview() {
   setText('contactPerson', data.profile.contactPerson);
   setText('phone', data.profile.phone);
   setText('email', data.profile.email);
-  setText('address', data.profile.address);
   setText('orderDate', data.orderDate);
   setText('orderNo', data.orderNo);
   setText('productName', data.productName);
@@ -1679,8 +1674,7 @@ function saveProfile() {
     companyName: fields.companyName.value.trim(),
     contactPerson: fields.contactPerson.value.trim(),
     phone: fields.phone.value.trim(),
-    email: fields.email.value.trim(),
-    address: fields.address.value.trim()
+    email: fields.email.value.trim()
   };
   localStorage.setItem(STORAGE_PROFILE, JSON.stringify(profile));
   toast(t('companySaved'));
@@ -1697,7 +1691,7 @@ function loadProfile() {
 
 function clearProfile() {
   localStorage.removeItem(STORAGE_PROFILE);
-  ['companyName', 'contactPerson', 'phone', 'email', 'address'].forEach((key) => fields[key].value = '');
+  ['companyName', 'contactPerson', 'phone', 'email'].forEach((key) => fields[key].value = '');
   onAnyInput();
   toast(t('companyCleared'));
 }
@@ -1884,7 +1878,6 @@ function buildOrderPdf(data, previewImage = null) {
     ['Contact', data.profile.contactPerson || '-'],
     ['Phone', data.profile.phone || '-'],
     ['E-mail', data.profile.email || '-'],
-    ['Address', data.profile.address || '-'],
     ['Family', data.productFamily || '-'],
     ['Group', data.productGroup || '-'],
     ['Sub Group', data.productSubGroup || '-'],
