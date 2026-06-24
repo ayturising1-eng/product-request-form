@@ -33,7 +33,34 @@ body {
   box-shadow: 0 10px 30px rgba(0,0,0,.15);
 }
 
+.brand-block { min-width: 0; }
+.brand-headline {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  flex-wrap: wrap;
+}
 .app-header h1 { margin: 0; font-size: 22px; }
+.language-tabs {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+.language-tabs button {
+  min-height: 30px;
+  padding: 6px 9px;
+  border: 1px solid rgba(255,255,255,.26);
+  border-radius: 999px;
+  background: rgba(255,255,255,.08);
+  color: #fff;
+  font-size: 11px;
+  line-height: 1;
+}
+.language-tabs button.active {
+  background: #fff;
+  color: #111827;
+}
 .header-actions { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; justify-content: flex-end; }
 .eyebrow { margin: 0 0 4px; font-size: 12px; letter-spacing: .12em; text-transform: uppercase; color: #cbd5e1; }
 
@@ -361,6 +388,10 @@ td:first-child { width: 42%; font-weight: 800; background: #f9fafb; }
 /* Mobile-first refinements */
 html { scroll-behavior: smooth; }
 body { -webkit-tap-highlight-color: transparent; }
+html[dir="rtl"] body { direction: rtl; }
+html[dir="rtl"] td,
+html[dir="rtl"] th { text-align: right; }
+html[dir="rtl"] .pdf-meta { text-align: left; }
 .mobile-subtitle { display: none; margin: 2px 0 0; color: #cbd5e1; font-size: 12px; }
 .mobile-quick-nav {
   position: sticky;
@@ -404,6 +435,30 @@ section, .dynamic-section, #pdfPreview { scroll-margin-top: 142px; }
 }
 .order-section { background: #f9fafb; }
 .choice-field { min-width: 0; }
+[hidden] { display: none !important; }
+.project-position-divider {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 18px 0 16px;
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+.project-position-divider::before,
+.project-position-divider::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: #d1d5db;
+}
+.project-position-divider span { flex: 0 0 auto; }
+.add-position-btn {
+  width: 100%;
+  margin-top: 16px;
+  border-style: dashed;
+}
 .choice-row label:has(input:checked),
 .checkbox-grid label:has(input:checked) {
   border-color: #111827;
@@ -419,11 +474,15 @@ input:focus, textarea:focus, select:focus {
   body { background: #fff; }
   .app-header {
     padding: calc(12px + env(safe-area-inset-top)) 14px 12px;
-    align-items: center;
+    align-items: flex-start;
+    flex-direction: column;
   }
   .app-header h1 { font-size: 17px; line-height: 1.15; }
+  .brand-headline { gap: 8px; }
+  .language-tabs { gap: 5px; }
+  .language-tabs button { padding: 6px 8px; font-size: 10px; }
   .mobile-subtitle { display: block; }
-  .header-actions { gap: 6px; }
+  .header-actions { width: 100%; gap: 6px; justify-content: flex-start; }
   #installBtn, #resetOrderTopBtn { padding: 10px 10px; font-size: 11px; }
 
   .mobile-quick-nav {
