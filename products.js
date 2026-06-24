@@ -118,11 +118,12 @@ window.PRODUCT_DATA = {
   },
   pergolaForm: {
     projectDetails: [
-      { id: 'width', label: 'Width', type: 'number', unit: 'cm' },
-      { id: 'projection', label: 'Projection', type: 'number', unit: 'cm' },
-      { id: 'backH', label: 'Back H', type: 'number', unit: 'cm' },
-      { id: 'frontH', label: 'Front H', type: 'number', unit: 'cm' },
-      { id: 'parapetH', label: 'Parapet H', type: 'number', unit: 'cm' },
+      { id: 'productQuantity', label: 'Product Quantity', type: 'number', unitAuto: 'pcpcs' },
+      { id: 'width', label: 'Width', type: 'number', unit: 'mm' },
+      { id: 'projection', label: 'Projection', type: 'number', unit: 'mm' },
+      { id: 'backH', label: 'Back H', type: 'number', unit: 'mm' },
+      { id: 'frontH', label: 'Front H', type: 'number', unit: 'mm' },
+      { id: 'parapetH', label: 'Parapet H', type: 'number', unit: 'mm' },
       { id: 'sideBeam', label: 'Side Beam', type: 'choice', options: ['Left', 'Right', 'Both', 'No'], defaultValue: 'No' },
       { id: 'connection', label: 'Connection', type: 'choice', options: ['Wall', 'Ceiling', 'Freestanding'] }
     ],
@@ -151,9 +152,9 @@ window.PRODUCT_DATA = {
   },
   galaxyForm: {
     projectDetails: [
-      { id: 'width', label: 'Width', type: 'number', unit: 'cm' },
-      { id: 'projection', label: 'Projection', type: 'number', unit: 'cm' },
-      { id: 'heightTopOfGutter', label: 'Height (Top of The Gutter)', type: 'number', unit: 'cm' },
+      { id: 'width', label: 'Width', type: 'number', unit: 'mm' },
+      { id: 'projection', label: 'Projection', type: 'number', unit: 'mm' },
+      { id: 'heightTopOfGutter', label: 'Height (Top of The Gutter)', type: 'number', unit: 'mm' },
       { id: 'systemQuantity', label: 'System Quantity', type: 'number' }
     ],
     colorDetails: [
@@ -216,6 +217,9 @@ window.PRODUCT_DATA = {
       ]
     },
     pergo_rise: {
+      projectDetailsAppend: [
+        { id: 'motorDirection', label: 'Motor Direction', type: 'choice', options: ['Left', 'Right'] }
+      ],
       operation: [
         { id: 'motor', label: 'Motor', type: 'select', options: ['No', 'Somfy RTS', 'Somfy IO', 'Rising Motor'], defaultValue: 'No' },
         {
