@@ -352,6 +352,153 @@ td:first-child { width: 42%; font-weight: 800; background: #f9fafb; }
 }
 .input-unit-wrap input { padding-right: 52px; }
 .input-unit-wrap select { padding-right: 36px; }
+.modal-open { overflow: hidden; }
+.color-picker-wrap {
+  gap: 8px;
+  align-items: stretch;
+}
+.color-picker-wrap input {
+  min-width: 0;
+  padding-right: 13px;
+}
+.color-picker-btn {
+  flex: 0 0 118px;
+  margin-top: 6px;
+  min-height: 46px;
+  padding: 8px 10px;
+  border: 1px solid #1d4ed8;
+  border-radius: 12px;
+  background: #2563eb;
+  color: #fff;
+  font-size: 12px;
+  line-height: 1.2;
+  text-align: center;
+}
+.same-as-system-btn {
+  flex: 0 0 166px;
+  margin-top: 6px;
+  min-height: 46px;
+  padding: 8px 10px;
+  border: 1px solid #d1d5db;
+  border-radius: 12px;
+  background: #fff;
+  color: #111827;
+  font-size: 12px;
+  line-height: 1.2;
+  text-align: center;
+}
+.color-chart-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: grid;
+  place-items: center;
+  padding: 18px;
+  background: rgba(15, 23, 42, .72);
+}
+.color-chart-modal[hidden] { display: none !important; }
+.color-chart-panel {
+  width: min(1180px, 96vw);
+  max-height: 92vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  border-radius: 18px;
+  background: #fff;
+  box-shadow: 0 24px 70px rgba(0,0,0,.32);
+}
+.color-chart-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 14px;
+  padding: 16px;
+  border-bottom: 1px solid #e5e7eb;
+}
+.color-chart-head h2 {
+  margin: 0;
+  font-size: 19px;
+}
+.color-chart-head p {
+  margin: 5px 0 0;
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.4;
+}
+.color-chart-close {
+  flex: 0 0 auto;
+  margin-top: 0;
+}
+.color-chart-scroll {
+  overflow: auto;
+  padding: 14px;
+  background: #f3f4f6;
+}
+.color-option-list {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+.color-option-card {
+  display: grid;
+  grid-template-columns: 92px 1fr;
+  align-items: stretch;
+  gap: 12px;
+  min-height: 96px;
+  padding: 10px;
+  border: 1px solid #d1d5db;
+  border-radius: 12px;
+  background: #fff;
+  color: #111827;
+  text-align: left;
+}
+.color-option-card:hover,
+.color-option-card:focus {
+  transform: none;
+  outline: 3px solid rgba(37, 99, 235, .22);
+  border-color: #2563eb;
+}
+.color-option-swatch {
+  overflow: hidden;
+  display: block;
+  min-height: 74px;
+  border-radius: 8px;
+  border: 1px solid rgba(17,24,39,.16);
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,.36);
+}
+.color-option-swatch img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  min-height: 74px;
+  object-fit: cover;
+}
+.fabric-swatch {
+  background-size: 26px 26px, auto;
+  background-image:
+    linear-gradient(135deg, rgba(255,255,255,.24) 25%, transparent 25%, transparent 50%, rgba(0,0,0,.08) 50%, rgba(0,0,0,.08) 75%, transparent 75%, transparent);
+}
+.color-option-text {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  justify-content: center;
+  gap: 3px;
+}
+.color-option-text strong {
+  font-size: 13px;
+  line-height: 1.2;
+}
+.color-option-text span {
+  color: #374151;
+  font-size: 12px;
+  line-height: 1.25;
+}
+.color-option-text small {
+  color: var(--muted);
+  font-size: 11px;
+  line-height: 1.25;
+}
 
 /* Grouped form styling */
 .dynamic-section {
@@ -517,7 +664,52 @@ input:focus, textarea:focus, select:focus {
   }
   textarea { min-height: 88px; }
   select { background-color: #fff; }
+  .color-picker-wrap {
+    display: grid;
+    grid-template-columns: 1fr;
+  }
+  .color-picker-btn {
+    width: 100%;
+    flex: none;
+    min-height: 44px;
+    margin-top: 2px;
+    font-size: 12px;
+  }
+  .same-as-system-btn {
+    width: 100%;
+    flex: none;
+    min-height: 44px;
+    margin-top: 2px;
+    font-size: 12px;
+  }
+  .color-chart-modal {
+    padding: 8px;
+    align-items: stretch;
+  }
+  .color-chart-panel {
+    width: 100%;
+    max-height: 94vh;
+    align-self: center;
+    border-radius: 16px;
+  }
+  .color-chart-head {
+    padding: 12px;
+    flex-direction: column;
+  }
+  .color-chart-head h2 { font-size: 17px; }
+  .color-chart-head p { font-size: 12px; }
+  .color-chart-close { width: 100%; }
+  .color-chart-scroll { padding: 10px; }
+  .color-option-list { grid-template-columns: 1fr; }
+  .color-option-card {
+    grid-template-columns: 76px 1fr;
+    min-height: 84px;
+    padding: 8px;
+  }
+  .color-option-swatch { min-height: 64px; }
+  .color-option-swatch img { min-height: 64px; }
   .input-unit-wrap input { padding-right: 46px; }
+  .color-picker-wrap input { padding-right: 13px; }
   .unit-suffix { bottom: 15px; }
 
   .dynamic-section {
