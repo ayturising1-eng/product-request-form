@@ -37,14 +37,3 @@ V3 changes:
 
 NO 3D VERSION
 - 3D preview has been removed from the application and PDF export.
-
-COLOR CHART UPDATE
-- Color-related fields now include a Select Color button.
-- Select Color uses optimized previews generated from the supplied RAL and wood-transfer files.
-- RAL and matte colors are grouped by visual tone; A- wood-transfer colors stay at the end.
-- Wood-transfer colors with A- codes are listed at the end of the color list.
-- Pergola Fabric uses a Select Fabric button with a scrollable PVC fabric list.
-- PVC fabric entries use optimized sphere previews generated from the supplied catalog images.
-- Bioclimatic Panel Color can copy the System Color with one click.
-- Customers can still type custom color or fabric codes manually.
-- Selected values are saved in the form and included in the PDF data.

@@ -6,8 +6,6 @@ const HEATER_SOUND_PACKING_FIELDS = [
   { id: 'packagingType', label: 'Packaging Type', type: 'select', options: ['Wooden Box', 'Heavy-Duty Nylon'], defaultValue: 'Wooden Box' }
 ];
 
-const FINISH_OPTIONS = ['Glossy', 'Matt', 'Texture'];
-
 window.PRODUCT_DATA = {
   common: {
     installationTypes: ['', 'Wall', 'Ceiling', 'Freestanding'],
@@ -130,11 +128,9 @@ window.PRODUCT_DATA = {
       { id: 'connection', label: 'Connection', type: 'choice', options: ['Wall', 'Ceiling', 'Freestanding'] }
     ],
     colorDetails: [
-      { id: 'structure', label: 'Structure', type: 'text', palette: true },
-      { id: 'structureFinish', label: 'Finish', type: 'choice', options: FINISH_OPTIONS, defaultValue: 'Matt' },
-      { id: 'fabric', label: 'Fabric', type: 'text', picker: 'fabric', fullWidth: true },
-      { id: 'fabricProfile', label: 'Fabric Profile', type: 'text', palette: true },
-      { id: 'fabricProfileFinish', label: 'Finish', type: 'choice', options: FINISH_OPTIONS, defaultValue: 'Matt' }
+      { id: 'structure', label: 'Structure', type: 'text' },
+      { id: 'fabric', label: 'Fabric', type: 'text' },
+      { id: 'fabricProfile', label: 'Fabric Profile', type: 'text' }
     ],
     operation: [
       { id: 'motor', label: 'Motor', type: 'select', options: ['No', 'Somfy RTS', 'Somfy IO'], defaultValue: 'No' },
@@ -162,10 +158,8 @@ window.PRODUCT_DATA = {
       { id: 'systemQuantity', label: 'System Quantity', type: 'number' }
     ],
     colorDetails: [
-      { id: 'systemColor', label: 'System Color', type: 'text', palette: true },
-      { id: 'systemColorFinish', label: 'Finish', type: 'choice', options: FINISH_OPTIONS, defaultValue: 'Matt' },
-      { id: 'panelColor', label: 'Panel Color', type: 'text', palette: true },
-      { id: 'panelColorFinish', label: 'Finish', type: 'choice', options: FINISH_OPTIONS, defaultValue: 'Matt' }
+      { id: 'systemColor', label: 'System Color', type: 'text' },
+      { id: 'panelColor', label: 'Panel Color', type: 'text' }
     ],
     operation: [
       { id: 'motor', label: 'Motor', type: 'select', options: ['No', 'Somfy RTS', 'Somfy IO'], defaultValue: 'Somfy RTS' },
