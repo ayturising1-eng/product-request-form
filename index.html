@@ -176,9 +176,25 @@
     </section>
   </main>
 
+  <div id="colorChartModal" class="color-chart-modal no-print" hidden>
+    <div class="color-chart-panel" role="dialog" aria-modal="true" aria-labelledby="colorChartTitle">
+      <div class="color-chart-head">
+        <div>
+          <h2 id="colorChartTitle" data-i18n="Color Chart">Color Chart</h2>
+          <p id="colorChartHelp" data-i18n="Color Chart Help">Select a color from the list. If it is not listed, close this panel and write the color code manually.</p>
+        </div>
+        <button id="colorChartClose" class="ghost color-chart-close" type="button" data-color-chart-close data-i18n="Close">Close</button>
+      </div>
+      <div class="color-chart-scroll">
+        <div id="colorOptionList" class="color-option-list" aria-label="Color options"></div>
+      </div>
+    </div>
+  </div>
+
   <div id="toast" class="toast no-print"></div>
 
   <script src="products.js"></script>
+  <script src="assets.js"></script>
   <script src="app.js"></script>
 </body>
 </html>
