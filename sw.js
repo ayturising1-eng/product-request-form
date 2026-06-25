@@ -1,5 +1,13 @@
-const CACHE = 'product-request-demo-v31';
-const ASSETS = ['./', './index.html', './style.css', './app.js', './products.js', './manifest.webmanifest'];
+const CACHE = 'product-request-demo-v37';
+const ASSETS = [
+  './',
+  './index.html',
+  './style.css',
+  './app.js',
+  './assets.js',
+  './products.js',
+  './manifest.webmanifest'
+];
 
 self.addEventListener('install', (event) => {
   self.skipWaiting();
