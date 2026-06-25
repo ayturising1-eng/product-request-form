@@ -15,6 +15,54 @@ const STORAGE_PROFILE = 'prf_profile_v2';
 const STORAGE_ORDER = 'prf_order_v5';
 const STORAGE_LANGUAGE = 'prf_language_v1';
 
+const COLOR_FIELD_LABELS = new Set([
+  'structure',
+  'fabric profile',
+  'louver blade',
+  'panel'
+]);
+const FABRIC_FIELD_LABELS = new Set([
+  'fabric',
+  'pergola fabric',
+  'screen fabric'
+]);
+const COLOR_OPTIONS = [
+  { value: 'RAL 9016 | Traffic White', code: 'RAL 9016', name: 'Traffic White', detail: 'Matt Finish', image: 'assets/color-options/ral-9016-traffic-white.jpg' },
+  { value: 'RAL 9003 | Traffic White - Sand Paper Texture Finish', code: 'RAL 9003', name: 'Traffic White', detail: 'Sand Paper Texture Finish', image: 'assets/color-options/ral-9003-traffic-white-sand-paper.jpg' },
+  { value: 'RAL 1013 | Oyster', code: 'RAL 1013', name: 'Oyster', detail: 'Matt Finish', image: 'assets/color-options/ral-1013-oyster.jpg' },
+  { value: 'RAL 1313 | Oyster - Sand Paper Texture Finish', code: 'RAL 1313', name: 'Oyster', detail: 'Sand Paper Texture Finish', image: 'assets/color-options/ral-1313-oyster-sand-paper.jpg' },
+  { value: 'RAL 1035 | Pearl Beige', code: 'RAL 1035', name: 'Pearl Beige', detail: 'Matt Finish', image: 'assets/color-options/ral-1035-pearl-beige.jpg' },
+  { value: 'Cappuccino', code: 'Cappuccino', name: 'Cappuccino', detail: 'Matt Finish', image: 'assets/color-options/cappuccino.jpg' },
+  { value: 'RAL 9006 | Weissaluminium', code: 'RAL 9006', name: 'Weissaluminium', detail: 'New Color', image: 'assets/color-options/ral-9006-weissaluminium.jpg' },
+  { value: 'RAL 9007 | Graualuminium', code: 'RAL 9007', name: 'Graualuminium', detail: 'New Color', image: 'assets/color-options/ral-9007-graualuminium.jpg' },
+  { value: 'RAL 7039 | Quarzgrau', code: 'RAL 7039', name: 'Quarzgrau', detail: 'New Color', image: 'assets/color-options/ral-7039-quarzgrau.jpg' },
+  { value: 'RAL 7016 | Anthracite Grey', code: 'RAL 7016', name: 'Anthracite Grey', detail: 'Matt Finish', image: 'assets/color-options/ral-7016-anthracite-grey.jpg' },
+  { value: 'RAL 7016 | Anthracite - Sand Paper Texture Finish', code: 'RAL 7016', name: 'Anthracite', detail: 'Sand Paper Texture Finish', image: 'assets/color-options/ral-7016-anthracite-sand-paper.jpg' },
+  { value: 'RAL 7421 | Grey Camouflage - Sand Paper Texture Finish', code: 'RAL 7421', name: 'Grey Camouflage', detail: 'Sand Paper Texture Finish', image: 'assets/color-options/ral-7421-grey-camouflage-sand-paper.jpg' },
+  { value: 'RAL 7106 | Sepia Brown - Sand Paper Texture Finish', code: 'RAL 7106', name: 'Sepia Brown', detail: 'Sand Paper Texture Finish', image: 'assets/color-options/ral-7106-sepia-brown-sand-paper.jpg' },
+  { value: 'RAL 9005 | Jet Black', code: 'RAL 9005', name: 'Jet Black', detail: 'Matt Finish', image: 'assets/color-options/ral-9005-jet-black.jpg' },
+  { value: 'RAL 9005 | Jet Black - Sand Paper Texture Finish', code: 'RAL 9005', name: 'Jet Black', detail: 'Sand Paper Texture Finish', image: 'assets/color-options/ral-9005-jet-black-sand-paper.jpg' },
+  { value: 'A-4252-V1-118', code: 'A-4252-V1-118', name: 'Wood Transfer', detail: 'Wood finish', image: 'assets/color-options/a-4252-v1-118.jpg' },
+  { value: 'A-4395-V1-118', code: 'A-4395-V1-118', name: 'Wood Transfer', detail: 'Wood finish', image: 'assets/color-options/a-4395-v1-118.jpg' },
+  { value: 'A-4513-V1-119', code: 'A-4513-V1-119', name: 'Wood Transfer', detail: 'Wood finish', image: 'assets/color-options/a-4513-v1-119.jpg' }
+];
+const FABRIC_OPTIONS = [
+  { value: '8116 / 9002 | White Texture', code: '8116 / 9002', name: 'White Texture', image: 'assets/fabric-options/b-8116-9002.jpg' },
+  { value: '8118 / 9002 | White 3D Texture', code: '8118 / 9002', name: 'White 3D Texture', image: 'assets/fabric-options/8118-9002.jpg' },
+  { value: '8290 / 9002 | White Glossy', code: '8290 / 9002', name: 'White Glossy', image: 'assets/fabric-options/8290-9002.jpg' },
+  { value: '8116 / 1622 | Cream Texture', code: '8116 / 1622', name: 'Cream Texture', image: 'assets/fabric-options/b-8116-1622.jpg' },
+  { value: '8118 / 1622 | Cream 3D Texture', code: '8118 / 1622', name: 'Cream 3D Texture', image: 'assets/fabric-options/8118-1622.jpg' },
+  { value: '8290 / 1622 | Cream Matt', code: '8290 / 1622', name: 'Cream Matt', image: 'assets/fabric-options/8290-1622.jpg' },
+  { value: '666 1X1 | White Thermofoam', code: '666 1X1', name: 'White Thermofoam', image: 'assets/fabric-options/666-1x1.jpg' },
+  { value: '666 8X2 | Grey Thermofoam', code: '666 8X2', name: 'Grey Thermofoam', image: 'assets/fabric-options/666-8x2.jpg' },
+  { value: '8118 / 7500 | Silver 3D Texture', code: '8118 / 7500', name: 'Silver 3D Texture', image: 'assets/fabric-options/8118-7500.jpg' },
+  { value: '8118 / 7024 | Dark Grey 3D Texture', code: '8118 / 7024', name: 'Dark Grey 3D Texture', image: 'assets/fabric-options/8118-7024.jpg' },
+  { value: '8290 / 7024 | Dark Grey Matt', code: '8290 / 7024', name: 'Dark Grey Matt', image: 'assets/fabric-options/8290-7024.jpg' },
+  { value: '8118 / 7340 | Anthracite 3D Texture', code: '8118 / 7340', name: 'Anthracite 3D Texture', image: 'assets/fabric-options/8118-7340.jpg' },
+  { value: '8118 / 7999 | Black 3D Texture', code: '8118 / 7999', name: 'Black 3D Texture', image: 'assets/fabric-options/8118-7999.jpg' },
+  { value: '8118 / 5003 | Blue 3D Texture', code: '8118 / 5003', name: 'Blue 3D Texture', image: 'assets/fabric-options/8118-5003.jpg' }
+];
+
 const LANGUAGE_META = {
   tr: { label: 'Türkçe', htmlLang: 'tr', dir: 'ltr' },
   en: { label: 'English', htmlLang: 'en', dir: 'ltr' },
@@ -781,6 +829,66 @@ Object.assign(I18N.he, {
   'Position': '\u05de\u05d9\u05e7\u05d5\u05dd'
 });
 
+Object.assign(I18N.en, {
+  'Select Color': 'Select Color',
+  'Select Fabric': 'Select Fabric',
+  'Same as System Color': 'Same as System Color',
+  'Enter System Color First': 'Enter System Color First',
+  'Color Chart': 'Color Chart',
+  'Fabric Selection': 'Fabric Selection',
+  'Color Chart Help': 'Select a color from the list. If it is not listed, close this panel and write the color code manually.',
+  'Fabric Selection Help': 'Select a fabric from the list. If it is not listed, close this panel and write the fabric code manually.',
+  'Close': 'Close'
+});
+
+Object.assign(I18N.tr, {
+  'Select Color': 'Renk Se\u00e7',
+  'Select Fabric': 'Kuma\u015f Se\u00e7',
+  'Same as System Color': 'System rengiyle ayn\u0131',
+  'Enter System Color First': '\u00d6nce sistem rengini yaz\u0131n',
+  'Color Chart': 'Renk Kartelas\u0131',
+  'Fabric Selection': 'Kuma\u015f Se\u00e7imi',
+  'Color Chart Help': 'Listeden bir renk se\u00e7in. Renk yoksa bu paneli kapat\u0131p renk kodunu manuel yaz\u0131n.',
+  'Fabric Selection Help': 'Listeden bir kuma\u015f se\u00e7in. Kuma\u015f yoksa bu paneli kapat\u0131p kuma\u015f kodunu manuel yaz\u0131n.',
+  'Close': 'Kapat'
+});
+
+Object.assign(I18N.de, {
+  'Select Color': 'Farbe waehlen',
+  'Select Fabric': 'Stoff waehlen',
+  'Same as System Color': 'Wie Systemfarbe',
+  'Enter System Color First': 'Zuerst Systemfarbe eingeben',
+  'Color Chart': 'Farbkarte',
+  'Fabric Selection': 'Stoffauswahl',
+  'Color Chart Help': 'Waehlen Sie eine Farbe aus der Liste. Wenn sie nicht vorhanden ist, schliessen Sie dieses Fenster und schreiben Sie den Farbcode manuell.',
+  'Fabric Selection Help': 'Waehlen Sie einen Stoff aus der Liste. Wenn er nicht vorhanden ist, schliessen Sie dieses Fenster und schreiben Sie den Stoffcode manuell.',
+  'Close': 'Schliessen'
+});
+
+Object.assign(I18N.fr, {
+  'Select Color': 'Choisir couleur',
+  'Select Fabric': 'Choisir toile',
+  'Same as System Color': 'Comme couleur systeme',
+  'Enter System Color First': 'Saisir d abord la couleur systeme',
+  'Color Chart': 'Nuancier',
+  'Fabric Selection': 'Selection de toile',
+  'Color Chart Help': 'Choisissez une couleur dans la liste. Si elle manque, fermez cette fenetre et saisissez le code couleur manuellement.',
+  'Fabric Selection Help': 'Choisissez une toile dans la liste. Si elle manque, fermez cette fenetre et saisissez le code toile manuellement.',
+  'Close': 'Fermer'
+});
+
+Object.assign(I18N.he, {
+  'Select Color': '\u05d1\u05d7\u05e8 \u05e6\u05d1\u05e2',
+  'Select Fabric': '\u05d1\u05d7\u05e8 \u05d1\u05d3',
+  'Same as System Color': '\u05d6\u05d4\u05d4 \u05dc\u05e6\u05d1\u05e2 \u05d4\u05de\u05e2\u05e8\u05db\u05ea',
+  'Enter System Color First': '\u05d4\u05d6\u05df \u05ea\u05d7\u05d9\u05dc\u05d4 \u05e6\u05d1\u05e2 \u05de\u05e2\u05e8\u05db\u05ea',
+  'Color Chart': '\u05de\u05e0\u05d9\u05e4\u05ea \u05e6\u05d1\u05e2\u05d9\u05dd',
+  'Fabric Selection': '\u05d1\u05d7\u05d9\u05e8\u05ea \u05d1\u05d3',
+  'Color Chart Help': '\u05d1\u05d7\u05e8 \u05e6\u05d1\u05e2 \u05de\u05d4\u05e8\u05e9\u05d9\u05de\u05d4. \u05d0\u05dd \u05d4\u05e6\u05d1\u05e2 \u05dc\u05d0 \u05de\u05d5\u05e4\u05d9\u05e2, \u05e1\u05d2\u05d5\u05e8 \u05d0\u05ea \u05d4\u05d7\u05dc\u05d5\u05df \u05d5\u05d4\u05d6\u05df \u05e7\u05d5\u05d3 \u05e6\u05d1\u05e2 \u05d9\u05d3\u05e0\u05d9\u05ea.',
+  'Fabric Selection Help': '\u05d1\u05d7\u05e8 \u05d1\u05d3 \u05de\u05d4\u05e8\u05e9\u05d9\u05de\u05d4. \u05d0\u05dd \u05d4\u05d1\u05d3 \u05dc\u05d0 \u05de\u05d5\u05e4\u05d9\u05e2, \u05e1\u05d2\u05d5\u05e8 \u05d0\u05ea \u05d4\u05d7\u05dc\u05d5\u05df \u05d5\u05d4\u05d6\u05df \u05e7\u05d5\u05d3 \u05d1\u05d3 \u05d9\u05d3\u05e0\u05d9\u05ea.',
+  'Close': '\u05e1\u05d2\u05d5\u05e8'
+});
+
 const fields = {
   companyName: $('#companyName'),
   contactPerson: $('#contactPerson'),
@@ -827,6 +935,131 @@ function translatedOption(option, lang = state.language) {
 
 function translatedList(values, lang = state.language) {
   return values.length ? values.map((value) => translatedText(value, lang)).join(', ') : '-';
+}
+
+let activePickerInput = null;
+let activePickerKind = 'color';
+
+function pickerKindForField(field, control) {
+  if (field.palette === false) return '';
+  const label = String(field.label || '').trim().toLowerCase();
+  if (!control || control.tagName !== 'INPUT' || control.type !== 'text') return '';
+  if (field.picker) return field.picker;
+  if (field.palette === 'fabric' || FABRIC_FIELD_LABELS.has(label)) return 'fabric';
+  if (field.palette === true || label.includes('color') || label.includes('colour') || COLOR_FIELD_LABELS.has(label)) return 'color';
+  return '';
+}
+
+function pickerButtonLabel(kind) {
+  return translatedText(kind === 'fabric' ? 'Select Fabric' : 'Select Color');
+}
+
+function setInputValueAndNotify(input, value) {
+  if (!input) return;
+  input.value = value;
+  input.dispatchEvent(new Event('input', { bubbles: true }));
+  input.dispatchEvent(new Event('change', { bubbles: true }));
+}
+
+function pickerOptions(kind) {
+  return kind === 'fabric' ? FABRIC_OPTIONS : COLOR_OPTIONS;
+}
+
+function buildPickerList(kind) {
+  const list = $('#colorOptionList');
+  if (!list) return;
+  list.innerHTML = '';
+  pickerOptions(kind).forEach((option) => {
+    const button = document.createElement('button');
+    button.type = 'button';
+    button.className = 'color-option-card';
+    button.setAttribute('aria-label', option.value);
+
+    const swatch = document.createElement('span');
+    swatch.className = `color-option-swatch ${kind === 'fabric' ? 'fabric-swatch' : ''}`;
+    if (option.image) {
+      const img = document.createElement('img');
+      img.src = window.PRODUCT_IMAGE_ASSETS?.[option.image] || option.image;
+      img.alt = option.value;
+      img.loading = 'lazy';
+      swatch.appendChild(img);
+    } else {
+      swatch.style.background = option.swatch;
+    }
+
+    const textWrap = document.createElement('span');
+    textWrap.className = 'color-option-text';
+
+    const code = document.createElement('strong');
+    code.textContent = option.code;
+
+    const name = document.createElement('span');
+    name.textContent = option.name;
+
+    textWrap.appendChild(code);
+    textWrap.appendChild(name);
+    if (option.detail) {
+      const detail = document.createElement('small');
+      detail.textContent = option.detail;
+      textWrap.appendChild(detail);
+    }
+    button.appendChild(swatch);
+    button.appendChild(textWrap);
+    button.addEventListener('click', () => selectPickerOption(option.value));
+    list.appendChild(button);
+  });
+}
+
+function openPicker(input, kind = 'color') {
+  const modal = $('#colorChartModal');
+  if (!modal) return;
+  activePickerInput = input;
+  activePickerKind = kind;
+  $('#colorChartTitle').textContent = translatedText(kind === 'fabric' ? 'Fabric Selection' : 'Color Chart');
+  $('#colorChartHelp').textContent = translatedText(kind === 'fabric' ? 'Fabric Selection Help' : 'Color Chart Help');
+  buildPickerList(kind);
+  modal.hidden = false;
+  document.body.classList.add('modal-open');
+  $('#colorChartClose')?.focus();
+}
+
+function closeColorChart() {
+  const modal = $('#colorChartModal');
+  if (!modal) return;
+  modal.hidden = true;
+  document.body.classList.remove('modal-open');
+  activePickerInput = null;
+  activePickerKind = 'color';
+}
+
+function selectPickerOption(value) {
+  setInputValueAndNotify(activePickerInput, value);
+  toast(`${translatedText('Selected')}: ${value}`);
+  closeColorChart();
+}
+
+function copySystemColorToPanel(panelInput) {
+  const systemColor = $('#dyn_systemColor')?.value?.trim() || '';
+  if (!systemColor) {
+    toast(translatedText('Enter System Color First'));
+    return;
+  }
+  setInputValueAndNotify(panelInput, systemColor);
+  toast(`${translatedText('Panel Color')}: ${systemColor}`);
+}
+
+function initColorChartModal() {
+  const modal = $('#colorChartModal');
+  if (!modal) return;
+  $$('[data-color-chart-close]').forEach((button) => {
+    button.addEventListener('click', closeColorChart);
+  });
+  modal.addEventListener('click', (event) => {
+    if (event.target === modal) closeColorChart();
+  });
+  document.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape' && !modal.hidden) closeColorChart();
+  });
 }
 
 function loadLanguage() {
@@ -1164,6 +1397,28 @@ function createInputField(field) {
   control.addEventListener('change', onAnyInput);
 
   wrap.appendChild(control);
+  const pickerKind = pickerKindForField(field, control);
+  if (pickerKind) {
+    wrap.classList.add('color-picker-wrap');
+    control.placeholder = control.placeholder || pickerButtonLabel(pickerKind);
+    const pickerButton = document.createElement('button');
+    pickerButton.type = 'button';
+    pickerButton.className = 'color-picker-btn';
+    pickerButton.textContent = pickerButtonLabel(pickerKind);
+    pickerButton.setAttribute('aria-label', pickerButtonLabel(pickerKind));
+    pickerButton.addEventListener('click', () => openPicker(control, pickerKind));
+    wrap.appendChild(pickerButton);
+  }
+  if (field.id === 'panelColor') {
+    wrap.classList.add('color-picker-wrap');
+    const sameButton = document.createElement('button');
+    sameButton.type = 'button';
+    sameButton.className = 'same-as-system-btn';
+    sameButton.textContent = translatedText('Same as System Color');
+    sameButton.setAttribute('aria-label', translatedText('Same as System Color'));
+    sameButton.addEventListener('click', () => copySystemColorToPanel(control));
+    wrap.appendChild(sameButton);
+  }
   if (field.unit) {
     const unit = document.createElement('span');
     unit.className = 'unit-suffix';
@@ -1389,7 +1644,12 @@ function renderGenericForm() {
     { id: 'quantity', label: 'Quantity', type: 'number' },
     ...DATA.common.dimensionFields.map((f) => ({ id: f.id, label: f.label, type: 'number', unit: f.unit }))
   ];
-  const colorItems = group.colorFields.map((label) => ({ id: safeId(label), label, type: 'text' }));
+  const colorItems = group.colorFields.map((label) => ({
+    id: safeId(label),
+    label,
+    type: 'text',
+    picker: FABRIC_FIELD_LABELS.has(String(label).trim().toLowerCase()) ? 'fabric' : 'color'
+  }));
   let installItems = [
     { id: 'installationType', label: 'Installation Type', type: 'select', options: DATA.common.installationTypes },
     { id: 'glassType', label: 'Glass Type', type: 'select', options: DATA.common.glassTypes },
@@ -2069,6 +2329,7 @@ function init() {
   renderForm();
   loadOrderDraft();
   registerEvents();
+  initColorChartModal();
   updatePreview();
   initPwa();
 }
