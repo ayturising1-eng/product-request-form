@@ -1,4 +1,4 @@
-const CACHE = 'product-request-demo-v38';
+const CACHE = 'product-request-demo-v39';
 const ASSETS = [
   './',
   './index.html',
