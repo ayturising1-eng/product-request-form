@@ -1199,7 +1199,7 @@ function shouldAutoAdvanceForControl(control) {
   const type = String(control.type || '').toLowerCase();
   if (tag === 'textarea') return true;
   if (tag === 'select') return true;
-  if (type === 'radio') return true;
+  if (type === 'radio') return !control.closest('.checkbox-grid');
   if (type === 'checkbox') return !control.closest('.checkbox-grid');
   if (['text', 'number', 'date', 'email', 'tel', 'search'].includes(type)) return true;
   return false;
@@ -1992,8 +1992,10 @@ function createChoiceField(field) {
     input.dataset.fieldId = field.id;
     input.dataset.fieldLabel = field.label;
     if (field.defaultValue !== undefined && option === field.defaultValue) input.checked = true;
-    input.addEventListener('change', onAnyInput);
-    input.addEventListener('change', autoAdvanceOnChange);
+    input.addEventListener('change', (event) => {
+      onAnyInput();
+      scheduleAutoAdvance(event.currentTarget);
+    });
     span.textContent = translatedText(option);
     label.appendChild(input);
     label.appendChild(span);
@@ -2029,8 +2031,10 @@ function createSingleCheckField(field) {
     input.value = option;
     input.dataset.fieldId = field.id;
     input.dataset.fieldLabel = field.label;
-    input.addEventListener('change', onAnyInput);
-    input.addEventListener('change', autoAdvanceOnChange);
+    input.addEventListener('change', (event) => {
+      onAnyInput();
+      scheduleAutoAdvance(event.currentTarget);
+    });
     span.textContent = translatedText(option);
     label.appendChild(input);
     label.appendChild(span);
@@ -2189,7 +2193,6 @@ function createCheckboxSection(title, fieldName, items) {
     input.name = fieldName;
     input.value = option;
     input.addEventListener('change', onAnyInput);
-    input.addEventListener('change', autoAdvanceOnChange);
     span.textContent = translatedText(option);
     label.appendChild(input);
     label.appendChild(span);
@@ -3019,7 +3022,7 @@ $('#installBtn').addEventListener('click', async () => {
 
 async function initPwa() {
   if ('serviceWorker' in navigator && location.protocol.startsWith('http')) {
-    try { await navigator.serviceWorker.register('sw.js?v=c40'); } catch {}
+    try { await navigator.serviceWorker.register('sw.js?v=c41'); } catch {}
   }
 }
 
