@@ -3,7 +3,8 @@ const HEATER_SOUND_PACKING_FIELDS = [
   { id: 'heater3000Quantity', label: 'Heater 3000W 220V Quantity', type: 'number', unitAuto: 'pcpcs' },
   { id: 'soundSystemQuantity', label: 'Sound System Quantity', type: 'number', unitAuto: 'pcpcs' },
   { id: 'dimmerHeater', label: 'Dimmer Heater', type: 'choice', options: ['Yes', 'No'] },
-  { id: 'packagingType', label: 'Packaging Type', type: 'select', options: ['Wooden Box', 'Heavy-Duty Nylon'], defaultValue: 'Wooden Box' }
+  { id: 'packagingType', label: 'Packaging Type', type: 'singlecheck', options: ['Wooden Box', 'Heavy-Duty Nylon'] },
+  { id: 'loadingType', label: 'Loading', type: 'singlecheck', options: ['Truck', 'Container'] }
 ];
 
 window.PRODUCT_FINISH_OPTIONS = ['Glossy', 'Matt', 'Texture'];
@@ -39,7 +40,7 @@ window.PRODUCT_DATA = {
       ],
       bioclimatic: [
         { id: 'bcube', label: 'B-Cube' },
-        { id: 'bio_rise', label: 'Bio-Rise' }
+        { id: 'bio_rise', label: 'Bio-Rise', productId: 'bio_rise' }
       ]
     },
     subGroups: {
@@ -67,10 +68,7 @@ window.PRODUCT_DATA = {
         { id: 'freedom_plus', label: 'Freedom Plus', productId: 'freedom_plus' },
         { id: 'classic_plus', label: 'Classic Plus', productId: 'classic_plus' }
       ],
-      bio_rise: [
-        { id: 'motorlu', label: 'Motorlu', productId: 'bio_rise_motorlu' },
-        { id: 'manuel', label: 'Manuel', productId: 'bio_rise_manuel' }
-      ]
+      bio_rise: []
     }
   },
   groups: {
@@ -126,31 +124,43 @@ window.PRODUCT_DATA = {
       { id: 'backH', label: 'Back H', type: 'number', unit: 'mm' },
       { id: 'frontH', label: 'Front H', type: 'number', unit: 'mm' },
       { id: 'parapetH', label: 'Parapet H', type: 'number', unit: 'mm' },
-      { id: 'sideBeam', label: 'Side Beam', type: 'choice', options: ['Left', 'Right', 'Both', 'No'], defaultValue: 'No' },
+      { id: 'sideBeam', label: 'Side Beam', type: 'choice', options: ['Left', 'Right', 'Both', 'No'] },
+      { id: 'waterOutletDetail', label: 'Water Outlet Detail', type: 'select', options: ['From Post', 'From Gutter'] },
+      { id: 'waterOutletDirection', label: 'Water Outlet Direction', type: 'select', options: ['Front', 'Side'] },
+      { id: 'pipeLengthType', label: 'Pipe Length', type: 'select', options: ['Standard', 'Other'] },
+      { id: 'pipeLengthOther', label: 'Pipe Length Other', type: 'number', unit: 'mm', showWhen: { field: 'pipeLengthType', values: ['Other'] } },
       { id: 'connection', label: 'Connection', type: 'choice', options: ['Wall', 'Ceiling', 'Freestanding'] }
     ],
     colorDetails: [
       { id: 'structure', label: 'Structure', type: 'text', palette: true },
-      { id: 'structureFinish', label: 'Finish', type: 'choice', options: window.PRODUCT_FINISH_OPTIONS, defaultValue: 'Matt' },
+      { id: 'structureFinish', label: 'Finish', type: 'choice', options: window.PRODUCT_FINISH_OPTIONS },
       { id: 'fabric', label: 'Fabric', type: 'text', picker: 'fabric', fullWidth: true },
       { id: 'fabricProfile', label: 'Fabric Profile', type: 'text', palette: true },
-      { id: 'fabricProfileFinish', label: 'Finish', type: 'choice', options: window.PRODUCT_FINISH_OPTIONS, defaultValue: 'Matt' }
+      { id: 'fabricProfileFinish', label: 'Finish', type: 'choice', options: window.PRODUCT_FINISH_OPTIONS }
     ],
     operation: [
-      { id: 'motor', label: 'Motor', type: 'select', options: ['No', 'Somfy RTS', 'Somfy IO'], defaultValue: 'No' },
+      { id: 'motor', label: 'Motor', type: 'select', options: ['No', 'Somfy RTS', 'Somfy IO'] },
       {
-        id: 'remoteControlSomfy',
+        id: 'remoteControlSomfyRts',
         label: 'Remote Control',
         type: 'choice',
-        options: ['1 Channel', '2 Channels', '4 Channels', '16 Channels']
+        options: ['1 Channel', '2 Channels', '4 Channels', '16 Channels'],
+        showWhen: { field: 'motor', values: ['Somfy RTS'] }
+      },
+      {
+        id: 'remoteControlSomfyIo',
+        label: 'Remote Control',
+        type: 'choice',
+        options: ['1 Channel', '2 Channels', '4 Channels', '40 Channels'],
+        showWhen: { field: 'motor', values: ['Somfy IO'] }
       }
     ],
     lighting: [
-      { id: 'lightingType', label: 'Lighting', type: 'choice', options: ['No', 'Daylight', 'White', 'RGB', 'Other'], defaultValue: 'No' },
+      { id: 'lightingType', label: 'Lighting', type: 'choice', options: ['No', 'Daylight', 'White', 'RGB', 'Other'] },
       { id: 'lightingOther', label: 'Other Lighting', type: 'text', showWhen: { field: 'lightingType', values: ['Other'] } }
     ],
     dimmer: [
-      { id: 'dimmer', label: 'Dimmer', type: 'choice', options: ['Yes', 'No'], defaultValue: 'No' }
+      { id: 'dimmer', label: 'Dimmer', type: 'choice', options: ['Yes', 'No'] }
     ],
     heaterPackaging: HEATER_SOUND_PACKING_FIELDS
   },
@@ -163,13 +173,14 @@ window.PRODUCT_DATA = {
     ],
     colorDetails: [
       { id: 'systemColor', label: 'System Color', type: 'text', palette: true },
-      { id: 'systemColorFinish', label: 'Finish', type: 'choice', options: window.PRODUCT_FINISH_OPTIONS, defaultValue: 'Matt' },
+      { id: 'systemColorFinish', label: 'Finish', type: 'choice', options: window.PRODUCT_FINISH_OPTIONS },
       { id: 'panelColor', label: 'Panel Color', type: 'text', palette: true },
-      { id: 'panelColorFinish', label: 'Finish', type: 'choice', options: window.PRODUCT_FINISH_OPTIONS, defaultValue: 'Matt' }
+      { id: 'panelColorFinish', label: 'Finish', type: 'choice', options: window.PRODUCT_FINISH_OPTIONS }
     ],
     operation: [
-      { id: 'motor', label: 'Motor', type: 'select', options: ['No', 'Somfy RTS', 'Somfy IO'], defaultValue: 'Somfy RTS' },
-      { id: 'remoteControl', label: 'Remote Control', type: 'choice', options: ['1 Channel', '2 Channels', '4 Channels', '16 Channels'] }
+      { id: 'motor', label: 'Motor', type: 'select', options: ['No', 'Somfy RTS', 'Somfy IO'] },
+      { id: 'remoteControlSomfyRts', label: 'Remote Control', type: 'choice', options: ['1 Channel', '2 Channels', '4 Channels', '16 Channels'], showWhen: { field: 'motor', values: ['Somfy RTS'] } },
+      { id: 'remoteControlSomfyIo', label: 'Remote Control', type: 'choice', options: ['1 Channel', '2 Channels', '4 Channels', '40 Channels'], showWhen: { field: 'motor', values: ['Somfy IO'] } }
     ],
     panelOptions: [
       { id: 'panelIsolation', label: 'Panel Isolation', type: 'choice', options: ['Yes', 'No'] }
@@ -206,34 +217,25 @@ window.PRODUCT_DATA = {
         }
       ]
     },
-    bio_rise_motorlu: {
-      operation: [
-        { id: 'motor', label: 'Motor', type: 'select', options: ['No', 'Rising Motor'], defaultValue: 'Rising Motor' },
-        { id: 'remoteControl', label: 'Remote Control', type: 'choice', options: ['1 Channel', '6 Channels'] }
-      ]
-    },
-    bio_rise_manuel: {
-      sectionsAfterDimmers: [
-        {
-          title: 'Remote Control',
-          fields: [
-            { id: 'remoteControl', label: 'Remote Control', type: 'choice', options: ['1 Channel', '6 Channels'] }
-          ]
-        }
-      ]
-    },
     pergo_rise: {
       projectDetailsAppend: [
         { id: 'motorDirection', label: 'Motor Direction', type: 'choice', options: ['Left', 'Right'] }
       ],
       operation: [
-        { id: 'motor', label: 'Motor', type: 'select', options: ['No', 'Somfy RTS', 'Somfy IO', 'Rising Motor'], defaultValue: 'No' },
+        { id: 'motor', label: 'Motor', type: 'select', options: ['No', 'Somfy RTS', 'Somfy IO', 'Rising Motor'] },
         {
-          id: 'remoteControlSomfy',
+          id: 'remoteControlSomfyRts',
           label: 'Remote Control',
           type: 'choice',
           options: ['1 Channel', '2 Channels', '4 Channels', '16 Channels'],
-          showWhen: { field: 'motor', values: ['No', 'Somfy RTS', 'Somfy IO'] }
+          showWhen: { field: 'motor', values: ['Somfy RTS'] }
+        },
+        {
+          id: 'remoteControlSomfyIo',
+          label: 'Remote Control',
+          type: 'choice',
+          options: ['1 Channel', '2 Channels', '4 Channels', '40 Channels'],
+          showWhen: { field: 'motor', values: ['Somfy IO'] }
         },
         {
           id: 'remoteControlRising',
@@ -298,7 +300,6 @@ window.PRODUCT_DATA = {
     { id: 'urban', name: 'B-Cube URBAN', family: 'bioclimatic', productGroup: 'bcube', subGroup: 'urban', group: 'bcube', formTemplate: 'galaxyForm' },
     { id: 'freedom_plus', name: 'B-Cube FREEDOM PLUS', family: 'bioclimatic', productGroup: 'bcube', subGroup: 'freedom_plus', group: 'bcube', formTemplate: 'galaxyForm' },
     { id: 'classic_plus', name: 'B-Cube CLASSIC PLUS', family: 'bioclimatic', productGroup: 'bcube', subGroup: 'classic_plus', group: 'bcube', formTemplate: 'galaxyForm' },
-    { id: 'bio_rise_motorlu', name: 'BIO-RISE MOTORLU', family: 'bioclimatic', productGroup: 'bio_rise', subGroup: 'motorlu', group: 'bioRise', formTemplate: 'galaxyForm', formVariant: 'galaxy' },
-    { id: 'bio_rise_manuel', name: 'BIO-RISE MANUEL', family: 'bioclimatic', productGroup: 'bio_rise', subGroup: 'manuel', group: 'bioRise', formTemplate: 'galaxyForm', formVariant: 'galaxy_manual' }
+    { id: 'bio_rise', name: 'BIO-RISE', family: 'bioclimatic', productGroup: 'bio_rise', subGroup: '', group: 'bioRise', formTemplate: 'galaxyForm', formVariant: 'galaxy' }
   ]
 };

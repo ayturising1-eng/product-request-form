@@ -12,7 +12,7 @@ const state = {
 };
 
 const STORAGE_PROFILE = 'prf_profile_v2';
-const STORAGE_ORDER = 'prf_order_v5';
+const STORAGE_ORDER = 'prf_order_c33_v1';
 const STORAGE_LANGUAGE = 'prf_language_v1';
 
 const COLOR_FIELD_LABELS = new Set([
@@ -925,6 +925,182 @@ Object.assign(I18N.he, {
   'Close': '\u05e1\u05d2\u05d5\u05e8'
 });
 
+
+Object.assign(I18N.en, {
+  '40 Channels': '40 Channels',
+  'Heater & Sound & Packing': 'Heater, Sound, Packing & Loading',
+  'Loading': 'Loading',
+  'Truck': 'Truck',
+  'Container': 'Container',
+  'Water Outlet Detail': 'Water Outlet Detail',
+  'Water Outlet Direction': 'Water Outlet Direction',
+  'Pipe Length': 'Pipe Length',
+  'Pipe Length Other': 'Pipe Length Other',
+  'From Post': 'From Post',
+  'From Gutter': 'From Gutter',
+  'Front': 'Front',
+  'Side': 'Side',
+  'Standard': 'Standard',
+  'Rising Standart': 'Rising Standard',
+  'All Rall Code': 'All RAL Codes',
+  'White Texture': 'White Texture',
+  'Cream Texture': 'Cream Texture',
+  'White Glossy': 'White Glossy',
+  'Cream Matt': 'Cream Matt',
+  'Dark Grey Matt': 'Dark Grey Matt',
+  'White 3D Texture': 'White 3D Texture',
+  'Cream 3D Texture': 'Cream 3D Texture',
+  'Silver 3D Texture': 'Silver 3D Texture',
+  'Dark Grey 3D Texture': 'Dark Grey 3D Texture',
+  'Anthracite 3D Texture': 'Anthracite 3D Texture',
+  'Black 3D Texture': 'Black 3D Texture',
+  'Blue 3D Texture': 'Blue 3D Texture',
+  'White Thermofoam': 'White Thermofoam',
+  'Grey Thermofoam': 'Grey Thermofoam',
+  'Matt Finish': 'Matt Finish',
+  'Wood Transfer': 'Wood Transfer'
+});
+
+Object.assign(I18N.tr, {
+  '40 Channels': '40 Kanal',
+  'Heater & Sound & Packing': 'Isıtıcı, Ses, Ambalaj ve Yükleme',
+  'Loading': 'Yükleme',
+  'Truck': 'Tır',
+  'Container': 'Konteyner',
+  'Water Outlet Detail': 'Su Çıkış Detayı',
+  'Water Outlet Direction': 'Su Çıkış Yönü',
+  'Pipe Length': 'Boru Uzunluğu',
+  'Pipe Length Other': 'Diğer Boru Uzunluğu',
+  'From Post': 'Dikmeden',
+  'From Gutter': 'Oluktan',
+  'Front': 'Önden',
+  'Side': 'Yandan',
+  'Standard': 'Standart',
+  'Rising Standart': 'Rising Standart',
+  'All Rall Code': 'Tüm RAL Kodları',
+  'White Texture': 'Beyaz Texture',
+  'Cream Texture': 'Krem Texture',
+  'White Glossy': 'Beyaz Parlak',
+  'Cream Matt': 'Krem Mat',
+  'Dark Grey Matt': 'Koyu Gri Mat',
+  'White 3D Texture': 'Beyaz 3D Texture',
+  'Cream 3D Texture': 'Krem 3D Texture',
+  'Silver 3D Texture': 'Gümüş 3D Texture',
+  'Dark Grey 3D Texture': 'Koyu Gri 3D Texture',
+  'Anthracite 3D Texture': 'Antrasit 3D Texture',
+  'Black 3D Texture': 'Siyah 3D Texture',
+  'Blue 3D Texture': 'Mavi 3D Texture',
+  'White Thermofoam': 'Beyaz Thermofoam',
+  'Grey Thermofoam': 'Gri Thermofoam',
+  'Matt Finish': 'Mat Yüzey',
+  'Wood Transfer': 'Ahşap Transfer'
+});
+
+Object.assign(I18N.de, {
+  '40 Channels': '40 Kanäle',
+  'Heater & Sound & Packing': 'Heizung, Sound, Verpackung und Verladung',
+  'Loading': 'Verladung',
+  'Truck': 'Lkw',
+  'Container': 'Container',
+  'Water Outlet Detail': 'Wasserablaufdetail',
+  'Water Outlet Direction': 'Wasserablaufrichtung',
+  'Pipe Length': 'Rohrlänge',
+  'Pipe Length Other': 'Andere Rohrlänge',
+  'From Post': 'Durch Pfosten',
+  'From Gutter': 'Durch Rinne',
+  'Front': 'Vorne',
+  'Side': 'Seitlich',
+  'Standard': 'Standard',
+  'Rising Standart': 'Rising Standard',
+  'All Rall Code': 'Alle RAL-Codes',
+  'White Texture': 'Weiße Textur',
+  'Cream Texture': 'Creme Textur',
+  'White Glossy': 'Weiß glänzend',
+  'Cream Matt': 'Creme matt',
+  'Dark Grey Matt': 'Dunkelgrau matt',
+  'White 3D Texture': 'Weiße 3D-Textur',
+  'Cream 3D Texture': 'Creme 3D-Textur',
+  'Silver 3D Texture': 'Silberne 3D-Textur',
+  'Dark Grey 3D Texture': 'Dunkelgraue 3D-Textur',
+  'Anthracite 3D Texture': 'Anthrazit 3D-Textur',
+  'Black 3D Texture': 'Schwarze 3D-Textur',
+  'Blue 3D Texture': 'Blaue 3D-Textur',
+  'White Thermofoam': 'Weißer Thermofoam',
+  'Grey Thermofoam': 'Grauer Thermofoam',
+  'Matt Finish': 'Matte Oberfläche',
+  'Wood Transfer': 'Holztransfer'
+});
+
+Object.assign(I18N.fr, {
+  '40 Channels': '40 canaux',
+  'Heater & Sound & Packing': 'Chauffage, son, emballage et chargement',
+  'Loading': 'Chargement',
+  'Truck': 'Camion',
+  'Container': 'Conteneur',
+  'Water Outlet Detail': 'Détail de sortie d’eau',
+  'Water Outlet Direction': 'Direction de sortie d’eau',
+  'Pipe Length': 'Longueur de tuyau',
+  'Pipe Length Other': 'Autre longueur de tuyau',
+  'From Post': 'Par poteau',
+  'From Gutter': 'Par gouttière',
+  'Front': 'Avant',
+  'Side': 'Côté',
+  'Standard': 'Standard',
+  'Rising Standart': 'Standard Rising',
+  'All Rall Code': 'Tous les codes RAL',
+  'White Texture': 'Texture blanche',
+  'Cream Texture': 'Texture crème',
+  'White Glossy': 'Blanc brillant',
+  'Cream Matt': 'Crème mat',
+  'Dark Grey Matt': 'Gris foncé mat',
+  'White 3D Texture': 'Texture 3D blanche',
+  'Cream 3D Texture': 'Texture 3D crème',
+  'Silver 3D Texture': 'Texture 3D argent',
+  'Dark Grey 3D Texture': 'Texture 3D gris foncé',
+  'Anthracite 3D Texture': 'Texture 3D anthracite',
+  'Black 3D Texture': 'Texture 3D noire',
+  'Blue 3D Texture': 'Texture 3D bleue',
+  'White Thermofoam': 'Thermofoam blanc',
+  'Grey Thermofoam': 'Thermofoam gris',
+  'Matt Finish': 'Finition mate',
+  'Wood Transfer': 'Transfert bois'
+});
+
+Object.assign(I18N.he, {
+  '40 Channels': '40 ערוצים',
+  'Heater & Sound & Packing': 'חימום, שמע, אריזה וטעינה',
+  'Loading': 'טעינה',
+  'Truck': 'משאית',
+  'Container': 'מכולה',
+  'Water Outlet Detail': 'פרטי יציאת מים',
+  'Water Outlet Direction': 'כיוון יציאת מים',
+  'Pipe Length': 'אורך צינור',
+  'Pipe Length Other': 'אורך צינור אחר',
+  'From Post': 'דרך עמוד',
+  'From Gutter': 'דרך מרזב',
+  'Front': 'חזית',
+  'Side': 'צד',
+  'Standard': 'סטנדרטי',
+  'Rising Standart': 'Rising Standard',
+  'All Rall Code': 'כל קודי RAL',
+  'White Texture': 'טקסטורה לבנה',
+  'Cream Texture': 'טקסטורה קרם',
+  'White Glossy': 'לבן מבריק',
+  'Cream Matt': 'קרם מט',
+  'Dark Grey Matt': 'אפור כהה מט',
+  'White 3D Texture': 'טקסטורת 3D לבנה',
+  'Cream 3D Texture': 'טקסטורת 3D קרם',
+  'Silver 3D Texture': 'טקסטורת 3D כסופה',
+  'Dark Grey 3D Texture': 'טקסטורת 3D אפור כהה',
+  'Anthracite 3D Texture': 'טקסטורת 3D אנתרציט',
+  'Black 3D Texture': 'טקסטורת 3D שחורה',
+  'Blue 3D Texture': 'טקסטורת 3D כחולה',
+  'White Thermofoam': 'תרמופום לבן',
+  'Grey Thermofoam': 'תרמופום אפור',
+  'Matt Finish': 'גימור מט',
+  'Wood Transfer': 'העברת עץ'
+});
+
 const fields = {
   companyName: $('#companyName'),
   contactPerson: $('#contactPerson'),
@@ -971,6 +1147,15 @@ function translatedOption(option, lang = state.language) {
 
 function translatedList(values, lang = state.language) {
   return values.length ? values.map((value) => translatedText(value, lang)).join(', ') : '-';
+}
+
+function translatedCompositeText(value, lang = state.language) {
+  const clean = String(value ?? '').trim();
+  if (!clean.includes('|')) return translatedText(clean, lang);
+  const parts = clean.split('|');
+  const code = parts.shift().trim();
+  const description = parts.join('|').trim();
+  return `${code} | ${translatedText(description, lang)}`;
 }
 
 let activePickerInput = null;
@@ -1080,12 +1265,12 @@ function buildPickerList(kind) {
     textWrap.appendChild(code);
     if (option.name) {
       const name = document.createElement('span');
-      name.textContent = option.name;
+      name.textContent = translatedText(option.name);
       textWrap.appendChild(name);
     }
     if (option.detail) {
       const detail = document.createElement('small');
-      detail.textContent = option.detail;
+      detail.textContent = translatedText(option.detail);
       textWrap.appendChild(detail);
     }
     button.appendChild(swatch);
@@ -1218,6 +1403,7 @@ function restoreDynamicState(snapshot) {
   Object.entries(snapshot?.values || {}).forEach(([id, value]) => {
     const radio = $$(`input[type="radio"][name="dyn_${id}"]`).find((x) => x.value === value);
     if (radio) radio.checked = true;
+    $$(`input[type="checkbox"][name="dyn_${id}"]`).forEach((x) => { x.checked = x.value === value; });
     const el = $(`#dyn_${id}`);
     if (el) el.value = value;
   });
@@ -1456,6 +1642,7 @@ function applyFieldCondition(element, field) {
 
 function createInputField(field) {
   if (field.type === 'choice') return createChoiceField(field);
+  if (field.type === 'singlecheck') return createSingleCheckField(field);
 
   const label = document.createElement('label');
   label.textContent = translatedText(field.label);
@@ -1468,7 +1655,9 @@ function createInputField(field) {
   let control;
   if (field.type === 'select') {
     control = document.createElement('select');
-    control.innerHTML = field.options.map((option) => {
+    const selectOptions = Array.isArray(field.options) ? [...field.options] : [];
+    if (!selectOptions.includes('')) selectOptions.unshift('');
+    control.innerHTML = selectOptions.map((option) => {
       const text = translatedOption(option);
       return `<option value="${option}">${text}</option>`;
     }).join('');
@@ -1554,6 +1743,49 @@ function createChoiceField(field) {
     input.dataset.fieldLabel = field.label;
     if (field.defaultValue !== undefined && option === field.defaultValue) input.checked = true;
     input.addEventListener('change', onAnyInput);
+    span.textContent = translatedText(option);
+    label.appendChild(input);
+    label.appendChild(span);
+    row.appendChild(label);
+  });
+
+  wrapper.appendChild(heading);
+  wrapper.appendChild(row);
+  return applyFieldCondition(wrapper, field);
+}
+
+
+function createSingleCheckField(field) {
+  const wrapper = document.createElement('div');
+  wrapper.className = 'choice-field singlecheck-field';
+  if (field.fullWidth) wrapper.classList.add('grid-span-full');
+
+  const heading = document.createElement('div');
+  heading.className = 'field-heading';
+  heading.textContent = translatedText(field.label);
+
+  const row = document.createElement('div');
+  row.className = 'choice-row';
+
+  field.options.forEach((option) => {
+    const id = `dyn_${field.id}_${safeId(option)}`;
+    const label = document.createElement('label');
+    const input = document.createElement('input');
+    const span = document.createElement('span');
+    input.id = id;
+    input.type = 'checkbox';
+    input.name = `dyn_${field.id}`;
+    input.value = option;
+    input.dataset.fieldId = field.id;
+    input.dataset.fieldLabel = field.label;
+    input.addEventListener('change', () => {
+      if (input.checked) {
+        $$(`input[type="checkbox"][name="dyn_${field.id}"]`).forEach((other) => {
+          if (other !== input) other.checked = false;
+        });
+      }
+      onAnyInput();
+    });
     span.textContent = translatedText(option);
     label.appendChild(input);
     label.appendChild(span);
@@ -1750,7 +1982,7 @@ function renderGenericForm() {
     if (isFabric) return [field];
     return [
       field,
-      { id: `${id}Finish`, label: 'Finish', type: 'choice', options: FINISH_OPTIONS, defaultValue: 'Matt' }
+      { id: `${id}Finish`, label: 'Finish', type: 'choice', options: FINISH_OPTIONS }
     ];
   });
   let installItems = [
@@ -1786,7 +2018,7 @@ function renderForm() {
 function getDynamicValues() {
   return $$('[data-field-id]').reduce((acc, el) => {
     const id = el.dataset.fieldId;
-    if (el.type === 'radio') {
+    if (el.type === 'radio' || el.type === 'checkbox') {
       if (!(id in acc)) acc[id] = '';
       if (el.checked) acc[id] = el.value;
     } else {
@@ -1809,7 +2041,7 @@ function formatValue(value, unit, unitAuto, lang = state.language) {
     const suffix = n === 1 ? 'pc' : 'pcs';
     return `${clean} ${suffix}`;
   }
-  return translatedText(clean, lang);
+  return translatedCompositeText(clean, lang);
 }
 
 function codePart(text, fallback = 'XX') {
@@ -1844,6 +2076,10 @@ function getFieldValue(field) {
   const radios = $$(`input[type="radio"][name="dyn_${field.id}"]`);
   if (radios.length) {
     return radios.find((radio) => radio.checked)?.value || '';
+  }
+  const checks = $$(`input[type="checkbox"][name="dyn_${field.id}"]`);
+  if (checks.length) {
+    return checks.find((check) => check.checked)?.value || '';
   }
   const el = $(`#dyn_${field.id}`);
   return el?.value || '';
@@ -2108,6 +2344,7 @@ function loadOrderDraft() {
     Object.entries(saved.values || {}).forEach(([id, value]) => {
       const radio = $$(`input[type="radio"][name="dyn_${id}"]`).find((x) => x.value === value);
       if (radio) radio.checked = true;
+      $$(`input[type="checkbox"][name="dyn_${id}"]`).forEach((x) => { x.checked = x.value === value; });
       const el = $(`#dyn_${id}`);
       if (el) el.value = value;
     });
@@ -2172,20 +2409,7 @@ function wrapText(text, maxChars) {
 }
 
 
-function sleep(ms) {
-  return new Promise((resolve) => setTimeout(resolve, ms));
-}
-
-function dataUrlToImage(dataUrl, width, height) {
-  if (!dataUrl || !dataUrl.startsWith('data:image/jpeg;base64,')) return null;
-  const base64 = dataUrl.split(',')[1];
-  const binary = atob(base64);
-  const bytes = new Uint8Array(binary.length);
-  for (let i = 0; i < binary.length; i += 1) bytes[i] = binary.charCodeAt(i);
-  return { bytes, width: Math.max(1, Math.round(width || 1)), height: Math.max(1, Math.round(height || 1)) };
-}
-
-function buildOrderPdf(data, previewImage = null) {
+function buildOrderPdf(data) {
   const W = 595.28;
   const H = 841.89;
   const margin = 36;
@@ -2205,10 +2429,6 @@ function buildOrderPdf(data, previewImage = null) {
   };
   const line = (x1, y1, x2, y2) => {
     cmd(`${x1.toFixed(2)} ${topY(y1).toFixed(2)} m ${x2.toFixed(2)} ${topY(y2).toFixed(2)} l S`);
-  };
-  const drawImage = (x, yTop, w, h) => {
-    if (!previewImage) return;
-    cmd(`q ${w.toFixed(2)} 0 0 ${h.toFixed(2)} ${x.toFixed(2)} ${topY(yTop + h).toFixed(2)} cm /Im1 Do Q`);
   };
 
   const section = (title) => {
@@ -2255,36 +2475,8 @@ function buildOrderPdf(data, previewImage = null) {
     ['Sub Group', data.productSubGroup || '-'],
     ['Product', data.productName || '-']
   ];
-  const companyStartY = y;
-  const tableWidth = previewImage ? 322 : W - margin * 2;
-  const tableEndY = tableRows(productRows, margin, y, tableWidth);
-  let imageEndY = tableEndY;
-  if (previewImage) {
-    const boxX = margin + tableWidth + 12;
-    const boxY = companyStartY;
-    const boxW = W - margin - boxX;
-    const titleH = 16;
-    const imageBoxH = 94;
-    rect(boxX, boxY, boxW, titleH + imageBoxH + 8);
-    fillRect(boxX, boxY, boxW, titleH, 0.97);
-    text(boxX + 6, boxY + 10.5, '3D PREVIEW', 7.3, true);
-    const innerX = boxX + 7;
-    const innerY = boxY + titleH + 6;
-    const innerW = boxW - 14;
-    const innerH = imageBoxH - 4;
-    const ratio = previewImage.width / previewImage.height;
-    let drawW = innerW;
-    let drawH = drawW / ratio;
-    if (drawH > innerH) {
-      drawH = innerH;
-      drawW = drawH * ratio;
-    }
-    const drawX = innerX + (innerW - drawW) / 2;
-    const drawY = innerY + (innerH - drawH) / 2;
-    drawImage(drawX, drawY, drawW, drawH);
-    imageEndY = boxY + titleH + imageBoxH + 8;
-  }
-  y = Math.max(tableEndY, imageEndY) + 2;
+  const tableEndY = tableRows(productRows, margin, y, W - margin * 2);
+  y = tableEndY + 2;
 
   data.sections.forEach((sectionData) => {
     section(sectionData.title);
@@ -2296,17 +2488,14 @@ function buildOrderPdf(data, previewImage = null) {
   rect(margin, y, W - margin * 2, 58);
   noteLines.forEach((ln, idx) => text(margin + 8, y + 14 + idx * 10, ln, 8.5));
 
-  return createPdf(commands.join('\n'), W, H, previewImage);
+  return createPdf(commands.join('\n'), W, H);
 }
 
-function createPdf(content, width, height, previewImage = null) {
+function createPdf(content, width, height) {
   const encoder = new TextEncoder();
   const encode = (value) => encoder.encode(value);
   const contentBytes = encode(content);
-  const hasImage = Boolean(previewImage?.bytes?.length);
-  const pageResources = hasImage
-    ? `<< /Font << /F1 4 0 R /F2 5 0 R >> /XObject << /Im1 7 0 R >> >>`
-    : `<< /Font << /F1 4 0 R /F2 5 0 R >> >>`;
+  const pageResources = `<< /Font << /F1 4 0 R /F2 5 0 R >> >>`;
 
   const objects = [
     [encode('<< /Type /Catalog /Pages 2 0 R >>')],
@@ -2316,14 +2505,6 @@ function createPdf(content, width, height, previewImage = null) {
     [encode('<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica-Bold >>')],
     [encode(`<< /Length ${contentBytes.length} >>\nstream\n`), contentBytes, encode('\nendstream')]
   ];
-
-  if (hasImage) {
-    objects.push([
-      encode(`<< /Type /XObject /Subtype /Image /Width ${previewImage.width} /Height ${previewImage.height} /ColorSpace /DeviceRGB /BitsPerComponent 8 /Filter /DCTDecode /Length ${previewImage.bytes.length} >>\nstream\n`),
-      previewImage.bytes,
-      encode('\nendstream')
-    ]);
-  }
 
   const chunks = [];
   const offsets = [0];
