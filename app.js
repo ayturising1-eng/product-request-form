@@ -2863,8 +2863,8 @@ async function sharePdf() {
   const filename = filenameFromData(data);
   const file = new File([blob], filename, { type: 'application/pdf' });
 
-  try {
-    if (navigator.canShare && navigator.canShare({ files: [file] })) {
+  if (navigator.canShare && navigator.canShare({ files: [file] }) && navigator.share) {
+    try {
       await navigator.share({
         title: 'Product Request Form',
         text: `${data.productName} - ${data.orderNo}`,
@@ -2872,9 +2872,19 @@ async function sharePdf() {
       });
       toast(t('shareOpened'));
       return;
+    } catch (error) {
+      const errorName = String(error?.name || '').toLowerCase();
+      const errorMessage = String(error?.message || '').toLowerCase();
+      const cancelled = errorName.includes('abort')
+        || errorName.includes('cancel')
+        || errorMessage.includes('abort')
+        || errorMessage.includes('cancel');
+      if (cancelled) {
+        toast(t('shareCancelled'));
+        return;
+      }
+      // Real share failure: fall through to download fallback.
     }
-  } catch (error) {
-    // Some phones report file sharing support but fail at runtime. Fall back to download.
   }
 
   downloadBlob(blob, filename);
@@ -2914,7 +2924,7 @@ $('#installBtn').addEventListener('click', async () => {
 
 async function initPwa() {
   if ('serviceWorker' in navigator && location.protocol.startsWith('http')) {
-    try { await navigator.serviceWorker.register('sw.js?v=c38'); } catch {}
+    try { await navigator.serviceWorker.register('sw.js?v=c39'); } catch {}
   }
 }
 
