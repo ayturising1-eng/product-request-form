@@ -75,7 +75,7 @@ window.PRODUCT_DATA = {
     pergola: {
       label: 'Pergola / Fabric System',
       colorFields: ['Structure', 'Pergola Fabric', 'Screen Fabric'],
-      lighting: ['Daylight', 'White', 'RGB+White', 'Spot', 'Linear', 'Other'],
+      lighting: ['Daylight', 'White', 'Linear Rgb+White', 'Spot', 'Linear', 'Other'],
       accessories: [
         'Sound System',
         'Dimmer Light',
@@ -89,7 +89,7 @@ window.PRODUCT_DATA = {
     bcube: {
       label: 'B-Cube / Louver System',
       colorFields: ['Structure', 'Louver Blade'],
-      lighting: ['Daylight', 'RGB', 'RGB+White', 'Other'],
+      lighting: ['Daylight', 'RGB', 'Linear Rgb+White', 'Other'],
       accessories: [
         'Louver Insulation',
         'Sound System',
@@ -104,7 +104,7 @@ window.PRODUCT_DATA = {
     bioRise: {
       label: 'Bio-Rise',
       colorFields: ['Structure', 'Panel'],
-      lighting: ['Daylight', 'RGB', 'RGB+White', 'Other'],
+      lighting: ['Daylight', 'RGB', 'Linear Rgb+White', 'Other'],
       accessories: [
         'Sound System',
         'Dimmer Light',
@@ -156,7 +156,7 @@ window.PRODUCT_DATA = {
       }
     ],
     lighting: [
-      { id: 'lightingType', label: 'Lighting', type: 'choice', options: ['No', 'Daylight', 'White', 'RGB', 'RGB+White', 'Other'] },
+      { id: 'lightingType', label: 'Lighting', type: 'choice', options: ['No', 'Daylight', 'White', 'RGB', 'Linear Rgb+White', 'Other'] },
       { id: 'lightingOther', label: 'Other Lighting', type: 'text', showWhen: { field: 'lightingType', values: ['Other'] } }
     ],
     dimmer: [
@@ -188,7 +188,7 @@ window.PRODUCT_DATA = {
     lighting: [
       'Linear LED',
       'Linear RGB',
-      'RGB+White',
+      'Linear Rgb+White',
       'Spot LED',
       'Other'
     ],
@@ -356,8 +356,8 @@ window.PRODUCT_DATA.productFormOverrides.space = {
     }
   ]
 };
-window.PRODUCT_DATA.galaxyForm.lighting = ['Linear LED', 'Linear RGB', 'RGB+White', 'Spot LED', 'Other'];
+window.PRODUCT_DATA.galaxyForm.lighting = ['Linear LED', 'Linear RGB', 'Linear Rgb+White', 'Spot LED', 'Other'];
 window.PRODUCT_DATA.pergolaForm.lighting = [
-  { id: 'lightingType', label: 'Lighting', type: 'choice', options: ['No', 'Daylight', 'White', 'RGB', 'RGB+White', 'Other'] },
+  { id: 'lightingType', label: 'Lighting', type: 'choice', options: ['No', 'Daylight', 'White', 'RGB', 'Linear Rgb+White', 'Other'] },
   { id: 'lightingOther', label: 'Other Lighting', type: 'text', showWhen: { field: 'lightingType', values: ['Other'] } }
 ];

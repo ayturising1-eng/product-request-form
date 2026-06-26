@@ -1,4 +1,4 @@
-window.APP_VERSION = 'C47';
+window.APP_VERSION = 'C47-LINEAR-RGBWHITE';
 const DATA = window.PRODUCT_DATA;
 const $ = (selector) => document.querySelector(selector);
 const $$ = (selector) => Array.from(document.querySelectorAll(selector));
@@ -1244,7 +1244,7 @@ Object.assign(I18N.en, {
   'Linear LED': 'Linear LED',
   'Linear RGB': 'Linear RGB',
   'Spot LED': 'Spot LED',
-  'RGB+White': 'RGB+White',
+  'Linear Rgb+White': 'Linear Rgb+White',
   'Other': 'Other',
   'Other Lighting': 'Other Lighting'
 });
@@ -1253,7 +1253,7 @@ Object.assign(I18N.tr, {
   'Linear LED': 'Linear LED',
   'Linear RGB': 'Linear RGB',
   'Spot LED': 'Spot LED',
-  'RGB+White': 'RGB+White',
+  'Linear Rgb+White': 'Linear Rgb+White',
   'Other': 'Diğer',
   'Other Lighting': 'Diğer Aydınlatma'
 });
@@ -1262,7 +1262,7 @@ Object.assign(I18N.de, {
   'Linear LED': 'Linear LED',
   'Linear RGB': 'Linear RGB',
   'Spot LED': 'Spot LED',
-  'RGB+White': 'RGB+White',
+  'Linear Rgb+White': 'Linear Rgb+White',
   'Other': 'Andere',
   'Other Lighting': 'Andere Beleuchtung'
 });
@@ -1271,7 +1271,7 @@ Object.assign(I18N.fr, {
   'Linear LED': 'LED linéaire',
   'Linear RGB': 'RGB linéaire',
   'Spot LED': 'Spot LED',
-  'RGB+White': 'RGB+White',
+  'Linear Rgb+White': 'Linear Rgb+White',
   'Other': 'Autre',
   'Other Lighting': 'Autre éclairage'
 });
@@ -1280,7 +1280,7 @@ Object.assign(I18N.he, {
   'Linear LED': 'LED ליניארי',
   'Linear RGB': 'RGB ליניארי',
   'Spot LED': 'Spot LED',
-  'RGB+White': 'RGB+White',
+  'Linear Rgb+White': 'Linear Rgb+White',
   'Other': 'אחר',
   'Other Lighting': 'תאורה אחרת'
 });
@@ -1294,7 +1294,7 @@ Object.assign(I18N.en, {
   'Select Fabric': 'Select Fabric',
   'Linear LED': 'Linear LED',
   'Linear RGB': 'Linear RGB',
-  'RGB+White': 'RGB+White',
+  'Linear Rgb+White': 'Linear Rgb+White',
   'Spot LED': 'Spot LED',
   'Other': 'Other',
   'Other Lighting': 'Other Lighting'
@@ -1306,7 +1306,7 @@ Object.assign(I18N.tr, {
   'Select Fabric': 'Kumaş Seç',
   'Linear LED': 'Linear LED',
   'Linear RGB': 'Linear RGB',
-  'RGB+White': 'RGB+White',
+  'Linear Rgb+White': 'Linear Rgb+White',
   'Spot LED': 'Spot LED',
   'Other': 'Diğer',
   'Other Lighting': 'Diğer Aydınlatma'
@@ -1318,7 +1318,7 @@ Object.assign(I18N.de, {
   'Select Fabric': 'Stoff auswählen',
   'Linear LED': 'Linear LED',
   'Linear RGB': 'Linear RGB',
-  'RGB+White': 'RGB+White',
+  'Linear Rgb+White': 'Linear Rgb+White',
   'Spot LED': 'Spot LED',
   'Other': 'Andere',
   'Other Lighting': 'Andere Beleuchtung'
@@ -1330,7 +1330,7 @@ Object.assign(I18N.fr, {
   'Select Fabric': 'Sélectionner le tissu',
   'Linear LED': 'LED linéaire',
   'Linear RGB': 'RGB linéaire',
-  'RGB+White': 'RGB+White',
+  'Linear Rgb+White': 'Linear Rgb+White',
   'Spot LED': 'Spot LED',
   'Other': 'Autre',
   'Other Lighting': 'Autre éclairage'
@@ -1342,7 +1342,7 @@ Object.assign(I18N.he, {
   'Select Fabric': 'בחר בד',
   'Linear LED': 'LED ליניארי',
   'Linear RGB': 'RGB ליניארי',
-  'RGB+White': 'RGB+White',
+  'Linear Rgb+White': 'Linear Rgb+White',
   'Spot LED': 'Spot LED',
   'Other': 'אחר',
   'Other Lighting': 'תאורה אחרת'
@@ -3372,7 +3372,7 @@ $('#installBtn').addEventListener('click', async () => {
 
 async function initPwa() {
   if ('serviceWorker' in navigator && location.protocol.startsWith('http')) {
-    try { await navigator.serviceWorker.register('sw.js?v=c47'); } catch {}
+    try { await navigator.serviceWorker.register('sw.js?v=c47-linear-rgbwhite'); } catch {}
   }
 }
 
