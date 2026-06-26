@@ -885,3 +885,87 @@ input:focus, textarea:focus, select:focus {
   color: var(--danger);
   background: #fff;
 }
+
+.native-select-hidden {
+  position: absolute !important;
+  width: 1px !important;
+  height: 1px !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
+.custom-select-btn {
+  width: 100%;
+  min-height: 48px;
+  padding: 12px 14px;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: #fff;
+  color: var(--ink);
+  font: inherit;
+  font-weight: 800;
+  text-align: left;
+  cursor: pointer;
+}
+.custom-select-btn::after {
+  content: "⌄";
+  float: right;
+  color: var(--muted);
+  font-weight: 900;
+}
+.custom-select-btn.is-empty { color: var(--muted); }
+.custom-select-btn:disabled { opacity: .65; cursor: not-allowed; background: #f9fafb; }
+.custom-select-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 70;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  background: rgba(15, 23, 42, .42);
+}
+.custom-select-modal[hidden] { display: none !important; }
+.custom-select-panel {
+  width: min(620px, 100%);
+  max-height: 78vh;
+  overflow: auto;
+  background: #fff;
+  border-radius: 22px 22px 0 0;
+  border: 1px solid var(--line);
+  box-shadow: 0 -18px 50px rgba(15, 23, 42, .24);
+}
+.custom-select-head {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 16px;
+  background: #fff;
+  border-bottom: 1px solid #e5e7eb;
+}
+.custom-select-head h2 { margin: 0; font-size: 17px; }
+.custom-select-options { padding: 8px; }
+.custom-select-option {
+  width: 100%;
+  min-height: 48px;
+  padding: 12px 14px;
+  border: 1px solid transparent;
+  border-radius: 14px;
+  background: #fff;
+  color: var(--ink);
+  font: inherit;
+  font-weight: 800;
+  text-align: left;
+  cursor: pointer;
+}
+.custom-select-option + .custom-select-option { margin-top: 4px; }
+.custom-select-option[aria-selected="true"] {
+  border-color: var(--ink);
+  background: #f3f4f6;
+}
+@media (min-width: 700px) {
+  .custom-select-modal { align-items: center; }
+  .custom-select-panel { border-radius: 22px; }
+}

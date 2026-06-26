@@ -1410,6 +1410,8 @@ function applyLanguage() {
     button.classList.toggle('active', isActive);
     button.setAttribute('aria-pressed', String(isActive));
   });
+  $('#customSelectClose') && ($('#customSelectClose').textContent = translatedText('Close'));
+  refreshCustomSelects();
 }
 
 function projectPositionKey(product = getProduct()) {
@@ -1637,6 +1639,7 @@ function renderProducts() {
   subGroupSelect.disabled = subGroups.length === 0;
 
   updateProductHint();
+  refreshCustomSelects();
 }
 
 function updateProductHint() {
@@ -1684,6 +1687,113 @@ function onProductSubGroupChange() {
   applyProductSelection();
 }
 
+
+let activeCustomSelect = null;
+
+function customSelectLabel(select) {
+  const selected = select.options[select.selectedIndex];
+  return selected?.textContent?.trim() || t('select');
+}
+
+function customSelectTitle(select) {
+  const dynamicLabel = select.dataset.fieldLabel;
+  if (dynamicLabel) return translatedText(dynamicLabel);
+  const label = select.closest('label');
+  const span = label?.querySelector('span');
+  return span?.textContent?.trim() || t('select');
+}
+
+function ensureCustomSelectModal() {
+  let modal = $('#customSelectModal');
+  if (modal) return modal;
+  modal = document.createElement('div');
+  modal.id = 'customSelectModal';
+  modal.className = 'custom-select-modal no-print';
+  modal.hidden = true;
+  modal.innerHTML = `
+    <div class="custom-select-panel" role="dialog" aria-modal="true">
+      <div class="custom-select-head">
+        <h2 id="customSelectTitle"></h2>
+        <button type="button" id="customSelectClose" class="ghost custom-select-close">${translatedText('Close')}</button>
+      </div>
+      <div id="customSelectOptions" class="custom-select-options"></div>
+    </div>
+  `;
+  document.body.appendChild(modal);
+  $('#customSelectClose')?.addEventListener('click', closeCustomSelect);
+  modal.addEventListener('click', (event) => {
+    if (event.target === modal) closeCustomSelect();
+  });
+  document.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape' && !modal.hidden) closeCustomSelect();
+  });
+  return modal;
+}
+
+function updateCustomSelectButton(select) {
+  if (!select?.customSelectButton) return;
+  select.customSelectButton.textContent = customSelectLabel(select);
+  select.customSelectButton.disabled = select.disabled;
+  select.customSelectButton.classList.toggle('is-empty', !select.value);
+}
+
+function openCustomSelect(select) {
+  if (!select || select.disabled) return;
+  const modal = ensureCustomSelectModal();
+  activeCustomSelect = select;
+  $('#customSelectTitle').textContent = customSelectTitle(select);
+  $('#customSelectClose').textContent = translatedText('Close');
+  const list = $('#customSelectOptions');
+  list.innerHTML = '';
+  Array.from(select.options).forEach((option) => {
+    const button = document.createElement('button');
+    button.type = 'button';
+    button.className = 'custom-select-option';
+    button.textContent = option.textContent || t('select');
+    button.dataset.value = option.value;
+    button.setAttribute('aria-selected', String(option.value === select.value));
+    button.addEventListener('click', () => {
+      select.value = option.value;
+      updateCustomSelectButton(select);
+      select.dispatchEvent(new Event('input', { bubbles: true }));
+      select.dispatchEvent(new Event('change', { bubbles: true }));
+      closeCustomSelect();
+    });
+    list.appendChild(button);
+  });
+  modal.hidden = false;
+  document.body.classList.add('modal-open');
+}
+
+function closeCustomSelect() {
+  const modal = $('#customSelectModal');
+  if (!modal) return;
+  modal.hidden = true;
+  activeCustomSelect = null;
+  document.body.classList.remove('modal-open');
+}
+
+function enhanceCustomSelect(select) {
+  if (!select || select.dataset.customSelectReady === '1') {
+    updateCustomSelectButton(select);
+    return;
+  }
+  select.dataset.customSelectReady = '1';
+  select.classList.add('native-select-hidden');
+  const button = document.createElement('button');
+  button.type = 'button';
+  button.className = 'custom-select-btn';
+  button.addEventListener('click', () => openCustomSelect(select));
+  select.insertAdjacentElement('afterend', button);
+  select.customSelectButton = button;
+  select.addEventListener('change', () => updateCustomSelectButton(select));
+  updateCustomSelectButton(select);
+}
+
+function refreshCustomSelects() {
+  $$('select').forEach(enhanceCustomSelect);
+}
+
 function applyFieldCondition(element, field) {
   if (!field.showWhen) return element;
   element.dataset.showWhenField = field.showWhen.field;
@@ -1729,6 +1839,7 @@ function createInputField(field) {
   control.addEventListener('change', onAnyInput);
 
   wrap.appendChild(control);
+  if (field.type === 'select') enhanceCustomSelect(control);
   const pickerKind = pickerKindForField(field, control);
   if (pickerKind) {
     wrap.classList.add('color-picker-wrap');
@@ -2751,17 +2862,23 @@ async function sharePdf() {
   const blob = buildOrderPdf(data);
   const filename = filenameFromData(data);
   const file = new File([blob], filename, { type: 'application/pdf' });
-  if (navigator.canShare && navigator.canShare({ files: [file] })) {
-    await navigator.share({
-      title: 'Product Request Form',
-      text: `${data.productName} - ${data.orderNo}`,
-      files: [file]
-    });
-    toast(t('shareOpened'));
-  } else {
-    downloadBlob(blob, filename);
-    toast(t('shareUnsupported'));
+
+  try {
+    if (navigator.canShare && navigator.canShare({ files: [file] })) {
+      await navigator.share({
+        title: 'Product Request Form',
+        text: `${data.productName} - ${data.orderNo}`,
+        files: [file]
+      });
+      toast(t('shareOpened'));
+      return;
+    }
+  } catch (error) {
+    // Some phones report file sharing support but fail at runtime. Fall back to download.
   }
+
+  downloadBlob(blob, filename);
+  toast(t('shareUnsupported'));
 }
 
 function registerEvents() {
@@ -2772,7 +2889,8 @@ function registerEvents() {
   $('#saveProfileBtn').addEventListener('click', () => { saveProfile(); onAnyInput(); });
   $('#clearProfileBtn').addEventListener('click', clearProfile);
   $('#downloadPdfBtn').addEventListener('click', downloadPdf);
-  $('#sharePdfBtn').addEventListener('click', () => sharePdf().catch(() => toast(t('shareCancelled'))));
+  $('#sharePdfBtn').addEventListener('click', () => sharePdf().catch(() => toast(t('shareUnsupported'))));
+  refreshCustomSelects();
   $('#resetOrderTopBtn').addEventListener('click', resetOrder);
   $$('.language-tabs button').forEach((button) => {
     button.addEventListener('click', () => setLanguage(button.dataset.lang));
@@ -2796,7 +2914,7 @@ $('#installBtn').addEventListener('click', async () => {
 
 async function initPwa() {
   if ('serviceWorker' in navigator && location.protocol.startsWith('http')) {
-    try { await navigator.serviceWorker.register('sw.js?v=c36'); } catch {}
+    try { await navigator.serviceWorker.register('sw.js?v=c37'); } catch {}
   }
 }
 
