@@ -29,3 +29,7 @@ C38 changes:
 - Color/fabric picker panel height stays stable while searching; only the list content filters.
 
 - C40: Mobile auto-advance scroll after completing fields and single selections.
+
+C42:
+- B-Cube Galaxy and Space motor options updated to T-Motion Somfy RTS options.
+- Color/fabric catalog search bar stays fixed while scrolling.

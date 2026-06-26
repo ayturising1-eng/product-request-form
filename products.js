@@ -203,8 +203,30 @@ window.PRODUCT_DATA = {
     heaterPackaging: HEATER_SOUND_PACKING_FIELDS
   },
   productFormOverrides: {
-    galaxy: {},
-    space: {},
+    galaxy: {
+      operation: [
+      { id: 'motor', label: 'Motor', type: 'select', options: ['No', 'T-Motion 350 (Somfy Rts) (120°)', 'T-Motion 300 (Somfy Rts) (90°)'] },
+      {
+        id: 'remoteControlSomfyRts',
+        label: 'Remote Control',
+        type: 'choice',
+        options: ['1 Channel', '2 Channels', '4 Channels', '16 Channels'],
+        showWhen: { field: 'motor', values: ['T-Motion 350 (Somfy Rts) (120°)', 'T-Motion 300 (Somfy Rts) (90°)'] }
+      }
+    ]
+    },
+    space: {
+      operation: [
+      { id: 'motor', label: 'Motor', type: 'select', options: ['No', 'T-Motion 350 (Somfy Rts) (120°)', 'T-Motion 300 (Somfy Rts) (90°)'] },
+      {
+        id: 'remoteControlSomfyRts',
+        label: 'Remote Control',
+        type: 'choice',
+        options: ['1 Channel', '2 Channels', '4 Channels', '16 Channels'],
+        showWhen: { field: 'motor', values: ['T-Motion 350 (Somfy Rts) (120°)', 'T-Motion 300 (Somfy Rts) (90°)'] }
+      }
+    ]
+    },
     galaxy_manual: {
       operation: [],
       sensors: [],
