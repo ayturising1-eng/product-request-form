@@ -1,4 +1,4 @@
-window.APP_VERSION = 'C33-v2';
+window.APP_VERSION = 'C46';
 const DATA = window.PRODUCT_DATA;
 const $ = (selector) => document.querySelector(selector);
 const $$ = (selector) => Array.from(document.querySelectorAll(selector));
@@ -13,7 +13,7 @@ const state = {
 };
 
 const STORAGE_PROFILE = 'prf_profile_v2';
-const STORAGE_ORDER = 'prf_order_c33_v2';
+const STORAGE_ORDER = 'prf_order_c46';
 const STORAGE_LANGUAGE = 'prf_language_v1';
 
 const COLOR_FIELD_LABELS = new Set([
@@ -1119,6 +1119,235 @@ Object.assign(I18N.he, {
   'Wood Transfer': 'העברת עץ'
 });
 
+// C43 language cleanup: placeholders, common options and product form terms.
+Object.assign(I18N.en, {
+  'Enter value': 'Enter value',
+  '2 Channels': '2 Channels',
+  '4 Channels': '4 Channels',
+  '6 Channels': '6 Channels',
+  '16 Channels': '16 Channels',
+  '40 Channels': '40 Channels',
+  'Back Beam': 'Back Beam',
+  'Beam For': 'Beam For',
+  'Pergola Fabric': 'Pergola Fabric',
+  'Screen Fabric': 'Screen Fabric',
+  'Louver Blade': 'Louver Blade',
+  'Dimmer Heater': 'Dimmer Heater',
+  'Light on the Gutter (Linear LED)': 'Light on the Gutter (Linear LED)',
+  'Light on the Gutter (Linear RGB)': 'Light on the Gutter (Linear RGB)',
+  'Light on the Panel (Spot LED)': 'Light on the Panel (Spot LED)',
+  'Panel Isolation': 'Panel Isolation',
+  'Wind & Sun Sensor': 'Wind & Sun Sensor',
+  'Rising Standart': 'Rising Standard',
+  'All Rall Code': 'All RAL Codes'
+});
+
+Object.assign(I18N.tr, {
+  'Enter value': 'Değer girin',
+  '2 Channels': '2 Kanal',
+  '4 Channels': '4 Kanal',
+  '6 Channels': '6 Kanal',
+  '16 Channels': '16 Kanal',
+  '40 Channels': '40 Kanal',
+  'Back Beam': 'Arka Kiriş',
+  'Beam For': 'Kiriş İçin',
+  'Pergola Fabric': 'Pergola Kumaşı',
+  'Screen Fabric': 'Screen Kumaşı',
+  'Louver Blade': 'Panel Kanadı',
+  'Dimmer Heater': 'Dimmerli Isıtıcı',
+  'Light on the Gutter (Linear LED)': 'Oluk Üzeri Aydınlatma (Linear LED)',
+  'Light on the Gutter (Linear RGB)': 'Oluk Üzeri Aydınlatma (Linear RGB)',
+  'Light on the Panel (Spot LED)': 'Panel Üzeri Aydınlatma (Spot LED)',
+  'Panel Isolation': 'Panel İzolasyonu',
+  'Wind & Sun Sensor': 'Rüzgar ve Güneş Sensörü',
+  'Rising Standart': 'Rising Standart',
+  'All Rall Code': 'Tüm RAL Kodları',
+  'T-Motion 350 (Somfy Rts) (120°)': 'T-Motion 350 (Somfy Rts) (120°)',
+  'T-Motion 300 (Somfy Rts) (90°)': 'T-Motion 300 (Somfy Rts) (90°)'
+});
+
+Object.assign(I18N.de, {
+  'Enter value': 'Wert eingeben',
+  '2 Channels': '2 Kanäle',
+  '4 Channels': '4 Kanäle',
+  '6 Channels': '6 Kanäle',
+  '16 Channels': '16 Kanäle',
+  '40 Channels': '40 Kanäle',
+  'Back Beam': 'Hinterer Träger',
+  'Beam For': 'Träger für',
+  'Pergola Fabric': 'Pergolastoff',
+  'Screen Fabric': 'Screen-Stoff',
+  'Louver Blade': 'Lamelle',
+  'Dimmer Heater': 'Heizungsdimmer',
+  'Light on the Gutter (Linear LED)': 'Licht an der Rinne (Linear LED)',
+  'Light on the Gutter (Linear RGB)': 'Licht an der Rinne (Linear RGB)',
+  'Light on the Panel (Spot LED)': 'Licht am Panel (Spot LED)',
+  'Panel Isolation': 'Panelisolierung',
+  'Wind & Sun Sensor': 'Wind- und Sonnensensor',
+  'Remove Last Position': 'Letzte Position löschen',
+  'Delete': 'Löschen',
+  'Rising Standart': 'Rising Standard',
+  'All Rall Code': 'Alle RAL-Codes'
+});
+
+Object.assign(I18N.fr, {
+  'Enter value': 'Saisir une valeur',
+  '2 Channels': '2 canaux',
+  '4 Channels': '4 canaux',
+  '6 Channels': '6 canaux',
+  '16 Channels': '16 canaux',
+  '40 Channels': '40 canaux',
+  'Back Beam': 'Poutre arrière',
+  'Beam For': 'Poutre pour',
+  'Pergola Fabric': 'Toile de pergola',
+  'Screen Fabric': 'Toile screen',
+  'Louver Blade': 'Lame orientable',
+  'Dimmer Heater': 'Variateur chauffage',
+  'Light on the Gutter (Linear LED)': 'Éclairage sur gouttière (LED linéaire)',
+  'Light on the Gutter (Linear RGB)': 'Éclairage sur gouttière (RGB linéaire)',
+  'Light on the Panel (Spot LED)': 'Éclairage sur panneau (spot LED)',
+  'Panel Isolation': 'Isolation panneau',
+  'Wind & Sun Sensor': 'Capteur vent et soleil',
+  'Rising Standart': 'Standard Rising',
+  'All Rall Code': 'Tous les codes RAL'
+});
+
+Object.assign(I18N.he, {
+  'Enter value': 'הזן ערך',
+  '2 Channels': '2 ערוצים',
+  '4 Channels': '4 ערוצים',
+  '6 Channels': '6 ערוצים',
+  '16 Channels': '16 ערוצים',
+  '40 Channels': '40 ערוצים',
+  'Back Beam': 'קורה אחורית',
+  'Beam For': 'קורה עבור',
+  'Pergola Fabric': 'בד פרגולה',
+  'Screen Fabric': 'בד מסך',
+  'Louver Blade': 'להב רפפה',
+  'Dimmer Heater': 'דימר לחימום',
+  'Light on the Gutter (Linear LED)': 'תאורה על המרזב (LED ליניארי)',
+  'Light on the Gutter (Linear RGB)': 'תאורה על המרזב (RGB ליניארי)',
+  'Light on the Panel (Spot LED)': 'תאורה על הפנל (Spot LED)',
+  'Panel Isolation': 'בידוד פנל',
+  'Wind & Sun Sensor': 'חיישן רוח ושמש',
+  'Remove Last Position': 'מחק מיקום אחרון',
+  'Delete': 'מחק',
+  'Rising Standart': 'Rising Standard',
+  'All Rall Code': 'כל קודי RAL'
+});
+
+
+
+// C46 final language and lighting cleanup.
+Object.assign(I18N.en, {
+  enterValue: 'Enter value',
+  'Linear LED': 'Linear LED',
+  'Linear RGB': 'Linear RGB',
+  'Spot LED': 'Spot LED',
+  'RGB+White': 'RGB+White',
+  'Other': 'Other',
+  'Other Lighting': 'Other Lighting'
+});
+Object.assign(I18N.tr, {
+  enterValue: 'Değer girin',
+  'Linear LED': 'Linear LED',
+  'Linear RGB': 'Linear RGB',
+  'Spot LED': 'Spot LED',
+  'RGB+White': 'RGB+White',
+  'Other': 'Diğer',
+  'Other Lighting': 'Diğer Aydınlatma'
+});
+Object.assign(I18N.de, {
+  enterValue: 'Wert eingeben',
+  'Linear LED': 'Linear LED',
+  'Linear RGB': 'Linear RGB',
+  'Spot LED': 'Spot LED',
+  'RGB+White': 'RGB+White',
+  'Other': 'Andere',
+  'Other Lighting': 'Andere Beleuchtung'
+});
+Object.assign(I18N.fr, {
+  enterValue: 'Saisir une valeur',
+  'Linear LED': 'LED linéaire',
+  'Linear RGB': 'RGB linéaire',
+  'Spot LED': 'Spot LED',
+  'RGB+White': 'RGB+White',
+  'Other': 'Autre',
+  'Other Lighting': 'Autre éclairage'
+});
+Object.assign(I18N.he, {
+  enterValue: 'הזן ערך',
+  'Linear LED': 'LED ליניארי',
+  'Linear RGB': 'RGB ליניארי',
+  'Spot LED': 'Spot LED',
+  'RGB+White': 'RGB+White',
+  'Other': 'אחר',
+  'Other Lighting': 'תאורה אחרת'
+});
+
+
+// C46 final override: make generated placeholders and simplified lighting labels language-safe.
+Object.assign(I18N.en, {
+  enterValue: 'Enter value',
+  'Enter value': 'Enter value',
+  'Select Code': 'Select Code',
+  'Select Fabric': 'Select Fabric',
+  'Linear LED': 'Linear LED',
+  'Linear RGB': 'Linear RGB',
+  'RGB+White': 'RGB+White',
+  'Spot LED': 'Spot LED',
+  'Other': 'Other',
+  'Other Lighting': 'Other Lighting'
+});
+Object.assign(I18N.tr, {
+  enterValue: 'Değer girin',
+  'Enter value': 'Değer girin',
+  'Select Code': 'Kod Seç',
+  'Select Fabric': 'Kumaş Seç',
+  'Linear LED': 'Linear LED',
+  'Linear RGB': 'Linear RGB',
+  'RGB+White': 'RGB+White',
+  'Spot LED': 'Spot LED',
+  'Other': 'Diğer',
+  'Other Lighting': 'Diğer Aydınlatma'
+});
+Object.assign(I18N.de, {
+  enterValue: 'Wert eingeben',
+  'Enter value': 'Wert eingeben',
+  'Select Code': 'Code auswählen',
+  'Select Fabric': 'Stoff auswählen',
+  'Linear LED': 'Linear LED',
+  'Linear RGB': 'Linear RGB',
+  'RGB+White': 'RGB+White',
+  'Spot LED': 'Spot LED',
+  'Other': 'Andere',
+  'Other Lighting': 'Andere Beleuchtung'
+});
+Object.assign(I18N.fr, {
+  enterValue: 'Saisir une valeur',
+  'Enter value': 'Saisir une valeur',
+  'Select Code': 'Sélectionner le code',
+  'Select Fabric': 'Sélectionner le tissu',
+  'Linear LED': 'LED linéaire',
+  'Linear RGB': 'RGB linéaire',
+  'RGB+White': 'RGB+White',
+  'Spot LED': 'Spot LED',
+  'Other': 'Autre',
+  'Other Lighting': 'Autre éclairage'
+});
+Object.assign(I18N.he, {
+  enterValue: 'הזן ערך',
+  'Enter value': 'הזן ערך',
+  'Select Code': 'בחר קוד',
+  'Select Fabric': 'בחר בד',
+  'Linear LED': 'LED ליניארי',
+  'Linear RGB': 'RGB ליניארי',
+  'RGB+White': 'RGB+White',
+  'Spot LED': 'Spot LED',
+  'Other': 'אחר',
+  'Other Lighting': 'תאורה אחרת'
+});
+
 const fields = {
   companyName: $('#companyName'),
   contactPerson: $('#contactPerson'),
@@ -1471,6 +1700,39 @@ function loadLanguage() {
   if (LANGUAGE_META[saved]) state.language = saved;
 }
 
+function refreshDynamicLanguage() {
+  $$('[data-placeholder-i18n]').forEach((el) => {
+    el.placeholder = t(el.dataset.placeholderI18n);
+  });
+  $$('[data-placeholder-key]').forEach((el) => {
+    el.placeholder = translatedText(el.dataset.placeholderKey);
+  });
+  $$('#formArea input, #formArea textarea').forEach((el) => {
+    if (el.dataset.placeholderKey === 'Enter value' || el.dataset.placeholderI18n === 'enterValue' || el.placeholder === 'Enter value') {
+      el.placeholder = translatedText('Enter value');
+      el.dataset.placeholderKey = 'Enter value';
+      delete el.dataset.placeholderI18n;
+    }
+  });
+  $$('[data-dynamic-label-key]').forEach((el) => {
+    el.textContent = translatedText(el.dataset.dynamicLabelKey);
+  });
+  $$('.color-picker-btn').forEach((button) => {
+    if (button.dataset.pickerKind) {
+      const label = pickerButtonLabel(button.dataset.pickerKind);
+      button.textContent = label;
+      button.setAttribute('aria-label', label);
+    }
+  });
+  $$('.same-as-system-btn').forEach((button) => {
+    button.textContent = translatedText('Same as System Color');
+    button.setAttribute('aria-label', translatedText('Same as System Color'));
+  });
+  const searchInput = $('#catalogSearchInput');
+  if (searchInput) searchInput.placeholder = translatedText('Search code or name');
+  refreshCustomSelects();
+}
+
 function applyLanguage() {
   const meta = LANGUAGE_META[state.language] || LANGUAGE_META.en;
   document.documentElement.lang = meta.htmlLang;
@@ -1488,7 +1750,7 @@ function applyLanguage() {
     button.setAttribute('aria-pressed', String(isActive));
   });
   $('#customSelectClose') && ($('#customSelectClose').textContent = translatedText('Close'));
-  refreshCustomSelects();
+  refreshDynamicLanguage();
 }
 
 function projectPositionKey(product = getProduct()) {
@@ -1541,11 +1803,13 @@ function restoreDynamicState(snapshot) {
   setChecked('accessories', snapshot?.accessories || []);
   updateAutoUnits();
   updateConditionalFields();
+  updateLightingOtherVisibility();
 }
 
 function setLanguage(lang) {
-  if (!LANGUAGE_META[lang] || lang === state.language) return;
+  if (!LANGUAGE_META[lang]) return;
   const snapshot = snapshotDynamicState();
+  const sameLanguage = lang === state.language;
   state.language = lang;
   localStorage.setItem(STORAGE_LANGUAGE, lang);
   applyLanguage();
@@ -1893,6 +2157,7 @@ function createInputField(field) {
 
   const label = document.createElement('label');
   label.textContent = translatedText(field.label);
+  label.dataset.dynamicLabelKey = field.label;
   label.className = field.unit || field.unitAuto ? 'unit-label' : '';
   if (field.fullWidth) label.classList.add('grid-span-full');
 
@@ -1913,7 +2178,8 @@ function createInputField(field) {
     control = document.createElement('input');
     control.type = field.type === 'number' ? 'number' : 'text';
     if (field.type === 'number') control.inputMode = 'decimal';
-    control.placeholder = field.unit || field.unitAuto ? translatedText('Enter value') : '';
+    control.dataset.placeholderKey = 'Enter value';
+    control.placeholder = translatedText('Enter value');
     if (field.defaultValue !== undefined) control.value = field.defaultValue;
   }
   control.id = `dyn_${field.id}`;
@@ -1931,10 +2197,12 @@ function createInputField(field) {
   const pickerKind = pickerKindForField(field, control);
   if (pickerKind) {
     wrap.classList.add('color-picker-wrap');
-    control.placeholder = control.placeholder || pickerButtonLabel(pickerKind);
+    control.dataset.placeholderKey = pickerKind === 'fabric' ? 'Select Fabric' : 'Select Code';
+    control.placeholder = pickerButtonLabel(pickerKind);
     const pickerButton = document.createElement('button');
     pickerButton.type = 'button';
     pickerButton.className = 'color-picker-btn';
+    pickerButton.dataset.pickerKind = pickerKind;
     pickerButton.textContent = pickerButtonLabel(pickerKind);
     pickerButton.setAttribute('aria-label', pickerButtonLabel(pickerKind));
     pickerButton.addEventListener('click', () => openPicker(control, pickerKind));
@@ -2200,6 +2468,33 @@ function createCheckboxSection(title, fieldName, items) {
   });
   section.appendChild(h3);
   section.appendChild(grid);
+
+  if (fieldName === 'lighting' && items.includes('Other')) {
+    const otherLabel = document.createElement('label');
+    otherLabel.id = 'lightingOtherWrap';
+    otherLabel.className = 'unit-label lighting-other-input';
+    otherLabel.hidden = true;
+    otherLabel.textContent = translatedText('Other Lighting');
+    otherLabel.dataset.dynamicLabelKey = 'Other Lighting';
+
+    const wrap = document.createElement('div');
+    wrap.className = 'input-unit-wrap';
+    const input = document.createElement('input');
+    input.id = 'dyn_lightingOther';
+    input.type = 'text';
+    input.dataset.fieldId = 'lightingOther';
+    input.dataset.fieldLabel = 'Other Lighting';
+    input.dataset.placeholderKey = 'Enter value';
+    input.placeholder = translatedText('Enter value');
+    input.addEventListener('input', onAnyInput);
+    input.addEventListener('change', onAnyInput);
+    input.addEventListener('change', autoAdvanceOnChange);
+    input.addEventListener('keydown', autoAdvanceOnEnter);
+    wrap.appendChild(input);
+    otherLabel.appendChild(wrap);
+    section.appendChild(otherLabel);
+  }
+
   return section;
 }
 
@@ -2231,6 +2526,7 @@ function renderGalaxyForm() {
   }
   wrap.appendChild(createFormSection('Heater & Sound & Packing', form.heaterPackaging, 'grid two'));
   updateAutoUnits();
+  refreshDynamicLanguage();
 }
 
 function renderPergolaForm() {
@@ -2249,6 +2545,7 @@ function renderPergolaForm() {
   wrap.appendChild(createFormSection('Heater & Sound & Packing', form.heaterPackaging, 'grid two'));
   updateAutoUnits();
   updateConditionalFields();
+  refreshDynamicLanguage();
 }
 
 function renderGenericForm() {
@@ -2311,6 +2608,7 @@ function renderGenericForm() {
   }
   wrap.appendChild(createCheckboxSection('Lighting', 'lighting', lighting));
   wrap.appendChild(createCheckboxSection('Additional Accessories', 'accessories', group.accessories));
+  refreshDynamicLanguage();
 }
 
 function renderForm() {
@@ -2334,6 +2632,24 @@ function getDynamicValues() {
 
 function getChecked(name) {
   return $$(`input[name="${name}"]:checked`).map((x) => x.value);
+}
+
+function updateLightingOtherVisibility() {
+  const wrap = $('#lightingOtherWrap');
+  if (!wrap) return;
+  wrap.hidden = !getChecked('lighting').includes('Other');
+}
+
+function lightingDisplayValue(lang = state.language) {
+  const selected = getChecked('lighting');
+  const parts = selected
+    .filter((value) => value !== 'Other')
+    .map((value) => translatedText(value, lang));
+  if (selected.includes('Other')) {
+    const otherValue = String($('#dyn_lightingOther')?.value || '').trim();
+    parts.push(`${translatedText('Other', lang)}${otherValue ? `: ${otherValue}` : ''}`);
+  }
+  return parts.length ? parts.join(', ') : '-';
 }
 
 function formatValue(value, unit, unitAuto, lang = state.language) {
@@ -2410,6 +2726,8 @@ function projectDetailSections(fieldList, lang = state.language) {
   return Array.from({ length: positionCount }, (_, index) => {
     const positionIndex = index + 1;
     return {
+      kind: 'projectDetails',
+      baseTitle: projectTitle,
       title: positionCount > 1 ? `${positionLabel} ${positionIndex}` : projectTitle,
       rows: fieldRows(positionedFields(fieldList, positionIndex), lang)
     };
@@ -2450,7 +2768,7 @@ function genericRows(lang = state.language) {
     sections.push({ title: translatedText('Technical Selections', lang), rows: techFields });
   }
   sections.push(
-    { title: translatedText('Lighting', lang), rows: [[translatedText('Selected', lang), translatedList(getChecked('lighting'), lang)]] },
+    { title: translatedText('Lighting', lang), rows: [[translatedText('Selected', lang), lightingDisplayValue(lang)]] },
     { title: translatedText('Additional Accessories', lang), rows: [[translatedText('Selected', lang), translatedList(getChecked('accessories'), lang)]] }
   );
   return {
@@ -2471,7 +2789,7 @@ function galaxyRows(lang = state.language) {
   }
   sections.push(
     { title: translatedText('Panel Options', lang), rows: fieldRows(form.panelOptions, lang) },
-    { title: translatedText('Lighting', lang), rows: [[translatedText('Selected', lang), translatedList(getChecked('lighting'), lang)]] }
+    { title: translatedText('Lighting', lang), rows: [[translatedText('Selected', lang), lightingDisplayValue(lang)]] }
   );
   if (form.dimmers?.length) {
     sections.push({ title: translatedText('Light Dimmers', lang), rows: fieldRows(form.dimmers, lang) });
@@ -2546,14 +2864,28 @@ function setText(key, value) {
 
 function normalizeSectionBaseTitle(title) {
   const raw = String(title || '').trim();
-  if (/^(Position|Poz|מיקום)\s+\d+$/i.test(raw)) return translatedText('Project Details');
+  if (/^(Position|Poz|Position|מיקום)\s+\d+$/i.test(raw)) return translatedText('Project Details');
   return raw.replace(/\s*-\s*(Position|Poz|מיקום)\s+\d+$/i, '').trim();
+}
+
+function sectionGroupKey(section) {
+  if (section?.kind === 'projectDetails') return 'projectDetails';
+  return `title:${normalizeSectionBaseTitle(section?.title)}`;
+}
+
+function sectionBaseTitle(section) {
+  if (section?.kind === 'projectDetails') return section.baseTitle || translatedText('Project Details');
+  return normalizeSectionBaseTitle(section?.title);
 }
 
 function buildSectionMap(rows) {
   const map = new Map();
   (rows || []).forEach(([label, value]) => map.set(label, value || '-'));
   return map;
+}
+
+function isProjectDetailsGroup(group) {
+  return group.some((section) => section?.kind === 'projectDetails');
 }
 
 function renderPositionMatrixSection(baseTitle, sections) {
@@ -2574,14 +2906,15 @@ function renderPreviewSections(sections) {
   const html = [];
   for (let i = 0; i < sections.length; i += 1) {
     const current = sections[i];
-    const baseTitle = normalizeSectionBaseTitle(current.title);
+    const key = sectionGroupKey(current);
+    const baseTitle = sectionBaseTitle(current);
     const group = [current];
     let j = i + 1;
-    while (j < sections.length && normalizeSectionBaseTitle(sections[j].title) === baseTitle) {
+    while (j < sections.length && sectionGroupKey(sections[j]) === key) {
       group.push(sections[j]);
       j += 1;
     }
-    if (group.length > 1 && /project details/i.test(baseTitle)) {
+    if (group.length > 1 && isProjectDetailsGroup(group)) {
       html.push(renderPositionMatrixSection(baseTitle, group));
       i = j - 1;
       continue;
@@ -2698,6 +3031,7 @@ function loadOrderDraft() {
     setChecked('lighting', saved.lighting || []);
     setChecked('accessories', saved.accessories || []);
     updateConditionalFields();
+    updateLightingOtherVisibility();
   } catch {}
 }
 
@@ -2718,6 +3052,7 @@ function resetOrder() {
 
 function onAnyInput() {
   updateConditionalFields();
+  updateLightingOtherVisibility();
   updateAutoUnits();
   saveOrderDraft();
   updatePreview();
@@ -2860,15 +3195,16 @@ function buildOrderPdf(data) {
 
   for (let i = 0; i < data.sections.length; i += 1) {
     const current = data.sections[i];
-    const baseTitle = normalizeSectionBaseTitle(current.title);
+    const key = sectionGroupKey(current);
+    const baseTitle = sectionBaseTitle(current);
     const group = [current];
     let j = i + 1;
-    while (j < data.sections.length && normalizeSectionBaseTitle(data.sections[j].title) === baseTitle) {
+    while (j < data.sections.length && sectionGroupKey(data.sections[j]) === key) {
       group.push(data.sections[j]);
       j += 1;
     }
     section(baseTitle);
-    if (group.length > 1 && /project details/i.test(baseTitle)) {
+    if (group.length > 1 && isProjectDetailsGroup(group)) {
       y = tableMatrix(group) + 2;
       i = j - 1;
       continue;
@@ -3022,7 +3358,7 @@ $('#installBtn').addEventListener('click', async () => {
 
 async function initPwa() {
   if ('serviceWorker' in navigator && location.protocol.startsWith('http')) {
-    try { await navigator.serviceWorker.register('sw.js?v=c42'); } catch {}
+    try { await navigator.serviceWorker.register('sw.js?v=c46'); } catch {}
   }
 }
 

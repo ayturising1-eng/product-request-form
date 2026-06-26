@@ -988,3 +988,113 @@ input:focus, textarea:focus, select:focus {
     padding: 10px 10px 10px;
   }
 }
+
+
+/* C44: stronger section headings, especially on mobile */
+.dynamic-section h3 {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0 0 14px !important;
+  padding: 12px 14px !important;
+  border: 0 !important;
+  border-left: 5px solid #2563eb !important;
+  border-radius: 13px !important;
+  background: #eef4ff !important;
+  color: #0f172a !important;
+  font-size: 18px !important;
+  font-weight: 950 !important;
+  letter-spacing: .01em;
+}
+.dynamic-section h3::before {
+  content: '';
+  width: 8px;
+  height: 8px;
+  border-radius: 999px;
+  background: #2563eb;
+  flex: 0 0 auto;
+}
+.pdf-section h3 {
+  padding: 9px 10px !important;
+  border: 0 !important;
+  border-left: 4px solid #111827 !important;
+  border-radius: 9px !important;
+  background: #f3f4f6 !important;
+  font-size: 13px !important;
+  font-weight: 950 !important;
+  letter-spacing: .06em;
+}
+@media (max-width: 860px) {
+  .dynamic-section h3 {
+    font-size: 17px !important;
+    padding: 11px 13px !important;
+    margin-bottom: 13px !important;
+  }
+  .section-title h2 {
+    font-size: 20px !important;
+    font-weight: 950 !important;
+  }
+  label, .field-heading {
+    font-size: 14px;
+    font-weight: 850;
+  }
+}
+
+/* C45 heading emphasis and lighting-other spacing */
+.dynamic-section > h3,
+.pdf-section h3 {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 18px;
+  font-weight: 900;
+  color: #111827;
+}
+.dynamic-section > h3::before {
+  content: '';
+  width: 5px;
+  height: 22px;
+  border-radius: 999px;
+  background: #2563eb;
+  flex: 0 0 auto;
+}
+.lighting-other-input {
+  display: block;
+  margin-top: 12px;
+}
+.lighting-other-input[hidden] { display: none !important; }
+@media (max-width: 860px) {
+  .dynamic-section > h3 {
+    font-size: 20px;
+    padding: 12px 14px;
+    margin: -2px 0 14px;
+    border-radius: 14px;
+    background: #eef4ff;
+    border-bottom: 1px solid #bfdbfe;
+  }
+}
+
+
+/* C46 section heading emphasis */
+.dynamic-section h3 {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 19px;
+  font-weight: 900;
+  letter-spacing: .01em;
+  padding: 12px 14px;
+  margin: 0 0 14px;
+  border: 1px solid rgba(37, 99, 235, .18);
+  border-left: 6px solid #2563eb;
+  border-radius: 14px;
+  background: linear-gradient(90deg, rgba(37,99,235,.10), rgba(255,255,255,.78));
+}
+@media (max-width: 760px) {
+  .dynamic-section h3 {
+    font-size: 20px;
+    padding: 14px 14px;
+    border-left-width: 7px;
+    box-shadow: 0 8px 20px rgba(17, 24, 39, .05);
+  }
+}

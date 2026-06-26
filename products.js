@@ -75,7 +75,7 @@ window.PRODUCT_DATA = {
     pergola: {
       label: 'Pergola / Fabric System',
       colorFields: ['Structure', 'Pergola Fabric', 'Screen Fabric'],
-      lighting: ['Daylight', 'White', 'Spot', 'Linear'],
+      lighting: ['Daylight', 'White', 'RGB+White', 'Spot', 'Linear', 'Other'],
       accessories: [
         'Sound System',
         'Dimmer Light',
@@ -89,7 +89,7 @@ window.PRODUCT_DATA = {
     bcube: {
       label: 'B-Cube / Louver System',
       colorFields: ['Structure', 'Louver Blade'],
-      lighting: ['Daylight', 'RGB'],
+      lighting: ['Daylight', 'RGB', 'RGB+White', 'Other'],
       accessories: [
         'Louver Insulation',
         'Sound System',
@@ -104,7 +104,7 @@ window.PRODUCT_DATA = {
     bioRise: {
       label: 'Bio-Rise',
       colorFields: ['Structure', 'Panel'],
-      lighting: ['Daylight', 'RGB'],
+      lighting: ['Daylight', 'RGB', 'RGB+White', 'Other'],
       accessories: [
         'Sound System',
         'Dimmer Light',
@@ -156,7 +156,7 @@ window.PRODUCT_DATA = {
       }
     ],
     lighting: [
-      { id: 'lightingType', label: 'Lighting', type: 'choice', options: ['No', 'Daylight', 'White', 'RGB', 'Other'] },
+      { id: 'lightingType', label: 'Lighting', type: 'choice', options: ['No', 'Daylight', 'White', 'RGB', 'RGB+White', 'Other'] },
       { id: 'lightingOther', label: 'Other Lighting', type: 'text', showWhen: { field: 'lightingType', values: ['Other'] } }
     ],
     dimmer: [
@@ -186,9 +186,11 @@ window.PRODUCT_DATA = {
       { id: 'panelIsolation', label: 'Panel Isolation', type: 'choice', options: ['Yes', 'No'] }
     ],
     lighting: [
-      'Light on the Gutter (Linear LED)',
-      'Light on the Gutter (Linear RGB)',
-      'Light on the Panel (Spot LED)'
+      'Linear LED',
+      'Linear RGB',
+      'RGB+White',
+      'Spot LED',
+      'Other'
     ],
     dimmers: [
       { id: 'lightDimmerLinear', label: 'Light Dimmer (For Linear LED)', type: 'choice', options: ['Yes', 'No'] },
@@ -270,37 +272,37 @@ window.PRODUCT_DATA = {
     },
     freedom: {
       hiddenItems: {
-        lighting: ['Light on the Panel (Spot LED)'],
+        lighting: ['Spot LED'],
         dimmers: ['lightDimmerSpot']
       }
     },
     classic: {
       hiddenItems: {
-        lighting: ['Light on the Panel (Spot LED)'],
+        lighting: ['Spot LED'],
         dimmers: ['lightDimmerSpot']
       }
     },
     infinity: {
       hiddenItems: {
-        lighting: ['Light on the Panel (Spot LED)'],
+        lighting: ['Spot LED'],
         dimmers: ['lightDimmerSpot']
       }
     },
     urban: {
       hiddenItems: {
-        lighting: ['Light on the Panel (Spot LED)'],
+        lighting: ['Spot LED'],
         dimmers: ['lightDimmerSpot']
       }
     },
     freedom_plus: {
       hiddenItems: {
-        lighting: ['Light on the Panel (Spot LED)'],
+        lighting: ['Spot LED'],
         dimmers: ['lightDimmerSpot']
       }
     },
     classic_plus: {
       hiddenItems: {
-        lighting: ['Light on the Panel (Spot LED)'],
+        lighting: ['Spot LED'],
         dimmers: ['lightDimmerSpot']
       }
     }
@@ -325,3 +327,37 @@ window.PRODUCT_DATA = {
     { id: 'bio_rise', name: 'BIO-RISE', family: 'bioclimatic', productGroup: 'bio_rise', subGroup: '', group: 'bioRise', formTemplate: 'galaxyForm', formVariant: 'galaxy' }
   ]
 };
+
+
+// C46 exact product overrides.
+window.PRODUCT_DATA.productFormOverrides.galaxy = {
+  ...(window.PRODUCT_DATA.productFormOverrides.galaxy || {}),
+  operation: [
+    { id: 'motor', label: 'Motor', type: 'select', options: ['No', 'T-Motion 350 (Somfy Rts) (120°)', 'T-Motion 300 (Somfy Rts) (90°)'] },
+    {
+      id: 'remoteControlSomfyRts',
+      label: 'Remote Control',
+      type: 'choice',
+      options: ['1 Channel', '2 Channels', '4 Channels', '16 Channels'],
+      showWhen: { field: 'motor', values: ['T-Motion 350 (Somfy Rts) (120°)', 'T-Motion 300 (Somfy Rts) (90°)'] }
+    }
+  ]
+};
+window.PRODUCT_DATA.productFormOverrides.space = {
+  ...(window.PRODUCT_DATA.productFormOverrides.space || {}),
+  operation: [
+    { id: 'motor', label: 'Motor', type: 'select', options: ['No', 'T-Motion 350 (Somfy Rts) (120°)', 'T-Motion 300 (Somfy Rts) (90°)'] },
+    {
+      id: 'remoteControlSomfyRts',
+      label: 'Remote Control',
+      type: 'choice',
+      options: ['1 Channel', '2 Channels', '4 Channels', '16 Channels'],
+      showWhen: { field: 'motor', values: ['T-Motion 350 (Somfy Rts) (120°)', 'T-Motion 300 (Somfy Rts) (90°)'] }
+    }
+  ]
+};
+window.PRODUCT_DATA.galaxyForm.lighting = ['Linear LED', 'Linear RGB', 'RGB+White', 'Spot LED', 'Other'];
+window.PRODUCT_DATA.pergolaForm.lighting = [
+  { id: 'lightingType', label: 'Lighting', type: 'choice', options: ['No', 'Daylight', 'White', 'RGB', 'RGB+White', 'Other'] },
+  { id: 'lightingOther', label: 'Other Lighting', type: 'text', showWhen: { field: 'lightingType', values: ['Other'] } }
+];

@@ -30,6 +30,8 @@ C38 changes:
 
 - C40: Mobile auto-advance scroll after completing fields and single selections.
 
-C42:
+C43:
 - B-Cube Galaxy and Space motor options updated to T-Motion Somfy RTS options.
 - Color/fabric catalog search bar stays fixed while scrolling.
+
+C44: Dynamic placeholders follow selected language; mobile section headings are stronger; cache bumped.
