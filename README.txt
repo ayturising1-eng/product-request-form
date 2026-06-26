@@ -24,3 +24,6 @@ C33-v2 cache fix:
 - App/order draft storage version bumped so old random selections do not come back.
 - Script and stylesheet references include cache-busting query strings.
 - 3D viewer references remain removed.
+
+C38 changes:
+- Color/fabric picker panel height stays stable while searching; only the list content filters.

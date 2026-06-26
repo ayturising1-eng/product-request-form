@@ -421,6 +421,7 @@ td:first-child { width: 42%; font-weight: 800; background: #f9fafb; }
 .color-chart-modal[hidden] { display: none !important; }
 .color-chart-panel {
   width: min(1180px, 96vw);
+  height: min(92vh, 900px);
   max-height: 92vh;
   display: flex;
   flex-direction: column;
@@ -452,6 +453,8 @@ td:first-child { width: 42%; font-weight: 800; background: #f9fafb; }
   margin-top: 0;
 }
 .color-chart-scroll {
+  flex: 1 1 auto;
+  min-height: 0;
   overflow: auto;
   padding: 14px;
   background: #f3f4f6;
@@ -479,7 +482,9 @@ td:first-child { width: 42%; font-weight: 800; background: #f9fafb; }
 .color-option-list {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
+  align-content: start;
   gap: 10px;
+  min-height: 520px;
 }
 .color-option-card {
   display: grid;
@@ -730,6 +735,7 @@ input:focus, textarea:focus, select:focus {
   }
   .color-chart-panel {
     width: 100%;
+    height: 94vh;
     max-height: 94vh;
     align-self: center;
     border-radius: 16px;
@@ -742,7 +748,7 @@ input:focus, textarea:focus, select:focus {
   .color-chart-head p { font-size: 12px; }
   .color-chart-close { width: 100%; }
   .color-chart-scroll { padding: 10px; }
-  .color-option-list { grid-template-columns: 1fr; }
+  .color-option-list { grid-template-columns: 1fr; min-height: 520px; }
   .color-option-card {
     grid-template-columns: 76px 1fr;
     min-height: 84px;
