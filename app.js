@@ -49,19 +49,19 @@ const COLOR_OPTIONS = [
 ];
 const FABRIC_OPTIONS = [
   { value: '8116 / 9002 | White Texture', code: '8116 / 9002', name: 'White Texture', image: 'assets/fabric-options/b-8116-9002.jpg' },
-  { value: '8118 / 9002 | White 3D Texture', code: '8118 / 9002', name: 'White 3D Texture', image: 'assets/fabric-options/8118-9002.jpg' },
-  { value: '8290 / 9002 | White Glossy', code: '8290 / 9002', name: 'White Glossy', image: 'assets/fabric-options/8290-9002.jpg' },
   { value: '8116 / 1622 | Cream Texture', code: '8116 / 1622', name: 'Cream Texture', image: 'assets/fabric-options/b-8116-1622.jpg' },
-  { value: '8118 / 1622 | Cream 3D Texture', code: '8118 / 1622', name: 'Cream 3D Texture', image: 'assets/fabric-options/8118-1622.jpg' },
+  { value: '8290 / 9002 | White Glossy', code: '8290 / 9002', name: 'White Glossy', image: 'assets/fabric-options/8290-9002.jpg' },
   { value: '8290 / 1622 | Cream Matt', code: '8290 / 1622', name: 'Cream Matt', image: 'assets/fabric-options/8290-1622.jpg' },
-  { value: '666 1X1 | White Thermofoam', code: '666 1X1', name: 'White Thermofoam', image: 'assets/fabric-options/666-1x1.jpg' },
-  { value: '666 8X2 | Grey Thermofoam', code: '666 8X2', name: 'Grey Thermofoam', image: 'assets/fabric-options/666-8x2.jpg' },
+  { value: '8290 / 7024 | Dark Grey Matt', code: '8290 / 7024', name: 'Dark Grey Matt', image: 'assets/fabric-options/8290-7024.jpg' },
+  { value: '8118 / 9002 | White 3D Texture', code: '8118 / 9002', name: 'White 3D Texture', image: 'assets/fabric-options/8118-9002.jpg' },
+  { value: '8118 / 1622 | Cream 3D Texture', code: '8118 / 1622', name: 'Cream 3D Texture', image: 'assets/fabric-options/8118-1622.jpg' },
   { value: '8118 / 7500 | Silver 3D Texture', code: '8118 / 7500', name: 'Silver 3D Texture', image: 'assets/fabric-options/8118-7500.jpg' },
   { value: '8118 / 7024 | Dark Grey 3D Texture', code: '8118 / 7024', name: 'Dark Grey 3D Texture', image: 'assets/fabric-options/8118-7024.jpg' },
-  { value: '8290 / 7024 | Dark Grey Matt', code: '8290 / 7024', name: 'Dark Grey Matt', image: 'assets/fabric-options/8290-7024.jpg' },
   { value: '8118 / 7340 | Anthracite 3D Texture', code: '8118 / 7340', name: 'Anthracite 3D Texture', image: 'assets/fabric-options/8118-7340.jpg' },
   { value: '8118 / 7999 | Black 3D Texture', code: '8118 / 7999', name: 'Black 3D Texture', image: 'assets/fabric-options/8118-7999.jpg' },
-  { value: '8118 / 5003 | Blue 3D Texture', code: '8118 / 5003', name: 'Blue 3D Texture', image: 'assets/fabric-options/8118-5003.jpg' }
+  { value: '8118 / 5003 | Blue 3D Texture', code: '8118 / 5003', name: 'Blue 3D Texture', image: 'assets/fabric-options/8118-5003.jpg' },
+  { value: '666 1X1 | White Thermofoam', code: '666 1X1', name: 'White Thermofoam', image: 'assets/fabric-options/666-1x1.jpg' },
+  { value: '666 8X2 | Grey Thermofoam', code: '666 8X2', name: 'Grey Thermofoam', image: 'assets/fabric-options/666-8x2.jpg' }
 ];
 
 const LANGUAGE_META = {
@@ -1016,8 +1016,16 @@ function setRadioValueAndNotify(fieldId, value) {
   radio.dispatchEvent(new Event('change', { bubbles: true }));
 }
 
+function currentFabricOptions() {
+  const pergoRiseOptions = window.PERGO_RISE_FABRIC_OPTIONS || [];
+  if (state.selectedProductId === 'pergo_rise' && pergoRiseOptions.length) {
+    return pergoRiseOptions;
+  }
+  return FABRIC_OPTIONS;
+}
+
 function pickerOptions(kind) {
-  return kind === 'fabric' ? FABRIC_OPTIONS : (activeColorCatalog()?.options || []);
+  return kind === 'fabric' ? currentFabricOptions() : (activeColorCatalog()?.options || []);
 }
 
 function renderColorCatalogTabs(kind) {

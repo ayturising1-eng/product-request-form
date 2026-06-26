@@ -1,4 +1,4 @@
-const CACHE = 'product-request-form-c30-v1';
+const CACHE = 'product-request-form-c32-v1';
 const ASSETS = [
   './',
   './index.html',
@@ -10,6 +10,7 @@ const ASSETS = [
   './assets-3.js',
   './assets-4.js',
   './color-catalogs.js',
+  './pergo-rise-fabrics.js',
   './products.js',
   './manifest.webmanifest'
 ];
