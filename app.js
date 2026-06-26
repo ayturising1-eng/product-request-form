@@ -26,25 +26,26 @@ const FABRIC_FIELD_LABELS = new Set([
   'pergola fabric',
   'screen fabric'
 ]);
+const FINISH_OPTIONS = window.PRODUCT_FINISH_OPTIONS || ['Glossy', 'Matt', 'Texture'];
 const COLOR_OPTIONS = [
-  { value: 'RAL 9016 | Traffic White', code: 'RAL 9016', name: 'Traffic White', detail: 'Matt Finish', image: 'assets/color-options/ral-9016-traffic-white.jpg' },
-  { value: 'RAL 9003 | Traffic White - Sand Paper Texture Finish', code: 'RAL 9003', name: 'Traffic White', detail: 'Sand Paper Texture Finish', image: 'assets/color-options/ral-9003-traffic-white-sand-paper.jpg' },
-  { value: 'RAL 1013 | Oyster', code: 'RAL 1013', name: 'Oyster', detail: 'Matt Finish', image: 'assets/color-options/ral-1013-oyster.jpg' },
-  { value: 'RAL 1313 | Oyster - Sand Paper Texture Finish', code: 'RAL 1313', name: 'Oyster', detail: 'Sand Paper Texture Finish', image: 'assets/color-options/ral-1313-oyster-sand-paper.jpg' },
-  { value: 'RAL 1035 | Pearl Beige', code: 'RAL 1035', name: 'Pearl Beige', detail: 'Matt Finish', image: 'assets/color-options/ral-1035-pearl-beige.jpg' },
+  { value: 'RAL 1013', code: 'RAL 1013', image: 'assets/color-options/ral-1013-oyster.jpg' },
+  { value: 'RAL 1035', code: 'RAL 1035', image: 'assets/color-options/ral-1035-pearl-beige.jpg' },
+  { value: 'RAL 1313', code: 'RAL 1313', image: 'assets/color-options/ral-1313-oyster-sand-paper.jpg' },
+  { value: 'RAL 7016', code: 'RAL 7016', image: 'assets/color-options/ral-7016-anthracite-grey.jpg' },
+  { value: 'RAL 7016', code: 'RAL 7016', image: 'assets/color-options/ral-7016-anthracite-sand-paper.jpg' },
+  { value: 'RAL 7039', code: 'RAL 7039', image: 'assets/color-options/ral-7039-quarzgrau.jpg' },
+  { value: 'RAL 7106', code: 'RAL 7106', image: 'assets/color-options/ral-7106-sepia-brown-sand-paper.jpg' },
+  { value: 'RAL 7421', code: 'RAL 7421', image: 'assets/color-options/ral-7421-grey-camouflage-sand-paper.jpg' },
+  { value: 'RAL 9003', code: 'RAL 9003', image: 'assets/color-options/ral-9003-traffic-white-sand-paper.jpg' },
+  { value: 'RAL 9005', code: 'RAL 9005', image: 'assets/color-options/ral-9005-jet-black.jpg' },
+  { value: 'RAL 9005', code: 'RAL 9005', image: 'assets/color-options/ral-9005-jet-black-sand-paper.jpg' },
+  { value: 'RAL 9006', code: 'RAL 9006', image: 'assets/color-options/ral-9006-weissaluminium.jpg' },
+  { value: 'RAL 9007', code: 'RAL 9007', image: 'assets/color-options/ral-9007-graualuminium.jpg' },
+  { value: 'RAL 9016', code: 'RAL 9016', image: 'assets/color-options/ral-9016-traffic-white.jpg' },
   { value: 'Cappuccino', code: 'Cappuccino', name: 'Cappuccino', detail: 'Matt Finish', image: 'assets/color-options/cappuccino.jpg' },
-  { value: 'RAL 9006 | Weissaluminium', code: 'RAL 9006', name: 'Weissaluminium', detail: 'New Color', image: 'assets/color-options/ral-9006-weissaluminium.jpg' },
-  { value: 'RAL 9007 | Graualuminium', code: 'RAL 9007', name: 'Graualuminium', detail: 'New Color', image: 'assets/color-options/ral-9007-graualuminium.jpg' },
-  { value: 'RAL 7039 | Quarzgrau', code: 'RAL 7039', name: 'Quarzgrau', detail: 'New Color', image: 'assets/color-options/ral-7039-quarzgrau.jpg' },
-  { value: 'RAL 7016 | Anthracite Grey', code: 'RAL 7016', name: 'Anthracite Grey', detail: 'Matt Finish', image: 'assets/color-options/ral-7016-anthracite-grey.jpg' },
-  { value: 'RAL 7016 | Anthracite - Sand Paper Texture Finish', code: 'RAL 7016', name: 'Anthracite', detail: 'Sand Paper Texture Finish', image: 'assets/color-options/ral-7016-anthracite-sand-paper.jpg' },
-  { value: 'RAL 7421 | Grey Camouflage - Sand Paper Texture Finish', code: 'RAL 7421', name: 'Grey Camouflage', detail: 'Sand Paper Texture Finish', image: 'assets/color-options/ral-7421-grey-camouflage-sand-paper.jpg' },
-  { value: 'RAL 7106 | Sepia Brown - Sand Paper Texture Finish', code: 'RAL 7106', name: 'Sepia Brown', detail: 'Sand Paper Texture Finish', image: 'assets/color-options/ral-7106-sepia-brown-sand-paper.jpg' },
-  { value: 'RAL 9005 | Jet Black', code: 'RAL 9005', name: 'Jet Black', detail: 'Matt Finish', image: 'assets/color-options/ral-9005-jet-black.jpg' },
-  { value: 'RAL 9005 | Jet Black - Sand Paper Texture Finish', code: 'RAL 9005', name: 'Jet Black', detail: 'Sand Paper Texture Finish', image: 'assets/color-options/ral-9005-jet-black-sand-paper.jpg' },
-  { value: 'A-4252-V1-118', code: 'A-4252-V1-118', name: 'Wood Transfer', detail: 'Wood finish', image: 'assets/color-options/a-4252-v1-118.jpg' },
-  { value: 'A-4395-V1-118', code: 'A-4395-V1-118', name: 'Wood Transfer', detail: 'Wood finish', image: 'assets/color-options/a-4395-v1-118.jpg' },
-  { value: 'A-4513-V1-119', code: 'A-4513-V1-119', name: 'Wood Transfer', detail: 'Wood finish', image: 'assets/color-options/a-4513-v1-119.jpg' }
+  { value: 'A-4252-V1-118', code: 'A-4252-V1-118', name: 'Wood Transfer', image: 'assets/color-options/a-4252-v1-118.jpg' },
+  { value: 'A-4395-V1-118', code: 'A-4395-V1-118', name: 'Wood Transfer', image: 'assets/color-options/a-4395-v1-118.jpg' },
+  { value: 'A-4513-V1-119', code: 'A-4513-V1-119', name: 'Wood Transfer', image: 'assets/color-options/a-4513-v1-119.jpg' }
 ];
 const FABRIC_OPTIONS = [
   { value: '8116 / 9002 | White Texture', code: '8116 / 9002', name: 'White Texture', image: 'assets/fabric-options/b-8116-9002.jpg' },
@@ -709,6 +710,10 @@ Object.assign(I18N.he, {
 Object.assign(I18N.en, {
   formActive: 'Form active',
   'Colours': 'Colours',
+  'Finish': 'Finish',
+  'Glossy': 'Glossy',
+  'Matt': 'Matt',
+  'Texture': 'Texture',
   'Product Quantity': 'Product Quantity',
   'Motor Direction': 'Motor Direction',
   'Parapet H': 'Parapet H',
@@ -727,6 +732,10 @@ Object.assign(I18N.en, {
 Object.assign(I18N.tr, {
   formActive: 'Form aktif',
   'Colours': 'Renkler',
+  'Finish': 'Y\u00fczey',
+  'Glossy': 'Parlak',
+  'Matt': 'Mat',
+  'Texture': 'Texture',
   'Product Quantity': '\u00dcr\u00fcn Adedi',
   'Motor Direction': 'Motor Y\u00f6n\u00fc',
   'Parapet H': 'Parapet Y\u00fcksekli\u011fi',
@@ -747,6 +756,10 @@ Object.assign(I18N.tr, {
 Object.assign(I18N.de, {
   formActive: 'Formular aktiv',
   'Colours': 'Farben',
+  'Finish': 'Oberfl\u00e4che',
+  'Glossy': 'Gl\u00e4nzend',
+  'Matt': 'Matt',
+  'Texture': 'Textur',
   'Product Quantity': 'Produktmenge',
   'Motor Direction': 'Motorseite',
   'Parapet H': 'Br\u00fcstungsh\u00f6he',
@@ -767,6 +780,10 @@ Object.assign(I18N.de, {
 Object.assign(I18N.fr, {
   formActive: 'Formulaire actif',
   'Colours': 'Couleurs',
+  'Finish': 'Finition',
+  'Glossy': 'Brillant',
+  'Matt': 'Mat',
+  'Texture': 'Texture',
   'Product Quantity': 'Quantit\u00e9 de produits',
   'Motor Direction': 'C\u00f4t\u00e9 du moteur',
   'Parapet H': 'Hauteur d\u2019all\u00e8ge',
@@ -787,6 +804,10 @@ Object.assign(I18N.fr, {
 Object.assign(I18N.he, {
   formActive: '\u05d8\u05d5\u05e4\u05e1 \u05e4\u05e2\u05d9\u05dc',
   'Colours': '\u05e6\u05d1\u05e2\u05d9\u05dd',
+  'Finish': '\u05d2\u05d9\u05de\u05d5\u05e8',
+  'Glossy': '\u05de\u05d1\u05e8\u05d9\u05e7',
+  'Matt': '\u05de\u05d8',
+  'Texture': '\u05d8\u05e7\u05e1\u05d8\u05d5\u05e8\u05d4',
   'Product Quantity': '\u05db\u05de\u05d5\u05ea \u05de\u05d5\u05e6\u05e8\u05d9\u05dd',
   'Motor Direction': '\u05e6\u05d3 \u05d4\u05de\u05e0\u05d5\u05e2',
   'Parapet H': '\u05d2\u05d5\u05d1\u05d4 \u05de\u05e2\u05e7\u05d4',
@@ -830,8 +851,11 @@ Object.assign(I18N.he, {
 });
 
 Object.assign(I18N.en, {
+  'Select Code': 'Select Code',
   'Select Color': 'Select Color',
   'Select Fabric': 'Select Fabric',
+  'Rising Standart': 'Rising Standart',
+  'All Rall Code': 'All Rall Code',
   'Same as System Color': 'Same as System Color',
   'Enter System Color First': 'Enter System Color First',
   'Color Chart': 'Color Chart',
@@ -842,8 +866,11 @@ Object.assign(I18N.en, {
 });
 
 Object.assign(I18N.tr, {
+  'Select Code': 'Kod Se\u00e7',
   'Select Color': 'Renk Se\u00e7',
   'Select Fabric': 'Kuma\u015f Se\u00e7',
+  'Rising Standart': 'Rising Standart',
+  'All Rall Code': 'All Rall Code',
   'Same as System Color': 'System rengiyle ayn\u0131',
   'Enter System Color First': '\u00d6nce sistem rengini yaz\u0131n',
   'Color Chart': 'Renk Kartelas\u0131',
@@ -854,8 +881,11 @@ Object.assign(I18N.tr, {
 });
 
 Object.assign(I18N.de, {
+  'Select Code': 'Code waehlen',
   'Select Color': 'Farbe waehlen',
   'Select Fabric': 'Stoff waehlen',
+  'Rising Standart': 'Rising Standart',
+  'All Rall Code': 'All Rall Code',
   'Same as System Color': 'Wie Systemfarbe',
   'Enter System Color First': 'Zuerst Systemfarbe eingeben',
   'Color Chart': 'Farbkarte',
@@ -866,8 +896,11 @@ Object.assign(I18N.de, {
 });
 
 Object.assign(I18N.fr, {
+  'Select Code': 'Choisir code',
   'Select Color': 'Choisir couleur',
   'Select Fabric': 'Choisir toile',
+  'Rising Standart': 'Rising Standart',
+  'All Rall Code': 'All Rall Code',
   'Same as System Color': 'Comme couleur systeme',
   'Enter System Color First': 'Saisir d abord la couleur systeme',
   'Color Chart': 'Nuancier',
@@ -878,8 +911,11 @@ Object.assign(I18N.fr, {
 });
 
 Object.assign(I18N.he, {
+  'Select Code': '\u05d1\u05d7\u05e8 \u05e7\u05d5\u05d3',
   'Select Color': '\u05d1\u05d7\u05e8 \u05e6\u05d1\u05e2',
   'Select Fabric': '\u05d1\u05d7\u05e8 \u05d1\u05d3',
+  'Rising Standart': 'Rising Standart',
+  'All Rall Code': 'All Rall Code',
   'Same as System Color': '\u05d6\u05d4\u05d4 \u05dc\u05e6\u05d1\u05e2 \u05d4\u05de\u05e2\u05e8\u05db\u05ea',
   'Enter System Color First': '\u05d4\u05d6\u05df \u05ea\u05d7\u05d9\u05dc\u05d4 \u05e6\u05d1\u05e2 \u05de\u05e2\u05e8\u05db\u05ea',
   'Color Chart': '\u05de\u05e0\u05d9\u05e4\u05ea \u05e6\u05d1\u05e2\u05d9\u05dd',
@@ -939,6 +975,18 @@ function translatedList(values, lang = state.language) {
 
 let activePickerInput = null;
 let activePickerKind = 'color';
+let activeColorCatalogId = 'rising-standart';
+
+function colorCatalogs() {
+  return Array.isArray(window.PRODUCT_COLOR_CATALOGS) && window.PRODUCT_COLOR_CATALOGS.length
+    ? window.PRODUCT_COLOR_CATALOGS
+    : [{ id: 'rising-standart', label: 'Rising Standart', options: COLOR_OPTIONS }];
+}
+
+function activeColorCatalog() {
+  const catalogs = colorCatalogs();
+  return catalogs.find((catalog) => catalog.id === activeColorCatalogId) || catalogs[0];
+}
 
 function pickerKindForField(field, control) {
   if (field.palette === false) return '';
@@ -951,7 +999,7 @@ function pickerKindForField(field, control) {
 }
 
 function pickerButtonLabel(kind) {
-  return translatedText(kind === 'fabric' ? 'Select Fabric' : 'Select Color');
+  return translatedText(kind === 'fabric' ? 'Select Fabric' : 'Select Code');
 }
 
 function setInputValueAndNotify(input, value) {
@@ -961,8 +1009,36 @@ function setInputValueAndNotify(input, value) {
   input.dispatchEvent(new Event('change', { bubbles: true }));
 }
 
+function setRadioValueAndNotify(fieldId, value) {
+  const radio = $$(`input[type="radio"][name="dyn_${fieldId}"]`).find((item) => item.value === value);
+  if (!radio) return;
+  radio.checked = true;
+  radio.dispatchEvent(new Event('change', { bubbles: true }));
+}
+
 function pickerOptions(kind) {
-  return kind === 'fabric' ? FABRIC_OPTIONS : COLOR_OPTIONS;
+  return kind === 'fabric' ? FABRIC_OPTIONS : (activeColorCatalog()?.options || []);
+}
+
+function renderColorCatalogTabs(kind) {
+  const tabs = $('#colorCatalogTabs');
+  if (!tabs) return;
+  tabs.hidden = kind !== 'color';
+  tabs.innerHTML = '';
+  if (kind !== 'color') return;
+  colorCatalogs().forEach((catalog) => {
+    const button = document.createElement('button');
+    button.type = 'button';
+    button.className = 'color-catalog-tab';
+    button.textContent = translatedText(catalog.label);
+    button.setAttribute('aria-pressed', String(catalog.id === activeColorCatalogId));
+    button.addEventListener('click', () => {
+      activeColorCatalogId = catalog.id;
+      renderColorCatalogTabs('color');
+      buildPickerList('color');
+    });
+    tabs.appendChild(button);
+  });
 }
 
 function buildPickerList(kind) {
@@ -993,11 +1069,12 @@ function buildPickerList(kind) {
     const code = document.createElement('strong');
     code.textContent = option.code;
 
-    const name = document.createElement('span');
-    name.textContent = option.name;
-
     textWrap.appendChild(code);
-    textWrap.appendChild(name);
+    if (option.name) {
+      const name = document.createElement('span');
+      name.textContent = option.name;
+      textWrap.appendChild(name);
+    }
     if (option.detail) {
       const detail = document.createElement('small');
       detail.textContent = option.detail;
@@ -1015,8 +1092,12 @@ function openPicker(input, kind = 'color') {
   if (!modal) return;
   activePickerInput = input;
   activePickerKind = kind;
+  if (kind === 'color') {
+    activeColorCatalogId = colorCatalogs()[0]?.id || 'rising-standart';
+  }
   $('#colorChartTitle').textContent = translatedText(kind === 'fabric' ? 'Fabric Selection' : 'Color Chart');
   $('#colorChartHelp').textContent = translatedText(kind === 'fabric' ? 'Fabric Selection Help' : 'Color Chart Help');
+  renderColorCatalogTabs(kind);
   buildPickerList(kind);
   modal.hidden = false;
   document.body.classList.add('modal-open');
@@ -1045,6 +1126,8 @@ function copySystemColorToPanel(panelInput) {
     return;
   }
   setInputValueAndNotify(panelInput, systemColor);
+  const systemFinish = getFieldValue({ id: 'systemColorFinish' });
+  if (systemFinish) setRadioValueAndNotify('panelColorFinish', systemFinish);
   toast(`${translatedText('Panel Color')}: ${systemColor}`);
 }
 
@@ -1369,6 +1452,7 @@ function createInputField(field) {
   const label = document.createElement('label');
   label.textContent = translatedText(field.label);
   label.className = field.unit || field.unitAuto ? 'unit-label' : '';
+  if (field.fullWidth) label.classList.add('grid-span-full');
 
   const wrap = document.createElement('div');
   wrap.className = 'input-unit-wrap';
@@ -1440,6 +1524,7 @@ function createInputField(field) {
 function createChoiceField(field) {
   const wrapper = document.createElement('div');
   wrapper.className = 'choice-field';
+  if (field.fullWidth) wrapper.classList.add('grid-span-full');
 
   const heading = document.createElement('div');
   heading.className = 'field-heading';
@@ -1644,12 +1729,22 @@ function renderGenericForm() {
     { id: 'quantity', label: 'Quantity', type: 'number' },
     ...DATA.common.dimensionFields.map((f) => ({ id: f.id, label: f.label, type: 'number', unit: f.unit }))
   ];
-  const colorItems = group.colorFields.map((label) => ({
-    id: safeId(label),
-    label,
-    type: 'text',
-    picker: FABRIC_FIELD_LABELS.has(String(label).trim().toLowerCase()) ? 'fabric' : 'color'
-  }));
+  const colorItems = group.colorFields.flatMap((label) => {
+    const id = safeId(label);
+    const isFabric = FABRIC_FIELD_LABELS.has(String(label).trim().toLowerCase());
+    const field = {
+      id,
+      label,
+      type: 'text',
+      picker: isFabric ? 'fabric' : 'color',
+      fullWidth: isFabric
+    };
+    if (isFabric) return [field];
+    return [
+      field,
+      { id: `${id}Finish`, label: 'Finish', type: 'choice', options: FINISH_OPTIONS, defaultValue: 'Matt' }
+    ];
+  });
   let installItems = [
     { id: 'installationType', label: 'Installation Type', type: 'select', options: DATA.common.installationTypes },
     { id: 'glassType', label: 'Glass Type', type: 'select', options: DATA.common.glassTypes },
@@ -1781,7 +1876,16 @@ function genericRows(lang = state.language) {
     { id: 'quantity', label: 'Quantity' },
     ...DATA.common.dimensionFields.map((f) => ({ id: f.id, label: f.label, unit: f.unit }))
   ];
-  const colorFields = group.colorFields.map((label) => ({ id: safeId(label), label }));
+  const colorFields = group.colorFields.flatMap((label) => {
+    const id = safeId(label);
+    const isFabric = FABRIC_FIELD_LABELS.has(String(label).trim().toLowerCase());
+    const field = { id, label };
+    if (isFabric) return [field];
+    return [
+      field,
+      { id: `${id}Finish`, label: 'Finish' }
+    ];
+  });
   let techIds = ['installationType', 'glassType', 'electricPower', 'motor', 'remoteControl', 'manualCrank'];
   if (product.hideOperation) {
     techIds = techIds.filter((id) => !['motor', 'remoteControl', 'manualCrank'].includes(id));
