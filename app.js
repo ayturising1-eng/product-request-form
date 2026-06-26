@@ -1147,6 +1147,80 @@ function toast(message) {
   toast._timer = setTimeout(() => el.classList.remove('show'), 2300);
 }
 
+let autoAdvanceTimer = null;
+
+function mobileAutoAdvanceEnabled() {
+  return window.matchMedia('(max-width: 860px)').matches;
+}
+
+function elementIsVisible(el) {
+  if (!el || el.hidden || el.disabled) return false;
+  if (el.closest('[hidden]')) return false;
+  const style = window.getComputedStyle(el);
+  return style.display !== 'none' && style.visibility !== 'hidden' && el.getClientRects().length > 0;
+}
+
+function autoAdvanceContainerFor(el) {
+  if (!el) return null;
+  return el.closest('.choice-field, .checkbox-grid, .product-select-grid > label, #companySection .grid > label, #orderSection .grid > label, #formArea .grid > label, .notes-input, label');
+}
+
+function autoAdvanceContainers() {
+  const selectors = [
+    '#companySection .grid > label',
+    '#productSection .product-select-grid > label',
+    '#orderSection .grid > label',
+    '#formArea .grid > label',
+    '#formArea .choice-field',
+    '#formArea .checkbox-grid',
+    '.notes-input'
+  ].join(', ');
+  return $$(selectors).filter(elementIsVisible);
+}
+
+function scheduleAutoAdvance(source) {
+  if (!mobileAutoAdvanceEnabled()) return;
+  if (document.body.classList.contains('modal-open')) return;
+  const current = autoAdvanceContainerFor(source);
+  if (!current) return;
+  clearTimeout(autoAdvanceTimer);
+  autoAdvanceTimer = setTimeout(() => {
+    const items = autoAdvanceContainers();
+    const index = items.indexOf(current);
+    const target = index >= 0 ? items[index + 1] : null;
+    if (!target) return;
+    target.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }, 180);
+}
+
+function shouldAutoAdvanceForControl(control) {
+  if (!control) return false;
+  const tag = String(control.tagName || '').toLowerCase();
+  const type = String(control.type || '').toLowerCase();
+  if (tag === 'textarea') return true;
+  if (tag === 'select') return true;
+  if (type === 'radio') return true;
+  if (type === 'checkbox') return !control.closest('.checkbox-grid');
+  if (['text', 'number', 'date', 'email', 'tel', 'search'].includes(type)) return true;
+  return false;
+}
+
+function autoAdvanceOnChange(event) {
+  const control = event.currentTarget || event.target;
+  if (!shouldAutoAdvanceForControl(control)) return;
+  scheduleAutoAdvance(control.customSelectButton || control);
+}
+
+function autoAdvanceOnEnter(event) {
+  const control = event.currentTarget || event.target;
+  if (event.key !== 'Enter') return;
+  if (String(control.tagName || '').toLowerCase() === 'textarea') return;
+  if (!shouldAutoAdvanceForControl(control)) return;
+  event.preventDefault();
+  control.blur();
+  scheduleAutoAdvance(control.customSelectButton || control);
+}
+
 function safeId(text) {
   return String(text).toLowerCase().replace(/[^a-z0-9]+/g, '_').replace(/^_|_$/g, '');
 }
@@ -1354,9 +1428,11 @@ function closeColorChart() {
 }
 
 function selectPickerOption(value) {
-  setInputValueAndNotify(activePickerInput, value);
+  const targetInput = activePickerInput;
+  setInputValueAndNotify(targetInput, value);
   toast(`${translatedText('Selected')}: ${value}`);
   closeColorChart();
+  scheduleAutoAdvance(targetInput);
 }
 
 function copySystemColorToPanel(panelInput) {
@@ -1369,6 +1445,7 @@ function copySystemColorToPanel(panelInput) {
   const systemFinish = getFieldValue({ id: 'systemColorFinish' });
   if (systemFinish) setRadioValueAndNotify('panelColorFinish', systemFinish);
   toast(`${translatedText('Panel Color')}: ${systemColor}`);
+  scheduleAutoAdvance(panelInput);
 }
 
 function initColorChartModal() {
@@ -1667,24 +1744,30 @@ function applyProductSelection() {
 }
 
 function onProductFamilyChange() {
-  state.selectedFamilyId = $('#productFamilySelect').value;
+  const source = $('#productFamilySelect');
+  state.selectedFamilyId = source.value;
   selectFirstAvailableForFamily();
   renderProducts();
   applyProductSelection();
+  scheduleAutoAdvance(source.customSelectButton || source);
 }
 
 function onProductGroupChange() {
-  state.selectedGroupId = $('#productGroupSelect').value;
+  const source = $('#productGroupSelect');
+  state.selectedGroupId = source.value;
   selectFirstAvailableForGroup();
   renderProducts();
   applyProductSelection();
+  scheduleAutoAdvance(source.customSelectButton || source);
 }
 
 function onProductSubGroupChange() {
-  state.selectedSubGroupId = $('#productSubGroupSelect').value;
+  const source = $('#productSubGroupSelect');
+  state.selectedSubGroupId = source.value;
   updateSelectedProductFromTree();
   renderProducts();
   applyProductSelection();
+  scheduleAutoAdvance(source.customSelectButton || source);
 }
 
 
@@ -1757,7 +1840,9 @@ function openCustomSelect(select) {
       updateCustomSelectButton(select);
       select.dispatchEvent(new Event('input', { bubbles: true }));
       select.dispatchEvent(new Event('change', { bubbles: true }));
+      const trigger = select.customSelectButton || select;
       closeCustomSelect();
+      scheduleAutoAdvance(trigger);
     });
     list.appendChild(button);
   });
@@ -1787,6 +1872,7 @@ function enhanceCustomSelect(select) {
   select.insertAdjacentElement('afterend', button);
   select.customSelectButton = button;
   select.addEventListener('change', () => updateCustomSelectButton(select));
+  select.addEventListener('keydown', autoAdvanceOnEnter);
   updateCustomSelectButton(select);
 }
 
@@ -1837,6 +1923,8 @@ function createInputField(field) {
   control.dataset.unitAuto = field.unitAuto || '';
   control.addEventListener('input', onAnyInput);
   control.addEventListener('change', onAnyInput);
+  control.addEventListener('change', autoAdvanceOnChange);
+  control.addEventListener('keydown', autoAdvanceOnEnter);
 
   wrap.appendChild(control);
   if (field.type === 'select') enhanceCustomSelect(control);
@@ -1905,6 +1993,7 @@ function createChoiceField(field) {
     input.dataset.fieldLabel = field.label;
     if (field.defaultValue !== undefined && option === field.defaultValue) input.checked = true;
     input.addEventListener('change', onAnyInput);
+    input.addEventListener('change', autoAdvanceOnChange);
     span.textContent = translatedText(option);
     label.appendChild(input);
     label.appendChild(span);
@@ -1941,6 +2030,7 @@ function createSingleCheckField(field) {
     input.dataset.fieldId = field.id;
     input.dataset.fieldLabel = field.label;
     input.addEventListener('change', onAnyInput);
+    input.addEventListener('change', autoAdvanceOnChange);
     span.textContent = translatedText(option);
     label.appendChild(input);
     label.appendChild(span);
@@ -2099,6 +2189,7 @@ function createCheckboxSection(title, fieldName, items) {
     input.name = fieldName;
     input.value = option;
     input.addEventListener('change', onAnyInput);
+    input.addEventListener('change', autoAdvanceOnChange);
     span.textContent = translatedText(option);
     label.appendChild(input);
     label.appendChild(span);
@@ -2892,7 +2983,11 @@ async function sharePdf() {
 }
 
 function registerEvents() {
-  Object.values(fields).forEach((el) => el.addEventListener('input', onAnyInput));
+  Object.values(fields).forEach((el) => {
+    el.addEventListener('input', onAnyInput);
+    el.addEventListener('change', autoAdvanceOnChange);
+    el.addEventListener('keydown', autoAdvanceOnEnter);
+  });
   $('#productFamilySelect').addEventListener('change', onProductFamilyChange);
   $('#productGroupSelect').addEventListener('change', onProductGroupChange);
   $('#productSubGroupSelect').addEventListener('change', onProductSubGroupChange);
@@ -2924,7 +3019,7 @@ $('#installBtn').addEventListener('click', async () => {
 
 async function initPwa() {
   if ('serviceWorker' in navigator && location.protocol.startsWith('http')) {
-    try { await navigator.serviceWorker.register('sw.js?v=c39'); } catch {}
+    try { await navigator.serviceWorker.register('sw.js?v=c40'); } catch {}
   }
 }
 

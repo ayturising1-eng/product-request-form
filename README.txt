@@ -27,3 +27,5 @@ C33-v2 cache fix:
 
 C38 changes:
 - Color/fabric picker panel height stays stable while searching; only the list content filters.
+
+- C40: Mobile auto-advance scroll after completing fields and single selections.
