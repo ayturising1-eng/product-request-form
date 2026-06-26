@@ -1101,7 +1101,7 @@ input:focus, textarea:focus, select:focus {
 
 .field-label-text { display: block; margin-bottom: 6px; }
 
-/* C48 fix: keep generated input controls visible after language refresh */
+/* C47 fix: keep generated input controls visible after language refresh */
 #formArea label > .input-unit-wrap {
   display: flex !important;
   width: 100%;
@@ -1124,47 +1124,5 @@ input:focus, textarea:focus, select:focus {
   .dynamic-section h3 {
     font-size: 18px !important;
     padding: 13px 14px;
-  }
-}
-
-
-/* C48: Finish (Glossy / Matt / Texture) compact horizontal layout */
-.finish-choice-field .choice-row {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 8px;
-}
-.finish-choice-field .choice-row label {
-  width: auto;
-  min-width: 0;
-  justify-content: center;
-  min-height: 44px;
-  padding: 9px 8px;
-  text-align: center;
-  white-space: nowrap;
-}
-.finish-choice-field .choice-row input {
-  flex: 0 0 auto;
-}
-@media (max-width: 640px) {
-  .finish-choice-field {
-    margin-bottom: 2px;
-  }
-  .finish-choice-field .choice-row {
-    grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
-    gap: 7px !important;
-  }
-  .finish-choice-field .choice-row label {
-    width: auto !important;
-    min-height: 48px;
-    justify-content: center !important;
-    gap: 5px;
-    border-radius: 14px;
-    font-size: 12px;
-    padding: 8px 6px;
-  }
-  .finish-choice-field .choice-row input {
-    width: 17px !important;
-    height: 17px !important;
   }
 }

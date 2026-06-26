@@ -1,4 +1,4 @@
-window.APP_VERSION = 'C48';
+window.APP_VERSION = 'C47';
 const DATA = window.PRODUCT_DATA;
 const $ = (selector) => document.querySelector(selector);
 const $$ = (selector) => Array.from(document.querySelectorAll(selector));
@@ -13,7 +13,7 @@ const state = {
 };
 
 const STORAGE_PROFILE = 'prf_profile_v2';
-const STORAGE_ORDER = 'prf_order_c48';
+const STORAGE_ORDER = 'prf_order_c47';
 const STORAGE_LANGUAGE = 'prf_language_v1';
 
 const COLOR_FIELD_LABELS = new Set([
@@ -1238,7 +1238,7 @@ Object.assign(I18N.he, {
 
 
 
-// C48 final language and lighting cleanup.
+// C47 final language and lighting cleanup.
 Object.assign(I18N.en, {
   enterValue: 'Enter value',
   'Linear LED': 'Linear LED',
@@ -1286,7 +1286,7 @@ Object.assign(I18N.he, {
 });
 
 
-// C48 final override: make generated placeholders and simplified lighting labels language-safe.
+// C47 final override: make generated placeholders and simplified lighting labels language-safe.
 Object.assign(I18N.en, {
   enterValue: 'Enter value',
   'Enter value': 'Enter value',
@@ -2253,8 +2253,6 @@ function createInputField(field) {
 function createChoiceField(field) {
   const wrapper = document.createElement('div');
   wrapper.className = 'choice-field';
-  const isFinishChoice = String(field.label || '').trim().toLowerCase() === 'finish';
-  if (isFinishChoice) wrapper.classList.add('finish-choice-field');
   if (field.fullWidth) wrapper.classList.add('grid-span-full');
 
   const heading = document.createElement('div');
@@ -2279,9 +2277,6 @@ function createChoiceField(field) {
     input.addEventListener('change', (event) => {
       onAnyInput();
       scheduleAutoAdvance(event.currentTarget);
-    });
-    input.addEventListener('click', (event) => {
-      if (isFinishChoice) scheduleAutoAdvance(event.currentTarget);
     });
     span.textContent = translatedText(option);
     label.appendChild(input);
@@ -3377,7 +3372,7 @@ $('#installBtn').addEventListener('click', async () => {
 
 async function initPwa() {
   if ('serviceWorker' in navigator && location.protocol.startsWith('http')) {
-    try { await navigator.serviceWorker.register('sw.js?v=c48'); } catch {}
+    try { await navigator.serviceWorker.register('sw.js?v=c47'); } catch {}
   }
 }
 
