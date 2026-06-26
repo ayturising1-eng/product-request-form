@@ -327,37 +327,3 @@ window.PRODUCT_DATA = {
     { id: 'bio_rise', name: 'BIO-RISE', family: 'bioclimatic', productGroup: 'bio_rise', subGroup: '', group: 'bioRise', formTemplate: 'galaxyForm', formVariant: 'galaxy' }
   ]
 };
-
-
-// C46 exact product overrides.
-window.PRODUCT_DATA.productFormOverrides.galaxy = {
-  ...(window.PRODUCT_DATA.productFormOverrides.galaxy || {}),
-  operation: [
-    { id: 'motor', label: 'Motor', type: 'select', options: ['No', 'T-Motion 350 (Somfy Rts) (120°)', 'T-Motion 300 (Somfy Rts) (90°)'] },
-    {
-      id: 'remoteControlSomfyRts',
-      label: 'Remote Control',
-      type: 'choice',
-      options: ['1 Channel', '2 Channels', '4 Channels', '16 Channels'],
-      showWhen: { field: 'motor', values: ['T-Motion 350 (Somfy Rts) (120°)', 'T-Motion 300 (Somfy Rts) (90°)'] }
-    }
-  ]
-};
-window.PRODUCT_DATA.productFormOverrides.space = {
-  ...(window.PRODUCT_DATA.productFormOverrides.space || {}),
-  operation: [
-    { id: 'motor', label: 'Motor', type: 'select', options: ['No', 'T-Motion 350 (Somfy Rts) (120°)', 'T-Motion 300 (Somfy Rts) (90°)'] },
-    {
-      id: 'remoteControlSomfyRts',
-      label: 'Remote Control',
-      type: 'choice',
-      options: ['1 Channel', '2 Channels', '4 Channels', '16 Channels'],
-      showWhen: { field: 'motor', values: ['T-Motion 350 (Somfy Rts) (120°)', 'T-Motion 300 (Somfy Rts) (90°)'] }
-    }
-  ]
-};
-window.PRODUCT_DATA.galaxyForm.lighting = ['Linear LED', 'Linear RGB', 'RGB+White', 'Spot LED', 'Other'];
-window.PRODUCT_DATA.pergolaForm.lighting = [
-  { id: 'lightingType', label: 'Lighting', type: 'choice', options: ['No', 'Daylight', 'White', 'RGB', 'RGB+White', 'Other'] },
-  { id: 'lightingOther', label: 'Other Lighting', type: 'text', showWhen: { field: 'lightingType', values: ['Other'] } }
-];

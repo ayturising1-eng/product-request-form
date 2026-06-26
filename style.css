@@ -1073,28 +1073,3 @@ input:focus, textarea:focus, select:focus {
     border-bottom: 1px solid #bfdbfe;
   }
 }
-
-
-/* C46 section heading emphasis */
-.dynamic-section h3 {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  font-size: 19px;
-  font-weight: 900;
-  letter-spacing: .01em;
-  padding: 12px 14px;
-  margin: 0 0 14px;
-  border: 1px solid rgba(37, 99, 235, .18);
-  border-left: 6px solid #2563eb;
-  border-radius: 14px;
-  background: linear-gradient(90deg, rgba(37,99,235,.10), rgba(255,255,255,.78));
-}
-@media (max-width: 760px) {
-  .dynamic-section h3 {
-    font-size: 20px;
-    padding: 14px 14px;
-    border-left-width: 7px;
-    box-shadow: 0 8px 20px rgba(17, 24, 39, .05);
-  }
-}

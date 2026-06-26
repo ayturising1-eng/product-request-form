@@ -1,4 +1,4 @@
-window.APP_VERSION = 'C46';
+window.APP_VERSION = 'C45';
 const DATA = window.PRODUCT_DATA;
 const $ = (selector) => document.querySelector(selector);
 const $$ = (selector) => Array.from(document.querySelectorAll(selector));
@@ -13,7 +13,7 @@ const state = {
 };
 
 const STORAGE_PROFILE = 'prf_profile_v2';
-const STORAGE_ORDER = 'prf_order_c46';
+const STORAGE_ORDER = 'prf_order_c45';
 const STORAGE_LANGUAGE = 'prf_language_v1';
 
 const COLOR_FIELD_LABELS = new Set([
@@ -1238,7 +1238,7 @@ Object.assign(I18N.he, {
 
 
 
-// C46 final language and lighting cleanup.
+// C45 final language and lighting cleanup.
 Object.assign(I18N.en, {
   enterValue: 'Enter value',
   'Linear LED': 'Linear LED',
@@ -1281,69 +1281,6 @@ Object.assign(I18N.he, {
   'Linear RGB': 'RGB ליניארי',
   'Spot LED': 'Spot LED',
   'RGB+White': 'RGB+White',
-  'Other': 'אחר',
-  'Other Lighting': 'תאורה אחרת'
-});
-
-
-// C46 final override: make generated placeholders and simplified lighting labels language-safe.
-Object.assign(I18N.en, {
-  enterValue: 'Enter value',
-  'Enter value': 'Enter value',
-  'Select Code': 'Select Code',
-  'Select Fabric': 'Select Fabric',
-  'Linear LED': 'Linear LED',
-  'Linear RGB': 'Linear RGB',
-  'RGB+White': 'RGB+White',
-  'Spot LED': 'Spot LED',
-  'Other': 'Other',
-  'Other Lighting': 'Other Lighting'
-});
-Object.assign(I18N.tr, {
-  enterValue: 'Değer girin',
-  'Enter value': 'Değer girin',
-  'Select Code': 'Kod Seç',
-  'Select Fabric': 'Kumaş Seç',
-  'Linear LED': 'Linear LED',
-  'Linear RGB': 'Linear RGB',
-  'RGB+White': 'RGB+White',
-  'Spot LED': 'Spot LED',
-  'Other': 'Diğer',
-  'Other Lighting': 'Diğer Aydınlatma'
-});
-Object.assign(I18N.de, {
-  enterValue: 'Wert eingeben',
-  'Enter value': 'Wert eingeben',
-  'Select Code': 'Code auswählen',
-  'Select Fabric': 'Stoff auswählen',
-  'Linear LED': 'Linear LED',
-  'Linear RGB': 'Linear RGB',
-  'RGB+White': 'RGB+White',
-  'Spot LED': 'Spot LED',
-  'Other': 'Andere',
-  'Other Lighting': 'Andere Beleuchtung'
-});
-Object.assign(I18N.fr, {
-  enterValue: 'Saisir une valeur',
-  'Enter value': 'Saisir une valeur',
-  'Select Code': 'Sélectionner le code',
-  'Select Fabric': 'Sélectionner le tissu',
-  'Linear LED': 'LED linéaire',
-  'Linear RGB': 'RGB linéaire',
-  'RGB+White': 'RGB+White',
-  'Spot LED': 'Spot LED',
-  'Other': 'Autre',
-  'Other Lighting': 'Autre éclairage'
-});
-Object.assign(I18N.he, {
-  enterValue: 'הזן ערך',
-  'Enter value': 'הזן ערך',
-  'Select Code': 'בחר קוד',
-  'Select Fabric': 'בחר בד',
-  'Linear LED': 'LED ליניארי',
-  'Linear RGB': 'RGB ליניארי',
-  'RGB+White': 'RGB+White',
-  'Spot LED': 'Spot LED',
   'Other': 'אחר',
   'Other Lighting': 'תאורה אחרת'
 });
@@ -1706,13 +1643,6 @@ function refreshDynamicLanguage() {
   });
   $$('[data-placeholder-key]').forEach((el) => {
     el.placeholder = translatedText(el.dataset.placeholderKey);
-  });
-  $$('#formArea input, #formArea textarea').forEach((el) => {
-    if (el.dataset.placeholderKey === 'Enter value' || el.dataset.placeholderI18n === 'enterValue' || el.placeholder === 'Enter value') {
-      el.placeholder = translatedText('Enter value');
-      el.dataset.placeholderKey = 'Enter value';
-      delete el.dataset.placeholderI18n;
-    }
   });
   $$('[data-dynamic-label-key]').forEach((el) => {
     el.textContent = translatedText(el.dataset.dynamicLabelKey);
@@ -2178,8 +2108,8 @@ function createInputField(field) {
     control = document.createElement('input');
     control.type = field.type === 'number' ? 'number' : 'text';
     if (field.type === 'number') control.inputMode = 'decimal';
-    control.dataset.placeholderKey = 'Enter value';
-    control.placeholder = translatedText('Enter value');
+    control.dataset.placeholderI18n = 'enterValue';
+    control.placeholder = t('enterValue');
     if (field.defaultValue !== undefined) control.value = field.defaultValue;
   }
   control.id = `dyn_${field.id}`;
@@ -2484,8 +2414,8 @@ function createCheckboxSection(title, fieldName, items) {
     input.type = 'text';
     input.dataset.fieldId = 'lightingOther';
     input.dataset.fieldLabel = 'Other Lighting';
-    input.dataset.placeholderKey = 'Enter value';
-    input.placeholder = translatedText('Enter value');
+    input.dataset.placeholderI18n = 'enterValue';
+    input.placeholder = t('enterValue');
     input.addEventListener('input', onAnyInput);
     input.addEventListener('change', onAnyInput);
     input.addEventListener('change', autoAdvanceOnChange);
@@ -3358,7 +3288,7 @@ $('#installBtn').addEventListener('click', async () => {
 
 async function initPwa() {
   if ('serviceWorker' in navigator && location.protocol.startsWith('http')) {
-    try { await navigator.serviceWorker.register('sw.js?v=c46'); } catch {}
+    try { await navigator.serviceWorker.register('sw.js?v=c45'); } catch {}
   }
 }
 
