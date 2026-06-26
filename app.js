@@ -840,12 +840,14 @@ Object.assign(I18N.he, {
 Object.assign(I18N.en, {
   'Add New Position': 'Add New Position',
   'Remove Last Position': 'Remove Last Position',
+  'Delete': 'Delete',
   'Position': 'Position'
 });
 
 Object.assign(I18N.tr, {
   'Add New Position': 'Yeni Poz Ekle',
   'Remove Last Position': 'Son Pozu Sil',
+  'Delete': 'Sil',
   'Position': 'Poz'
 });
 
@@ -857,6 +859,7 @@ Object.assign(I18N.de, {
 Object.assign(I18N.fr, {
   'Add New Position': 'Ajouter une position',
   'Remove Last Position': 'Supprimer la dernière position',
+  'Delete': 'Supprimer',
   'Position': 'Position'
 });
 
@@ -1374,6 +1377,10 @@ function initColorChartModal() {
   $$('[data-color-chart-close]').forEach((button) => {
     button.addEventListener('click', closeColorChart);
   });
+  $('#catalogSearchInput')?.addEventListener('input', (event) => {
+    activePickerSearch = event.target.value || '';
+    buildPickerList(activePickerKind);
+  });
   modal.addEventListener('click', (event) => {
     if (event.target === modal) closeColorChart();
   });
@@ -1866,22 +1873,43 @@ function addProjectPosition() {
 }
 
 
-function removeProjectPosition() {
-  const current = getProjectPositionCount();
-  if (current <= 1) return;
-  const snapshot = snapshotDynamicState();
-  const next = Math.max(1, current - 1);
+function renumberSnapshotAfterRemovingPosition(snapshot, removeIndex, currentCount) {
   const nextSnapshot = {};
   Object.entries(snapshot).forEach(([key, value]) => {
-    const match = key.match(/__pos(\d+)$/);
+    const match = key.match(/^(.*)__pos(\d+)$/);
     if (!match) {
+      if (removeIndex !== 1) nextSnapshot[key] = value;
+      return;
+    }
+    const base = match[1];
+    const pos = Number(match[2]);
+    if (pos === removeIndex) return;
+    if (pos < removeIndex) {
       nextSnapshot[key] = value;
       return;
     }
-    const pos = Number(match[1]);
-    if (pos <= next) nextSnapshot[key] = value;
+    const newPos = pos - 1;
+    const newKey = newPos === 1 ? base : `${base}__pos${newPos}`;
+    nextSnapshot[newKey] = value;
   });
-  setProjectPositionCount(next);
+
+  if (removeIndex === 1 && currentCount > 1) {
+    Object.entries(snapshot).forEach(([key, value]) => {
+      const match = key.match(/^(.*)__pos2$/);
+      if (match) nextSnapshot[match[1]] = value;
+    });
+  }
+
+  return nextSnapshot;
+}
+
+function removeProjectPosition(positionIndex) {
+  const current = getProjectPositionCount();
+  if (current <= 1) return;
+  const removeIndex = Math.min(current, Math.max(1, Number(positionIndex) || current));
+  const snapshot = snapshotDynamicState();
+  const nextSnapshot = renumberSnapshotAfterRemovingPosition(snapshot, removeIndex, current);
+  setProjectPositionCount(current - 1);
   renderForm();
   restoreDynamicState(nextSnapshot);
   saveOrderDraft();
@@ -1910,6 +1938,12 @@ function createProjectDetailsSection(items) {
       const label = document.createElement('span');
       label.textContent = `${translatedText('Position')} ${positionIndex}`;
       divider.appendChild(label);
+      const removeButton = document.createElement('button');
+      removeButton.type = 'button';
+      removeButton.className = 'ghost remove-position-btn inline-remove-position-btn';
+      removeButton.textContent = translatedText('Delete');
+      removeButton.addEventListener('click', () => removeProjectPosition(positionIndex));
+      divider.appendChild(removeButton);
       block.appendChild(divider);
     }
 
@@ -1930,16 +1964,6 @@ function createProjectDetailsSection(items) {
   addButton.textContent = `+ ${translatedText('Add New Position')}`;
   addButton.addEventListener('click', addProjectPosition);
   actions.appendChild(addButton);
-
-  if (positionCount > 1) {
-    const removeButton = document.createElement('button');
-    removeButton.id = 'removeProjectPositionBtn';
-    removeButton.type = 'button';
-    removeButton.className = 'ghost remove-position-btn';
-    removeButton.textContent = `- ${translatedText('Remove Last Position')}`;
-    removeButton.addEventListener('click', removeProjectPosition);
-    actions.appendChild(removeButton);
-  }
 
   section.appendChild(actions);
 
@@ -2181,7 +2205,7 @@ function projectDetailSections(fieldList, lang = state.language) {
   return Array.from({ length: positionCount }, (_, index) => {
     const positionIndex = index + 1;
     return {
-      title: positionCount > 1 ? `${projectTitle} - ${positionLabel} ${positionIndex}` : projectTitle,
+      title: positionCount > 1 ? `${positionLabel} ${positionIndex}` : projectTitle,
       rows: fieldRows(positionedFields(fieldList, positionIndex), lang)
     };
   });
@@ -2316,7 +2340,9 @@ function setText(key, value) {
 }
 
 function normalizeSectionBaseTitle(title) {
-  return String(title || '').replace(/\s*-\s*(Position|Poz|מיקום)\s+\d+$/i, '').trim();
+  const raw = String(title || '').trim();
+  if (/^(Position|Poz|מיקום)\s+\d+$/i.test(raw)) return translatedText('Project Details');
+  return raw.replace(/\s*-\s*(Position|Poz|מיקום)\s+\d+$/i, '').trim();
 }
 
 function buildSectionMap(rows) {
@@ -2770,7 +2796,7 @@ $('#installBtn').addEventListener('click', async () => {
 
 async function initPwa() {
   if ('serviceWorker' in navigator && location.protocol.startsWith('http')) {
-    try { await navigator.serviceWorker.register('sw.js?v=c35'); } catch {}
+    try { await navigator.serviceWorker.register('sw.js?v=c36'); } catch {}
   }
 }
 

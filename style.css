@@ -871,3 +871,17 @@ input:focus, textarea:focus, select:focus {
 .remove-position-btn { border-color: var(--line); }
 .position-matrix-table th, .position-matrix-table td { text-align:left; vertical-align:top; font-size:13px; }
 .position-matrix-table thead th { background:#f5f7fb; }
+
+.project-position-divider {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+.inline-remove-position-btn {
+  min-height: 32px;
+  padding: 6px 10px;
+  border-radius: 999px;
+  color: var(--danger);
+  background: #fff;
+}
