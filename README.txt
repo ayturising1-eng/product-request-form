@@ -17,3 +17,10 @@ C33 changes:
 - PDF download/share output remains English.
 
 No server, no login, no database. User data is saved locally on the device.
+
+
+C33-v2 cache fix:
+- Service worker cache version bumped.
+- App/order draft storage version bumped so old random selections do not come back.
+- Script and stylesheet references include cache-busting query strings.
+- 3D viewer references remain removed.

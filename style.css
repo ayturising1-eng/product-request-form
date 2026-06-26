@@ -354,6 +354,27 @@ td:first-child { width: 42%; font-weight: 800; background: #f9fafb; }
 .input-unit-wrap input { padding-right: 52px; }
 .input-unit-wrap select { padding-right: 36px; }
 .modal-open { overflow: hidden; }
+
+.catalog-search-wrap {
+  margin-bottom: 12px;
+}
+.catalog-search-input {
+  width: 100%;
+  min-height: 46px;
+  padding: 12px 14px;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: #fff;
+  font: inherit;
+}
+.catalog-empty-state {
+  padding: 18px 12px;
+  border: 1px dashed var(--line);
+  border-radius: 14px;
+  text-align: center;
+  color: var(--muted);
+  font-weight: 700;
+}
 .color-picker-wrap {
   gap: 8px;
   align-items: stretch;
@@ -843,3 +864,10 @@ input:focus, textarea:focus, select:focus {
   .three-d-frame { height: 380px; border-radius: 14px; }
   .three-d-help { font-size: 12px; }
 }
+
+.position-actions {
+  display:flex; gap:10px; flex-wrap:wrap; margin-top:14px;
+}
+.remove-position-btn { border-color: var(--line); }
+.position-matrix-table th, .position-matrix-table td { text-align:left; vertical-align:top; font-size:13px; }
+.position-matrix-table thead th { background:#f5f7fb; }

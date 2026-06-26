@@ -1,3 +1,4 @@
+window.APP_VERSION = 'C33-v2';
 const DATA = window.PRODUCT_DATA;
 const $ = (selector) => document.querySelector(selector);
 const $$ = (selector) => Array.from(document.querySelectorAll(selector));
@@ -12,7 +13,7 @@ const state = {
 };
 
 const STORAGE_PROFILE = 'prf_profile_v2';
-const STORAGE_ORDER = 'prf_order_c33_v1';
+const STORAGE_ORDER = 'prf_order_c33_v2';
 const STORAGE_LANGUAGE = 'prf_language_v1';
 
 const COLOR_FIELD_LABELS = new Set([
@@ -470,7 +471,9 @@ Object.assign(I18N.tr, {
   '4 Channel': '4 Kanal',
   '16 Channel': '16 Kanal',
   'Wooden Box': 'Ahşap Kasa',
-  'Heavy-Duty Nylon': 'Ağır Hizmet Naylon',
+  'Heavy-Duty Nylon': 'Havalı Kalın Naylon',
+  'Search code or name': 'Kod veya ad ara',
+  'No results found': 'Sonuç bulunamadı',
   'Daylight': 'Gün Işığı',
   'White': 'Beyaz',
   'Spot': 'Spot',
@@ -504,6 +507,9 @@ Object.assign(I18N.de, {
   'Technical Selections': 'Technische Auswahl',
   'Additional Accessories': 'Zusätzliches Zubehör',
   'Selected': 'Ausgewählt',
+  'Search code or name': 'Code oder Namen suchen',
+  'No results found': 'Keine Ergebnisse gefunden',
+  'Heavy-Duty Nylon': 'Luftpolster-Starknylon',
   'Width': 'Breite',
   'Projection': 'Ausladung',
   'Height (Top of The Gutter)': 'Höhe (Oberkante Rinne)',
@@ -555,6 +561,9 @@ Object.assign(I18N.fr, {
   'Technical Selections': 'Sélections techniques',
   'Additional Accessories': 'Accessoires supplémentaires',
   'Selected': 'Sélectionné',
+  'Search code or name': 'Rechercher code ou nom',
+  'No results found': 'Aucun résultat trouvé',
+  'Heavy-Duty Nylon': 'Nylon épais à bulles',
   'Width': 'Largeur',
   'Projection': 'Projection',
   'Height (Top of The Gutter)': 'Hauteur (haut de gouttière)',
@@ -606,6 +615,9 @@ Object.assign(I18N.he, {
   'Technical Selections': 'בחירות טכניות',
   'Additional Accessories': 'אביזרים נוספים',
   'Selected': 'נבחר',
+  'Search code or name': 'חפש קוד או שם',
+  'No results found': 'לא נמצאו תוצאות',
+  'Heavy-Duty Nylon': 'ניילון עבה בועתי',
   'Width': 'רוחב',
   'Projection': 'עומק',
   'Height (Top of The Gutter)': 'גובה (ראש המרזב)',
@@ -827,11 +839,13 @@ Object.assign(I18N.he, {
 
 Object.assign(I18N.en, {
   'Add New Position': 'Add New Position',
+  'Remove Last Position': 'Remove Last Position',
   'Position': 'Position'
 });
 
 Object.assign(I18N.tr, {
   'Add New Position': 'Yeni Poz Ekle',
+  'Remove Last Position': 'Son Pozu Sil',
   'Position': 'Poz'
 });
 
@@ -842,6 +856,7 @@ Object.assign(I18N.de, {
 
 Object.assign(I18N.fr, {
   'Add New Position': 'Ajouter une position',
+  'Remove Last Position': 'Supprimer la dernière position',
   'Position': 'Position'
 });
 
@@ -1161,6 +1176,7 @@ function translatedCompositeText(value, lang = state.language) {
 let activePickerInput = null;
 let activePickerKind = 'color';
 let activeColorCatalogId = 'rising-standart';
+let activePickerSearch = '';
 
 function colorCatalogs() {
   return Array.isArray(window.PRODUCT_COLOR_CATALOGS) && window.PRODUCT_COLOR_CATALOGS.length
@@ -1234,11 +1250,32 @@ function renderColorCatalogTabs(kind) {
   });
 }
 
+function optionSearchText(option) {
+  return [option.value, option.code, option.name, option.detail]
+    .filter(Boolean)
+    .map((part) => String(translatedText(part)).toLowerCase())
+    .join(' ');
+}
+
 function buildPickerList(kind) {
   const list = $('#colorOptionList');
   if (!list) return;
   list.innerHTML = '';
-  pickerOptions(kind).forEach((option) => {
+  const query = String(activePickerSearch || '').trim().toLowerCase();
+  const options = pickerOptions(kind).filter((option) => {
+    if (!query) return true;
+    return optionSearchText(option).includes(query);
+  });
+
+  if (!options.length) {
+    const empty = document.createElement('div');
+    empty.className = 'catalog-empty-state';
+    empty.textContent = translatedText('No results found');
+    list.appendChild(empty);
+    return;
+  }
+
+  options.forEach((option) => {
     const button = document.createElement('button');
     button.type = 'button';
     button.className = 'color-option-card';
@@ -1290,6 +1327,12 @@ function openPicker(input, kind = 'color') {
   }
   $('#colorChartTitle').textContent = translatedText(kind === 'fabric' ? 'Fabric Selection' : 'Color Chart');
   $('#colorChartHelp').textContent = translatedText(kind === 'fabric' ? 'Fabric Selection Help' : 'Color Chart Help');
+  const searchInput = $('#catalogSearchInput');
+  activePickerSearch = '';
+  if (searchInput) {
+    searchInput.value = '';
+    searchInput.placeholder = translatedText('Search code or name');
+  }
   renderColorCatalogTabs(kind);
   buildPickerList(kind);
   modal.hidden = false;
@@ -1304,6 +1347,7 @@ function closeColorChart() {
   document.body.classList.remove('modal-open');
   activePickerInput = null;
   activePickerKind = 'color';
+  activePickerSearch = '';
 }
 
 function selectPickerOption(value) {
@@ -1773,19 +1817,12 @@ function createSingleCheckField(field) {
     const input = document.createElement('input');
     const span = document.createElement('span');
     input.id = id;
-    input.type = 'checkbox';
+    input.type = 'radio';
     input.name = `dyn_${field.id}`;
     input.value = option;
     input.dataset.fieldId = field.id;
     input.dataset.fieldLabel = field.label;
-    input.addEventListener('change', () => {
-      if (input.checked) {
-        $$(`input[type="checkbox"][name="dyn_${field.id}"]`).forEach((other) => {
-          if (other !== input) other.checked = false;
-        });
-      }
-      onAnyInput();
-    });
+    input.addEventListener('change', onAnyInput);
     span.textContent = translatedText(option);
     label.appendChild(input);
     label.appendChild(span);
@@ -1828,6 +1865,29 @@ function addProjectPosition() {
   updatePreview();
 }
 
+
+function removeProjectPosition() {
+  const current = getProjectPositionCount();
+  if (current <= 1) return;
+  const snapshot = snapshotDynamicState();
+  const next = Math.max(1, current - 1);
+  const nextSnapshot = {};
+  Object.entries(snapshot).forEach(([key, value]) => {
+    const match = key.match(/__pos(\d+)$/);
+    if (!match) {
+      nextSnapshot[key] = value;
+      return;
+    }
+    const pos = Number(match[1]);
+    if (pos <= next) nextSnapshot[key] = value;
+  });
+  setProjectPositionCount(next);
+  renderForm();
+  restoreDynamicState(nextSnapshot);
+  saveOrderDraft();
+  updatePreview();
+}
+
 function createProjectDetailsSection(items) {
   const section = document.createElement('div');
   section.className = 'dynamic-section project-details-section';
@@ -1860,13 +1920,28 @@ function createProjectDetailsSection(items) {
     section.appendChild(block);
   }
 
+  const actions = document.createElement('div');
+  actions.className = 'position-actions';
+
   const addButton = document.createElement('button');
   addButton.id = 'addProjectPositionBtn';
   addButton.type = 'button';
   addButton.className = 'secondary add-position-btn';
   addButton.textContent = `+ ${translatedText('Add New Position')}`;
   addButton.addEventListener('click', addProjectPosition);
-  section.appendChild(addButton);
+  actions.appendChild(addButton);
+
+  if (positionCount > 1) {
+    const removeButton = document.createElement('button');
+    removeButton.id = 'removeProjectPositionBtn';
+    removeButton.type = 'button';
+    removeButton.className = 'ghost remove-position-btn';
+    removeButton.textContent = `- ${translatedText('Remove Last Position')}`;
+    removeButton.addEventListener('click', removeProjectPosition);
+    actions.appendChild(removeButton);
+  }
+
+  section.appendChild(actions);
 
   return section;
 }
@@ -2240,15 +2315,56 @@ function setText(key, value) {
   });
 }
 
-function renderPreviewSections(sections) {
-  $('#previewSections').innerHTML = sections.map((section) => `
+function normalizeSectionBaseTitle(title) {
+  return String(title || '').replace(/\s*-\s*(Position|Poz|מיקום)\s+\d+$/i, '').trim();
+}
+
+function buildSectionMap(rows) {
+  const map = new Map();
+  (rows || []).forEach(([label, value]) => map.set(label, value || '-'));
+  return map;
+}
+
+function renderPositionMatrixSection(baseTitle, sections) {
+  const titles = sections.map((section) => section.title);
+  const rowLabels = sections[0]?.rows.map(([label]) => label) || [];
+  const maps = sections.map((section) => buildSectionMap(section.rows));
+  return `
     <div class="pdf-section">
-      <h3>${section.title}</h3>
-      <table><tbody>
-        ${section.rows.map(([label, value]) => `<tr><td>${label}</td><td>${value || '-'}</td></tr>`).join('')}
+      <h3>${baseTitle}</h3>
+      <table class="position-matrix-table"><thead><tr><th></th>${titles.map((title) => `<th>${title}</th>`).join('')}</tr></thead><tbody>
+      ${rowLabels.map((label) => `<tr><td>${label}</td>${maps.map((m) => `<td>${m.get(label) || '-'}</td>`).join('')}</tr>`).join('')}
       </tbody></table>
     </div>
-  `).join('');
+  `;
+}
+
+function renderPreviewSections(sections) {
+  const html = [];
+  for (let i = 0; i < sections.length; i += 1) {
+    const current = sections[i];
+    const baseTitle = normalizeSectionBaseTitle(current.title);
+    const group = [current];
+    let j = i + 1;
+    while (j < sections.length && normalizeSectionBaseTitle(sections[j].title) === baseTitle) {
+      group.push(sections[j]);
+      j += 1;
+    }
+    if (group.length > 1 && /project details/i.test(baseTitle)) {
+      html.push(renderPositionMatrixSection(baseTitle, group));
+      i = j - 1;
+      continue;
+    }
+    html.push(`
+      <div class="pdf-section">
+        <h3>${current.title}</h3>
+        <table><tbody>
+          ${current.rows.map(([label, value]) => `<tr><td>${label}</td><td>${value || '-'}</td></tr>`).join('')}
+        </tbody></table>
+      </div>
+    `);
+  }
+  $('#previewSections').innerHTML = html.join('');
 }
 
 function updateAutoUnits() {
@@ -2454,6 +2570,40 @@ function buildOrderPdf(data) {
     return yy;
   };
 
+  const tableMatrix = (sections) => {
+    const titles = sections.map((s) => s.title);
+    const rowLabels = sections[0]?.rows.map(([label]) => label) || [];
+    const maps = sections.map((s) => buildSectionMap(s.rows));
+    const tableWidth = W - margin * 2;
+    const labelWidth = 145;
+    const colWidth = (tableWidth - labelWidth) / Math.max(1, titles.length);
+    let yy = y;
+
+    fillRect(margin, yy, labelWidth, rowHeight, 0.93);
+    rect(margin, yy, labelWidth, rowHeight);
+    for (let i = 0; i < titles.length; i += 1) {
+      const x = margin + labelWidth + i * colWidth;
+      fillRect(x, yy, colWidth, rowHeight, 0.93);
+      rect(x, yy, colWidth, rowHeight);
+      text(x + 4, yy + 9, titles[i], 6.7, true);
+    }
+    yy += rowHeight;
+
+    rowLabels.forEach((label) => {
+      fillRect(margin, yy, labelWidth, rowHeight, 0.97);
+      rect(margin, yy, labelWidth, rowHeight);
+      text(margin + 6, yy + 9, label, 7.1, true);
+      maps.forEach((m, idx) => {
+        const x = margin + labelWidth + idx * colWidth;
+        rect(x, yy, colWidth, rowHeight);
+        const val = String(m.get(label) || '-');
+        text(x + 4, yy + 9, wrapText(val, Math.max(8, Math.floor(colWidth / 4.8)))[0], 6.7);
+      });
+      yy += rowHeight;
+    });
+    return yy;
+  };
+
   cmd('0.1 w');
   rect(margin, y, 70, 46);
   text(margin + 18, y + 28, 'LOGO', 13, true);
@@ -2475,13 +2625,25 @@ function buildOrderPdf(data) {
     ['Sub Group', data.productSubGroup || '-'],
     ['Product', data.productName || '-']
   ];
-  const tableEndY = tableRows(productRows, margin, y, W - margin * 2);
-  y = tableEndY + 2;
+  y = tableRows(productRows, margin, y, W - margin * 2) + 2;
 
-  data.sections.forEach((sectionData) => {
-    section(sectionData.title);
-    y = tableRows(sectionData.rows, margin, y, W - margin * 2) + 2;
-  });
+  for (let i = 0; i < data.sections.length; i += 1) {
+    const current = data.sections[i];
+    const baseTitle = normalizeSectionBaseTitle(current.title);
+    const group = [current];
+    let j = i + 1;
+    while (j < data.sections.length && normalizeSectionBaseTitle(data.sections[j].title) === baseTitle) {
+      group.push(data.sections[j]);
+      j += 1;
+    }
+    section(baseTitle);
+    if (group.length > 1 && /project details/i.test(baseTitle)) {
+      y = tableMatrix(group) + 2;
+      i = j - 1;
+      continue;
+    }
+    y = tableRows(current.rows, margin, y, W - margin * 2) + 2;
+  }
 
   section('Notes');
   const noteLines = wrapText(data.notes || '-', 82).slice(0, 5);
@@ -2608,7 +2770,7 @@ $('#installBtn').addEventListener('click', async () => {
 
 async function initPwa() {
   if ('serviceWorker' in navigator && location.protocol.startsWith('http')) {
-    try { await navigator.serviceWorker.register('sw.js'); } catch {}
+    try { await navigator.serviceWorker.register('sw.js?v=c35'); } catch {}
   }
 }
 
