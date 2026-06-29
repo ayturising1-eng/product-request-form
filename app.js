@@ -1682,11 +1682,25 @@ function optionSearchText(option) {
     .join(' ');
 }
 
+function collectionSlug(value) {
+  return String(value || '')
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-+|-+$/g, '');
+}
+
 function createPickerOptionCard(option, kind) {
   const button = document.createElement('button');
   button.type = 'button';
   button.className = 'color-option-card';
   button.setAttribute('aria-label', option.value);
+
+  const isGroupedFabric = kind === 'fabric' && (option.brand || option.collection);
+  if (isGroupedFabric) {
+    const slug = collectionSlug(option.collection);
+    button.classList.add('fabric-picker-card', `fabric-picker-card--${slug}`);
+    button.dataset.collection = slug;
+  }
 
   const swatch = document.createElement('span');
   swatch.className = `color-option-swatch ${kind === 'fabric' ? 'fabric-swatch' : ''}`;
@@ -1703,20 +1717,36 @@ function createPickerOptionCard(option, kind) {
   const textWrap = document.createElement('span');
   textWrap.className = 'color-option-text';
 
-  const code = document.createElement('strong');
-  code.textContent = option.code;
-
-  textWrap.appendChild(code);
-  if (option.name) {
-    const name = document.createElement('span');
-    name.textContent = translatedText(option.name);
+  if (isGroupedFabric) {
+    const name = document.createElement('strong');
+    name.textContent = translatedText(option.name || option.code || option.value);
     textWrap.appendChild(name);
+
+    const meta = document.createElement('small');
+    meta.textContent = `${translatedText(option.collection || 'Fabric')} - ${option.code}`;
+    textWrap.appendChild(meta);
+
+    if (option.detail) {
+      const detail = document.createElement('small');
+      detail.textContent = translatedText(option.detail);
+      textWrap.appendChild(detail);
+    }
+  } else {
+    const code = document.createElement('strong');
+    code.textContent = option.code;
+    textWrap.appendChild(code);
+    if (option.name) {
+      const name = document.createElement('span');
+      name.textContent = translatedText(option.name);
+      textWrap.appendChild(name);
+    }
+    if (option.detail) {
+      const detail = document.createElement('small');
+      detail.textContent = translatedText(option.detail);
+      textWrap.appendChild(detail);
+    }
   }
-  if (option.detail) {
-    const detail = document.createElement('small');
-    detail.textContent = translatedText(option.detail);
-    textWrap.appendChild(detail);
-  }
+
   button.appendChild(swatch);
   button.appendChild(textWrap);
   button.addEventListener('click', () => selectPickerOption(option.value));
@@ -1724,37 +1754,41 @@ function createPickerOptionCard(option, kind) {
 }
 
 function appendGroupedFabricOptions(list, options) {
-  const brandOrder = [];
-  const brandMap = new Map();
+  const preferredCollections = ['Plains', 'The Classics', 'Fantasy', 'Marine Plus'];
+  const collectionMap = new Map();
+
   options.forEach((option) => {
-    const brand = option.brand || 'Sauleda';
     const collection = option.collection || 'Fabric';
-    if (!brandMap.has(brand)) {
-      brandMap.set(brand, new Map());
-      brandOrder.push(brand);
+    if (state.selectedProductId === 'janela_cassette_awning' && option.brand === 'Sauleda' && !preferredCollections.includes(collection)) {
+      return;
     }
-    const collectionMap = brandMap.get(brand);
     if (!collectionMap.has(collection)) collectionMap.set(collection, []);
     collectionMap.get(collection).push(option);
   });
 
-  brandOrder.forEach((brand) => {
-    const brandHeading = document.createElement('h3');
-    brandHeading.className = 'fabric-brand-heading';
-    brandHeading.textContent = brand;
-    list.appendChild(brandHeading);
+  const orderedCollections = [
+    ...preferredCollections.filter((name) => collectionMap.has(name)),
+    ...Array.from(collectionMap.keys()).filter((name) => !preferredCollections.includes(name))
+  ];
 
-    brandMap.get(brand).forEach((items, collection) => {
-      const collectionHeading = document.createElement('h4');
-      collectionHeading.className = 'fabric-collection-heading';
-      collectionHeading.textContent = collection;
-      list.appendChild(collectionHeading);
+  orderedCollections.forEach((collection) => {
+    const items = collectionMap.get(collection) || [];
+    if (!items.length) return;
 
-      const grid = document.createElement('div');
-      grid.className = 'fabric-option-grid';
-      items.forEach((option) => grid.appendChild(createPickerOptionCard(option, 'fabric')));
-      list.appendChild(grid);
-    });
+    const section = document.createElement('section');
+    const slug = collectionSlug(collection);
+    section.className = `fabric-collection-section fabric-collection-section--${slug}`;
+
+    const collectionHeading = document.createElement('h4');
+    collectionHeading.className = 'fabric-collection-heading';
+    collectionHeading.textContent = collection;
+    section.appendChild(collectionHeading);
+
+    const grid = document.createElement('div');
+    grid.className = `fabric-option-grid fabric-option-grid--${slug}`;
+    items.forEach((option) => grid.appendChild(createPickerOptionCard(option, 'fabric')));
+    section.appendChild(grid);
+    list.appendChild(section);
   });
 }
 
