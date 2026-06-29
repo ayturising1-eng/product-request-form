@@ -1,4 +1,4 @@
-const CACHE = 'product-request-form-c47-layout-restore-v1';
+const CACHE = 'product-request-form-c47-order-first';
 const ASSETS = [
   './',
   './index.html',

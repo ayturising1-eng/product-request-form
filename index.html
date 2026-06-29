@@ -4,8 +4,8 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <title>Product Request Form</title>
-  <link rel="manifest" href="manifest.webmanifest?v=c47-layout-restore" />
-  <link rel="stylesheet" href="style.css?v=c47-layout-restore" />
+  <link rel="manifest" href="manifest.webmanifest?v=c47-order-first" />
+  <link rel="stylesheet" href="style.css?v=c47-order-first" />
   <meta name="theme-color" content="#111827" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
@@ -34,8 +34,8 @@
 
   <nav class="mobile-quick-nav no-print" aria-label="Quick actions">
     <a href="#companySection" data-i18n="navCompany">Company</a>
-    <a href="#productSection" data-i18n="navProduct">Product</a>
     <a href="#orderSection" data-i18n="navOrder">Order</a>
+    <a href="#productSection" data-i18n="navProduct">Product</a>
     <a href="#pdfSection" data-i18n="navPdf">PDF</a>
   </nav>
 
@@ -69,12 +69,30 @@
       </div>
     </section>
 
-    <section id="productSection" class="panel no-print">
+    <section id="orderSection" class="panel no-print order-section">
       <div class="section-title">
         <span class="step">2</span>
         <div>
-          <h2 data-i18n="selectProduct">Select Product</h2>
-          <p data-i18n="selectProductHelp">Fields change automatically by product.</p>
+          <h2 data-i18n="orderDetails">Order Details</h2>
+          <p data-i18n="orderHelp">Set order name and date before selecting the product.</p>
+        </div>
+      </div>
+      <div class="grid two">
+        <label><span data-i18n="orderNoLabel">Order Name / No</span>
+          <input id="orderNo" placeholder="Auto / manual" data-i18n-placeholder="orderNoPlaceholder" />
+        </label>
+        <label><span data-i18n="orderDate">Order Date</span>
+          <input id="orderDate" type="date" />
+        </label>
+      </div>
+    </section>
+
+    <section id="productSection" class="panel no-print">
+      <div class="section-title">
+        <span class="step">3</span>
+        <div>
+          <h2 data-i18n="selectProductMeasurements">Select Product & Measurements & Options</h2>
+          <p data-i18n="measurementsHelp">Related fields are grouped under the same heading.</p>
         </div>
       </div>
       <div class="product-select-wrap">
@@ -91,31 +109,8 @@
         </div>
         <p id="productGroupHint" class="product-hint"></p>
       </div>
-    </section>
-
-    <section class="panel no-print">
-      <div class="section-title">
-        <span class="step">3</span>
-        <div>
-          <h2 data-i18n="measurementsOptions">Measurements & Options</h2>
-          <p data-i18n="measurementsHelp">Related fields are grouped under the same heading.</p>
-        </div>
-      </div>
-
-      <div id="orderSection" class="dynamic-section order-section">
-        <h3 data-i18n="orderDetails">Order Details</h3>
-        <div class="grid two">
-          <label><span data-i18n="orderNoLabel">Order Name / No</span>
-            <input id="orderNo" placeholder="Auto / manual" data-i18n-placeholder="orderNoPlaceholder" />
-          </label>
-          <label><span data-i18n="orderDate">Order Date</span>
-            <input id="orderDate" type="date" />
-          </label>
-        </div>
-      </div>
 
       <div id="formArea"></div>
-
 
       <label class="notes-input wide"><span data-i18n="notes">Notes</span>
         <textarea id="notes" rows="3" placeholder="Optional notes" data-i18n-placeholder="notesPlaceholder"></textarea>
@@ -197,14 +192,14 @@
 
   <div id="toast" class="toast no-print"></div>
 
-  <script src="products.js?v=c47-layout-restore"></script>
-  <script src="assets.js?v=c47-layout-restore"></script>
-  <script src="assets-1.js?v=c47-layout-restore"></script>
-  <script src="assets-2.js?v=c47-layout-restore"></script>
-  <script src="assets-3.js?v=c47-layout-restore"></script>
-  <script src="assets-4.js?v=c47-layout-restore"></script>
-  <script src="color-catalogs.js?v=c47-layout-restore"></script>
-  <script src="pergo-rise-fabrics.js?v=c47-layout-restore"></script>
-  <script src="app.js?v=c47-layout-restore"></script>
+  <script src="products.js?v=c47-order-first"></script>
+  <script src="assets.js?v=c47-order-first"></script>
+  <script src="assets-1.js?v=c47-order-first"></script>
+  <script src="assets-2.js?v=c47-order-first"></script>
+  <script src="assets-3.js?v=c47-order-first"></script>
+  <script src="assets-4.js?v=c47-order-first"></script>
+  <script src="color-catalogs.js?v=c47-order-first"></script>
+  <script src="pergo-rise-fabrics.js?v=c47-order-first"></script>
+  <script src="app.js?v=c47-order-first"></script>
 </body>
 </html>
