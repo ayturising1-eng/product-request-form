@@ -35,3 +35,6 @@ C43:
 - Color/fabric catalog search bar stays fixed while scrolling.
 
 C44: Dynamic placeholders follow selected language; mobile section headings are stronger; cache bumped.
+
+
+C52 Janela Cassette Awning: detailed form for Janela based on price list dimensions, colors, control, valance/printing, roof, sensors and packing.

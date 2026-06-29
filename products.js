@@ -448,3 +448,84 @@ if (window.PRODUCT_DATA?.galaxyForm) {
     window.PRODUCT_DATA.productFormOverrides[key].operation = prfRemoteDynamicOperation(window.PRODUCT_DATA.productFormOverrides[key].operation);
   }
 });
+
+
+// C52: Janela Cassette Awning detailed order form.
+window.JANELA_PRINT_COLOR_OPTIONS = [
+  { value: '0001 White', code: '0001', name: 'White', swatch: 'radial-gradient(circle at 34% 28%, #ffffff 0%, #f7f7f7 42%, #d7d7d7 72%, #a8a8a8 100%)' },
+  { value: '0020 Black', code: '0020', name: 'Black', swatch: 'radial-gradient(circle at 34% 28%, #4b4b4b 0%, #111111 58%, #000000 100%)' },
+  { value: '1987 Cream', code: '1987', name: 'Cream', swatch: 'radial-gradient(circle at 34% 28%, #fff6cf 0%, #eadb9a 58%, #bba86b 100%)' },
+  { value: '2040 Turquoise', code: '2040', name: 'Turquoise', swatch: 'radial-gradient(circle at 34% 28%, #8df6f0 0%, #14b8b4 58%, #087a7a 100%)' },
+  { value: '056 Pistachio Green', code: '056', name: 'Pistachio Green', swatch: 'radial-gradient(circle at 34% 28%, #d8ff96 0%, #8cc63e 58%, #4d7d1f 100%)' },
+  { value: '1003 Red', code: '1003', name: 'Red', swatch: 'radial-gradient(circle at 34% 28%, #ff8b8b 0%, #e01b24 58%, #8f0e13 100%)' },
+  { value: 'Gold Gilding', code: 'Gold', name: 'Gold Gilding', swatch: 'radial-gradient(circle at 34% 28%, #fff0a6 0%, #d4af37 45%, #8f6f12 100%)' },
+  { value: 'Silver Gilding', code: 'Silver', name: 'Silver Gilding', swatch: 'radial-gradient(circle at 34% 28%, #f6f7fb 0%, #c0c4cc 45%, #777c86 100%)' }
+];
+
+window.PRODUCT_DATA.groups.zipAwning = {
+  label: 'Zip Screen - Awning - Curtain',
+  colorFields: ['System Color', 'Fabric Color'],
+  lighting: [],
+  accessories: []
+};
+
+window.PRODUCT_DATA.janelaForm = {
+  projectDetails: [
+    { id: 'systemQuantity', label: 'System Quantity', type: 'number', defaultValue: '1' },
+    { id: 'width', label: 'Width', type: 'number', unit: 'mm' },
+    { id: 'projection', label: 'Projection (mm)', type: 'select', options: ['500', '750', '1000', '1250', '1500', '1750', '2000'], defaultValue: '500' }
+  ],
+  colorDetails: [
+    { id: 'armPlasticColor', label: 'Arm Plastic Color', type: 'choice', options: ['White', 'Black', 'Brown'], defaultValue: 'White' },
+    { id: 'systemColor', label: 'System Color', type: 'text', palette: true, defaultValue: 'RAL 9016' },
+    { id: 'systemColorFinish', label: 'Finish', type: 'choice', options: window.PRODUCT_FINISH_OPTIONS, defaultValue: 'Glossy' },
+    { id: 'fabric', label: 'Fabric Color', type: 'text', picker: 'fabric', fullWidth: true }
+  ],
+  operation: [
+    { id: 'controlType', label: 'Control Type', type: 'choice', options: ['Button Control', 'Remote Control'], defaultValue: 'Remote Control' },
+    { id: 'motor', label: 'Motor', type: 'select', options: ['Somfy RTS', 'Somfy IO'], defaultValue: 'Somfy RTS' },
+    { id: 'remoteControlSomfyRts', label: 'Remote Control', type: 'choice', options: ['1 Channel', '2 Channels', '4 Channels', '16 Channels'], showWhen: { field: 'motor', values: ['Somfy RTS'] } },
+    { id: 'remoteControlSomfyIo', label: 'Remote Control', type: 'choice', options: ['1 Channel', '2 Channels', '4 Channels', '40 Channels'], showWhen: { field: 'motor', values: ['Somfy IO'] } }
+  ],
+  panelOptions: [],
+  lighting: [],
+  dimmers: [],
+  sectionsAfterDimmers: [
+    {
+      title: 'Valance & Printing',
+      fields: [
+        { id: 'valanceType', label: 'Valance Type', type: 'select', options: ['Yok', 'Straight', 'Wavy'], defaultValue: 'Yok' },
+        { id: 'valanceHeight', label: 'Valance Height', type: 'number', unit: 'mm', defaultValue: '250', showWhen: { field: 'valanceType', values: ['Straight', 'Wavy'] } },
+        { id: 'valanceFabric', label: 'Valance Fabric', type: 'text', picker: 'fabric', fullWidth: true, showWhen: { field: 'valanceType', values: ['Straight', 'Wavy'] } },
+        { id: 'printPlacement', label: 'Print Placement', type: 'choice', options: ['Valance', 'Body', 'Valance and Body'], showWhen: { field: 'valanceType', values: ['Straight', 'Wavy'] } },
+        { id: 'printColor', label: 'Print Color', type: 'text', picker: 'textColor', fullWidth: true, showWhen: { field: 'valanceType', values: ['Straight', 'Wavy'] } }
+      ]
+    },
+    {
+      title: 'One Sided Roof',
+      fields: [
+        { id: 'oneSidedRoof', label: 'One Sided Roof', type: 'choice', options: ['Yok', 'Var'], defaultValue: 'Yok' },
+        { id: 'roofColor', label: 'Roof Color', type: 'text', palette: true, defaultValue: 'RAL 9016', showWhen: { field: 'oneSidedRoof', values: ['Var'] } },
+        { id: 'roofFinish', label: 'Roof Finish', type: 'choice', options: window.PRODUCT_FINISH_OPTIONS, defaultValue: 'Glossy', showWhen: { field: 'oneSidedRoof', values: ['Var'] } }
+      ]
+    },
+    {
+      title: 'Packing',
+      fields: [
+        { id: 'packagingType', label: 'Packaging Type', type: 'choice', options: ['Kraft', 'Air Bubble Wrap'], defaultValue: 'Kraft' }
+      ]
+    }
+  ],
+  sensors: [
+    { id: 'rainSensor', label: 'Rain Sensor', type: 'choice', options: ['Yes', 'No'] },
+    { id: 'vibrationSensor', label: 'Vibration Sensor', type: 'choice', options: ['Yes', 'No'] },
+    { id: 'windSensor', label: 'Wind Sensor', type: 'choice', options: ['Yes', 'No'] },
+    { id: 'windSunSensor', label: 'Wind & Sun Sensor', type: 'choice', options: ['Yes', 'No'] }
+  ],
+  heaterPackaging: []
+};
+
+{
+  const janela = window.PRODUCT_DATA.products.find((item) => item.id === 'janela_cassette_awning');
+  if (janela) Object.assign(janela, { group: 'zipAwning', formTemplate: 'janelaForm' });
+}

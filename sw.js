@@ -1,4 +1,4 @@
-const CACHE = 'product-request-form-c47-screen-awning-curtain';
+const CACHE = 'product-request-form-c52-janela-form';
 const ASSETS = [
   './',
   './index.html',

@@ -1,4 +1,4 @@
-window.APP_VERSION = 'C47-SCREEN-AWNING-CURTAIN';
+window.APP_VERSION = 'C52-JANELA-FORM';
 const DATA = window.PRODUCT_DATA;
 const $ = (selector) => document.querySelector(selector);
 const $$ = (selector) => Array.from(document.querySelectorAll(selector));
@@ -13,7 +13,7 @@ const state = {
 };
 
 const STORAGE_PROFILE = 'prf_profile_v2';
-const STORAGE_ORDER = 'prf_order_c47_screen_awning_curtain';
+const STORAGE_ORDER = 'prf_order_c52_janela_form';
 const STORAGE_LANGUAGE = 'prf_language_v1';
 
 const COLOR_FIELD_LABELS = new Set([
@@ -432,6 +432,7 @@ Object.assign(I18N.tr, {
   'Additional Accessories': 'Ek Aksesuarlar',
   'Selected': 'Seçilen',
   'Width': 'Genişlik',
+  'Projection (mm)': 'Açılım',
   'Projection': 'Projeksiyon',
   'Height (Top of The Gutter)': 'Yükseklik (Oluk Üstü)',
   'System Quantity': 'Sistem Adedi',
@@ -1489,6 +1490,87 @@ function translatedCompositeText(value, lang = state.language) {
   return `${code} | ${translatedText(description, lang)}`;
 }
 
+
+// C52 Janela Cassette Awning translations and picker labels.
+Object.assign(I18N.en, {
+  'Awning Details': 'Awning Details',
+  'Arm Plastic Color': 'Arm Plastic Color',
+  'Fabric Color': 'Fabric Color',
+  'Control Type': 'Control Type',
+  'Button Control': 'Button Control',
+  'Remote Control': 'Remote Control',
+  'Valance & Printing': 'Valance & Printing',
+  'Valance Type': 'Valance Type',
+  'Straight': 'Straight',
+  'Wavy': 'Wavy',
+  'Valance Height': 'Valance Height',
+  'Valance Fabric': 'Valance Fabric',
+  'Print Placement': 'Print Placement',
+  'Valance': 'Valance',
+  'Body': 'Body',
+  'Valance and Body': 'Valance and Body',
+  'Print Color': 'Print Color',
+  'Print Color Selection': 'Print Color Selection',
+  'Print Color Selection Help': 'Select a print color from the list or type a custom color manually.',
+  'One Sided Roof': 'One Sided Roof',
+  'Roof Color': 'Roof Color',
+  'Roof Finish': 'Roof Finish',
+  'Packing': 'Packing',
+  'Kraft': 'Kraft',
+  'Air Bubble Wrap': 'Air Bubble Wrap',
+  'Yok': 'No',
+  'Var': 'Yes',
+  'Black': 'Black',
+  'Brown': 'Brown',
+  '0001 White': '0001 White',
+  '0020 Black': '0020 Black',
+  '1987 Cream': '1987 Cream',
+  '2040 Turquoise': '2040 Turquoise',
+  '056 Pistachio Green': '056 Pistachio Green',
+  '1003 Red': '1003 Red',
+  'Gold Gilding': 'Gold Gilding',
+  'Silver Gilding': 'Silver Gilding'
+});
+Object.assign(I18N.tr, {
+  'Awning Details': 'Tente Bilgileri',
+  'Arm Plastic Color': 'Kollardaki Plastik Rengi',
+  'Fabric Color': 'Kumaş Rengi',
+  'Control Type': 'Kontrol Şekli',
+  'Button Control': 'Düğmeli',
+  'Remote Control': 'Kumandalı',
+  'Valance & Printing': 'Saçak ve Yazı',
+  'Valance Type': 'Saçak Çeşidi',
+  'Straight': 'Düz',
+  'Wavy': 'Dalgalı',
+  'Valance Height': 'Saçak Yüksekliği',
+  'Valance Fabric': 'Saçak Kumaş Rengi',
+  'Print Placement': 'Yazı Çeşidi',
+  'Valance': 'Saçak',
+  'Body': 'Gövde',
+  'Valance and Body': 'Saçak ve Gövde',
+  'Print Color': 'Yazı Rengi',
+  'Print Color Selection': 'Yazı Rengi Seçimi',
+  'Print Color Selection Help': 'Listeden yazı rengini seçin veya listede yoksa manuel yazın.',
+  'One Sided Roof': 'Tek Taraflı Çatı',
+  'Roof Color': 'Çatı Rengi',
+  'Roof Finish': 'Çatı Yüzeyi',
+  'Packing': 'Paketleme',
+  'Kraft': 'Kraft',
+  'Air Bubble Wrap': 'Havalı Naylon',
+  'Yok': 'Yok',
+  'Var': 'Var',
+  'Black': 'Siyah',
+  'Brown': 'Kahve',
+  '0001 White': '0001 Beyaz',
+  '0020 Black': '0020 Siyah',
+  '1987 Cream': '1987 Krem',
+  '2040 Turquoise': '2040 Turkuaz',
+  '056 Pistachio Green': '056 Fıstık Yeşili',
+  '1003 Red': '1003 Kırmızı',
+  'Gold Gilding': 'Sarı Yaldız',
+  'Silver Gilding': 'Gümüş Yaldız'
+});
+
 let activePickerInput = null;
 let activePickerKind = 'color';
 let activeColorCatalogId = 'rising-standart';
@@ -1535,14 +1617,16 @@ function setRadioValueAndNotify(fieldId, value) {
 
 function currentFabricOptions() {
   const pergoRiseOptions = window.PERGO_RISE_FABRIC_OPTIONS || [];
-  if (state.selectedProductId === 'pergo_rise' && pergoRiseOptions.length) {
+  if ((state.selectedProductId === 'pergo_rise' || state.selectedProductId === 'janela_cassette_awning') && pergoRiseOptions.length) {
     return pergoRiseOptions;
   }
   return FABRIC_OPTIONS;
 }
 
 function pickerOptions(kind) {
-  return kind === 'fabric' ? currentFabricOptions() : (activeColorCatalog()?.options || []);
+  if (kind === 'fabric') return currentFabricOptions();
+  if (kind === 'textColor') return window.JANELA_PRINT_COLOR_OPTIONS || [];
+  return activeColorCatalog()?.options || [];
 }
 
 function renderColorCatalogTabs(kind) {
@@ -1641,8 +1725,10 @@ function openPicker(input, kind = 'color') {
   if (kind === 'color') {
     activeColorCatalogId = colorCatalogs()[0]?.id || 'rising-standart';
   }
-  $('#colorChartTitle').textContent = translatedText(kind === 'fabric' ? 'Fabric Selection' : 'Color Chart');
-  $('#colorChartHelp').textContent = translatedText(kind === 'fabric' ? 'Fabric Selection Help' : 'Color Chart Help');
+  const titleKey = kind === 'fabric' ? 'Fabric Selection' : (kind === 'textColor' ? 'Print Color Selection' : 'Color Chart');
+  const helpKey = kind === 'fabric' ? 'Fabric Selection Help' : (kind === 'textColor' ? 'Print Color Selection Help' : 'Color Chart Help');
+  $('#colorChartTitle').textContent = translatedText(titleKey);
+  $('#colorChartHelp').textContent = translatedText(helpKey);
   const searchInput = $('#catalogSearchInput');
   activePickerSearch = '';
   if (searchInput) {
@@ -1666,8 +1752,16 @@ function closeColorChart() {
   activePickerSearch = '';
 }
 
+function markJanelaLinkedManualOverride(control) {
+  const fieldId = control?.dataset?.fieldId || '';
+  if (['valanceFabric', 'roofColor'].includes(fieldId)) {
+    control.dataset.userOverridden = '1';
+  }
+}
+
 function selectPickerOption(value) {
   const targetInput = activePickerInput;
+  markJanelaLinkedManualOverride(targetInput);
   setInputValueAndNotify(targetInput, value);
   toast(`${translatedText('Selected')}: ${value}`);
   closeColorChart();
@@ -2215,6 +2309,10 @@ function createInputField(field) {
   control.addEventListener('change', onAnyInput);
   control.addEventListener('change', autoAdvanceOnChange);
   control.addEventListener('keydown', autoAdvanceOnEnter);
+  if (['valanceFabric', 'roofColor'].includes(field.id)) {
+    control.addEventListener('input', (event) => { if (event.isTrusted) markJanelaLinkedManualOverride(control); });
+    control.addEventListener('change', (event) => { if (event.isTrusted) markJanelaLinkedManualOverride(control); });
+  }
 
   wrap.appendChild(control);
   if (field.type === 'select') enhanceCustomSelect(control);
@@ -2530,13 +2628,13 @@ function renderGalaxyForm() {
     return;
   }
   wrap.innerHTML = '';
-  wrap.appendChild(createProjectDetailsSection(form.projectDetails));
-  wrap.appendChild(createFormSection('Color Details', form.colorDetails, 'grid two'));
+  if (form.projectDetails?.length) wrap.appendChild(createProjectDetailsSection(form.projectDetails));
+  if (form.colorDetails?.length) wrap.appendChild(createFormSection('Color Details', form.colorDetails, 'grid two'));
   if (form.operation?.length) {
     wrap.appendChild(createFormSection('Motor & Remote Control', form.operation, 'grid two'));
   }
-  wrap.appendChild(createFormSection('Panel Options', form.panelOptions, 'grid two'));
-  wrap.appendChild(createCheckboxSection('Lighting', 'lighting', form.lighting));
+  if (form.panelOptions?.length) wrap.appendChild(createFormSection('Panel Options', form.panelOptions, 'grid two'));
+  if (form.lighting?.length) wrap.appendChild(createCheckboxSection('Lighting', 'lighting', form.lighting));
   if (form.dimmers?.length) {
     wrap.appendChild(createFormSection('Light Dimmers', form.dimmers, 'grid two'));
   }
@@ -2548,8 +2646,10 @@ function renderGalaxyForm() {
   if (form.sensors?.length) {
     wrap.appendChild(createFormSection('Sensors', form.sensors, 'grid two'));
   }
-  wrap.appendChild(createFormSection('Heater & Sound & Packing', form.heaterPackaging, 'grid two'));
+  if (form.heaterPackaging?.length) wrap.appendChild(createFormSection('Heater & Sound & Packing', form.heaterPackaging, 'grid two'));
   updateAutoUnits();
+  updateConditionalFields();
+  syncJanelaLinkedFields();
   refreshDynamicLanguage();
 }
 
@@ -2804,17 +2904,14 @@ function genericRows(lang = state.language) {
 function galaxyRows(lang = state.language) {
   const form = getProductForm();
   if (!form) return { systemQuantity: '-', sections: [] };
-  const sections = [
-    ...projectDetailSections(form.projectDetails, lang),
-    { title: translatedText('Color Details', lang), rows: fieldRows(form.colorDetails, lang) }
-  ];
+  const sections = [];
+  if (form.projectDetails?.length) sections.push(...projectDetailSections(form.projectDetails, lang));
+  if (form.colorDetails?.length) sections.push({ title: translatedText('Color Details', lang), rows: fieldRows(form.colorDetails, lang) });
   if (form.operation?.length) {
     sections.push({ title: translatedText('Motor & Remote Control', lang), rows: fieldRows(form.operation, lang) });
   }
-  sections.push(
-    { title: translatedText('Panel Options', lang), rows: fieldRows(form.panelOptions, lang) },
-    { title: translatedText('Lighting', lang), rows: [[translatedText('Selected', lang), lightingDisplayValue(lang)]] }
-  );
+  if (form.panelOptions?.length) sections.push({ title: translatedText('Panel Options', lang), rows: fieldRows(form.panelOptions, lang) });
+  if (form.lighting?.length) sections.push({ title: translatedText('Lighting', lang), rows: [[translatedText('Selected', lang), lightingDisplayValue(lang)]] });
   if (form.dimmers?.length) {
     sections.push({ title: translatedText('Light Dimmers', lang), rows: fieldRows(form.dimmers, lang) });
   }
@@ -2826,7 +2923,7 @@ function galaxyRows(lang = state.language) {
   if (form.sensors?.length) {
     sections.push({ title: translatedText('Sensors', lang), rows: fieldRows(form.sensors, lang) });
   }
-  sections.push({ title: translatedText('Heater & Sound & Packing', lang), rows: fieldRows(form.heaterPackaging, lang) });
+  if (form.heaterPackaging?.length) sections.push({ title: translatedText('Heater & Sound & Packing', lang), rows: fieldRows(form.heaterPackaging, lang) });
   return {
     systemQuantity: formatValue($('#dyn_systemQuantity')?.value || '', '', '', lang),
     sections
@@ -3074,7 +3171,23 @@ function resetOrder() {
   toast(t('newRequestOpened'));
 }
 
+function syncJanelaLinkedFields() {
+  if (state.selectedProductId !== 'janela_cassette_awning') return;
+  const fabric = $('#dyn_fabric');
+  const valanceFabric = $('#dyn_valanceFabric');
+  if (fabric && valanceFabric && valanceFabric.dataset.userOverridden !== '1') {
+    valanceFabric.value = fabric.value || '';
+  }
+  const roofEnabled = getFieldValue({ id: 'oneSidedRoof' }) === 'Var';
+  const systemColor = $('#dyn_systemColor');
+  const roofColor = $('#dyn_roofColor');
+  if (roofEnabled && systemColor && roofColor && roofColor.dataset.userOverridden !== '1') {
+    roofColor.value = systemColor.value || '';
+  }
+}
+
 function onAnyInput() {
+  syncJanelaLinkedFields();
   updateConditionalFields();
   updateLightingOtherVisibility();
   updateAutoUnits();
