@@ -1,4 +1,4 @@
-window.APP_VERSION = 'C47-LINEAR-RGBWHITE';
+window.APP_VERSION = 'C47-ORDER-REMOTE-DYNAMIC';
 const DATA = window.PRODUCT_DATA;
 const $ = (selector) => document.querySelector(selector);
 const $$ = (selector) => Array.from(document.querySelectorAll(selector));
@@ -2341,7 +2341,7 @@ function createSingleCheckField(field) {
 function updateConditionalFields() {
   $$('[data-show-when-field]').forEach((element) => {
     const sourceValue = getFieldValue({ id: element.dataset.showWhenField });
-    const expectedValues = (element.dataset.showWhenValues || '').split('|').filter(Boolean);
+    const expectedValues = (element.dataset.showWhenValues || '').split('|');
     element.hidden = !expectedValues.includes(sourceValue);
   });
 }

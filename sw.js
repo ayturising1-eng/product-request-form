@@ -1,4 +1,4 @@
-const CACHE = 'product-request-form-c47-order-first';
+const CACHE = 'product-request-form-c47-order-remote-dynamic';
 const ASSETS = [
   './',
   './index.html',

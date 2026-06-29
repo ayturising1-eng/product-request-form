@@ -361,3 +361,56 @@ window.PRODUCT_DATA.pergolaForm.lighting = [
   { id: 'lightingType', label: 'Lighting', type: 'choice', options: ['No', 'Daylight', 'White', 'RGB', 'Linear Rgb+White', 'Other'] },
   { id: 'lightingOther', label: 'Other Lighting', type: 'text', showWhen: { field: 'lightingType', values: ['Other'] } }
 ];
+
+
+// C51: Remote Control stays visible, but channel options change by motor type.
+const PRF_REMOTE_DEFAULT_OPTIONS_C51 = ['1 Channel', '2 Channels', '4 Channels', '16 Channels'];
+const PRF_REMOTE_IO_OPTIONS_C51 = ['1 Channel', '2 Channels', '4 Channels', '40 Channels'];
+const PRF_REMOTE_RISING_OPTIONS_C51 = ['1 Channel', '6 Channels'];
+const PRF_MOTOR_SOMFY_IO_C51 = 'Somfy IO';
+const PRF_MOTOR_RISING_C51 = 'Rising Motor';
+
+function prfRemoteDynamicOperation(operation) {
+  const motorField = Array.isArray(operation) ? operation.find((field) => field && field.id === 'motor') : null;
+  const motorOptions = Array.isArray(motorField?.options) ? motorField.options : [];
+  const defaultMotorValues = ['', ...motorOptions.filter((value) => value !== PRF_MOTOR_SOMFY_IO_C51 && value !== PRF_MOTOR_RISING_C51)];
+  const fields = [];
+  if (motorField) fields.push(motorField);
+  fields.push({
+    id: 'remoteControl',
+    label: 'Remote Control',
+    type: 'choice',
+    options: PRF_REMOTE_DEFAULT_OPTIONS_C51,
+    showWhen: { field: 'motor', values: defaultMotorValues }
+  });
+  if (motorOptions.includes(PRF_MOTOR_SOMFY_IO_C51)) {
+    fields.push({
+      id: 'remoteControlSomfyIo',
+      label: 'Remote Control',
+      type: 'choice',
+      options: PRF_REMOTE_IO_OPTIONS_C51,
+      showWhen: { field: 'motor', values: [PRF_MOTOR_SOMFY_IO_C51] }
+    });
+  }
+  if (motorOptions.includes(PRF_MOTOR_RISING_C51)) {
+    fields.push({
+      id: 'remoteControlRising',
+      label: 'Remote Control',
+      type: 'choice',
+      options: PRF_REMOTE_RISING_OPTIONS_C51,
+      showWhen: { field: 'motor', values: [PRF_MOTOR_RISING_C51] }
+    });
+  }
+  return fields;
+}
+if (window.PRODUCT_DATA?.pergolaForm) {
+  window.PRODUCT_DATA.pergolaForm.operation = prfRemoteDynamicOperation(window.PRODUCT_DATA.pergolaForm.operation);
+}
+if (window.PRODUCT_DATA?.galaxyForm) {
+  window.PRODUCT_DATA.galaxyForm.operation = prfRemoteDynamicOperation(window.PRODUCT_DATA.galaxyForm.operation);
+}
+['galaxy', 'space', 'pergo_rise'].forEach((key) => {
+  if (window.PRODUCT_DATA?.productFormOverrides?.[key]?.operation) {
+    window.PRODUCT_DATA.productFormOverrides[key].operation = prfRemoteDynamicOperation(window.PRODUCT_DATA.productFormOverrides[key].operation);
+  }
+});
