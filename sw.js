@@ -1,4 +1,4 @@
-const CACHE = 'product-request-form-c52-janela-form';
+const CACHE = 'product-request-form-c52-janela-print-spheres';
 const ASSETS = [
   './',
   './index.html',

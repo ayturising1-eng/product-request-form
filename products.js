@@ -452,14 +452,14 @@ if (window.PRODUCT_DATA?.galaxyForm) {
 
 // C52: Janela Cassette Awning detailed order form.
 window.JANELA_PRINT_COLOR_OPTIONS = [
-  { value: '0001 White', code: '0001', name: 'White', swatch: 'radial-gradient(circle at 34% 28%, #ffffff 0%, #f7f7f7 42%, #d7d7d7 72%, #a8a8a8 100%)' },
-  { value: '0020 Black', code: '0020', name: 'Black', swatch: 'radial-gradient(circle at 34% 28%, #4b4b4b 0%, #111111 58%, #000000 100%)' },
-  { value: '1987 Cream', code: '1987', name: 'Cream', swatch: 'radial-gradient(circle at 34% 28%, #fff6cf 0%, #eadb9a 58%, #bba86b 100%)' },
-  { value: '2040 Turquoise', code: '2040', name: 'Turquoise', swatch: 'radial-gradient(circle at 34% 28%, #8df6f0 0%, #14b8b4 58%, #087a7a 100%)' },
-  { value: '056 Pistachio Green', code: '056', name: 'Pistachio Green', swatch: 'radial-gradient(circle at 34% 28%, #d8ff96 0%, #8cc63e 58%, #4d7d1f 100%)' },
-  { value: '1003 Red', code: '1003', name: 'Red', swatch: 'radial-gradient(circle at 34% 28%, #ff8b8b 0%, #e01b24 58%, #8f0e13 100%)' },
-  { value: 'Gold Gilding', code: 'Gold', name: 'Gold Gilding', swatch: 'radial-gradient(circle at 34% 28%, #fff0a6 0%, #d4af37 45%, #8f6f12 100%)' },
-  { value: 'Silver Gilding', code: 'Silver', name: 'Silver Gilding', swatch: 'radial-gradient(circle at 34% 28%, #f6f7fb 0%, #c0c4cc 45%, #777c86 100%)' }
+  { value: '0001 White', code: '0001', name: 'White', image: 'assets/color-options/all-rall-code/ral-9003.jpg' },
+  { value: '0020 Black', code: '0020', name: 'Black', image: 'assets/color-options/all-rall-code/ral-9005.jpg' },
+  { value: '1987 Cream', code: '1987', name: 'Cream', image: 'assets/color-options/all-rall-code/ral-1013.jpg' },
+  { value: '2040 Turquoise', code: '2040', name: 'Turquoise', image: 'assets/color-options/all-rall-code/ral-5018.jpg' },
+  { value: '056 Pistachio Green', code: '056', name: 'Pistachio Green', image: 'assets/color-options/all-rall-code/ral-6029.jpg' },
+  { value: '1003 Red', code: '1003', name: 'Red', image: 'assets/color-options/all-rall-code/ral-3000.jpg' },
+  { value: 'Gold Gilding', code: 'Gold', name: 'Gold Gilding', image: 'assets/color-options/all-rall-code/ral-1003.jpg' },
+  { value: 'Silver Gilding', code: 'Silver', name: 'Silver Gilding', image: 'assets/color-options/all-rall-code/ral-9006.jpg' }
 ];
 
 window.PRODUCT_DATA.groups.zipAwning = {
