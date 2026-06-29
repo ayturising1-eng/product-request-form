@@ -1,4 +1,4 @@
-const CACHE = 'product-request-form-c63-acrilla-catalog';
+const CACHE = 'product-request-form-c64-stable-fabric-catalogs';
 const ASSETS = [
   './',
   './index.html',

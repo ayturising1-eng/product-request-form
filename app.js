@@ -13,7 +13,7 @@ const state = {
 };
 
 const STORAGE_PROFILE = 'prf_profile_v2';
-const STORAGE_ORDER = 'prf_order_c63_acrilla_catalog';
+const STORAGE_ORDER = 'prf_order_c64_stable_fabric_catalogs';
 const STORAGE_LANGUAGE = 'prf_language_v1';
 
 const COLOR_FIELD_LABELS = new Set([
@@ -1719,639 +1719,639 @@ function createSauledaHotspot(value, left, top, width, height) {
 
 const SATTLER_PAGES = [
   {
-    "image": "assets/fabric-pages/sattler-layout/sattler-page-01.jpg",
+    "image": "assets/fabric-pages/sattler-layout-v2/sattler-page-01.jpg",
     "items": [
       {
         "value": "Sattler - China Red - 314 001",
-        "left": "7.0000%",
-        "top": "2.8229%",
-        "width": "40.0000%",
-        "height": "11.7855%"
+        "left": "3.0909%",
+        "top": "1.9619%",
+        "width": "45.1818%",
+        "height": "12.6370%"
       },
       {
         "value": "Sattler - Orange - 314 002",
-        "left": "53.0000%",
-        "top": "2.8229%",
-        "width": "40.0000%",
-        "height": "11.7855%"
+        "left": "51.7273%",
+        "top": "1.9619%",
+        "width": "45.1818%",
+        "height": "12.6370%"
       },
       {
         "value": "Sattler - Dandelion - 314 003",
-        "left": "7.0000%",
-        "top": "16.5843%",
-        "width": "40.0000%",
-        "height": "11.7855%"
+        "left": "3.0909%",
+        "top": "15.8684%",
+        "width": "45.1818%",
+        "height": "12.6370%"
       },
       {
         "value": "Sattler - Jungle - 314 004",
-        "left": "53.0000%",
-        "top": "16.5843%",
-        "width": "40.0000%",
-        "height": "11.7855%"
+        "left": "51.7273%",
+        "top": "15.8684%",
+        "width": "45.1818%",
+        "height": "12.6370%"
       },
       {
         "value": "Sattler - Classic Royal Blue - 314 006",
-        "left": "7.0000%",
-        "top": "30.3458%",
-        "width": "40.0000%",
-        "height": "11.7855%"
+        "left": "3.0909%",
+        "top": "29.7750%",
+        "width": "45.1818%",
+        "height": "12.6370%"
       },
       {
         "value": "Sattler - Lily - 314 007",
-        "left": "53.0000%",
-        "top": "30.3458%",
-        "width": "40.0000%",
-        "height": "11.7855%"
+        "left": "51.7273%",
+        "top": "29.7750%",
+        "width": "45.1818%",
+        "height": "12.6370%"
       },
       {
         "value": "Sattler - Cloud - 314 010",
-        "left": "7.0000%",
-        "top": "44.1073%",
-        "width": "40.0000%",
-        "height": "11.7855%"
+        "left": "3.0909%",
+        "top": "43.6815%",
+        "width": "45.1818%",
+        "height": "12.6370%"
       },
       {
         "value": "Sattler - Nautical - 314 011",
-        "left": "53.0000%",
-        "top": "44.1073%",
-        "width": "40.0000%",
-        "height": "11.7855%"
+        "left": "51.7273%",
+        "top": "43.6815%",
+        "width": "45.1818%",
+        "height": "12.6370%"
       },
       {
         "value": "Sattler - Mahogany - 314 016",
-        "left": "7.0000%",
-        "top": "57.8687%",
-        "width": "40.0000%",
-        "height": "11.7855%"
+        "left": "3.0909%",
+        "top": "57.5880%",
+        "width": "45.1818%",
+        "height": "12.6370%"
       },
       {
         "value": "Sattler - Shell - 314 020",
-        "left": "53.0000%",
-        "top": "57.8687%",
-        "width": "40.0000%",
-        "height": "11.7855%"
+        "left": "51.7273%",
+        "top": "57.5880%",
+        "width": "45.1818%",
+        "height": "12.6370%"
       },
       {
         "value": "Sattler - Copper - 314 022",
-        "left": "7.0000%",
-        "top": "71.6302%",
-        "width": "40.0000%",
-        "height": "11.7855%"
+        "left": "3.0909%",
+        "top": "71.4945%",
+        "width": "45.1818%",
+        "height": "12.6370%"
       },
       {
         "value": "Sattler - Graphite - 314 028",
-        "left": "53.0000%",
-        "top": "71.6302%",
-        "width": "40.0000%",
-        "height": "11.7855%"
+        "left": "51.7273%",
+        "top": "71.4945%",
+        "width": "45.1818%",
+        "height": "12.6370%"
       },
       {
         "value": "Sattler - Fog - 314 030",
-        "left": "7.0000%",
-        "top": "85.3917%",
-        "width": "40.0000%",
-        "height": "11.7855%"
+        "left": "3.0909%",
+        "top": "85.4010%",
+        "width": "45.1818%",
+        "height": "12.6370%"
       },
       {
         "value": "Sattler - Camel - 314 040",
-        "left": "53.0000%",
-        "top": "85.3917%",
-        "width": "40.0000%",
-        "height": "11.7855%"
+        "left": "51.7273%",
+        "top": "85.4010%",
+        "width": "45.1818%",
+        "height": "12.6370%"
       }
     ]
   },
   {
-    "image": "assets/fabric-pages/sattler-layout/sattler-page-02.jpg",
+    "image": "assets/fabric-pages/sattler-layout-v2/sattler-page-02.jpg",
     "items": [
       {
         "value": "Sattler - Pigeon - 314 082",
-        "left": "7.0000%",
-        "top": "2.8229%",
-        "width": "40.0000%",
-        "height": "11.7855%"
+        "left": "3.0909%",
+        "top": "1.9619%",
+        "width": "45.1818%",
+        "height": "12.6370%"
       },
       {
         "value": "Sattler - Plum - 314 143",
-        "left": "53.0000%",
-        "top": "2.8229%",
-        "width": "40.0000%",
-        "height": "11.7855%"
+        "left": "51.7273%",
+        "top": "1.9619%",
+        "width": "45.1818%",
+        "height": "12.6370%"
       },
       {
         "value": "Sattler - Sky - 314 153",
-        "left": "7.0000%",
-        "top": "16.5843%",
-        "width": "40.0000%",
-        "height": "11.7855%"
+        "left": "3.0909%",
+        "top": "15.8684%",
+        "width": "45.1818%",
+        "height": "12.6370%"
       },
       {
         "value": "Sattler - Black - 314 154",
-        "left": "53.0000%",
-        "top": "16.5843%",
-        "width": "40.0000%",
-        "height": "11.7855%"
+        "left": "51.7273%",
+        "top": "15.8684%",
+        "width": "45.1818%",
+        "height": "12.6370%"
       },
       {
         "value": "Sattler - Forest Green - 314 362",
-        "left": "7.0000%",
-        "top": "30.3458%",
-        "width": "40.0000%",
-        "height": "11.7855%"
+        "left": "3.0909%",
+        "top": "29.7750%",
+        "width": "45.1818%",
+        "height": "12.6370%"
       },
       {
         "value": "Sattler - Leaf - 314 396",
-        "left": "53.0000%",
-        "top": "30.3458%",
-        "width": "40.0000%",
-        "height": "11.7855%"
+        "left": "51.7273%",
+        "top": "29.7750%",
+        "width": "45.1818%",
+        "height": "12.6370%"
       },
       {
         "value": "Sattler - Magenta - 314 397",
-        "left": "7.0000%",
-        "top": "44.1073%",
-        "width": "40.0000%",
-        "height": "11.7855%"
+        "left": "3.0909%",
+        "top": "43.6815%",
+        "width": "45.1818%",
+        "height": "12.6370%"
       },
       {
         "value": "Sattler - Storm Grey - 314 398",
-        "left": "53.0000%",
-        "top": "44.1073%",
-        "width": "40.0000%",
-        "height": "11.7855%"
+        "left": "51.7273%",
+        "top": "43.6815%",
+        "width": "45.1818%",
+        "height": "12.6370%"
       },
       {
         "value": "Sattler - Marine - 314 414",
-        "left": "7.0000%",
-        "top": "57.8687%",
-        "width": "40.0000%",
-        "height": "11.7855%"
+        "left": "3.0909%",
+        "top": "57.5880%",
+        "width": "45.1818%",
+        "height": "12.6370%"
       },
       {
         "value": "Sattler - Saffron - 314 610",
-        "left": "53.0000%",
-        "top": "57.8687%",
-        "width": "40.0000%",
-        "height": "11.7855%"
+        "left": "51.7273%",
+        "top": "57.5880%",
+        "width": "45.1818%",
+        "height": "12.6370%"
       },
       {
         "value": "Sattler - Seagrass - 314 621",
-        "left": "7.0000%",
-        "top": "71.6302%",
-        "width": "40.0000%",
-        "height": "11.7855%"
+        "left": "3.0909%",
+        "top": "71.4945%",
+        "width": "45.1818%",
+        "height": "12.6370%"
       },
       {
         "value": "Sattler - Ecru - 314 718",
-        "left": "53.0000%",
-        "top": "71.6302%",
-        "width": "40.0000%",
-        "height": "11.7855%"
+        "left": "51.7273%",
+        "top": "71.4945%",
+        "width": "45.1818%",
+        "height": "12.6370%"
       },
       {
         "value": "Sattler - Linen - 314 721",
-        "left": "7.0000%",
-        "top": "85.3917%",
-        "width": "40.0000%",
-        "height": "11.7855%"
+        "left": "3.0909%",
+        "top": "85.4010%",
+        "width": "45.1818%",
+        "height": "12.6370%"
       },
       {
         "value": "Sattler - Nutmeg - 314 729",
-        "left": "53.0000%",
-        "top": "85.3917%",
-        "width": "40.0000%",
-        "height": "11.7855%"
+        "left": "51.7273%",
+        "top": "85.4010%",
+        "width": "45.1818%",
+        "height": "12.6370%"
       }
     ]
   },
   {
-    "image": "assets/fabric-pages/sattler-layout/sattler-page-03.jpg",
+    "image": "assets/fabric-pages/sattler-layout-v2/sattler-page-03.jpg",
     "items": [
       {
         "value": "Sattler - Burgundy - 314 763",
-        "left": "8.8000%",
-        "top": "1.9904%",
-        "width": "36.4000%",
-        "height": "12.1019%"
+        "left": "3.0909%",
+        "top": "2.2107%",
+        "width": "45.1818%",
+        "height": "14.2393%"
       },
       {
         "value": "Sattler - Cave - 314 819",
-        "left": "54.8000%",
-        "top": "1.9904%",
-        "width": "36.4000%",
-        "height": "12.1019%"
+        "left": "51.7273%",
+        "top": "2.2107%",
+        "width": "45.1818%",
+        "height": "14.2393%"
       },
       {
         "value": "Sattler - Asphalt - 314 840",
-        "left": "8.8000%",
-        "top": "15.1274%",
-        "width": "36.4000%",
-        "height": "12.1019%"
+        "left": "3.0909%",
+        "top": "17.8804%",
+        "width": "45.1818%",
+        "height": "14.2393%"
       },
       {
         "value": "Sattler - Milky - 314 851",
-        "left": "54.8000%",
-        "top": "15.1274%",
-        "width": "36.4000%",
-        "height": "12.1019%"
+        "left": "51.7273%",
+        "top": "17.8804%",
+        "width": "45.1818%",
+        "height": "14.2393%"
       },
       {
         "value": "Sattler - Earth - 314 917",
-        "left": "8.8000%",
-        "top": "28.2643%",
-        "width": "36.4000%",
-        "height": "12.1019%"
+        "left": "3.0909%",
+        "top": "33.5501%",
+        "width": "45.1818%",
+        "height": "14.2393%"
       },
       {
         "value": "Sattler - Scree - 314 941",
-        "left": "54.8000%",
-        "top": "28.2643%",
-        "width": "36.4000%",
-        "height": "12.1019%"
+        "left": "51.7273%",
+        "top": "33.5501%",
+        "width": "45.1818%",
+        "height": "14.2393%"
       },
       {
         "value": "Sattler - Ivory - 314 E67",
-        "left": "8.8000%",
-        "top": "41.4013%",
-        "width": "36.4000%",
-        "height": "12.1019%"
+        "left": "3.0909%",
+        "top": "49.2198%",
+        "width": "45.1818%",
+        "height": "14.2393%"
       },
       {
         "value": "Sattler - Sunny - 315 052",
-        "left": "8.8000%",
-        "top": "58.5191%",
-        "width": "36.4000%",
-        "height": "12.1019%"
+        "left": "3.0909%",
+        "top": "67.8804%",
+        "width": "45.1818%",
+        "height": "14.2393%"
       },
       {
         "value": "Sattler - Checker Board - 315 105",
-        "left": "54.8000%",
-        "top": "58.5191%",
-        "width": "36.4000%",
-        "height": "12.1019%"
+        "left": "51.7273%",
+        "top": "67.8804%",
+        "width": "45.1818%",
+        "height": "14.2393%"
       },
       {
         "value": "Sattler - Dahlia - 315 167",
-        "left": "8.8000%",
-        "top": "71.6561%",
-        "width": "36.4000%",
-        "height": "12.1019%"
+        "left": "3.0909%",
+        "top": "83.5501%",
+        "width": "45.1818%",
+        "height": "14.2393%"
       },
       {
         "value": "Sattler - Downtown Grey - 315 352",
-        "left": "54.8000%",
-        "top": "71.6561%",
-        "width": "36.4000%",
-        "height": "12.1019%"
+        "left": "51.7273%",
+        "top": "83.5501%",
+        "width": "45.1818%",
+        "height": "14.2393%"
       }
     ]
   },
   {
-    "image": "assets/fabric-pages/sattler-layout/sattler-page-04.jpg",
+    "image": "assets/fabric-pages/sattler-layout-v2/sattler-page-04.jpg",
     "items": [
       {
         "value": "Sattler - Forever Green - 315 420",
-        "left": "7.0000%",
-        "top": "3.1847%",
-        "width": "40.0000%",
-        "height": "13.2962%"
+        "left": "3.0909%",
+        "top": "2.2107%",
+        "width": "45.1818%",
+        "height": "14.2393%"
       },
       {
         "value": "Sattler - Boathouse - 315 422",
-        "left": "53.0000%",
-        "top": "3.1847%",
-        "width": "40.0000%",
-        "height": "13.2962%"
+        "left": "51.7273%",
+        "top": "2.2107%",
+        "width": "45.1818%",
+        "height": "14.2393%"
       },
       {
         "value": "Sattler - Rosewood - 315 550",
-        "left": "7.0000%",
-        "top": "18.7102%",
-        "width": "40.0000%",
-        "height": "13.2962%"
+        "left": "3.0909%",
+        "top": "17.8804%",
+        "width": "45.1818%",
+        "height": "14.2393%"
       },
       {
         "value": "Sattler - Grove - 320 054",
-        "left": "7.0000%",
-        "top": "36.9427%",
-        "width": "40.0000%",
-        "height": "13.2962%"
+        "left": "3.0909%",
+        "top": "36.5410%",
+        "width": "45.1818%",
+        "height": "14.2393%"
       },
       {
         "value": "Sattler - Magnolia - 320 099",
-        "left": "53.0000%",
-        "top": "36.9427%",
-        "width": "40.0000%",
-        "height": "13.2962%"
+        "left": "51.7273%",
+        "top": "36.5410%",
+        "width": "45.1818%",
+        "height": "14.2393%"
       },
       {
         "value": "Sattler - Conch - 320 128",
-        "left": "7.0000%",
-        "top": "52.4682%",
-        "width": "40.0000%",
-        "height": "13.2962%"
+        "left": "3.0909%",
+        "top": "52.2107%",
+        "width": "45.1818%",
+        "height": "14.2393%"
       },
       {
         "value": "Sattler - Saltwater - 320 234",
-        "left": "53.0000%",
-        "top": "52.4682%",
-        "width": "40.0000%",
-        "height": "13.2962%"
+        "left": "51.7273%",
+        "top": "52.2107%",
+        "width": "45.1818%",
+        "height": "14.2393%"
       },
       {
         "value": "Sattler - Wooden - 320 253",
-        "left": "7.0000%",
-        "top": "67.9936%",
-        "width": "40.0000%",
-        "height": "13.2962%"
+        "left": "3.0909%",
+        "top": "67.8804%",
+        "width": "45.1818%",
+        "height": "14.2393%"
       },
       {
         "value": "Sattler - Athena - 320 254",
-        "left": "53.0000%",
-        "top": "67.9936%",
-        "width": "40.0000%",
-        "height": "13.2962%"
+        "left": "51.7273%",
+        "top": "67.8804%",
+        "width": "45.1818%",
+        "height": "14.2393%"
       },
       {
         "value": "Sattler - Municipal - 320 408",
-        "left": "7.0000%",
-        "top": "83.5191%",
-        "width": "40.0000%",
-        "height": "13.2962%"
+        "left": "3.0909%",
+        "top": "83.5501%",
+        "width": "45.1818%",
+        "height": "14.2393%"
       },
       {
         "value": "Sattler - Walk - 320 441",
-        "left": "53.0000%",
-        "top": "83.5191%",
-        "width": "40.0000%",
-        "height": "13.2962%"
+        "left": "51.7273%",
+        "top": "83.5501%",
+        "width": "45.1818%",
+        "height": "14.2393%"
       }
     ]
   },
   {
-    "image": "assets/fabric-pages/sattler-layout/sattler-page-05.jpg",
+    "image": "assets/fabric-pages/sattler-layout-v2/sattler-page-05.jpg",
     "items": [
       {
         "value": "Sattler - Sequence - 320 493",
-        "left": "7.0000%",
-        "top": "2.8229%",
-        "width": "40.0000%",
-        "height": "11.7855%"
+        "left": "3.0909%",
+        "top": "1.9619%",
+        "width": "45.1818%",
+        "height": "12.6370%"
       },
       {
         "value": "Sattler - Gravity - 320 530",
-        "left": "53.0000%",
-        "top": "2.8229%",
-        "width": "40.0000%",
-        "height": "11.7855%"
+        "left": "51.7273%",
+        "top": "1.9619%",
+        "width": "45.1818%",
+        "height": "12.6370%"
       },
       {
         "value": "Sattler - Cruise - 320 555",
-        "left": "7.0000%",
-        "top": "16.5843%",
-        "width": "40.0000%",
-        "height": "11.7855%"
+        "left": "3.0909%",
+        "top": "15.8684%",
+        "width": "45.1818%",
+        "height": "12.6370%"
       },
       {
         "value": "Sattler - Echo - 320 614",
-        "left": "53.0000%",
-        "top": "16.5843%",
-        "width": "40.0000%",
-        "height": "11.7855%"
+        "left": "51.7273%",
+        "top": "15.8684%",
+        "width": "45.1818%",
+        "height": "12.6370%"
       },
       {
         "value": "Sattler - Ramble - 320 715",
-        "left": "7.0000%",
-        "top": "30.3458%",
-        "width": "40.0000%",
-        "height": "11.7855%"
+        "left": "3.0909%",
+        "top": "29.7750%",
+        "width": "45.1818%",
+        "height": "12.6370%"
       },
       {
         "value": "Sattler - Civic - 320 716",
-        "left": "53.0000%",
-        "top": "30.3458%",
-        "width": "40.0000%",
-        "height": "11.7855%"
+        "left": "51.7273%",
+        "top": "29.7750%",
+        "width": "45.1818%",
+        "height": "12.6370%"
       },
       {
         "value": "Sattler - Roof Tile - 320 758",
-        "left": "7.0000%",
-        "top": "44.1073%",
-        "width": "40.0000%",
-        "height": "11.7855%"
+        "left": "3.0909%",
+        "top": "43.6815%",
+        "width": "45.1818%",
+        "height": "12.6370%"
       },
       {
         "value": "Sattler - Drift - 320 819",
-        "left": "53.0000%",
-        "top": "44.1073%",
-        "width": "40.0000%",
-        "height": "11.7855%"
+        "left": "51.7273%",
+        "top": "43.6815%",
+        "width": "45.1818%",
+        "height": "12.6370%"
       },
       {
         "value": "Sattler - Continuum - 320 826",
-        "left": "7.0000%",
-        "top": "57.8687%",
-        "width": "40.0000%",
-        "height": "11.7855%"
+        "left": "3.0909%",
+        "top": "57.5880%",
+        "width": "45.1818%",
+        "height": "12.6370%"
       },
       {
         "value": "Sattler - Edge - 320 886",
-        "left": "53.0000%",
-        "top": "57.8687%",
-        "width": "40.0000%",
-        "height": "11.7855%"
+        "left": "51.7273%",
+        "top": "57.5880%",
+        "width": "45.1818%",
+        "height": "12.6370%"
       },
       {
         "value": "Sattler - Compass - 320 892",
-        "left": "7.0000%",
-        "top": "71.6302%",
-        "width": "40.0000%",
-        "height": "11.7855%"
+        "left": "3.0909%",
+        "top": "71.4945%",
+        "width": "45.1818%",
+        "height": "12.6370%"
       },
       {
         "value": "Sattler - Steel - 320 923",
-        "left": "53.0000%",
-        "top": "71.6302%",
-        "width": "40.0000%",
-        "height": "11.7855%"
+        "left": "51.7273%",
+        "top": "71.4945%",
+        "width": "45.1818%",
+        "height": "12.6370%"
       },
       {
         "value": "Sattler - Alloy - 320 954",
-        "left": "7.0000%",
-        "top": "85.3917%",
-        "width": "40.0000%",
-        "height": "11.7855%"
+        "left": "3.0909%",
+        "top": "85.4010%",
+        "width": "45.1818%",
+        "height": "12.6370%"
       },
       {
         "value": "Sattler - Zephyr - 320 975",
-        "left": "53.0000%",
-        "top": "85.3917%",
-        "width": "40.0000%",
-        "height": "11.7855%"
+        "left": "51.7273%",
+        "top": "85.4010%",
+        "width": "45.1818%",
+        "height": "12.6370%"
       }
     ]
   },
   {
-    "image": "assets/fabric-pages/sattler-layout/sattler-page-06.jpg",
+    "image": "assets/fabric-pages/sattler-layout-v2/sattler-page-06.jpg",
     "items": [
       {
         "value": "Sattler - Hideaway - 320 976",
-        "left": "7.0000%",
-        "top": "3.5430%",
-        "width": "40.0000%",
-        "height": "14.7919%"
+        "left": "3.0909%",
+        "top": "2.4478%",
+        "width": "45.1818%",
+        "height": "15.7667%"
       },
       {
         "value": "Sattler - Clarion - 320 990",
-        "left": "53.0000%",
-        "top": "3.5430%",
-        "width": "40.0000%",
-        "height": "14.7919%"
+        "left": "51.7273%",
+        "top": "2.4478%",
+        "width": "45.1818%",
+        "height": "15.7667%"
       },
       {
         "value": "Sattler - Timber - 320 992",
-        "left": "7.0000%",
-        "top": "20.8149%",
-        "width": "40.0000%",
-        "height": "14.7919%"
+        "left": "3.0909%",
+        "top": "19.7984%",
+        "width": "45.1818%",
+        "height": "15.7667%"
       },
       {
         "value": "Sattler - Hayfield - 364 203",
-        "left": "7.0000%",
-        "top": "41.0983%",
-        "width": "40.0000%",
-        "height": "14.7919%"
+        "left": "3.0909%",
+        "top": "40.4608%",
+        "width": "45.1818%",
+        "height": "15.7667%"
       },
       {
         "value": "Sattler - Landskip - 364 598",
-        "left": "53.0000%",
-        "top": "41.0983%",
-        "width": "40.0000%",
-        "height": "14.7919%"
+        "left": "51.7273%",
+        "top": "40.4608%",
+        "width": "45.1818%",
+        "height": "15.7667%"
       },
       {
         "value": "Sattler - Bliss - 30A 774",
-        "left": "7.0000%",
-        "top": "61.3818%",
-        "width": "40.0000%",
-        "height": "14.7919%"
+        "left": "3.0909%",
+        "top": "61.1231%",
+        "width": "45.1818%",
+        "height": "15.7667%"
       },
       {
         "value": "Sattler - Blaze - 30A 778",
-        "left": "53.0000%",
-        "top": "61.3818%",
-        "width": "40.0000%",
-        "height": "14.7919%"
+        "left": "51.7273%",
+        "top": "61.1231%",
+        "width": "45.1818%",
+        "height": "15.7667%"
       },
       {
         "value": "Sattler - Sand - 338 620",
-        "left": "7.0000%",
-        "top": "81.6652%",
-        "width": "40.0000%",
-        "height": "14.7919%"
+        "left": "3.0909%",
+        "top": "81.7855%",
+        "width": "45.1818%",
+        "height": "15.7667%"
       },
       {
         "value": "Sattler - Gravel - 338 621",
-        "left": "53.0000%",
-        "top": "81.6652%",
-        "width": "40.0000%",
-        "height": "14.7919%"
+        "left": "51.7273%",
+        "top": "81.7855%",
+        "width": "45.1818%",
+        "height": "15.7667%"
       }
     ]
   },
   {
-    "image": "assets/fabric-pages/sattler-layout/sattler-page-07.jpg",
+    "image": "assets/fabric-pages/sattler-layout-v2/sattler-page-07.jpg",
     "items": [
       {
         "value": "Sattler - Sahara - 338 639",
-        "left": "7.0000%",
-        "top": "2.8229%",
-        "width": "40.0000%",
-        "height": "11.7855%"
+        "left": "3.0909%",
+        "top": "1.9619%",
+        "width": "45.1818%",
+        "height": "12.6370%"
       },
       {
         "value": "Sattler - Arctic - 338 641",
-        "left": "53.0000%",
-        "top": "2.8229%",
-        "width": "40.0000%",
-        "height": "11.7855%"
+        "left": "51.7273%",
+        "top": "1.9619%",
+        "width": "45.1818%",
+        "height": "12.6370%"
       },
       {
         "value": "Sattler - Fjord - 338 644",
-        "left": "7.0000%",
-        "top": "16.5843%",
-        "width": "40.0000%",
-        "height": "11.7855%"
+        "left": "3.0909%",
+        "top": "15.8684%",
+        "width": "45.1818%",
+        "height": "12.6370%"
       },
       {
         "value": "Sattler - Ladakh - 338 655",
-        "left": "53.0000%",
-        "top": "16.5843%",
-        "width": "40.0000%",
-        "height": "11.7855%"
+        "left": "51.7273%",
+        "top": "15.8684%",
+        "width": "45.1818%",
+        "height": "12.6370%"
       },
       {
         "value": "Sattler - Gobi - 338 658",
-        "left": "7.0000%",
-        "top": "30.3458%",
-        "width": "40.0000%",
-        "height": "11.7855%"
+        "left": "3.0909%",
+        "top": "29.7750%",
+        "width": "45.1818%",
+        "height": "12.6370%"
       },
       {
         "value": "Sattler - Pacific - 338 659",
-        "left": "53.0000%",
-        "top": "30.3458%",
-        "width": "40.0000%",
-        "height": "11.7855%"
+        "left": "51.7273%",
+        "top": "29.7750%",
+        "width": "45.1818%",
+        "height": "12.6370%"
       },
       {
         "value": "Sattler - Taiga - 338 660",
-        "left": "7.0000%",
-        "top": "44.1073%",
-        "width": "40.0000%",
-        "height": "11.7855%"
+        "left": "3.0909%",
+        "top": "43.6815%",
+        "width": "45.1818%",
+        "height": "12.6370%"
       },
       {
         "value": "Sattler - Beach - 338 662",
-        "left": "53.0000%",
-        "top": "44.1073%",
-        "width": "40.0000%",
-        "height": "11.7855%"
+        "left": "51.7273%",
+        "top": "43.6815%",
+        "width": "45.1818%",
+        "height": "12.6370%"
       },
       {
         "value": "Sattler - Vulcano - 338 665",
-        "left": "7.0000%",
-        "top": "57.8687%",
-        "width": "40.0000%",
-        "height": "11.7855%"
+        "left": "3.0909%",
+        "top": "57.5880%",
+        "width": "45.1818%",
+        "height": "12.6370%"
       },
       {
         "value": "Sattler - Golden Crops - 338 667",
-        "left": "53.0000%",
-        "top": "57.8687%",
-        "width": "40.0000%",
-        "height": "11.7855%"
+        "left": "51.7273%",
+        "top": "57.5880%",
+        "width": "45.1818%",
+        "height": "12.6370%"
       },
       {
         "value": "Sattler - Willow - 338 770",
-        "left": "7.0000%",
-        "top": "71.6302%",
-        "width": "40.0000%",
-        "height": "11.7855%"
+        "left": "3.0909%",
+        "top": "71.4945%",
+        "width": "45.1818%",
+        "height": "12.6370%"
       },
       {
         "value": "Sattler - Juniper - 338 772",
-        "left": "53.0000%",
-        "top": "71.6302%",
-        "width": "40.0000%",
-        "height": "11.7855%"
+        "left": "51.7273%",
+        "top": "71.4945%",
+        "width": "45.1818%",
+        "height": "12.6370%"
       },
       {
         "value": "Sattler - Poplar - 338 773",
-        "left": "7.0000%",
-        "top": "85.3917%",
-        "width": "40.0000%",
-        "height": "11.7855%"
+        "left": "3.0909%",
+        "top": "85.4010%",
+        "width": "45.1818%",
+        "height": "12.6370%"
       }
     ]
   }
@@ -3042,67 +3042,868 @@ function buildAcrillaPicker() {
   list.appendChild(sectionEl);
 }
 
+const SAULEDA_PAGE_SECTIONS = [
+  {
+    "title": "Plains",
+    "pages": [
+      {
+        "image": "assets/fabric-pages/sauleda-layout-v2/plains-page-01.png",
+        "items": [
+          {
+            "value": "Plains - Blanco - 2042",
+            "left": "3.0909%",
+            "top": "1.0559%",
+            "width": "45.5455%",
+            "height": "18.8820%"
+          },
+          {
+            "value": "Plains - Natural - 2926",
+            "left": "51.3636%",
+            "top": "1.0559%",
+            "width": "45.5455%",
+            "height": "18.8820%"
+          },
+          {
+            "value": "Plains - Vainilla - 2687",
+            "left": "3.0909%",
+            "top": "20.8075%",
+            "width": "45.5455%",
+            "height": "18.8820%"
+          },
+          {
+            "value": "Plains - Seda - 2596",
+            "left": "51.3636%",
+            "top": "20.8075%",
+            "width": "45.5455%",
+            "height": "18.8820%"
+          },
+          {
+            "value": "Plains - Avena - 2296",
+            "left": "3.0909%",
+            "top": "40.5590%",
+            "width": "45.5455%",
+            "height": "18.8820%"
+          },
+          {
+            "value": "Plains - Siroco - 2226",
+            "left": "51.3636%",
+            "top": "40.5590%",
+            "width": "45.5455%",
+            "height": "18.8820%"
+          },
+          {
+            "value": "Plains - Integral - 2838",
+            "left": "3.0909%",
+            "top": "60.3106%",
+            "width": "45.5455%",
+            "height": "18.8820%"
+          },
+          {
+            "value": "Plains - Coco - 3601",
+            "left": "51.3636%",
+            "top": "60.3106%",
+            "width": "45.5455%",
+            "height": "18.8820%"
+          },
+          {
+            "value": "Plains - Marfil - 2143",
+            "left": "3.0909%",
+            "top": "80.0621%",
+            "width": "45.5455%",
+            "height": "18.8820%"
+          },
+          {
+            "value": "Plains - Marmol - 1070",
+            "left": "51.3636%",
+            "top": "80.0621%",
+            "width": "45.5455%",
+            "height": "18.8820%"
+          }
+        ]
+      },
+      {
+        "image": "assets/fabric-pages/sauleda-layout-v2/plains-page-02.png",
+        "items": [
+          {
+            "value": "Plains - Albastro - 8157",
+            "left": "3.0909%",
+            "top": "1.0559%",
+            "width": "45.5455%",
+            "height": "18.8820%"
+          },
+          {
+            "value": "Plains - Beige - 2038",
+            "left": "51.3636%",
+            "top": "1.0559%",
+            "width": "45.5455%",
+            "height": "18.8820%"
+          },
+          {
+            "value": "Plains - Ocre - 2180",
+            "left": "3.0909%",
+            "top": "20.8075%",
+            "width": "45.5455%",
+            "height": "18.8820%"
+          },
+          {
+            "value": "Plains - Teja - 2065",
+            "left": "51.3636%",
+            "top": "20.8075%",
+            "width": "45.5455%",
+            "height": "18.8820%"
+          },
+          {
+            "value": "Plains - Marron - 2146",
+            "left": "3.0909%",
+            "top": "40.5590%",
+            "width": "45.5455%",
+            "height": "18.8820%"
+          },
+          {
+            "value": "Plains - Cafe - 2316",
+            "left": "51.3636%",
+            "top": "40.5590%",
+            "width": "45.5455%",
+            "height": "18.8820%"
+          },
+          {
+            "value": "Plains - Amarillo - 2013",
+            "left": "3.0909%",
+            "top": "60.3106%",
+            "width": "45.5455%",
+            "height": "18.8820%"
+          },
+          {
+            "value": "Plains - Naranja - 2050",
+            "left": "51.3636%",
+            "top": "60.3106%",
+            "width": "45.5455%",
+            "height": "18.8820%"
+          },
+          {
+            "value": "Plains - Rioja - 2210",
+            "left": "3.0909%",
+            "top": "80.0621%",
+            "width": "45.5455%",
+            "height": "18.8820%"
+          },
+          {
+            "value": "Plains - Granate - 2101",
+            "left": "51.3636%",
+            "top": "80.0621%",
+            "width": "45.5455%",
+            "height": "18.8820%"
+          }
+        ]
+      },
+      {
+        "image": "assets/fabric-pages/sauleda-layout-v2/plains-page-03.png",
+        "items": [
+          {
+            "value": "Plains - Turkis - 2129",
+            "left": "3.0909%",
+            "top": "1.0559%",
+            "width": "45.5455%",
+            "height": "18.8820%"
+          },
+          {
+            "value": "Plains - Celeste - 2066",
+            "left": "51.3636%",
+            "top": "1.0559%",
+            "width": "45.5455%",
+            "height": "18.8820%"
+          },
+          {
+            "value": "Plains - Marino - 2145",
+            "left": "3.0909%",
+            "top": "20.8075%",
+            "width": "45.5455%",
+            "height": "18.8820%"
+          },
+          {
+            "value": "Plains - Admiral - 2051",
+            "left": "51.3636%",
+            "top": "20.8075%",
+            "width": "45.5455%",
+            "height": "18.8820%"
+          },
+          {
+            "value": "Plains - Rojo - 2211",
+            "left": "3.0909%",
+            "top": "40.5590%",
+            "width": "45.5455%",
+            "height": "18.8820%"
+          },
+          {
+            "value": "Plains - Logo Red - 1066",
+            "left": "51.3636%",
+            "top": "40.5590%",
+            "width": "45.5455%",
+            "height": "18.8820%"
+          },
+          {
+            "value": "Plains - Pink - 2835",
+            "left": "3.0909%",
+            "top": "60.3106%",
+            "width": "45.5455%",
+            "height": "18.8820%"
+          },
+          {
+            "value": "Plains - Malva - 2119",
+            "left": "51.3636%",
+            "top": "60.3106%",
+            "width": "45.5455%",
+            "height": "18.8820%"
+          },
+          {
+            "value": "Plains - Indigo - 2828",
+            "left": "3.0909%",
+            "top": "80.0621%",
+            "width": "45.5455%",
+            "height": "18.8820%"
+          },
+          {
+            "value": "Plains - Azul Real - 2235",
+            "left": "51.3636%",
+            "top": "80.0621%",
+            "width": "45.5455%",
+            "height": "18.8820%"
+          }
+        ]
+      },
+      {
+        "image": "assets/fabric-pages/sauleda-layout-v2/plains-page-04.png",
+        "items": [
+          {
+            "value": "Plains - Verde Claro - 2246",
+            "left": "3.0909%",
+            "top": "0.8019%",
+            "width": "45.5455%",
+            "height": "19.1509%"
+          },
+          {
+            "value": "Plains - Eucaliptus - 3000",
+            "left": "51.3636%",
+            "top": "0.8019%",
+            "width": "45.5455%",
+            "height": "19.1509%"
+          },
+          {
+            "value": "Plains - Verde - 2242",
+            "left": "3.0909%",
+            "top": "20.6132%",
+            "width": "45.5455%",
+            "height": "19.1509%"
+          },
+          {
+            "value": "Plains - Musgo - 2247",
+            "left": "51.3636%",
+            "top": "20.6132%",
+            "width": "45.5455%",
+            "height": "19.1509%"
+          },
+          {
+            "value": "Plains - Silver - 2821",
+            "left": "3.0909%",
+            "top": "40.4245%",
+            "width": "45.5455%",
+            "height": "19.1509%"
+          },
+          {
+            "value": "Plains - Perla - 2979",
+            "left": "51.3636%",
+            "top": "40.4245%",
+            "width": "45.5455%",
+            "height": "19.1509%"
+          },
+          {
+            "value": "Plains - Mineral - 2831",
+            "left": "3.0909%",
+            "top": "60.2358%",
+            "width": "45.5455%",
+            "height": "19.1509%"
+          },
+          {
+            "value": "Plains - Antracita - 8488",
+            "left": "51.3636%",
+            "top": "60.2358%",
+            "width": "45.5455%",
+            "height": "19.1509%"
+          },
+          {
+            "value": "Plains - Tirol - 2928",
+            "left": "3.0909%",
+            "top": "80.0472%",
+            "width": "45.5455%",
+            "height": "19.1509%"
+          },
+          {
+            "value": "Plains - Botella - 2245",
+            "left": "51.3636%",
+            "top": "80.0472%",
+            "width": "45.5455%",
+            "height": "19.1509%"
+          }
+        ]
+      },
+      {
+        "image": "assets/fabric-pages/sauleda-layout-v2/plains-page-05.png",
+        "items": [
+          {
+            "value": "Plains - Piedra - 3605",
+            "left": "3.0909%",
+            "top": "1.9767%",
+            "width": "45.5455%",
+            "height": "47.2093%"
+          },
+          {
+            "value": "Plains - Gris - 2102",
+            "left": "51.3636%",
+            "top": "1.9767%",
+            "width": "45.5455%",
+            "height": "47.2093%"
+          },
+          {
+            "value": "Plains - Grafito - 3602",
+            "left": "3.0909%",
+            "top": "50.8140%",
+            "width": "45.5455%",
+            "height": "47.2093%"
+          },
+          {
+            "value": "Plains - Negro - 2170",
+            "left": "51.3636%",
+            "top": "50.8140%",
+            "width": "45.5455%",
+            "height": "47.2093%"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "title": "The Classics",
+    "pages": [
+      {
+        "image": "assets/fabric-pages/sauleda-layout-v2/classics-page-01.png",
+        "items": [
+          {
+            "value": "The Classics - Amarillo N - 2015",
+            "left": "3.0909%",
+            "top": "3.5160%",
+            "width": "93.8182%",
+            "height": "29.0589%"
+          },
+          {
+            "value": "The Classics - Naranja N - 2052",
+            "left": "3.0909%",
+            "top": "35.4705%",
+            "width": "93.8182%",
+            "height": "29.0589%"
+          },
+          {
+            "value": "The Classics - Rojo N - 2212",
+            "left": "3.0909%",
+            "top": "67.4250%",
+            "width": "93.8182%",
+            "height": "29.0589%"
+          }
+        ]
+      },
+      {
+        "image": "assets/fabric-pages/sauleda-layout-v2/classics-page-02.png",
+        "items": [
+          {
+            "value": "The Classics - Azul Real N - 2359",
+            "left": "3.0909%",
+            "top": "3.5752%",
+            "width": "93.8182%",
+            "height": "29.5478%"
+          },
+          {
+            "value": "The Classics - Botella N - 2680",
+            "left": "3.0909%",
+            "top": "36.0673%",
+            "width": "93.8182%",
+            "height": "27.8654%"
+          },
+          {
+            "value": "The Classics - Ocre X - 2641",
+            "left": "3.0909%",
+            "top": "66.8770%",
+            "width": "93.8182%",
+            "height": "29.5478%"
+          }
+        ]
+      },
+      {
+        "image": "assets/fabric-pages/sauleda-layout-v2/classics-page-03.png",
+        "items": [
+          {
+            "value": "The Classics - Integral X - 2681",
+            "left": "3.0909%",
+            "top": "3.5160%",
+            "width": "93.8182%",
+            "height": "29.0589%"
+          },
+          {
+            "value": "The Classics - Piedra X - 2682",
+            "left": "3.0909%",
+            "top": "35.4705%",
+            "width": "93.8182%",
+            "height": "29.0589%"
+          },
+          {
+            "value": "The Classics - Gris N - 2103",
+            "left": "3.0909%",
+            "top": "67.4250%",
+            "width": "93.8182%",
+            "height": "29.0589%"
+          }
+        ]
+      },
+      {
+        "image": "assets/fabric-pages/sauleda-layout-v2/classics-page-04.png",
+        "items": [
+          {
+            "value": "The Classics - Negro N - 2171",
+            "left": "3.0909%",
+            "top": "10.2102%",
+            "width": "93.8182%",
+            "height": "79.5796%"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "title": "Fantasy",
+    "pages": [
+      {
+        "image": "assets/fabric-pages/sauleda-layout-v2/fantasy-page-01.png",
+        "items": [
+          {
+            "value": "Fantasy - Vesubio - 2636",
+            "left": "3.0909%",
+            "top": "2.9488%",
+            "width": "93.8182%",
+            "height": "29.7485%"
+          },
+          {
+            "value": "Fantasy - Anapurna - 2640",
+            "left": "3.0909%",
+            "top": "35.1258%",
+            "width": "93.8182%",
+            "height": "29.7485%"
+          },
+          {
+            "value": "Fantasy - St. Andrews - 2924",
+            "left": "3.0909%",
+            "top": "67.3027%",
+            "width": "93.8182%",
+            "height": "29.7485%"
+          }
+        ]
+      },
+      {
+        "image": "assets/fabric-pages/sauleda-layout-v2/fantasy-page-02.png",
+        "items": [
+          {
+            "value": "Fantasy - Manchester - 2823",
+            "left": "3.0909%",
+            "top": "2.9877%",
+            "width": "93.8182%",
+            "height": "28.8225%"
+          },
+          {
+            "value": "Fantasy - Pirineos - 2790",
+            "left": "3.0909%",
+            "top": "34.2707%",
+            "width": "93.8182%",
+            "height": "30.1406%"
+          },
+          {
+            "value": "Fantasy - Oslo - 2818",
+            "left": "3.0909%",
+            "top": "66.8717%",
+            "width": "93.8182%",
+            "height": "30.1406%"
+          }
+        ]
+      },
+      {
+        "image": "assets/fabric-pages/sauleda-layout-v2/fantasy-page-03.png",
+        "items": [
+          {
+            "value": "Fantasy - Marte - 2121",
+            "left": "3.0909%",
+            "top": "2.9877%",
+            "width": "93.8182%",
+            "height": "30.1406%"
+          },
+          {
+            "value": "Fantasy - Jamaica - 2701",
+            "left": "3.0909%",
+            "top": "35.5888%",
+            "width": "93.8182%",
+            "height": "28.8225%"
+          },
+          {
+            "value": "Fantasy - Balmoral - 2921",
+            "left": "3.0909%",
+            "top": "66.8717%",
+            "width": "93.8182%",
+            "height": "30.1406%"
+          }
+        ]
+      },
+      {
+        "image": "assets/fabric-pages/sauleda-layout-v2/fantasy-page-04.png",
+        "items": [
+          {
+            "value": "Fantasy - Miami - 2702",
+            "left": "3.0909%",
+            "top": "2.9877%",
+            "width": "93.8182%",
+            "height": "30.1406%"
+          },
+          {
+            "value": "Fantasy - Estocolmo - 2816",
+            "left": "3.0909%",
+            "top": "35.5888%",
+            "width": "93.8182%",
+            "height": "30.1406%"
+          },
+          {
+            "value": "Fantasy - Pluton - 2179",
+            "left": "3.0909%",
+            "top": "68.1898%",
+            "width": "93.8182%",
+            "height": "28.8225%"
+          }
+        ]
+      },
+      {
+        "image": "assets/fabric-pages/sauleda-layout-v2/fantasy-page-05.png",
+        "items": [
+          {
+            "value": "Fantasy - Windsor - 2929",
+            "left": "3.0909%",
+            "top": "2.9488%",
+            "width": "93.8182%",
+            "height": "29.7485%"
+          },
+          {
+            "value": "Fantasy - Aries - 2576",
+            "left": "3.0909%",
+            "top": "35.1258%",
+            "width": "93.8182%",
+            "height": "29.7485%"
+          },
+          {
+            "value": "Fantasy - Jalisco - 1484",
+            "left": "3.0909%",
+            "top": "67.3027%",
+            "width": "93.8182%",
+            "height": "29.7485%"
+          }
+        ]
+      },
+      {
+        "image": "assets/fabric-pages/sauleda-layout-v2/fantasy-page-06.png",
+        "items": [
+          {
+            "value": "Fantasy - Urban - 3608",
+            "left": "3.0909%",
+            "top": "8.5859%",
+            "width": "93.8182%",
+            "height": "82.8283%"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "title": "Marine Plus",
+    "pages": [
+      {
+        "image": "assets/fabric-pages/sauleda-layout-v2/marine-plus-page-01.png",
+        "items": [
+          {
+            "value": "Marine Plus - Blanco - 2405",
+            "left": "3.0909%",
+            "top": "1.0559%",
+            "width": "45.5455%",
+            "height": "18.8820%"
+          },
+          {
+            "value": "Marine Plus - Marfil - 2411",
+            "left": "51.3636%",
+            "top": "1.0559%",
+            "width": "45.5455%",
+            "height": "18.8820%"
+          },
+          {
+            "value": "Marine Plus - Avena - 2451",
+            "left": "3.0909%",
+            "top": "20.8075%",
+            "width": "45.5455%",
+            "height": "18.8820%"
+          },
+          {
+            "value": "Marine Plus - Toast - 1495",
+            "left": "51.3636%",
+            "top": "20.8075%",
+            "width": "45.5455%",
+            "height": "18.8820%"
+          },
+          {
+            "value": "Marine Plus - Vison - 2452",
+            "left": "3.0909%",
+            "top": "40.5590%",
+            "width": "45.5455%",
+            "height": "18.8820%"
+          },
+          {
+            "value": "Marine Plus - Amarillo - 8634",
+            "left": "51.3636%",
+            "top": "40.5590%",
+            "width": "45.5455%",
+            "height": "18.8820%"
+          },
+          {
+            "value": "Marine Plus - Indigo - 2746",
+            "left": "3.0909%",
+            "top": "60.3106%",
+            "width": "45.5455%",
+            "height": "18.8820%"
+          },
+          {
+            "value": "Marine Plus - Arctic - 20507",
+            "left": "51.3636%",
+            "top": "60.3106%",
+            "width": "45.5455%",
+            "height": "18.8820%"
+          },
+          {
+            "value": "Marine Plus - Sand - 20501",
+            "left": "3.0909%",
+            "top": "80.0621%",
+            "width": "45.5455%",
+            "height": "18.8820%"
+          },
+          {
+            "value": "Marine Plus - Integral - 2443",
+            "left": "51.3636%",
+            "top": "80.0621%",
+            "width": "45.5455%",
+            "height": "18.8820%"
+          }
+        ]
+      },
+      {
+        "image": "assets/fabric-pages/sauleda-layout-v2/marine-plus-page-02.png",
+        "items": [
+          {
+            "value": "Marine Plus - Pergamino - 2049B",
+            "left": "3.0909%",
+            "top": "1.0559%",
+            "width": "45.5455%",
+            "height": "18.8820%"
+          },
+          {
+            "value": "Marine Plus - Beige - 2403",
+            "left": "51.3636%",
+            "top": "1.0559%",
+            "width": "45.5455%",
+            "height": "18.8820%"
+          },
+          {
+            "value": "Marine Plus - Rioja - 2729",
+            "left": "3.0909%",
+            "top": "20.8075%",
+            "width": "45.5455%",
+            "height": "18.8820%"
+          },
+          {
+            "value": "Marine Plus - Granate - 2407",
+            "left": "51.3636%",
+            "top": "20.8075%",
+            "width": "45.5455%",
+            "height": "18.8820%"
+          },
+          {
+            "value": "Marine Plus - Electric Blue - 20664",
+            "left": "3.0909%",
+            "top": "40.5590%",
+            "width": "45.5455%",
+            "height": "18.8820%"
+          },
+          {
+            "value": "Marine Plus - Azul Real - 2423",
+            "left": "51.3636%",
+            "top": "40.5590%",
+            "width": "45.5455%",
+            "height": "18.8820%"
+          },
+          {
+            "value": "Marine Plus - Azul - 2401",
+            "left": "3.0909%",
+            "top": "60.3106%",
+            "width": "45.5455%",
+            "height": "18.8820%"
+          },
+          {
+            "value": "Marine Plus - Marino - 2413",
+            "left": "51.3636%",
+            "top": "60.3106%",
+            "width": "45.5455%",
+            "height": "18.8820%"
+          },
+          {
+            "value": "Marine Plus - Quartz - 1613",
+            "left": "3.0909%",
+            "top": "80.0621%",
+            "width": "45.5455%",
+            "height": "18.8820%"
+          },
+          {
+            "value": "Marine Plus - Silver - 2409",
+            "left": "51.3636%",
+            "top": "80.0621%",
+            "width": "45.5455%",
+            "height": "18.8820%"
+          }
+        ]
+      },
+      {
+        "image": "assets/fabric-pages/sauleda-layout-v2/marine-plus-page-03.png",
+        "items": [
+          {
+            "value": "Marine Plus - Piedra - 3599",
+            "left": "3.0909%",
+            "top": "1.0559%",
+            "width": "45.5455%",
+            "height": "18.8820%"
+          },
+          {
+            "value": "Marine Plus - Gris - 2421",
+            "left": "51.3636%",
+            "top": "1.0559%",
+            "width": "45.5455%",
+            "height": "18.8820%"
+          },
+          {
+            "value": "Marine Plus - Grafito - 2466",
+            "left": "3.0909%",
+            "top": "20.8075%",
+            "width": "45.5455%",
+            "height": "18.8820%"
+          },
+          {
+            "value": "Marine Plus - Antracita - 2461",
+            "left": "51.3636%",
+            "top": "20.8075%",
+            "width": "45.5455%",
+            "height": "18.8820%"
+          },
+          {
+            "value": "Marine Plus - Armada - 2448",
+            "left": "3.0909%",
+            "top": "40.5590%",
+            "width": "45.5455%",
+            "height": "18.8820%"
+          },
+          {
+            "value": "Marine Plus - Botella - 2488",
+            "left": "51.3636%",
+            "top": "40.5590%",
+            "width": "45.5455%",
+            "height": "18.8820%"
+          },
+          {
+            "value": "Marine Plus - Steel - 20492",
+            "left": "3.0909%",
+            "top": "60.3106%",
+            "width": "45.5455%",
+            "height": "18.8820%"
+          },
+          {
+            "value": "Marine Plus - Perla - 2417",
+            "left": "51.3636%",
+            "top": "60.3106%",
+            "width": "45.5455%",
+            "height": "18.8820%"
+          },
+          {
+            "value": "Marine Plus - Mineral - 2750",
+            "left": "3.0909%",
+            "top": "80.0621%",
+            "width": "45.5455%",
+            "height": "18.8820%"
+          },
+          {
+            "value": "Marine Plus - Basalto - 20108",
+            "left": "51.3636%",
+            "top": "80.0621%",
+            "width": "45.5455%",
+            "height": "18.8820%"
+          }
+        ]
+      },
+      {
+        "image": "assets/fabric-pages/sauleda-layout-v2/marine-plus-page-04.png",
+        "items": [
+          {
+            "value": "Marine Plus - Coal - 8660",
+            "left": "3.0909%",
+            "top": "5.0296%",
+            "width": "45.5455%",
+            "height": "89.9408%"
+          },
+          {
+            "value": "Marine Plus - Negro - 2881",
+            "left": "51.3636%",
+            "top": "5.0296%",
+            "width": "45.5455%",
+            "height": "89.9408%"
+          }
+        ]
+      }
+    ]
+  }
+];
+
 function buildSauledaPicker() {
   const list = $('#colorOptionList');
   if (!list) return;
   list.classList.add('sauleda-picker-mode');
   list.innerHTML = '';
-  SAULEDA_SECTIONS.forEach((section) => {
+  SAULEDA_PAGE_SECTIONS.forEach((section) => {
     const sectionEl = document.createElement('section');
     sectionEl.className = 'sauleda-section';
     const head = document.createElement('div');
     head.className = 'sauleda-section-head';
     head.textContent = section.title;
     sectionEl.appendChild(head);
-
     const body = document.createElement('div');
-    body.className = section.layout === 'grid' ? 'sauleda-section-grid' : 'sauleda-section-stack';
-
-    section.panels.forEach((panel) => {
+    body.className = 'sattler-page-stack';
+    section.pages.forEach((page) => {
       const card = document.createElement('div');
-      card.className = 'sauleda-page-card';
+      card.className = 'sattler-page-card';
       const overlay = document.createElement('div');
       overlay.className = 'sauleda-page-overlay';
       const img = document.createElement('img');
-      img.src = panel.image;
+      img.src = page.image;
       img.alt = `${section.title} fabric page`;
       img.loading = 'lazy';
       overlay.appendChild(img);
-
-      if (section.layout === 'grid') {
-        const rowGap = panel.rows === 3 ? 0.055 : 0.04;
-        const topPad = panel.rows === 3 ? 0.02 : 0.018;
-        const colGap = 0.06;
-        const colWidth = (1 - colGap) / 2;
-        const rowHeight = (1 - topPad * 2 - rowGap * (panel.rows - 1)) / panel.rows;
-        panel.items.forEach((item, index) => {
-          const r = Math.floor(index / 2);
-          const c = index % 2;
-          const value = sauledaValue(item);
-          const left = `${c * (colWidth + colGap / 2) * 100}%`;
-          const top = `${(topPad + r * (rowHeight + rowGap)) * 100}%`;
-          const width = `${(colWidth - colGap / 2) * 100}%`;
-          const height = `${rowHeight * 100}%`;
-          overlay.appendChild(createSauledaHotspot(value, left, top, width, height));
-        });
-      } else {
-        const topPad = 0.015;
-        const rowGap = 0.022;
-        const rowHeight = (1 - topPad * 2 - rowGap * (panel.rows - 1)) / panel.rows;
-        panel.items.forEach((item, index) => {
-          const value = sauledaValue(item);
-          const left = '2%';
-          const top = `${(topPad + index * (rowHeight + rowGap)) * 100}%`;
-          const width = '96%';
-          const height = `${rowHeight * 100}%`;
-          overlay.appendChild(createSauledaHotspot(value, left, top, width, height));
-        });
-      }
-
+      page.items.forEach((item) => {
+        overlay.appendChild(createSauledaHotspot(item.value, item.left, item.top, item.width, item.height));
+      });
       card.appendChild(overlay);
       body.appendChild(card);
     });
-
     sectionEl.appendChild(body);
     list.appendChild(sectionEl);
   });
