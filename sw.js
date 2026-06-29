@@ -1,4 +1,4 @@
-const CACHE = 'product-request-form-c47-order-remote-dynamic';
+const CACHE = 'product-request-form-c47-screen-awning-curtain';
 const ASSETS = [
   './',
   './index.html',

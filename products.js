@@ -29,7 +29,8 @@ window.PRODUCT_DATA = {
   productTree: {
     families: [
       { id: 'pergola', label: 'Pergola' },
-      { id: 'bioclimatic', label: 'Bioclimatic' }
+      { id: 'bioclimatic', label: 'Bioclimatic' },
+      { id: 'zip_screen_awning_curtain', label: 'Zip Screen - Awning - Curtain' }
     ],
     groups: {
       pergola: [
@@ -41,6 +42,20 @@ window.PRODUCT_DATA = {
       bioclimatic: [
         { id: 'bcube', label: 'B-Cube' },
         { id: 'bio_rise', label: 'Bio-Rise', productId: 'bio_rise' }
+      ],
+      zip_screen_awning_curtain: [
+        { id: 'zip_screen', label: 'Zip Screen' },
+        { id: 'janela_cassette_awning', label: 'Janela Cassette Awning', productId: 'janela_cassette_awning' },
+        { id: 'pars_cassette_awning', label: 'Pars Cassette Awning', productId: 'pars_cassette_awning' },
+        { id: 'pars_plus_cassette_awning', label: 'Pars Plus Cassette Awning', productId: 'pars_plus_cassette_awning' },
+        { id: 'pars_plus_luxe_cassette_awning', label: 'Pars Plus Luxe Cassette Awning', productId: 'pars_plus_luxe_cassette_awning' },
+        { id: 'moonlight_classic_awning', label: 'Moonlight Classic Awning', productId: 'moonlight_classic_awning' },
+        { id: 'sunshine_classic_awning', label: 'Sunshine Classic Awning', productId: 'sunshine_classic_awning' },
+        { id: 'twins_classic_awning', label: 'Twins Classic Awning', productId: 'twins_classic_awning' },
+        { id: 'parasol_umbrella', label: 'Parasol Umbrella', productId: 'parasol_umbrella' },
+        { id: 'parasol_luxe_umbrella', label: 'Parasol Luxe Umbrella', productId: 'parasol_luxe_umbrella' },
+        { id: 's_series_umbrella', label: 'S Series Umbrella', productId: 's_series_umbrella' },
+        { id: 'folded_ceiling_curtain', label: 'Folded Ceiling Curtain', productId: 'folded_ceiling_curtain' }
       ]
     },
     subGroups: {
@@ -68,7 +83,12 @@ window.PRODUCT_DATA = {
         { id: 'freedom_plus', label: 'Freedom Plus', productId: 'freedom_plus' },
         { id: 'classic_plus', label: 'Classic Plus', productId: 'classic_plus' }
       ],
-      bio_rise: []
+      bio_rise: [],
+      zip_screen: [
+        { id: 'sun_store', label: 'Sun Store', productId: 'zip_screen_sun_store' },
+        { id: 'manuel_store', label: 'Manuel Store', productId: 'zip_screen_manuel_store' },
+        { id: 'sky_screen', label: 'Sky Screen', productId: 'zip_screen_sky_screen' }
+      ]
     }
   },
   groups: {
@@ -324,7 +344,21 @@ window.PRODUCT_DATA = {
     { id: 'urban', name: 'B-Cube URBAN', family: 'bioclimatic', productGroup: 'bcube', subGroup: 'urban', group: 'bcube', formTemplate: 'galaxyForm' },
     { id: 'freedom_plus', name: 'B-Cube FREEDOM PLUS', family: 'bioclimatic', productGroup: 'bcube', subGroup: 'freedom_plus', group: 'bcube', formTemplate: 'galaxyForm' },
     { id: 'classic_plus', name: 'B-Cube CLASSIC PLUS', family: 'bioclimatic', productGroup: 'bcube', subGroup: 'classic_plus', group: 'bcube', formTemplate: 'galaxyForm' },
-    { id: 'bio_rise', name: 'BIO-RISE', family: 'bioclimatic', productGroup: 'bio_rise', subGroup: '', group: 'bioRise', formTemplate: 'galaxyForm', formVariant: 'galaxy' }
+    { id: 'bio_rise', name: 'BIO-RISE', family: 'bioclimatic', productGroup: 'bio_rise', subGroup: '', group: 'bioRise', formTemplate: 'galaxyForm', formVariant: 'galaxy' },
+    { id: 'zip_screen_sun_store', name: 'ZIP SCREEN SUN STORE', family: 'zip_screen_awning_curtain', productGroup: 'zip_screen', subGroup: 'sun_store' },
+    { id: 'zip_screen_manuel_store', name: 'ZIP SCREEN MANUEL STORE', family: 'zip_screen_awning_curtain', productGroup: 'zip_screen', subGroup: 'manuel_store' },
+    { id: 'zip_screen_sky_screen', name: 'ZIP SCREEN SKY SCREEN', family: 'zip_screen_awning_curtain', productGroup: 'zip_screen', subGroup: 'sky_screen' },
+    { id: 'janela_cassette_awning', name: 'JANELA CASSETTE AWNING', family: 'zip_screen_awning_curtain', productGroup: 'janela_cassette_awning', subGroup: '' },
+    { id: 'pars_cassette_awning', name: 'PARS CASSETTE AWNING', family: 'zip_screen_awning_curtain', productGroup: 'pars_cassette_awning', subGroup: '' },
+    { id: 'pars_plus_cassette_awning', name: 'PARS PLUS CASSETTE AWNING', family: 'zip_screen_awning_curtain', productGroup: 'pars_plus_cassette_awning', subGroup: '' },
+    { id: 'pars_plus_luxe_cassette_awning', name: 'PARS PLUS LUXE CASSETTE AWNING', family: 'zip_screen_awning_curtain', productGroup: 'pars_plus_luxe_cassette_awning', subGroup: '' },
+    { id: 'moonlight_classic_awning', name: 'MOONLIGHT CLASSIC AWNING', family: 'zip_screen_awning_curtain', productGroup: 'moonlight_classic_awning', subGroup: '' },
+    { id: 'sunshine_classic_awning', name: 'SUNSHINE CLASSIC AWNING', family: 'zip_screen_awning_curtain', productGroup: 'sunshine_classic_awning', subGroup: '' },
+    { id: 'twins_classic_awning', name: 'TWINS CLASSIC AWNING', family: 'zip_screen_awning_curtain', productGroup: 'twins_classic_awning', subGroup: '' },
+    { id: 'parasol_umbrella', name: 'PARASOL UMBRELLA', family: 'zip_screen_awning_curtain', productGroup: 'parasol_umbrella', subGroup: '' },
+    { id: 'parasol_luxe_umbrella', name: 'PARASOL LUXE UMBRELLA', family: 'zip_screen_awning_curtain', productGroup: 'parasol_luxe_umbrella', subGroup: '' },
+    { id: 's_series_umbrella', name: 'S SERIES UMBRELLA', family: 'zip_screen_awning_curtain', productGroup: 's_series_umbrella', subGroup: '' },
+    { id: 'folded_ceiling_curtain', name: 'FOLDED CEILING CURTAIN', family: 'zip_screen_awning_curtain', productGroup: 'folded_ceiling_curtain', subGroup: '' }
   ]
 };
 

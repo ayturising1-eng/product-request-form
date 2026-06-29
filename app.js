@@ -1,4 +1,4 @@
-window.APP_VERSION = 'C47-ORDER-REMOTE-DYNAMIC';
+window.APP_VERSION = 'C47-SCREEN-AWNING-CURTAIN';
 const DATA = window.PRODUCT_DATA;
 const $ = (selector) => document.querySelector(selector);
 const $$ = (selector) => Array.from(document.querySelectorAll(selector));
@@ -13,7 +13,7 @@ const state = {
 };
 
 const STORAGE_PROFILE = 'prf_profile_v2';
-const STORAGE_ORDER = 'prf_order_c47_layout_restore';
+const STORAGE_ORDER = 'prf_order_c47_screen_awning_curtain';
 const STORAGE_LANGUAGE = 'prf_language_v1';
 
 const COLOR_FIELD_LABELS = new Set([
