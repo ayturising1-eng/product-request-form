@@ -1,4 +1,4 @@
-const CACHE = 'product-request-form-c58-sattler-page-layout';
+const CACHE = 'product-request-form-c63-acrilla-catalog';
 const ASSETS = [
   './',
   './index.html',
