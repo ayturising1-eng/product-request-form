@@ -1,4 +1,4 @@
-window.APP_VERSION = 'C55-JANELA-SAULEDA-SCROLL';
+window.APP_VERSION = 'C62-SATTLER-FINAL-LAYOUT';
 const DATA = window.PRODUCT_DATA;
 const $ = (selector) => document.querySelector(selector);
 const $$ = (selector) => Array.from(document.querySelectorAll(selector));
@@ -13,7 +13,7 @@ const state = {
 };
 
 const STORAGE_PROFILE = 'prf_profile_v2';
-const STORAGE_ORDER = 'prf_order_c55_janela_sauleda_scroll';
+const STORAGE_ORDER = 'prf_order_c62_sattler_final_layout';
 const STORAGE_LANGUAGE = 'prf_language_v1';
 
 const COLOR_FIELD_LABELS = new Set([
@@ -1574,6 +1574,7 @@ Object.assign(I18N.tr, {
 let activePickerInput = null;
 let activePickerKind = 'color';
 let activeColorCatalogId = 'rising-standart';
+let activeFabricCatalogId = 'sauleda';
 let activePickerSearch = '';
 
 function colorCatalogs() {
@@ -1681,6 +1682,18 @@ function isSauledaFabricMode(kind = activePickerKind) {
   return kind === 'fabric' && state.selectedProductId === 'janela_cassette_awning';
 }
 
+function isJanelaFabricMode(kind = activePickerKind) {
+  return kind === 'fabric' && state.selectedProductId === 'janela_cassette_awning';
+}
+
+function isSattlerFabricMode(kind = activePickerKind) {
+  return isJanelaFabricMode(kind) && activeFabricCatalogId === 'sattler';
+}
+
+function isSauledaCatalogActive(kind = activePickerKind) {
+  return isJanelaFabricMode(kind) && activeFabricCatalogId === 'sauleda';
+}
+
 function sauledaValue(parts) {
   return parts.filter(Boolean).join(' - ');
 }
@@ -1698,6 +1711,681 @@ function createSauledaHotspot(value, left, top, width, height) {
   if ((activePickerInput?.value || '').trim() === value) btn.classList.add('selected-hotspot');
   btn.addEventListener('click', () => selectPickerOption(value));
   return btn;
+}
+
+const SATTLER_PAGES = [
+  {
+    "image": "assets/fabric-pages/sattler-layout/sattler-page-01.jpg",
+    "items": [
+      {
+        "value": "Sattler - China Red - 314 001",
+        "left": "7.0000%",
+        "top": "2.8229%",
+        "width": "40.0000%",
+        "height": "11.7855%"
+      },
+      {
+        "value": "Sattler - Orange - 314 002",
+        "left": "53.0000%",
+        "top": "2.8229%",
+        "width": "40.0000%",
+        "height": "11.7855%"
+      },
+      {
+        "value": "Sattler - Dandelion - 314 003",
+        "left": "7.0000%",
+        "top": "16.5843%",
+        "width": "40.0000%",
+        "height": "11.7855%"
+      },
+      {
+        "value": "Sattler - Jungle - 314 004",
+        "left": "53.0000%",
+        "top": "16.5843%",
+        "width": "40.0000%",
+        "height": "11.7855%"
+      },
+      {
+        "value": "Sattler - Classic Royal Blue - 314 006",
+        "left": "7.0000%",
+        "top": "30.3458%",
+        "width": "40.0000%",
+        "height": "11.7855%"
+      },
+      {
+        "value": "Sattler - Lily - 314 007",
+        "left": "53.0000%",
+        "top": "30.3458%",
+        "width": "40.0000%",
+        "height": "11.7855%"
+      },
+      {
+        "value": "Sattler - Cloud - 314 010",
+        "left": "7.0000%",
+        "top": "44.1073%",
+        "width": "40.0000%",
+        "height": "11.7855%"
+      },
+      {
+        "value": "Sattler - Nautical - 314 011",
+        "left": "53.0000%",
+        "top": "44.1073%",
+        "width": "40.0000%",
+        "height": "11.7855%"
+      },
+      {
+        "value": "Sattler - Mahogany - 314 016",
+        "left": "7.0000%",
+        "top": "57.8687%",
+        "width": "40.0000%",
+        "height": "11.7855%"
+      },
+      {
+        "value": "Sattler - Shell - 314 020",
+        "left": "53.0000%",
+        "top": "57.8687%",
+        "width": "40.0000%",
+        "height": "11.7855%"
+      },
+      {
+        "value": "Sattler - Copper - 314 022",
+        "left": "7.0000%",
+        "top": "71.6302%",
+        "width": "40.0000%",
+        "height": "11.7855%"
+      },
+      {
+        "value": "Sattler - Graphite - 314 028",
+        "left": "53.0000%",
+        "top": "71.6302%",
+        "width": "40.0000%",
+        "height": "11.7855%"
+      },
+      {
+        "value": "Sattler - Fog - 314 030",
+        "left": "7.0000%",
+        "top": "85.3917%",
+        "width": "40.0000%",
+        "height": "11.7855%"
+      },
+      {
+        "value": "Sattler - Camel - 314 040",
+        "left": "53.0000%",
+        "top": "85.3917%",
+        "width": "40.0000%",
+        "height": "11.7855%"
+      }
+    ]
+  },
+  {
+    "image": "assets/fabric-pages/sattler-layout/sattler-page-02.jpg",
+    "items": [
+      {
+        "value": "Sattler - Pigeon - 314 082",
+        "left": "7.0000%",
+        "top": "2.8229%",
+        "width": "40.0000%",
+        "height": "11.7855%"
+      },
+      {
+        "value": "Sattler - Plum - 314 143",
+        "left": "53.0000%",
+        "top": "2.8229%",
+        "width": "40.0000%",
+        "height": "11.7855%"
+      },
+      {
+        "value": "Sattler - Sky - 314 153",
+        "left": "7.0000%",
+        "top": "16.5843%",
+        "width": "40.0000%",
+        "height": "11.7855%"
+      },
+      {
+        "value": "Sattler - Black - 314 154",
+        "left": "53.0000%",
+        "top": "16.5843%",
+        "width": "40.0000%",
+        "height": "11.7855%"
+      },
+      {
+        "value": "Sattler - Forest Green - 314 362",
+        "left": "7.0000%",
+        "top": "30.3458%",
+        "width": "40.0000%",
+        "height": "11.7855%"
+      },
+      {
+        "value": "Sattler - Leaf - 314 396",
+        "left": "53.0000%",
+        "top": "30.3458%",
+        "width": "40.0000%",
+        "height": "11.7855%"
+      },
+      {
+        "value": "Sattler - Magenta - 314 397",
+        "left": "7.0000%",
+        "top": "44.1073%",
+        "width": "40.0000%",
+        "height": "11.7855%"
+      },
+      {
+        "value": "Sattler - Storm Grey - 314 398",
+        "left": "53.0000%",
+        "top": "44.1073%",
+        "width": "40.0000%",
+        "height": "11.7855%"
+      },
+      {
+        "value": "Sattler - Marine - 314 414",
+        "left": "7.0000%",
+        "top": "57.8687%",
+        "width": "40.0000%",
+        "height": "11.7855%"
+      },
+      {
+        "value": "Sattler - Saffron - 314 610",
+        "left": "53.0000%",
+        "top": "57.8687%",
+        "width": "40.0000%",
+        "height": "11.7855%"
+      },
+      {
+        "value": "Sattler - Seagrass - 314 621",
+        "left": "7.0000%",
+        "top": "71.6302%",
+        "width": "40.0000%",
+        "height": "11.7855%"
+      },
+      {
+        "value": "Sattler - Ecru - 314 718",
+        "left": "53.0000%",
+        "top": "71.6302%",
+        "width": "40.0000%",
+        "height": "11.7855%"
+      },
+      {
+        "value": "Sattler - Linen - 314 721",
+        "left": "7.0000%",
+        "top": "85.3917%",
+        "width": "40.0000%",
+        "height": "11.7855%"
+      },
+      {
+        "value": "Sattler - Nutmeg - 314 729",
+        "left": "53.0000%",
+        "top": "85.3917%",
+        "width": "40.0000%",
+        "height": "11.7855%"
+      }
+    ]
+  },
+  {
+    "image": "assets/fabric-pages/sattler-layout/sattler-page-03.jpg",
+    "items": [
+      {
+        "value": "Sattler - Burgundy - 314 763",
+        "left": "8.8000%",
+        "top": "1.9904%",
+        "width": "36.4000%",
+        "height": "12.1019%"
+      },
+      {
+        "value": "Sattler - Cave - 314 819",
+        "left": "54.8000%",
+        "top": "1.9904%",
+        "width": "36.4000%",
+        "height": "12.1019%"
+      },
+      {
+        "value": "Sattler - Asphalt - 314 840",
+        "left": "8.8000%",
+        "top": "15.1274%",
+        "width": "36.4000%",
+        "height": "12.1019%"
+      },
+      {
+        "value": "Sattler - Milky - 314 851",
+        "left": "54.8000%",
+        "top": "15.1274%",
+        "width": "36.4000%",
+        "height": "12.1019%"
+      },
+      {
+        "value": "Sattler - Earth - 314 917",
+        "left": "8.8000%",
+        "top": "28.2643%",
+        "width": "36.4000%",
+        "height": "12.1019%"
+      },
+      {
+        "value": "Sattler - Scree - 314 941",
+        "left": "54.8000%",
+        "top": "28.2643%",
+        "width": "36.4000%",
+        "height": "12.1019%"
+      },
+      {
+        "value": "Sattler - Ivory - 314 E67",
+        "left": "8.8000%",
+        "top": "41.4013%",
+        "width": "36.4000%",
+        "height": "12.1019%"
+      },
+      {
+        "value": "Sattler - Sunny - 315 052",
+        "left": "8.8000%",
+        "top": "58.5191%",
+        "width": "36.4000%",
+        "height": "12.1019%"
+      },
+      {
+        "value": "Sattler - Checker Board - 315 105",
+        "left": "54.8000%",
+        "top": "58.5191%",
+        "width": "36.4000%",
+        "height": "12.1019%"
+      },
+      {
+        "value": "Sattler - Dahlia - 315 167",
+        "left": "8.8000%",
+        "top": "71.6561%",
+        "width": "36.4000%",
+        "height": "12.1019%"
+      },
+      {
+        "value": "Sattler - Downtown Grey - 315 352",
+        "left": "54.8000%",
+        "top": "71.6561%",
+        "width": "36.4000%",
+        "height": "12.1019%"
+      }
+    ]
+  },
+  {
+    "image": "assets/fabric-pages/sattler-layout/sattler-page-04.jpg",
+    "items": [
+      {
+        "value": "Sattler - Forever Green - 315 420",
+        "left": "7.0000%",
+        "top": "3.1847%",
+        "width": "40.0000%",
+        "height": "13.2962%"
+      },
+      {
+        "value": "Sattler - Boathouse - 315 422",
+        "left": "53.0000%",
+        "top": "3.1847%",
+        "width": "40.0000%",
+        "height": "13.2962%"
+      },
+      {
+        "value": "Sattler - Rosewood - 315 550",
+        "left": "7.0000%",
+        "top": "18.7102%",
+        "width": "40.0000%",
+        "height": "13.2962%"
+      },
+      {
+        "value": "Sattler - Grove - 320 054",
+        "left": "7.0000%",
+        "top": "36.9427%",
+        "width": "40.0000%",
+        "height": "13.2962%"
+      },
+      {
+        "value": "Sattler - Magnolia - 320 099",
+        "left": "53.0000%",
+        "top": "36.9427%",
+        "width": "40.0000%",
+        "height": "13.2962%"
+      },
+      {
+        "value": "Sattler - Conch - 320 128",
+        "left": "7.0000%",
+        "top": "52.4682%",
+        "width": "40.0000%",
+        "height": "13.2962%"
+      },
+      {
+        "value": "Sattler - Saltwater - 320 234",
+        "left": "53.0000%",
+        "top": "52.4682%",
+        "width": "40.0000%",
+        "height": "13.2962%"
+      },
+      {
+        "value": "Sattler - Wooden - 320 253",
+        "left": "7.0000%",
+        "top": "67.9936%",
+        "width": "40.0000%",
+        "height": "13.2962%"
+      },
+      {
+        "value": "Sattler - Athena - 320 254",
+        "left": "53.0000%",
+        "top": "67.9936%",
+        "width": "40.0000%",
+        "height": "13.2962%"
+      },
+      {
+        "value": "Sattler - Municipal - 320 408",
+        "left": "7.0000%",
+        "top": "83.5191%",
+        "width": "40.0000%",
+        "height": "13.2962%"
+      },
+      {
+        "value": "Sattler - Walk - 320 441",
+        "left": "53.0000%",
+        "top": "83.5191%",
+        "width": "40.0000%",
+        "height": "13.2962%"
+      }
+    ]
+  },
+  {
+    "image": "assets/fabric-pages/sattler-layout/sattler-page-05.jpg",
+    "items": [
+      {
+        "value": "Sattler - Sequence - 320 493",
+        "left": "7.0000%",
+        "top": "2.8229%",
+        "width": "40.0000%",
+        "height": "11.7855%"
+      },
+      {
+        "value": "Sattler - Gravity - 320 530",
+        "left": "53.0000%",
+        "top": "2.8229%",
+        "width": "40.0000%",
+        "height": "11.7855%"
+      },
+      {
+        "value": "Sattler - Cruise - 320 555",
+        "left": "7.0000%",
+        "top": "16.5843%",
+        "width": "40.0000%",
+        "height": "11.7855%"
+      },
+      {
+        "value": "Sattler - Echo - 320 614",
+        "left": "53.0000%",
+        "top": "16.5843%",
+        "width": "40.0000%",
+        "height": "11.7855%"
+      },
+      {
+        "value": "Sattler - Ramble - 320 715",
+        "left": "7.0000%",
+        "top": "30.3458%",
+        "width": "40.0000%",
+        "height": "11.7855%"
+      },
+      {
+        "value": "Sattler - Civic - 320 716",
+        "left": "53.0000%",
+        "top": "30.3458%",
+        "width": "40.0000%",
+        "height": "11.7855%"
+      },
+      {
+        "value": "Sattler - Roof Tile - 320 758",
+        "left": "7.0000%",
+        "top": "44.1073%",
+        "width": "40.0000%",
+        "height": "11.7855%"
+      },
+      {
+        "value": "Sattler - Drift - 320 819",
+        "left": "53.0000%",
+        "top": "44.1073%",
+        "width": "40.0000%",
+        "height": "11.7855%"
+      },
+      {
+        "value": "Sattler - Continuum - 320 826",
+        "left": "7.0000%",
+        "top": "57.8687%",
+        "width": "40.0000%",
+        "height": "11.7855%"
+      },
+      {
+        "value": "Sattler - Edge - 320 886",
+        "left": "53.0000%",
+        "top": "57.8687%",
+        "width": "40.0000%",
+        "height": "11.7855%"
+      },
+      {
+        "value": "Sattler - Compass - 320 892",
+        "left": "7.0000%",
+        "top": "71.6302%",
+        "width": "40.0000%",
+        "height": "11.7855%"
+      },
+      {
+        "value": "Sattler - Steel - 320 923",
+        "left": "53.0000%",
+        "top": "71.6302%",
+        "width": "40.0000%",
+        "height": "11.7855%"
+      },
+      {
+        "value": "Sattler - Alloy - 320 954",
+        "left": "7.0000%",
+        "top": "85.3917%",
+        "width": "40.0000%",
+        "height": "11.7855%"
+      },
+      {
+        "value": "Sattler - Zephyr - 320 975",
+        "left": "53.0000%",
+        "top": "85.3917%",
+        "width": "40.0000%",
+        "height": "11.7855%"
+      }
+    ]
+  },
+  {
+    "image": "assets/fabric-pages/sattler-layout/sattler-page-06.jpg",
+    "items": [
+      {
+        "value": "Sattler - Hideaway - 320 976",
+        "left": "7.0000%",
+        "top": "3.5430%",
+        "width": "40.0000%",
+        "height": "14.7919%"
+      },
+      {
+        "value": "Sattler - Clarion - 320 990",
+        "left": "53.0000%",
+        "top": "3.5430%",
+        "width": "40.0000%",
+        "height": "14.7919%"
+      },
+      {
+        "value": "Sattler - Timber - 320 992",
+        "left": "7.0000%",
+        "top": "20.8149%",
+        "width": "40.0000%",
+        "height": "14.7919%"
+      },
+      {
+        "value": "Sattler - Hayfield - 364 203",
+        "left": "7.0000%",
+        "top": "41.0983%",
+        "width": "40.0000%",
+        "height": "14.7919%"
+      },
+      {
+        "value": "Sattler - Landskip - 364 598",
+        "left": "53.0000%",
+        "top": "41.0983%",
+        "width": "40.0000%",
+        "height": "14.7919%"
+      },
+      {
+        "value": "Sattler - Bliss - 30A 774",
+        "left": "7.0000%",
+        "top": "61.3818%",
+        "width": "40.0000%",
+        "height": "14.7919%"
+      },
+      {
+        "value": "Sattler - Blaze - 30A 778",
+        "left": "53.0000%",
+        "top": "61.3818%",
+        "width": "40.0000%",
+        "height": "14.7919%"
+      },
+      {
+        "value": "Sattler - Sand - 338 620",
+        "left": "7.0000%",
+        "top": "81.6652%",
+        "width": "40.0000%",
+        "height": "14.7919%"
+      },
+      {
+        "value": "Sattler - Gravel - 338 621",
+        "left": "53.0000%",
+        "top": "81.6652%",
+        "width": "40.0000%",
+        "height": "14.7919%"
+      }
+    ]
+  },
+  {
+    "image": "assets/fabric-pages/sattler-layout/sattler-page-07.jpg",
+    "items": [
+      {
+        "value": "Sattler - Sahara - 338 639",
+        "left": "7.0000%",
+        "top": "2.8229%",
+        "width": "40.0000%",
+        "height": "11.7855%"
+      },
+      {
+        "value": "Sattler - Arctic - 338 641",
+        "left": "53.0000%",
+        "top": "2.8229%",
+        "width": "40.0000%",
+        "height": "11.7855%"
+      },
+      {
+        "value": "Sattler - Fjord - 338 644",
+        "left": "7.0000%",
+        "top": "16.5843%",
+        "width": "40.0000%",
+        "height": "11.7855%"
+      },
+      {
+        "value": "Sattler - Ladakh - 338 655",
+        "left": "53.0000%",
+        "top": "16.5843%",
+        "width": "40.0000%",
+        "height": "11.7855%"
+      },
+      {
+        "value": "Sattler - Gobi - 338 658",
+        "left": "7.0000%",
+        "top": "30.3458%",
+        "width": "40.0000%",
+        "height": "11.7855%"
+      },
+      {
+        "value": "Sattler - Pacific - 338 659",
+        "left": "53.0000%",
+        "top": "30.3458%",
+        "width": "40.0000%",
+        "height": "11.7855%"
+      },
+      {
+        "value": "Sattler - Taiga - 338 660",
+        "left": "7.0000%",
+        "top": "44.1073%",
+        "width": "40.0000%",
+        "height": "11.7855%"
+      },
+      {
+        "value": "Sattler - Beach - 338 662",
+        "left": "53.0000%",
+        "top": "44.1073%",
+        "width": "40.0000%",
+        "height": "11.7855%"
+      },
+      {
+        "value": "Sattler - Vulcano - 338 665",
+        "left": "7.0000%",
+        "top": "57.8687%",
+        "width": "40.0000%",
+        "height": "11.7855%"
+      },
+      {
+        "value": "Sattler - Golden Crops - 338 667",
+        "left": "53.0000%",
+        "top": "57.8687%",
+        "width": "40.0000%",
+        "height": "11.7855%"
+      },
+      {
+        "value": "Sattler - Willow - 338 770",
+        "left": "7.0000%",
+        "top": "71.6302%",
+        "width": "40.0000%",
+        "height": "11.7855%"
+      },
+      {
+        "value": "Sattler - Juniper - 338 772",
+        "left": "53.0000%",
+        "top": "71.6302%",
+        "width": "40.0000%",
+        "height": "11.7855%"
+      },
+      {
+        "value": "Sattler - Poplar - 338 773",
+        "left": "7.0000%",
+        "top": "85.3917%",
+        "width": "40.0000%",
+        "height": "11.7855%"
+      }
+    ]
+  }
+];
+
+function buildSattlerPicker() {
+  const list = $('#colorOptionList');
+  if (!list) return;
+  list.classList.add('sattler-picker-mode');
+  list.innerHTML = '';
+  const sectionEl = document.createElement('section');
+  sectionEl.className = 'sattler-section';
+  const head = document.createElement('div');
+  head.className = 'sauleda-section-head';
+  head.textContent = 'Sattler';
+  sectionEl.appendChild(head);
+
+  const body = document.createElement('div');
+  body.className = 'sattler-page-stack';
+  SATTLER_PAGES.forEach((page) => {
+    const card = document.createElement('div');
+    card.className = 'sattler-page-card';
+    const overlay = document.createElement('div');
+    overlay.className = 'sauleda-page-overlay';
+    const img = document.createElement('img');
+    img.src = page.image;
+    img.alt = 'Sattler fabric page';
+    img.loading = 'lazy';
+    overlay.appendChild(img);
+    page.items.forEach((item) => {
+      overlay.appendChild(createSauledaHotspot(item.value, item.left, item.top, item.width, item.height));
+    });
+    card.appendChild(overlay);
+    body.appendChild(card);
+  });
+
+  sectionEl.appendChild(body);
+  list.appendChild(sectionEl);
 }
 
 function buildSauledaPicker() {
@@ -1769,22 +2457,47 @@ function buildSauledaPicker() {
 function renderColorCatalogTabs(kind) {
   const tabs = $('#colorCatalogTabs');
   if (!tabs) return;
-  tabs.hidden = kind !== 'color';
   tabs.innerHTML = '';
-  if (kind !== 'color') return;
-  colorCatalogs().forEach((catalog) => {
-    const button = document.createElement('button');
-    button.type = 'button';
-    button.className = 'color-catalog-tab';
-    button.textContent = translatedText(catalog.label);
-    button.setAttribute('aria-pressed', String(catalog.id === activeColorCatalogId));
-    button.addEventListener('click', () => {
-      activeColorCatalogId = catalog.id;
-      renderColorCatalogTabs('color');
-      buildPickerList('color');
+  if (kind === 'color') {
+    tabs.hidden = false;
+    colorCatalogs().forEach((catalog) => {
+      const button = document.createElement('button');
+      button.type = 'button';
+      button.className = 'color-catalog-tab';
+      button.textContent = translatedText(catalog.label);
+      button.setAttribute('aria-pressed', String(catalog.id === activeColorCatalogId));
+      button.addEventListener('click', () => {
+        activeColorCatalogId = catalog.id;
+        renderColorCatalogTabs('color');
+        buildPickerList('color');
+      });
+      tabs.appendChild(button);
     });
-    tabs.appendChild(button);
-  });
+    return;
+  }
+  if (isJanelaFabricMode(kind)) {
+    tabs.hidden = false;
+    [
+      { id: 'sauleda', label: 'Sauleda' },
+      { id: 'sattler', label: 'Sattler' },
+    ].forEach((catalog) => {
+      const button = document.createElement('button');
+      button.type = 'button';
+      button.className = 'color-catalog-tab';
+      button.textContent = catalog.label;
+      button.setAttribute('aria-pressed', String(catalog.id === activeFabricCatalogId));
+      button.addEventListener('click', () => {
+        activeFabricCatalogId = catalog.id;
+        const searchWrap = document.querySelector('.catalog-search-wrap');
+        if (searchWrap) searchWrap.hidden = true;
+        renderColorCatalogTabs('fabric');
+        buildPickerList('fabric');
+      });
+      tabs.appendChild(button);
+    });
+    return;
+  }
+  tabs.hidden = true;
 }
 
 function optionSearchText(option) {
@@ -1797,10 +2510,14 @@ function optionSearchText(option) {
 function buildPickerList(kind) {
   const list = $('#colorOptionList');
   if (!list) return;
-  list.classList.remove('sauleda-picker-mode');
+  list.classList.remove('sauleda-picker-mode', 'sattler-picker-mode');
   list.innerHTML = '';
-  if (isSauledaFabricMode(kind)) {
+  if (isSauledaCatalogActive(kind)) {
     buildSauledaPicker();
+    return;
+  }
+  if (isSattlerFabricMode(kind)) {
+    buildSattlerPicker();
     return;
   }
   const query = String(activePickerSearch || '').trim().toLowerCase();
@@ -1878,7 +2595,7 @@ function openPicker(input, kind = 'color') {
     searchInput.value = '';
     searchInput.placeholder = translatedText('Search code or name');
   }
-  if (searchWrap) searchWrap.hidden = isSauledaFabricMode(kind);
+  if (searchWrap) searchWrap.hidden = isJanelaFabricMode(kind);
   renderColorCatalogTabs(kind);
   buildPickerList(kind);
   modal.hidden = false;

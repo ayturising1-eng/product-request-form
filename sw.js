@@ -1,4 +1,4 @@
-const CACHE = 'product-request-form-c55-janela-sauleda-scroll';
+const CACHE = 'product-request-form-c58-sattler-page-layout';
 const ASSETS = [
   './',
   './index.html',
