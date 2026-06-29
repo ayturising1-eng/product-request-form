@@ -1,4 +1,4 @@
-const CACHE = 'product-request-form-c52-janela-print-spheres';
+const CACHE = 'product-request-form-c53-sauleda-fabric';
 const ASSETS = [
   './',
   './index.html',
@@ -11,6 +11,7 @@ const ASSETS = [
   './assets-4.js',
   './color-catalogs.js',
   './pergo-rise-fabrics.js',
+  './sauleda-fabrics.js',
   './products.js',
   './manifest.webmanifest'
 ];

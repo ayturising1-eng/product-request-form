@@ -1162,3 +1162,114 @@ input:focus, textarea:focus, select:focus {
 /* C47 order first layout */
 #productSection #formArea { margin-top: 18px; }
 #productSection .notes-input { margin-top: 18px; }
+
+
+/* C53 Sauleda fabric picker: mobile-friendly brand / collection sections */
+.sauleda-fabric-list {
+  display: block;
+  min-height: 520px;
+}
+.fabric-brand-heading {
+  margin: 0 0 12px;
+  padding: 12px 14px;
+  border-radius: 14px;
+  background: #111827;
+  color: #fff;
+  font-size: 16px;
+  font-weight: 950;
+  letter-spacing: .02em;
+}
+.fabric-collection-heading {
+  margin: 18px 0 10px;
+  padding: 9px 11px;
+  border-left: 5px solid #2563eb;
+  border-radius: 10px;
+  background: #eef4ff;
+  color: #0f172a;
+  font-size: 14px;
+  font-weight: 950;
+}
+.fabric-option-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+  margin-bottom: 16px;
+}
+.fabric-option-grid .color-option-card {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-height: auto;
+  padding: 8px;
+}
+.fabric-option-grid .color-option-swatch {
+  width: 100%;
+  height: 104px;
+  min-height: 104px;
+  background: #f8fafc;
+}
+.fabric-option-grid .color-option-swatch img {
+  min-height: 0;
+  height: 100%;
+  object-fit: contain;
+  background: #f8fafc;
+}
+.fabric-option-grid .color-option-text {
+  min-height: 50px;
+  justify-content: flex-start;
+}
+.fabric-option-grid .color-option-text strong {
+  font-size: 12px;
+}
+.fabric-option-grid .color-option-text span {
+  font-size: 12px;
+  font-weight: 900;
+}
+.fabric-option-grid .color-option-text small {
+  font-size: 11px;
+}
+
+@media (max-width: 640px) {
+  .fabric-brand-heading {
+    position: sticky;
+    top: 66px;
+    z-index: 2;
+    margin-bottom: 10px;
+    font-size: 15px;
+  }
+  .fabric-collection-heading {
+    margin: 14px 0 8px;
+    font-size: 13px;
+  }
+  .fabric-option-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
+  }
+  .fabric-option-grid .color-option-card {
+    padding: 7px;
+    border-radius: 12px;
+  }
+  .fabric-option-grid .color-option-swatch {
+    height: 82px;
+    min-height: 82px;
+    border-radius: 9px;
+  }
+  .fabric-option-grid .color-option-text {
+    min-height: 52px;
+    gap: 2px;
+  }
+  .fabric-option-grid .color-option-text strong,
+  .fabric-option-grid .color-option-text span {
+    font-size: 11px;
+  }
+  .fabric-option-grid .color-option-text small {
+    font-size: 10px;
+  }
+}
+
+@media (max-width: 360px) {
+  .fabric-option-grid .color-option-swatch {
+    height: 74px;
+    min-height: 74px;
+  }
+}
