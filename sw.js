@@ -1,4 +1,4 @@
-const CACHE = 'product-request-form-c53-sauleda-fabric';
+const CACHE = 'product-request-form-c55-janela-sauleda-scroll';
 const ASSETS = [
   './',
   './index.html',
@@ -11,7 +11,6 @@ const ASSETS = [
   './assets-4.js',
   './color-catalogs.js',
   './pergo-rise-fabrics.js',
-  './sauleda-fabrics.js',
   './products.js',
   './manifest.webmanifest'
 ];

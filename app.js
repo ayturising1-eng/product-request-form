@@ -1,4 +1,4 @@
-window.APP_VERSION = 'C53-SAULEDA-FABRIC';
+window.APP_VERSION = 'C55-JANELA-SAULEDA-SCROLL';
 const DATA = window.PRODUCT_DATA;
 const $ = (selector) => document.querySelector(selector);
 const $$ = (selector) => Array.from(document.querySelectorAll(selector));
@@ -13,7 +13,7 @@ const state = {
 };
 
 const STORAGE_PROFILE = 'prf_profile_v2';
-const STORAGE_ORDER = 'prf_order_c53_sauleda_fabric';
+const STORAGE_ORDER = 'prf_order_c55_janela_sauleda_scroll';
 const STORAGE_LANGUAGE = 'prf_language_v1';
 
 const COLOR_FIELD_LABELS = new Set([
@@ -1571,27 +1571,6 @@ Object.assign(I18N.tr, {
   'Silver Gilding': 'Gümüş Yaldız'
 });
 
-Object.assign(I18N.en, {
-  'Sauleda Fabric Selection': 'Sauleda Fabric Selection',
-  'Sauleda Fabric Selection Help': 'Select a fabric. The selected value is written as Collection - Name - Code.'
-});
-Object.assign(I18N.tr, {
-  'Sauleda Fabric Selection': 'Sauleda Kumaş Seçimi',
-  'Sauleda Fabric Selection Help': 'Kumaşı seçin. Seçilen değer Koleksiyon - İsim - Kod olarak yazılır.'
-});
-Object.assign(I18N.de, {
-  'Sauleda Fabric Selection': 'Sauleda Stoffauswahl',
-  'Sauleda Fabric Selection Help': 'Wählen Sie einen Stoff. Der Wert wird als Kollektion - Name - Code geschrieben.'
-});
-Object.assign(I18N.fr, {
-  'Sauleda Fabric Selection': 'Sélection de tissu Sauleda',
-  'Sauleda Fabric Selection Help': 'Sélectionnez un tissu. La valeur est écrite comme Collection - Nom - Code.'
-});
-Object.assign(I18N.he, {
-  'Sauleda Fabric Selection': 'בחירת בד Sauleda',
-  'Sauleda Fabric Selection Help': 'בחר בד. הערך ייכתב כאוסף - שם - קוד.'
-});
-
 let activePickerInput = null;
 let activePickerKind = 'color';
 let activeColorCatalogId = 'rising-standart';
@@ -1638,10 +1617,6 @@ function setRadioValueAndNotify(fieldId, value) {
 
 function currentFabricOptions() {
   const pergoRiseOptions = window.PERGO_RISE_FABRIC_OPTIONS || [];
-  const sauledaOptions = window.SAULEDA_FABRIC_OPTIONS || [];
-  if (state.selectedProductId === 'janela_cassette_awning' && sauledaOptions.length) {
-    return sauledaOptions;
-  }
   if (state.selectedProductId === 'pergo_rise' && pergoRiseOptions.length) {
     return pergoRiseOptions;
   }
@@ -1652,6 +1627,143 @@ function pickerOptions(kind) {
   if (kind === 'fabric') return currentFabricOptions();
   if (kind === 'textColor') return window.JANELA_PRINT_COLOR_OPTIONS || [];
   return activeColorCatalog()?.options || [];
+}
+
+const SAULEDA_PAGE_ASSET = (name) => `assets/fabric-pages/sauleda/${name}`;
+const SAULEDA_SECTIONS = [
+  {
+    key: 'plains',
+    title: 'Plains',
+    layout: 'grid',
+    panels: [
+      { image: SAULEDA_PAGE_ASSET('plains1_left.png'), rows: 4, items: [ ['Plains','Blanco','2042'],['Plains','Natural','2926'],['Plains','Vainilla','2687'],['Plains','Seda','2596'],['Plains','Avena','2296'],['Plains','Siroco','2226'],['Plains','Integral','2838'],['Plains','Coco','3601'] ] },
+      { image: SAULEDA_PAGE_ASSET('plains1_right.png'), rows: 4, items: [ ['Plains','Marfil','2143'],['Plains','Marmol','1070'],['Plains','Albastro','8157'],['Plains','Beige','2038'],['Plains','Ocre','2180'],['Plains','Teja','2065'],['Plains','Marron','2146'],['Plains','Cafe','2316'] ] },
+      { image: SAULEDA_PAGE_ASSET('plains2_left.png'), rows: 4, items: [ ['Plains','Amarillo','2013'],['Plains','Naranja','2050'],['Plains','Rioja','2210'],['Plains','Granate','2101'],['Plains','Turkis','2129'],['Plains','Celeste','2066'],['Plains','Marino','2145'],['Plains','Admiral','2051'] ] },
+      { image: SAULEDA_PAGE_ASSET('plains2_right.png'), rows: 4, items: [ ['Plains','Rojo','2211'],['Plains','Logo Red','1066'],['Plains','Pink','2835'],['Plains','Malva','2119'],['Plains','Indigo','2828'],['Plains','Azul Real','2235'],['Plains','Verde Claro','2246'],['Plains','Eucaliptus','3000'] ] },
+      { image: SAULEDA_PAGE_ASSET('plains3_left.png'), rows: 3, items: [ ['Plains','Verde','2242'],['Plains','Musgo','2247'],['Plains','Silver','2821'],['Plains','Perla','2979'],['Plains','Mineral','2831'],['Plains','Antracita','8488'] ] },
+      { image: SAULEDA_PAGE_ASSET('plains3_right.png'), rows: 3, items: [ ['Plains','Tirol','2928'],['Plains','Botella','2245'],['Plains','Piedra','3605'],['Plains','Gris','2102'],['Plains','Grafito','3602'],['Plains','Negro','2170'] ] }
+    ]
+  },
+  {
+    key: 'classics',
+    title: 'The Classics',
+    layout: 'rows',
+    panels: [
+      { image: SAULEDA_PAGE_ASSET('classics1.png'), rows: 5, items: [ ['The Classics','Amarillo N','2015'], ['The Classics','Naranja N','2052'], ['The Classics','Rojo N','2212'], ['The Classics','Azul Real N','2359'], ['The Classics','Botella N','2680'] ] },
+      { image: SAULEDA_PAGE_ASSET('classics2.png'), rows: 5, items: [ ['The Classics','Ocre X','2641'], ['The Classics','Integral X','2681'], ['The Classics','Piedra X','2682'], ['The Classics','Gris N','2103'], ['The Classics','Negro N','2171'] ] }
+    ]
+  },
+  {
+    key: 'fantasy',
+    title: 'Fantasy',
+    layout: 'rows',
+    panels: [
+      { image: SAULEDA_PAGE_ASSET('fantasy1.png'), rows: 4, items: [ ['Fantasy','Vesubio','2636'], ['Fantasy','Anapurna','2640'], ['Fantasy','St. Andrews','2924'], ['Fantasy','Manchester','2823'] ] },
+      { image: SAULEDA_PAGE_ASSET('fantasy2.png'), rows: 4, items: [ ['Fantasy','Pirineos','2790'], ['Fantasy','Oslo','2818'], ['Fantasy','Marte','2121'], ['Fantasy','Jamaica','2701'] ] },
+      { image: SAULEDA_PAGE_ASSET('fantasy3.png'), rows: 4, items: [ ['Fantasy','Balmoral','2921'], ['Fantasy','Miami','2702'], ['Fantasy','Estocolmo','2816'], ['Fantasy','Pluton','2179'] ] },
+      { image: SAULEDA_PAGE_ASSET('fantasy4.png'), rows: 4, items: [ ['Fantasy','Windsor','2929'], ['Fantasy','Aries','2576'], ['Fantasy','Jalisco','1484'], ['Fantasy','Urban','3608'] ] }
+    ]
+  },
+  {
+    key: 'marine',
+    title: 'Marine Plus',
+    layout: 'grid',
+    panels: [
+      { image: SAULEDA_PAGE_ASSET('marine1_left.png'), rows: 4, items: [ ['Marine Plus','Blanco','2405'], ['Marine Plus','Marfil','2411'], ['Marine Plus','Avena','2451'], ['Marine Plus','Toast','1495'], ['Marine Plus','Vison','2452'], ['Marine Plus','Amarillo','8634'], ['Marine Plus','Indigo','2746'], ['Marine Plus','Arctic','20507'] ] },
+      { image: SAULEDA_PAGE_ASSET('marine1_right.png'), rows: 4, items: [ ['Marine Plus','Sand','20501'], ['Marine Plus','Integral','2443'], ['Marine Plus','Pergamino','2049B'], ['Marine Plus','Beige','2403'], ['Marine Plus','Rioja','2729'], ['Marine Plus','Granate','2407'], ['Marine Plus','Electric Blue','20664'], ['Marine Plus','Azul Real','2423'] ] },
+      { image: SAULEDA_PAGE_ASSET('marine2_left.png'), rows: 4, items: [ ['Marine Plus','Azul','2401'], ['Marine Plus','Marino','2413'], ['Marine Plus','Quartz','1613'], ['Marine Plus','Silver','2409'], ['Marine Plus','Piedra','3599'], ['Marine Plus','Gris','2421'], ['Marine Plus','Grafito','2466'], ['Marine Plus','Antracita','2461'] ] },
+      { image: SAULEDA_PAGE_ASSET('marine2_right.png'), rows: 4, items: [ ['Marine Plus','Armada','2448'], ['Marine Plus','Botella','2488'], ['Marine Plus','Steel','20492'], ['Marine Plus','Perla','2417'], ['Marine Plus','Mineral','2750'], ['Marine Plus','Basalto','20108'], ['Marine Plus','Coal','8660'], ['Marine Plus','Negro','2881'] ] }
+    ]
+  }
+];
+
+function isSauledaFabricMode(kind = activePickerKind) {
+  return kind === 'fabric' && state.selectedProductId === 'janela_cassette_awning';
+}
+
+function sauledaValue(parts) {
+  return parts.filter(Boolean).join(' - ');
+}
+
+function createSauledaHotspot(value, left, top, width, height) {
+  const btn = document.createElement('button');
+  btn.type = 'button';
+  btn.className = 'sauleda-hotspot';
+  btn.style.left = left;
+  btn.style.top = top;
+  btn.style.width = width;
+  btn.style.height = height;
+  btn.setAttribute('aria-label', value);
+  btn.title = value;
+  if ((activePickerInput?.value || '').trim() === value) btn.classList.add('selected-hotspot');
+  btn.addEventListener('click', () => selectPickerOption(value));
+  return btn;
+}
+
+function buildSauledaPicker() {
+  const list = $('#colorOptionList');
+  if (!list) return;
+  list.classList.add('sauleda-picker-mode');
+  list.innerHTML = '';
+  SAULEDA_SECTIONS.forEach((section) => {
+    const sectionEl = document.createElement('section');
+    sectionEl.className = 'sauleda-section';
+    const head = document.createElement('div');
+    head.className = 'sauleda-section-head';
+    head.textContent = section.title;
+    sectionEl.appendChild(head);
+
+    const body = document.createElement('div');
+    body.className = section.layout === 'grid' ? 'sauleda-section-grid' : 'sauleda-section-stack';
+
+    section.panels.forEach((panel) => {
+      const card = document.createElement('div');
+      card.className = 'sauleda-page-card';
+      const overlay = document.createElement('div');
+      overlay.className = 'sauleda-page-overlay';
+      const img = document.createElement('img');
+      img.src = panel.image;
+      img.alt = `${section.title} fabric page`;
+      img.loading = 'lazy';
+      overlay.appendChild(img);
+
+      if (section.layout === 'grid') {
+        const rowGap = panel.rows === 3 ? 0.055 : 0.04;
+        const topPad = panel.rows === 3 ? 0.02 : 0.018;
+        const colGap = 0.06;
+        const colWidth = (1 - colGap) / 2;
+        const rowHeight = (1 - topPad * 2 - rowGap * (panel.rows - 1)) / panel.rows;
+        panel.items.forEach((item, index) => {
+          const r = Math.floor(index / 2);
+          const c = index % 2;
+          const value = sauledaValue(item);
+          const left = `${c * (colWidth + colGap / 2) * 100}%`;
+          const top = `${(topPad + r * (rowHeight + rowGap)) * 100}%`;
+          const width = `${(colWidth - colGap / 2) * 100}%`;
+          const height = `${rowHeight * 100}%`;
+          overlay.appendChild(createSauledaHotspot(value, left, top, width, height));
+        });
+      } else {
+        const topPad = 0.015;
+        const rowGap = 0.022;
+        const rowHeight = (1 - topPad * 2 - rowGap * (panel.rows - 1)) / panel.rows;
+        panel.items.forEach((item, index) => {
+          const value = sauledaValue(item);
+          const left = '2%';
+          const top = `${(topPad + index * (rowHeight + rowGap)) * 100}%`;
+          const width = '96%';
+          const height = `${rowHeight * 100}%`;
+          overlay.appendChild(createSauledaHotspot(value, left, top, width, height));
+        });
+      }
+
+      card.appendChild(overlay);
+      body.appendChild(card);
+    });
+
+    sectionEl.appendChild(body);
+    list.appendChild(sectionEl);
+  });
 }
 
 function renderColorCatalogTabs(kind) {
@@ -1676,64 +1788,59 @@ function renderColorCatalogTabs(kind) {
 }
 
 function optionSearchText(option) {
-  return [option.value, option.code, option.name, option.detail, option.brand, option.collection]
+  return [option.value, option.code, option.name, option.detail]
     .filter(Boolean)
     .map((part) => String(translatedText(part)).toLowerCase())
     .join(' ');
 }
 
-function collectionSlug(value) {
-  return String(value || '')
-    .toLowerCase()
-    .replace(/[^a-z0-9]+/g, '-')
-    .replace(/^-+|-+$/g, '');
-}
+function buildPickerList(kind) {
+  const list = $('#colorOptionList');
+  if (!list) return;
+  list.classList.remove('sauleda-picker-mode');
+  list.innerHTML = '';
+  if (isSauledaFabricMode(kind)) {
+    buildSauledaPicker();
+    return;
+  }
+  const query = String(activePickerSearch || '').trim().toLowerCase();
+  const options = pickerOptions(kind).filter((option) => {
+    if (!query) return true;
+    return optionSearchText(option).includes(query);
+  });
 
-function createPickerOptionCard(option, kind) {
-  const button = document.createElement('button');
-  button.type = 'button';
-  button.className = 'color-option-card';
-  button.setAttribute('aria-label', option.value);
-
-  const isGroupedFabric = kind === 'fabric' && (option.brand || option.collection);
-  if (isGroupedFabric) {
-    const slug = collectionSlug(option.collection);
-    button.classList.add('fabric-picker-card', `fabric-picker-card--${slug}`);
-    button.dataset.collection = slug;
+  if (!options.length) {
+    const empty = document.createElement('div');
+    empty.className = 'catalog-empty-state';
+    empty.textContent = translatedText('No results found');
+    list.appendChild(empty);
+    return;
   }
 
-  const swatch = document.createElement('span');
-  swatch.className = `color-option-swatch ${kind === 'fabric' ? 'fabric-swatch' : ''}`;
-  if (option.image) {
-    const img = document.createElement('img');
-    img.src = window.PRODUCT_IMAGE_ASSETS?.[option.image] || option.image;
-    img.alt = option.value;
-    img.loading = 'lazy';
-    swatch.appendChild(img);
-  } else {
-    swatch.style.background = option.swatch;
-  }
+  options.forEach((option) => {
+    const button = document.createElement('button');
+    button.type = 'button';
+    button.className = 'color-option-card';
+    button.setAttribute('aria-label', option.value);
 
-  const textWrap = document.createElement('span');
-  textWrap.className = 'color-option-text';
-
-  if (isGroupedFabric) {
-    const name = document.createElement('strong');
-    name.textContent = translatedText(option.name || option.code || option.value);
-    textWrap.appendChild(name);
-
-    const meta = document.createElement('small');
-    meta.textContent = `${translatedText(option.collection || 'Fabric')} - ${option.code}`;
-    textWrap.appendChild(meta);
-
-    if (option.detail) {
-      const detail = document.createElement('small');
-      detail.textContent = translatedText(option.detail);
-      textWrap.appendChild(detail);
+    const swatch = document.createElement('span');
+    swatch.className = `color-option-swatch ${kind === 'fabric' ? 'fabric-swatch' : ''}`;
+    if (option.image) {
+      const img = document.createElement('img');
+      img.src = window.PRODUCT_IMAGE_ASSETS?.[option.image] || option.image;
+      img.alt = option.value;
+      img.loading = 'lazy';
+      swatch.appendChild(img);
+    } else {
+      swatch.style.background = option.swatch;
     }
-  } else {
+
+    const textWrap = document.createElement('span');
+    textWrap.className = 'color-option-text';
+
     const code = document.createElement('strong');
     code.textContent = option.code;
+
     textWrap.appendChild(code);
     if (option.name) {
       const name = document.createElement('span');
@@ -1745,80 +1852,10 @@ function createPickerOptionCard(option, kind) {
       detail.textContent = translatedText(option.detail);
       textWrap.appendChild(detail);
     }
-  }
-
-  button.appendChild(swatch);
-  button.appendChild(textWrap);
-  button.addEventListener('click', () => selectPickerOption(option.value));
-  return button;
-}
-
-function appendGroupedFabricOptions(list, options) {
-  const preferredCollections = ['Plains', 'The Classics', 'Fantasy', 'Marine Plus'];
-  const collectionMap = new Map();
-
-  options.forEach((option) => {
-    const collection = option.collection || 'Fabric';
-    if (state.selectedProductId === 'janela_cassette_awning' && option.brand === 'Sauleda' && !preferredCollections.includes(collection)) {
-      return;
-    }
-    if (!collectionMap.has(collection)) collectionMap.set(collection, []);
-    collectionMap.get(collection).push(option);
-  });
-
-  const orderedCollections = [
-    ...preferredCollections.filter((name) => collectionMap.has(name)),
-    ...Array.from(collectionMap.keys()).filter((name) => !preferredCollections.includes(name))
-  ];
-
-  orderedCollections.forEach((collection) => {
-    const items = collectionMap.get(collection) || [];
-    if (!items.length) return;
-
-    const section = document.createElement('section');
-    const slug = collectionSlug(collection);
-    section.className = `fabric-collection-section fabric-collection-section--${slug}`;
-
-    const collectionHeading = document.createElement('h4');
-    collectionHeading.className = 'fabric-collection-heading';
-    collectionHeading.textContent = collection;
-    section.appendChild(collectionHeading);
-
-    const grid = document.createElement('div');
-    grid.className = `fabric-option-grid fabric-option-grid--${slug}`;
-    items.forEach((option) => grid.appendChild(createPickerOptionCard(option, 'fabric')));
-    section.appendChild(grid);
-    list.appendChild(section);
-  });
-}
-
-function buildPickerList(kind) {
-  const list = $('#colorOptionList');
-  if (!list) return;
-  list.innerHTML = '';
-  const query = String(activePickerSearch || '').trim().toLowerCase();
-  const options = pickerOptions(kind).filter((option) => {
-    if (!query) return true;
-    return optionSearchText(option).includes(query);
-  });
-  const groupedFabric = kind === 'fabric' && options.some((option) => option.brand || option.collection);
-  list.classList.toggle('sauleda-fabric-list', groupedFabric);
-
-  if (!options.length) {
-    const empty = document.createElement('div');
-    empty.className = 'catalog-empty-state';
-    empty.textContent = translatedText('No results found');
-    list.appendChild(empty);
-    return;
-  }
-
-  if (groupedFabric) {
-    appendGroupedFabricOptions(list, options);
-    return;
-  }
-
-  options.forEach((option) => {
-    list.appendChild(createPickerOptionCard(option, kind));
+    button.appendChild(swatch);
+    button.appendChild(textWrap);
+    button.addEventListener('click', () => selectPickerOption(option.value));
+    list.appendChild(button);
   });
 }
 
@@ -1830,17 +1867,18 @@ function openPicker(input, kind = 'color') {
   if (kind === 'color') {
     activeColorCatalogId = colorCatalogs()[0]?.id || 'rising-standart';
   }
-  const isJanelaFabricPicker = kind === 'fabric' && state.selectedProductId === 'janela_cassette_awning';
-  const titleKey = isJanelaFabricPicker ? 'Sauleda Fabric Selection' : (kind === 'fabric' ? 'Fabric Selection' : (kind === 'textColor' ? 'Print Color Selection' : 'Color Chart'));
-  const helpKey = isJanelaFabricPicker ? 'Sauleda Fabric Selection Help' : (kind === 'fabric' ? 'Fabric Selection Help' : (kind === 'textColor' ? 'Print Color Selection Help' : 'Color Chart Help'));
+  const titleKey = kind === 'fabric' ? 'Fabric Selection' : (kind === 'textColor' ? 'Print Color Selection' : 'Color Chart');
+  const helpKey = kind === 'fabric' ? 'Fabric Selection Help' : (kind === 'textColor' ? 'Print Color Selection Help' : 'Color Chart Help');
   $('#colorChartTitle').textContent = translatedText(titleKey);
   $('#colorChartHelp').textContent = translatedText(helpKey);
   const searchInput = $('#catalogSearchInput');
+  const searchWrap = document.querySelector('.catalog-search-wrap');
   activePickerSearch = '';
   if (searchInput) {
     searchInput.value = '';
     searchInput.placeholder = translatedText('Search code or name');
   }
+  if (searchWrap) searchWrap.hidden = isSauledaFabricMode(kind);
   renderColorCatalogTabs(kind);
   buildPickerList(kind);
   modal.hidden = false;
@@ -1853,6 +1891,8 @@ function closeColorChart() {
   if (!modal) return;
   modal.hidden = true;
   document.body.classList.remove('modal-open');
+  const searchWrap = document.querySelector('.catalog-search-wrap');
+  if (searchWrap) searchWrap.hidden = false;
   activePickerInput = null;
   activePickerKind = 'color';
   activePickerSearch = '';

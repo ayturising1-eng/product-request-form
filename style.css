@@ -1164,167 +1164,74 @@ input:focus, textarea:focus, select:focus {
 #productSection .notes-input { margin-top: 18px; }
 
 
-/* C54 Sauleda fabric picker: single scroll page with grouped mobile sections */
-.sauleda-fabric-list {
+.color-option-list.sauleda-picker-mode {
   display: block;
-  min-height: 520px;
-}
-.fabric-collection-section {
-  margin-bottom: 18px;
-}
-.fabric-collection-heading {
-  position: sticky;
-  top: 66px;
-  z-index: 2;
-  margin: 0 0 10px;
-  padding: 10px 12px;
-  border-left: 5px solid #2563eb;
-  border-radius: 12px;
-  background: #eef4ff;
-  color: #0f172a;
-  font-size: 14px;
-  font-weight: 950;
-}
-.fabric-option-grid {
-  display: grid;
-  gap: 10px;
-}
-.fabric-option-grid--plains {
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-}
-.fabric-option-grid--the-classics,
-.fabric-option-grid--fantasy,
-.fabric-option-grid--marine-plus {
-  grid-template-columns: 1fr;
-}
-.fabric-picker-card {
   min-height: auto;
 }
-.fabric-option-grid--plains .fabric-picker-card {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  padding: 8px;
+.sauleda-section {
+  margin: 0 0 18px;
 }
-.fabric-option-grid--plains .color-option-swatch {
-  width: 100%;
-  height: 110px;
-  min-height: 110px;
-  background: #f8fafc;
+.sauleda-section-head {
+  position: sticky;
+  top: 0;
+  z-index: 4;
+  margin: 0 0 10px;
+  padding: 10px 14px;
+  border: 1px solid #d1d5db;
+  border-radius: 14px;
+  background: rgba(243, 244, 246, .96);
+  backdrop-filter: blur(4px);
+  box-shadow: 0 8px 16px rgba(17,24,39,.08);
+  font-size: 18px;
+  font-weight: 900;
+  color: #111827;
 }
-.fabric-option-grid--plains .color-option-swatch img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  background: #f8fafc;
-}
-.fabric-option-grid--plains .color-option-text {
-  min-height: 54px;
-  justify-content: flex-start;
-  gap: 2px;
-}
-.fabric-option-grid--plains .color-option-text strong {
-  font-size: 13px;
-}
-.fabric-option-grid--plains .color-option-text small {
-  font-size: 11px;
-}
-.fabric-option-grid--the-classics .fabric-picker-card,
-.fabric-option-grid--fantasy .fabric-picker-card,
-.fabric-option-grid--marine-plus .fabric-picker-card {
+.sauleda-section-grid,
+.sauleda-section-stack {
   display: grid;
-  grid-template-columns: minmax(84px, 112px) 1fr;
-  align-items: center;
-  gap: 10px;
-  padding: 8px;
+  gap: 12px;
 }
-.fabric-option-grid--the-classics .color-option-swatch,
-.fabric-option-grid--fantasy .color-option-swatch,
-.fabric-option-grid--marine-plus .color-option-swatch {
+.sauleda-page-card {
   width: 100%;
-  height: 82px;
-  min-height: 82px;
-  background: #f8fafc;
+  max-width: 940px;
+  margin: 0 auto;
+  padding: 10px;
+  border: 1px solid #d1d5db;
+  border-radius: 16px;
+  background: #fff;
+  box-shadow: 0 8px 18px rgba(17,24,39,.04);
 }
-.fabric-option-grid--the-classics .color-option-swatch img,
-.fabric-option-grid--fantasy .color-option-swatch img,
-.fabric-option-grid--marine-plus .color-option-swatch img {
+.sauleda-page-overlay {
+  position: relative;
+}
+.sauleda-page-overlay img {
+  display: block;
   width: 100%;
-  height: 100%;
-  object-fit: contain;
-  background: #f8fafc;
+  height: auto;
+  border-radius: 12px;
 }
-.fabric-option-grid--the-classics .color-option-text,
-.fabric-option-grid--fantasy .color-option-text,
-.fabric-option-grid--marine-plus .color-option-text {
-  min-height: 0;
-  justify-content: center;
-  gap: 3px;
+.sauleda-hotspot {
+  position: absolute;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  touch-action: manipulation;
 }
-.fabric-option-grid--the-classics .color-option-text strong,
-.fabric-option-grid--fantasy .color-option-text strong,
-.fabric-option-grid--marine-plus .color-option-text strong {
-  font-size: 14px;
+.sauleda-hotspot:hover,
+.sauleda-hotspot:focus-visible,
+.sauleda-hotspot.selected-hotspot {
+  outline: 3px solid rgba(37,99,235,.35);
+  outline-offset: -2px;
+  border-radius: 10px;
+  background: rgba(37,99,235,.08);
 }
-.fabric-option-grid--the-classics .color-option-text small,
-.fabric-option-grid--fantasy .color-option-text small,
-.fabric-option-grid--marine-plus .color-option-text small {
-  font-size: 11px;
-}
-
-@media (max-width: 860px) {
-  .fabric-option-grid--plains {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-  }
-}
-
 @media (max-width: 640px) {
-  .fabric-collection-heading {
-    top: 58px;
-    font-size: 13px;
+  .sauleda-section-head {
+    font-size: 16px;
+    padding: 9px 12px;
   }
-  .fabric-option-grid--plains {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 8px;
-  }
-  .fabric-option-grid--plains .fabric-picker-card {
-    padding: 7px;
-    border-radius: 12px;
-  }
-  .fabric-option-grid--plains .color-option-swatch {
-    height: 88px;
-    min-height: 88px;
-    border-radius: 9px;
-  }
-  .fabric-option-grid--plains .color-option-text strong {
-    font-size: 12px;
-  }
-  .fabric-option-grid--plains .color-option-text small {
-    font-size: 10px;
-  }
-  .fabric-option-grid--the-classics .fabric-picker-card,
-  .fabric-option-grid--fantasy .fabric-picker-card,
-  .fabric-option-grid--marine-plus .fabric-picker-card {
-    grid-template-columns: 1fr;
-    gap: 8px;
-  }
-  .fabric-option-grid--the-classics .color-option-swatch,
-  .fabric-option-grid--fantasy .color-option-swatch,
-  .fabric-option-grid--marine-plus .color-option-swatch {
-    height: auto;
-    min-height: 0;
-    aspect-ratio: 2.3 / 1;
-  }
-  .fabric-option-grid--the-classics .color-option-text strong,
-  .fabric-option-grid--fantasy .color-option-text strong,
-  .fabric-option-grid--marine-plus .color-option-text strong {
-    font-size: 13px;
-  }
-}
-
-@media (max-width: 360px) {
-  .fabric-option-grid--plains .color-option-swatch {
-    height: 78px;
-    min-height: 78px;
+  .sauleda-page-card {
+    padding: 8px;
+    border-radius: 14px;
   }
 }
