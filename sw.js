@@ -1,4 +1,4 @@
-const CACHE = 'product-request-form-c72-pars-awning-rules';
+const CACHE = 'product-request-form-c73-moonlight-pars-luxe';
 const ASSETS = [
   './',
   './index.html',

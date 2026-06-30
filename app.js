@@ -1,4 +1,4 @@
-window.APP_VERSION = 'C72-PARS-AWNING-RULES';
+window.APP_VERSION = 'C73-MOONLIGHT-PARS-LUXE';
 const DATA = window.PRODUCT_DATA;
 const $ = (selector) => document.querySelector(selector);
 const $$ = (selector) => Array.from(document.querySelectorAll(selector));
@@ -13,7 +13,7 @@ const state = {
 };
 
 const STORAGE_PROFILE = 'prf_profile_v2';
-const STORAGE_ORDER = 'prf_order_c72_pars_awning_rules';
+const STORAGE_ORDER = 'prf_order_c73_moonlight_pars_luxe';
 const STORAGE_LANGUAGE = 'prf_language_v1';
 
 const COLOR_FIELD_LABELS = new Set([
@@ -1517,6 +1517,12 @@ Object.assign(I18N.en, {
   'Roof Finish': 'Roof Finish',
   'Additional Options': 'Additional Options',
   'Motor & Reducer': 'Motor & Reducer',
+  'Dimmer For Light': 'Dimmer For Light',
+  'Crank Handle Length': 'Crank Handle Length',
+  'Gearbox Direction': 'Gearbox Direction',
+  'Compatible Sensor': 'Compatible Sensor',
+  'Compatible Sensor & Remote Control': 'Compatible Sensor & Remote Control',
+  'Şanzımanlı': 'Gearbox',
   'Packing': 'Packing',
   'Kraft': 'Kraft',
   'Air Bubble Wrap': 'Air Bubble Wrap',
@@ -1558,6 +1564,12 @@ Object.assign(I18N.tr, {
   'Roof Finish': 'Çatı Yüzeyi',
   'Additional Options': 'Ek Seçenekler',
   'Motor & Reducer': 'Motor & Redüktör',
+  'Dimmer For Light': 'Dimmer For Light',
+  'Crank Handle Length': 'Çevirme Kolu Uzunluğu',
+  'Gearbox Direction': 'Şanzıman Yönü',
+  'Compatible Sensor': 'Uyumlu Algılayıcı',
+  'Compatible Sensor & Remote Control': 'Uyumlu Algılayıcı & Kumanda',
+  'Şanzımanlı': 'Şanzımanlı',
   'Packing': 'Paketleme',
   'Kraft': 'Kraft',
   'Air Bubble Wrap': 'Havalı Naylon',
@@ -1585,14 +1597,18 @@ const JANELA_AWNING_PRODUCT_IDS = new Set([
   'janela_cassette_awning',
   'pars_cassette_awning',
   'pars_plus_cassette_awning',
-  'pars_plus_luxe_cassette_awning'
+  'pars_plus_luxe_cassette_awning',
+  'moonlight_classic_awning_motorlu',
+  'moonlight_classic_awning_sanzimanli'
 ]);
 
 const JANELA_AWNING_LIMITS = {
   janela_cassette_awning: { maxWidth: 4000, projectionLtWidth: false },
   pars_cassette_awning: { maxWidth: 5000, projectionLtWidth: true },
   pars_plus_cassette_awning: { maxWidth: 7000, projectionLtWidth: true },
-  pars_plus_luxe_cassette_awning: { maxWidth: 7000, projectionLtWidth: true }
+  pars_plus_luxe_cassette_awning: { maxWidth: 7000, projectionLtWidth: true },
+  moonlight_classic_awning_motorlu: { maxWidth: 7000, projectionLtWidth: true },
+  moonlight_classic_awning_sanzimanli: { maxWidth: 7000, projectionLtWidth: true }
 };
 
 function isJanelaAwningProduct(product = getProduct()) {
@@ -5019,7 +5035,7 @@ function renderGalaxyForm() {
   if (form.projectDetails?.length) wrap.appendChild(createProjectDetailsSection(form.projectDetails));
   if (form.colorDetails?.length) wrap.appendChild(createFormSection('Color Details', form.colorDetails, 'grid two'));
   if (form.operation?.length) {
-    wrap.appendChild(createFormSection('Motor & Remote Control', form.operation, 'grid two'));
+    wrap.appendChild(createFormSection(form.operationTitle || 'Motor & Remote Control', form.operation, 'grid two'));
   }
   if (form.panelOptions?.length) wrap.appendChild(createFormSection('Panel Options', form.panelOptions, 'grid two'));
   if (form.lighting?.length) wrap.appendChild(createCheckboxSection('Lighting', 'lighting', form.lighting));
@@ -5307,7 +5323,7 @@ function galaxyRows(lang = state.language) {
   if (form.projectDetails?.length) sections.push(...projectDetailSections(form.projectDetails, lang));
   if (form.colorDetails?.length) sections.push({ title: translatedText('Color Details', lang), rows: fieldRows(form.colorDetails, lang) });
   if (form.operation?.length) {
-    sections.push({ title: translatedText('Motor & Remote Control', lang), rows: fieldRows(form.operation, lang) });
+    sections.push({ title: translatedText(form.operationTitle || 'Motor & Remote Control', lang), rows: fieldRows(form.operation, lang) });
   }
   if (form.panelOptions?.length) sections.push({ title: translatedText('Panel Options', lang), rows: fieldRows(form.panelOptions, lang) });
   if (form.lighting?.length) sections.push({ title: translatedText('Lighting', lang), rows: [[translatedText('Selected', lang), lightingDisplayValue(lang)]] });
