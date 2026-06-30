@@ -1,4 +1,4 @@
-window.APP_VERSION = 'C78-TWINS-NO-ONE-SIDED-ROOF';
+window.APP_VERSION = 'C80-PERGOLA-RGBWHITE-STICKY-COLOR-TABS';
 const DATA = window.PRODUCT_DATA;
 const $ = (selector) => document.querySelector(selector);
 const $$ = (selector) => Array.from(document.querySelectorAll(selector));
@@ -13,7 +13,7 @@ const state = {
 };
 
 const STORAGE_PROFILE = 'prf_profile_v2';
-const STORAGE_ORDER = 'prf_order_c78_twins_no_one_sided_roof';
+const STORAGE_ORDER = 'prf_order_c80_pergola_rgbwhite_sticky_color_tabs';
 const STORAGE_LANGUAGE = 'prf_language_v1';
 
 const COLOR_FIELD_LABELS = new Set([

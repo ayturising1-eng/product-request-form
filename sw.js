@@ -1,4 +1,4 @@
-const CACHE = 'product-request-form-c78-twins-no-one-sided-roof';
+const CACHE = 'product-request-form-c80-pergola-rgbwhite-sticky-color-tabs';
 const ASSETS = [
   './',
   './index.html',

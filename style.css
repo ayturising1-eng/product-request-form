@@ -466,10 +466,15 @@ td:first-child { width: 42%; font-weight: 800; background: #f9fafb; }
   background: #f3f4f6;
 }
 .color-catalog-tabs {
+  position: sticky;
+  top: 70px;
+  z-index: 6;
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 10px;
-  margin-bottom: 12px;
+  margin: -4px 0 12px;
+  padding: 4px 0 12px;
+  background: linear-gradient(180deg, #f3f4f6 0%, #f3f4f6 85%, rgba(243, 244, 246, 0) 100%);
 }
 .color-chart-panel.janela-fabric-picker .color-catalog-tabs {
   position: sticky;
@@ -995,6 +1000,8 @@ input:focus, textarea:focus, select:focus {
     margin: -10px -10px 10px;
     padding: 10px 10px 10px;
   }
+  .color-catalog-tabs { top: 64px; }
+  .color-chart-panel.janela-fabric-picker .color-catalog-tabs { top: 0; }
 }
 
 

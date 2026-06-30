@@ -51,11 +51,7 @@ window.PRODUCT_DATA = {
         { id: 'pars_plus_luxe_cassette_awning', label: 'Pars Plus Luxe Cassette Awning', productId: 'pars_plus_luxe_cassette_awning' },
         { id: 'moonlight_classic_awning', label: 'Moonlight Classic Awning' },
         { id: 'sunshine_classic_awning', label: 'Sunshine Classic Awning' },
-        { id: 'twins_classic_awning', label: 'Twins Classic Awning' },
-        { id: 'parasol_umbrella', label: 'Parasol Umbrella', productId: 'parasol_umbrella' },
-        { id: 'parasol_luxe_umbrella', label: 'Parasol Luxe Umbrella', productId: 'parasol_luxe_umbrella' },
-        { id: 's_series_umbrella', label: 'S Series Umbrella', productId: 's_series_umbrella' },
-        { id: 'folded_ceiling_curtain', label: 'Folded Ceiling Curtain', productId: 'folded_ceiling_curtain' }
+        { id: 'twins_classic_awning', label: 'Twins Classic Awning' }
       ]
     },
     subGroups: {
@@ -107,7 +103,7 @@ window.PRODUCT_DATA = {
     pergola: {
       label: 'Pergola / Fabric System',
       colorFields: ['Structure', 'Pergola Fabric', 'Screen Fabric'],
-      lighting: ['Daylight', 'White', 'Linear Rgb+White', 'Spot', 'Linear', 'Other'],
+      lighting: ['Daylight', 'White', 'Rgb+White', 'Spot', 'Linear', 'Other'],
       accessories: [
         'Sound System',
         'Dimmer Light',
@@ -188,7 +184,7 @@ window.PRODUCT_DATA = {
       }
     ],
     lighting: [
-      { id: 'lightingType', label: 'Lighting', type: 'choice', options: ['No', 'Daylight', 'White', 'RGB', 'Linear Rgb+White', 'Other'] },
+      { id: 'lightingType', label: 'Lighting', type: 'choice', options: ['No', 'Daylight', 'White', 'RGB', 'Rgb+White', 'Other'] },
       { id: 'lightingOther', label: 'Other Lighting', type: 'text', showWhen: { field: 'lightingType', values: ['Other'] } }
     ],
     dimmer: [
@@ -372,11 +368,7 @@ window.PRODUCT_DATA = {
     { id: 'sunshine_classic_awning_sanzimanli', name: 'SUNSHINE CLASSIC AWNING ŞANZIMANLI', family: 'zip_screen_awning_curtain', productGroup: 'sunshine_classic_awning', subGroup: 'sanzimanli', group: 'zipAwning', formTemplate: 'janelaForm' },
     { id: 'twins_classic_awning', name: 'TWINS CLASSIC AWNING', family: 'zip_screen_awning_curtain', productGroup: 'twins_classic_awning', subGroup: '' },
     { id: 'twins_classic_awning_motorlu', name: 'TWINS CLASSIC AWNING MOTORLU', family: 'zip_screen_awning_curtain', productGroup: 'twins_classic_awning', subGroup: 'motorlu', group: 'zipAwning', formTemplate: 'janelaForm' },
-    { id: 'twins_classic_awning_sanzimanli', name: 'TWINS CLASSIC AWNING ŞANZIMANLI', family: 'zip_screen_awning_curtain', productGroup: 'twins_classic_awning', subGroup: 'sanzimanli', group: 'zipAwning', formTemplate: 'janelaForm' },
-    { id: 'parasol_umbrella', name: 'PARASOL UMBRELLA', family: 'zip_screen_awning_curtain', productGroup: 'parasol_umbrella', subGroup: '' },
-    { id: 'parasol_luxe_umbrella', name: 'PARASOL LUXE UMBRELLA', family: 'zip_screen_awning_curtain', productGroup: 'parasol_luxe_umbrella', subGroup: '' },
-    { id: 's_series_umbrella', name: 'S SERIES UMBRELLA', family: 'zip_screen_awning_curtain', productGroup: 's_series_umbrella', subGroup: '' },
-    { id: 'folded_ceiling_curtain', name: 'FOLDED CEILING CURTAIN', family: 'zip_screen_awning_curtain', productGroup: 'folded_ceiling_curtain', subGroup: '' }
+    { id: 'twins_classic_awning_sanzimanli', name: 'TWINS CLASSIC AWNING ŞANZIMANLI', family: 'zip_screen_awning_curtain', productGroup: 'twins_classic_awning', subGroup: 'sanzimanli', group: 'zipAwning', formTemplate: 'janelaForm' }
   ]
 };
 
@@ -423,7 +415,7 @@ window.PRODUCT_DATA.productFormOverrides.bio_rise = {
 };
 window.PRODUCT_DATA.galaxyForm.lighting = ['Linear LED', 'Linear RGB', 'Linear Rgb+White', 'Spot LED', 'Other'];
 window.PRODUCT_DATA.pergolaForm.lighting = [
-  { id: 'lightingType', label: 'Lighting', type: 'choice', options: ['No', 'Daylight', 'White', 'RGB', 'Linear Rgb+White', 'Other'] },
+  { id: 'lightingType', label: 'Lighting', type: 'choice', options: ['No', 'Daylight', 'White', 'RGB', 'Rgb+White', 'Other'] },
   { id: 'lightingOther', label: 'Other Lighting', type: 'text', showWhen: { field: 'lightingType', values: ['Other'] } }
 ];
 
