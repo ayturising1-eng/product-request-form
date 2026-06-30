@@ -1,4 +1,4 @@
-const CACHE = 'product-request-form-c65-fabric-mobile-labels';
+const CACHE = 'product-request-form-c66-fabric-transparent-hotspots';
 const ASSETS = [
   './',
   './index.html',

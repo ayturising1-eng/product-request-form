@@ -1212,9 +1212,9 @@ input:focus, textarea:focus, select:focus {
 }
 .sauleda-hotspot {
   position: absolute;
-  border: 1px solid rgba(156,163,175,.78);
+  border: 0;
   border-radius: 0;
-  background: rgba(255,255,255,.01);
+  background: transparent;
   cursor: pointer;
   touch-action: manipulation;
   z-index: 2;
@@ -1223,9 +1223,9 @@ input:focus, textarea:focus, select:focus {
 .sauleda-hotspot:hover,
 .sauleda-hotspot:focus-visible,
 .sauleda-hotspot.selected-hotspot {
-  outline: 3px solid rgba(37,99,235,.35);
-  outline-offset: -2px;
-  background: rgba(37,99,235,.06);
+  outline: none;
+  outline-offset: 0;
+  background: transparent;
 }
 
 @media (max-width: 640px) {
@@ -1413,56 +1413,39 @@ input:focus, textarea:focus, select:focus {
   }
 }
 
-/* C65: mobile-friendly fabric-page tap labels for Sauleda / Acrilla / Sattler catalogs */
+/* C66: invisible responsive fabric-page hotspots.
+   The left/top/width/height values are percentages, so the tap areas scale
+   with the catalog image on every phone size. */
 .fabric-page-hotspot {
-  display: flex;
-  align-items: flex-end;
-  justify-content: center;
-  padding: 5px;
-  border: 1px solid rgba(17, 24, 39, .20);
-  background: rgba(255,255,255,.02);
+  display: block;
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
+  border: 0;
+  border-radius: 0;
+  appearance: none;
+  -webkit-appearance: none;
+  background: transparent;
+  color: transparent;
+  font-size: 0;
+  line-height: 0;
+  opacity: 1;
+  box-shadow: none;
+  outline: none;
+  -webkit-tap-highlight-color: transparent;
 }
-.fabric-hotspot-label {
-  pointer-events: none;
-  width: min(100%, 164px);
-  max-width: calc(100% - 4px);
-  padding: 4px 6px;
-  border-radius: 9px;
-  background: rgba(17, 24, 39, .78);
-  color: #fff;
-  box-shadow: 0 5px 12px rgba(0,0,0,.20);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 1px;
-  line-height: 1.05;
-  text-align: center;
+.fabric-page-hotspot:hover,
+.fabric-page-hotspot:active,
+.fabric-page-hotspot:focus,
+.fabric-page-hotspot:focus-visible,
+.fabric-page-hotspot.selected-hotspot {
+  border: 0;
+  background: transparent;
+  box-shadow: none;
+  outline: none;
 }
+.fabric-hotspot-label,
 .fabric-hotspot-name,
 .fabric-hotspot-code {
-  max-width: 100%;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-.fabric-hotspot-name {
-  font-size: clamp(8px, 1.55vw, 12px);
-  font-weight: 750;
-}
-.fabric-hotspot-code {
-  font-size: clamp(10px, 1.9vw, 14px);
-  font-weight: 950;
-  letter-spacing: .01em;
-}
-.fabric-page-hotspot:hover .fabric-hotspot-label,
-.fabric-page-hotspot:focus-visible .fabric-hotspot-label,
-.fabric-page-hotspot.selected-hotspot .fabric-hotspot-label {
-  background: rgba(37, 99, 235, .92);
-}
-@media (max-width: 640px) {
-  .fabric-page-hotspot { padding: 3px; }
-  .fabric-hotspot-label {
-    padding: 3px 5px;
-    border-radius: 7px;
-  }
+  display: none;
 }

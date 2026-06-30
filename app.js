@@ -13,7 +13,7 @@ const state = {
 };
 
 const STORAGE_PROFILE = 'prf_profile_v2';
-const STORAGE_ORDER = 'prf_order_c65_fabric_pages_mobile_labels';
+const STORAGE_ORDER = 'prf_order_c66_fabric_transparent_hotspots';
 const STORAGE_LANGUAGE = 'prf_language_v1';
 
 const COLOR_FIELD_LABELS = new Set([
@@ -1725,19 +1725,7 @@ function createSauledaHotspot(value, left, top, width, height) {
   btn.title = value;
   btn.dataset.value = value;
 
-  const labelParts = hotspotLabelParts(value);
-  const label = document.createElement('span');
-  label.className = 'fabric-hotspot-label';
-  const name = document.createElement('span');
-  name.className = 'fabric-hotspot-name';
-  name.textContent = labelParts.name;
-  const code = document.createElement('strong');
-  code.className = 'fabric-hotspot-code';
-  code.textContent = labelParts.code;
-  if (labelParts.name) label.appendChild(name);
-  label.appendChild(code);
-  btn.appendChild(label);
-
+  // Invisible responsive hotspot: percentages follow the catalog image size.
   if ((activePickerInput?.value || '').trim() === value) btn.classList.add('selected-hotspot');
   btn.addEventListener('click', () => selectPickerOption(value));
   return btn;
