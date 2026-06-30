@@ -1,4 +1,4 @@
-window.APP_VERSION = 'C71-JANELA-MOTOR-DIRECTION';
+window.APP_VERSION = 'C72-PARS-AWNING-RULES';
 const DATA = window.PRODUCT_DATA;
 const $ = (selector) => document.querySelector(selector);
 const $$ = (selector) => Array.from(document.querySelectorAll(selector));
@@ -13,7 +13,7 @@ const state = {
 };
 
 const STORAGE_PROFILE = 'prf_profile_v2';
-const STORAGE_ORDER = 'prf_order_c71_janela_motor_direction';
+const STORAGE_ORDER = 'prf_order_c72_pars_awning_rules';
 const STORAGE_LANGUAGE = 'prf_language_v1';
 
 const COLOR_FIELD_LABELS = new Set([
@@ -1581,6 +1581,24 @@ let activeColorCatalogId = 'rising-standart';
 let activeFabricCatalogId = 'sauleda';
 let activePickerSearch = '';
 
+const JANELA_AWNING_PRODUCT_IDS = new Set([
+  'janela_cassette_awning',
+  'pars_cassette_awning',
+  'pars_plus_cassette_awning',
+  'pars_plus_luxe_cassette_awning'
+]);
+
+const JANELA_AWNING_LIMITS = {
+  janela_cassette_awning: { maxWidth: 4000, projectionLtWidth: false },
+  pars_cassette_awning: { maxWidth: 5000, projectionLtWidth: true },
+  pars_plus_cassette_awning: { maxWidth: 7000, projectionLtWidth: true },
+  pars_plus_luxe_cassette_awning: { maxWidth: 7000, projectionLtWidth: true }
+};
+
+function isJanelaAwningProduct(product = getProduct()) {
+  return JANELA_AWNING_PRODUCT_IDS.has(product?.id);
+}
+
 function colorCatalogs() {
   return Array.isArray(window.PRODUCT_COLOR_CATALOGS) && window.PRODUCT_COLOR_CATALOGS.length
     ? window.PRODUCT_COLOR_CATALOGS
@@ -1683,11 +1701,11 @@ const SAULEDA_SECTIONS = [
 ];
 
 function isSauledaFabricMode(kind = activePickerKind) {
-  return kind === 'fabric' && state.selectedProductId === 'janela_cassette_awning';
+  return kind === 'fabric' && isJanelaAwningProduct();
 }
 
 function isJanelaFabricMode(kind = activePickerKind) {
-  return kind === 'fabric' && state.selectedProductId === 'janela_cassette_awning';
+  return kind === 'fabric' && isJanelaAwningProduct();
 }
 
 function isSattlerFabricMode(kind = activePickerKind) {
@@ -4634,6 +4652,9 @@ function createInputField(field) {
   control.dataset.fieldLabel = field.label;
   control.dataset.unit = field.unit || '';
   control.dataset.unitAuto = field.unitAuto || '';
+  if (field.min !== undefined) control.min = field.min;
+  if (field.max !== undefined) control.max = field.max;
+  if (field.step !== undefined) control.step = field.step;
   control.addEventListener('input', onAnyInput);
   control.addEventListener('change', onAnyInput);
   control.addEventListener('change', autoAdvanceOnChange);
@@ -4684,6 +4705,12 @@ function createInputField(field) {
   }
 
   label.appendChild(wrap);
+  if (field.hint) {
+    const hint = document.createElement('small');
+    hint.className = 'field-hint';
+    hint.textContent = translatedText(field.hint);
+    label.appendChild(hint);
+  }
   return applyFieldCondition(label, field);
 }
 
@@ -4951,7 +4978,7 @@ function createCheckboxSection(title, fieldName, items) {
 
 
 function isJanelaCassetteAwning(product = getProduct()) {
-  return product?.id === 'janela_cassette_awning';
+  return isJanelaAwningProduct(product);
 }
 
 function janelaAdditionalSections(form) {
@@ -5021,6 +5048,7 @@ function renderGalaxyForm() {
   updateConditionalFields();
   syncJanelaLinkedFields();
   refreshDynamicLanguage();
+  validateJanelaAwningRules();
 }
 
 function renderPergolaForm() {
@@ -5546,8 +5574,58 @@ function resetOrder() {
   toast(t('newRequestOpened'));
 }
 
+
+function janelaRuleMessage(type, value) {
+  const tr = state.language === 'tr';
+  if (type === 'maxWidth') return tr ? `Cephe max. ${value} mm olmalı.` : `Width max. ${value} mm.`;
+  if (type === 'projectionLtWidth') return tr ? 'Açılım cepheden küçük olmalı.' : 'Projection must be smaller than width.';
+  return '';
+}
+
+function setFieldValidity(input, messages) {
+  if (!input) return;
+  const message = messages.filter(Boolean).join(' ');
+  input.setCustomValidity(message);
+  input.title = message;
+  input.classList.toggle('field-invalid', Boolean(message));
+  const customButton = input.customSelectButton;
+  if (customButton) {
+    customButton.classList.toggle('field-invalid', Boolean(message));
+    customButton.title = message;
+  }
+}
+
+function validateJanelaAwningRules({ showToast = false } = {}) {
+  if (!isJanelaAwningProduct()) return true;
+  const productId = state.selectedProductId;
+  const limits = JANELA_AWNING_LIMITS[productId] || {};
+  const widthInput = $('#dyn_width');
+  const projectionInput = $('#dyn_projection');
+  const width = Number(String(widthInput?.value || '').replace(',', '.'));
+  const projection = Number(String(projectionInput?.value || '').replace(',', '.'));
+  const widthMessages = [];
+  const projectionMessages = [];
+
+  if (limits.maxWidth && Number.isFinite(width) && width > limits.maxWidth) {
+    widthMessages.push(janelaRuleMessage('maxWidth', limits.maxWidth));
+  }
+  if (limits.projectionLtWidth && Number.isFinite(width) && width > 0 && Number.isFinite(projection) && projection > 0 && projection >= width) {
+    projectionMessages.push(janelaRuleMessage('projectionLtWidth'));
+  }
+
+  setFieldValidity(widthInput, widthMessages);
+  setFieldValidity(projectionInput, projectionMessages);
+  const messages = [...widthMessages, ...projectionMessages];
+  if (messages.length && showToast) {
+    toast(messages.join(' '));
+    const target = widthMessages.length ? widthInput : (projectionInput?.customSelectButton || projectionInput);
+    target?.focus?.();
+  }
+  return messages.length === 0;
+}
+
 function syncJanelaLinkedFields() {
-  if (state.selectedProductId !== 'janela_cassette_awning') return;
+  if (!isJanelaAwningProduct()) return;
   const fabric = $('#dyn_fabric');
   const valanceFabric = $('#dyn_valanceFabric');
   if (fabric && valanceFabric && valanceFabric.dataset.userOverridden !== '1') {
@@ -5566,6 +5644,7 @@ function onAnyInput() {
   updateConditionalFields();
   updateLightingOtherVisibility();
   updateAutoUnits();
+  validateJanelaAwningRules();
   saveOrderDraft();
   updatePreview();
 }
@@ -5793,6 +5872,7 @@ function downloadBlob(blob, filename) {
 }
 
 async function downloadPdf() {
+  if (!validateJanelaAwningRules({ showToast: true })) return;
   const data = getOrderData('en');
   const blob = buildOrderPdf(data);
   downloadBlob(blob, filenameFromData(data));
@@ -5800,6 +5880,7 @@ async function downloadPdf() {
 }
 
 async function sharePdf() {
+  if (!validateJanelaAwningRules({ showToast: true })) return;
   const data = getOrderData('en');
   const blob = buildOrderPdf(data);
   const filename = filenameFromData(data);

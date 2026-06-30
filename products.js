@@ -484,8 +484,8 @@ window.PRODUCT_DATA.groups.zipAwning = {
 
 window.PRODUCT_DATA.janelaForm = {
   projectDetails: [
-    { id: 'systemQuantity', label: 'System Quantity', type: 'number', defaultValue: '1' },
-    { id: 'width', label: 'Width', type: 'number', unit: 'mm' },
+    { id: 'systemQuantity', label: 'System Quantity', type: 'number', defaultValue: '1', min: '1', step: '1' },
+    { id: 'width', label: 'Width', type: 'number', unit: 'mm', max: '4000', hint: 'Cephe Max. 4000 mm' },
     { id: 'projection', label: 'Projection (mm)', type: 'select', options: ['500', '750', '1000', '1250', '1500', '1750', '2000'], defaultValue: '500' }
   ],
   colorDetails: [
@@ -539,7 +539,36 @@ window.PRODUCT_DATA.janelaForm = {
   heaterPackaging: []
 };
 
+window.PRODUCT_DATA.productFormOverrides.pars_cassette_awning = {
+  ...(window.PRODUCT_DATA.productFormOverrides.pars_cassette_awning || {}),
+  projectDetails: [
+    { id: 'systemQuantity', label: 'System Quantity', type: 'number', defaultValue: '1', min: '1', step: '1' },
+    { id: 'width', label: 'Width', type: 'number', unit: 'mm', max: '5000', hint: 'Cephe Max. 5000 mm | Açılım < Cephe' },
+    { id: 'projection', label: 'Projection (mm)', type: 'select', options: ['1500', '2000', '2500', '3000'], defaultValue: '1500', hint: '1500-3000 mm / 500 mm' }
+  ]
+};
+
+window.PRODUCT_DATA.productFormOverrides.pars_plus_cassette_awning = {
+  ...(window.PRODUCT_DATA.productFormOverrides.pars_plus_cassette_awning || {}),
+  projectDetails: [
+    { id: 'systemQuantity', label: 'System Quantity', type: 'number', defaultValue: '1', min: '1', step: '1' },
+    { id: 'width', label: 'Width', type: 'number', unit: 'mm', max: '7000', hint: 'Cephe Max. 7000 mm | Açılım < Cephe' },
+    { id: 'projection', label: 'Projection (mm)', type: 'select', options: ['1500', '2000', '2500', '3000', '3500'], defaultValue: '1500', hint: '1500-3500 mm / 500 mm' }
+  ]
+};
+
+window.PRODUCT_DATA.productFormOverrides.pars_plus_luxe_cassette_awning = {
+  ...(window.PRODUCT_DATA.productFormOverrides.pars_plus_luxe_cassette_awning || {}),
+  projectDetails: [
+    { id: 'systemQuantity', label: 'System Quantity', type: 'number', defaultValue: '1', min: '1', step: '1' },
+    { id: 'width', label: 'Width', type: 'number', unit: 'mm', max: '7000', hint: 'Cephe Max. 7000 mm | Açılım < Cephe' },
+    { id: 'projection', label: 'Projection (mm)', type: 'select', options: ['1500', '2000', '2500', '3000'], defaultValue: '1500', hint: '1500-3000 mm / 500 mm' }
+  ]
+};
+
 {
-  const janela = window.PRODUCT_DATA.products.find((item) => item.id === 'janela_cassette_awning');
-  if (janela) Object.assign(janela, { group: 'zipAwning', formTemplate: 'janelaForm' });
+  ['janela_cassette_awning', 'pars_cassette_awning', 'pars_plus_cassette_awning', 'pars_plus_luxe_cassette_awning'].forEach((id) => {
+    const product = window.PRODUCT_DATA.products.find((item) => item.id === id);
+    if (product) Object.assign(product, { group: 'zipAwning', formTemplate: 'janelaForm' });
+  });
 }

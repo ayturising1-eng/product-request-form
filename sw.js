@@ -1,4 +1,4 @@
-const CACHE = 'product-request-form-c71-janela-motor-direction';
+const CACHE = 'product-request-form-c72-pars-awning-rules';
 const ASSETS = [
   './',
   './index.html',
