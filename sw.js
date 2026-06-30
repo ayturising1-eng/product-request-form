@@ -1,4 +1,4 @@
-const CACHE = 'product-request-form-c74-remove-arm-plastic-pars-moonlight';
+const CACHE = 'product-request-form-c78-twins-no-one-sided-roof';
 const ASSETS = [
   './',
   './index.html',

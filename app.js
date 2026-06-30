@@ -1,4 +1,4 @@
-window.APP_VERSION = 'C74-REMOVE-ARM-PLASTIC';
+window.APP_VERSION = 'C78-TWINS-NO-ONE-SIDED-ROOF';
 const DATA = window.PRODUCT_DATA;
 const $ = (selector) => document.querySelector(selector);
 const $$ = (selector) => Array.from(document.querySelectorAll(selector));
@@ -13,7 +13,7 @@ const state = {
 };
 
 const STORAGE_PROFILE = 'prf_profile_v2';
-const STORAGE_ORDER = 'prf_order_c74_remove_arm_plastic';
+const STORAGE_ORDER = 'prf_order_c78_twins_no_one_sided_roof';
 const STORAGE_LANGUAGE = 'prf_language_v1';
 
 const COLOR_FIELD_LABELS = new Set([
@@ -1522,6 +1522,14 @@ Object.assign(I18N.en, {
   'Gearbox Direction': 'Gearbox Direction',
   'Compatible Sensor': 'Compatible Sensor',
   'Compatible Sensor & Remote Control': 'Compatible Sensor & Remote Control',
+  'Projection 1 (mm)': 'Projection 1',
+  'Projection 2 (mm)': 'Projection 2',
+  'Motor Direction 1': 'Motor Direction 1',
+  'Motor Direction 2': 'Motor Direction 2',
+  'Gearbox Direction 1': 'Gearbox Direction 1',
+  'Gearbox Direction 2': 'Gearbox Direction 2',
+  'Same side as Direction 1': 'Same side as Direction 1',
+  'Opposite side of Direction 1': 'Opposite side of Direction 1',
   'Şanzımanlı': 'Gearbox',
   'Packing': 'Packing',
   'Kraft': 'Kraft',
@@ -1569,6 +1577,14 @@ Object.assign(I18N.tr, {
   'Gearbox Direction': 'Şanzıman Yönü',
   'Compatible Sensor': 'Uyumlu Algılayıcı',
   'Compatible Sensor & Remote Control': 'Uyumlu Algılayıcı & Kumanda',
+  'Projection 1 (mm)': 'Açılım 1',
+  'Projection 2 (mm)': 'Açılım 2',
+  'Motor Direction 1': 'Motor Yönü 1',
+  'Motor Direction 2': 'Motor Yönü 2',
+  'Gearbox Direction 1': 'Şanzıman Yönü 1',
+  'Gearbox Direction 2': 'Şanzıman Yönü 2',
+  'Same side as Direction 1': '1. yön ile aynı tarafta',
+  'Opposite side of Direction 1': '1. yön ile ters tarafta',
   'Şanzımanlı': 'Şanzımanlı',
   'Packing': 'Paketleme',
   'Kraft': 'Kraft',
@@ -1599,7 +1615,11 @@ const JANELA_AWNING_PRODUCT_IDS = new Set([
   'pars_plus_cassette_awning',
   'pars_plus_luxe_cassette_awning',
   'moonlight_classic_awning_motorlu',
-  'moonlight_classic_awning_sanzimanli'
+  'moonlight_classic_awning_sanzimanli',
+  'sunshine_classic_awning_motorlu',
+  'sunshine_classic_awning_sanzimanli',
+  'twins_classic_awning_motorlu',
+  'twins_classic_awning_sanzimanli'
 ]);
 
 const JANELA_AWNING_LIMITS = {
@@ -1608,7 +1628,11 @@ const JANELA_AWNING_LIMITS = {
   pars_plus_cassette_awning: { maxWidth: 7000, projectionLtWidth: true },
   pars_plus_luxe_cassette_awning: { maxWidth: 7000, projectionLtWidth: true },
   moonlight_classic_awning_motorlu: { maxWidth: 7000, projectionLtWidth: true },
-  moonlight_classic_awning_sanzimanli: { maxWidth: 7000, projectionLtWidth: true }
+  moonlight_classic_awning_sanzimanli: { maxWidth: 7000, projectionLtWidth: true },
+  sunshine_classic_awning_motorlu: { maxWidth: 7000, projectionLtWidth: true },
+  sunshine_classic_awning_sanzimanli: { maxWidth: 7000, projectionLtWidth: true },
+  twins_classic_awning_motorlu: { maxWidth: 7000, projectionLtWidth: true, projectionFields: ['projection1', 'projection2'] },
+  twins_classic_awning_sanzimanli: { maxWidth: 7000, projectionLtWidth: true, projectionFields: ['projection1', 'projection2'] }
 };
 
 function isJanelaAwningProduct(product = getProduct()) {
@@ -5616,25 +5640,33 @@ function validateJanelaAwningRules({ showToast = false } = {}) {
   const productId = state.selectedProductId;
   const limits = JANELA_AWNING_LIMITS[productId] || {};
   const widthInput = $('#dyn_width');
-  const projectionInput = $('#dyn_projection');
+  const projectionFieldIds = Array.isArray(limits.projectionFields) && limits.projectionFields.length ? limits.projectionFields : ['projection'];
+  const projectionInputs = projectionFieldIds.map((fieldId) => $(`#dyn_${fieldId}`)).filter(Boolean);
   const width = Number(String(widthInput?.value || '').replace(',', '.'));
-  const projection = Number(String(projectionInput?.value || '').replace(',', '.'));
   const widthMessages = [];
   const projectionMessages = [];
+  let firstInvalidProjectionInput = null;
 
   if (limits.maxWidth && Number.isFinite(width) && width > limits.maxWidth) {
     widthMessages.push(janelaRuleMessage('maxWidth', limits.maxWidth));
   }
-  if (limits.projectionLtWidth && Number.isFinite(width) && width > 0 && Number.isFinite(projection) && projection > 0 && projection >= width) {
-    projectionMessages.push(janelaRuleMessage('projectionLtWidth'));
-  }
+  projectionInputs.forEach((projectionInput) => {
+    const projection = Number(String(projectionInput?.value || '').replace(',', '.'));
+    const messages = [];
+    if (limits.projectionLtWidth && Number.isFinite(width) && width > 0 && Number.isFinite(projection) && projection > 0 && projection >= width) {
+      messages.push(janelaRuleMessage('projectionLtWidth'));
+      if (!firstInvalidProjectionInput) firstInvalidProjectionInput = projectionInput;
+    }
+    setFieldValidity(projectionInput, messages);
+    projectionMessages.push(...messages);
+  });
 
   setFieldValidity(widthInput, widthMessages);
-  setFieldValidity(projectionInput, projectionMessages);
-  const messages = [...widthMessages, ...projectionMessages];
+  const messages = [...widthMessages, ...Array.from(new Set(projectionMessages))];
   if (messages.length && showToast) {
     toast(messages.join(' '));
-    const target = widthMessages.length ? widthInput : (projectionInput?.customSelectButton || projectionInput);
+    const targetInput = widthMessages.length ? widthInput : firstInvalidProjectionInput;
+    const target = targetInput?.customSelectButton || targetInput;
     target?.focus?.();
   }
   return messages.length === 0;

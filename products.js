@@ -50,8 +50,8 @@ window.PRODUCT_DATA = {
         { id: 'pars_plus_cassette_awning', label: 'Pars Plus Cassette Awning', productId: 'pars_plus_cassette_awning' },
         { id: 'pars_plus_luxe_cassette_awning', label: 'Pars Plus Luxe Cassette Awning', productId: 'pars_plus_luxe_cassette_awning' },
         { id: 'moonlight_classic_awning', label: 'Moonlight Classic Awning' },
-        { id: 'sunshine_classic_awning', label: 'Sunshine Classic Awning', productId: 'sunshine_classic_awning' },
-        { id: 'twins_classic_awning', label: 'Twins Classic Awning', productId: 'twins_classic_awning' },
+        { id: 'sunshine_classic_awning', label: 'Sunshine Classic Awning' },
+        { id: 'twins_classic_awning', label: 'Twins Classic Awning' },
         { id: 'parasol_umbrella', label: 'Parasol Umbrella', productId: 'parasol_umbrella' },
         { id: 'parasol_luxe_umbrella', label: 'Parasol Luxe Umbrella', productId: 'parasol_luxe_umbrella' },
         { id: 's_series_umbrella', label: 'S Series Umbrella', productId: 's_series_umbrella' },
@@ -92,6 +92,14 @@ window.PRODUCT_DATA = {
       moonlight_classic_awning: [
         { id: 'motorlu', label: 'Motorlu', productId: 'moonlight_classic_awning_motorlu' },
         { id: 'sanzimanli', label: 'Şanzımanlı', productId: 'moonlight_classic_awning_sanzimanli' }
+      ],
+      sunshine_classic_awning: [
+        { id: 'motorlu', label: 'Motorlu', productId: 'sunshine_classic_awning_motorlu' },
+        { id: 'sanzimanli', label: 'Şanzımanlı', productId: 'sunshine_classic_awning_sanzimanli' }
+      ],
+      twins_classic_awning: [
+        { id: 'motorlu', label: 'Motorlu', productId: 'twins_classic_awning_motorlu' },
+        { id: 'sanzimanli', label: 'Şanzımanlı', productId: 'twins_classic_awning_sanzimanli' }
       ]
     }
   },
@@ -360,7 +368,11 @@ window.PRODUCT_DATA = {
     { id: 'moonlight_classic_awning_motorlu', name: 'MOONLIGHT CLASSIC AWNING MOTORLU', family: 'zip_screen_awning_curtain', productGroup: 'moonlight_classic_awning', subGroup: 'motorlu', group: 'zipAwning', formTemplate: 'janelaForm' },
     { id: 'moonlight_classic_awning_sanzimanli', name: 'MOONLIGHT CLASSIC AWNING ŞANZIMANLI', family: 'zip_screen_awning_curtain', productGroup: 'moonlight_classic_awning', subGroup: 'sanzimanli', group: 'zipAwning', formTemplate: 'janelaForm' },
     { id: 'sunshine_classic_awning', name: 'SUNSHINE CLASSIC AWNING', family: 'zip_screen_awning_curtain', productGroup: 'sunshine_classic_awning', subGroup: '' },
+    { id: 'sunshine_classic_awning_motorlu', name: 'SUNSHINE CLASSIC AWNING MOTORLU', family: 'zip_screen_awning_curtain', productGroup: 'sunshine_classic_awning', subGroup: 'motorlu', group: 'zipAwning', formTemplate: 'janelaForm' },
+    { id: 'sunshine_classic_awning_sanzimanli', name: 'SUNSHINE CLASSIC AWNING ŞANZIMANLI', family: 'zip_screen_awning_curtain', productGroup: 'sunshine_classic_awning', subGroup: 'sanzimanli', group: 'zipAwning', formTemplate: 'janelaForm' },
     { id: 'twins_classic_awning', name: 'TWINS CLASSIC AWNING', family: 'zip_screen_awning_curtain', productGroup: 'twins_classic_awning', subGroup: '' },
+    { id: 'twins_classic_awning_motorlu', name: 'TWINS CLASSIC AWNING MOTORLU', family: 'zip_screen_awning_curtain', productGroup: 'twins_classic_awning', subGroup: 'motorlu', group: 'zipAwning', formTemplate: 'janelaForm' },
+    { id: 'twins_classic_awning_sanzimanli', name: 'TWINS CLASSIC AWNING ŞANZIMANLI', family: 'zip_screen_awning_curtain', productGroup: 'twins_classic_awning', subGroup: 'sanzimanli', group: 'zipAwning', formTemplate: 'janelaForm' },
     { id: 'parasol_umbrella', name: 'PARASOL UMBRELLA', family: 'zip_screen_awning_curtain', productGroup: 'parasol_umbrella', subGroup: '' },
     { id: 'parasol_luxe_umbrella', name: 'PARASOL LUXE UMBRELLA', family: 'zip_screen_awning_curtain', productGroup: 'parasol_luxe_umbrella', subGroup: '' },
     { id: 's_series_umbrella', name: 'S SERIES UMBRELLA', family: 'zip_screen_awning_curtain', productGroup: 's_series_umbrella', subGroup: '' },
@@ -587,6 +599,11 @@ const PRF_C73_PARS_PLUS_LUXE_PROJECT_DETAILS = [
   { id: 'width', label: 'Width', type: 'number', unit: 'mm', max: '7000', hint: 'Cephe Max. 7000 mm | Açılım < Cephe' },
   { id: 'projection', label: 'Projection (mm)', type: 'select', options: ['1500', '2000', '2500', '3000'], defaultValue: '1500', hint: '1500-3000 mm / 500 mm' }
 ];
+const PRF_C76_SUNSHINE_PROJECT_DETAILS = [
+  { id: 'systemQuantity', label: 'System Quantity', type: 'number', defaultValue: '1', min: '1', step: '1' },
+  { id: 'width', label: 'Width', type: 'number', unit: 'mm', max: '7000', hint: 'Cephe Max. 7000 mm | Açılım < Cephe' },
+  { id: 'projection', label: 'Projection (mm)', type: 'select', options: ['1500', '2000', '2500', '3000', '3500', '4000'], defaultValue: '1500', hint: '1500-4000 mm / 500 mm' }
+];
 const PRF_C73_PARS_PLUS_LUXE_OPERATION = [
   { id: 'controlType', label: 'Control Type', type: 'choice', options: ['Button Control', 'Remote Control'], defaultValue: 'Remote Control' },
   { id: 'motor', label: 'Motor', type: 'select', options: ['Somfy RTS', 'Somfy IO'], defaultValue: 'Somfy RTS' },
@@ -621,13 +638,80 @@ window.PRODUCT_DATA.productFormOverrides.moonlight_classic_awning_sanzimanli = {
     { id: 'dimmerForLight', label: 'Dimmer For Light', type: 'choice', options: ['Yes', 'No'] }
   ]
 };
+const PRF_C75_PARS_PLUS_LUXE_OPERATION_NO_DIMMER = PRF_C73_PARS_PLUS_LUXE_OPERATION.filter((item) => item.id !== 'dimmerForLight');
+window.PRODUCT_DATA.productFormOverrides.sunshine_classic_awning_motorlu = {
+  ...(window.PRODUCT_DATA.productFormOverrides.sunshine_classic_awning_motorlu || {}),
+  projectDetails: PRF_C76_SUNSHINE_PROJECT_DETAILS,
+  operation: [
+    ...PRF_C75_PARS_PLUS_LUXE_OPERATION_NO_DIMMER,
+    { id: 'crankHandleLength', label: 'Crank Handle Length', type: 'select', options: PRF_C73_CRANK_LENGTH_OPTIONS, defaultValue: 'Yok' }
+  ]
+};
+window.PRODUCT_DATA.productFormOverrides.sunshine_classic_awning_sanzimanli = {
+  ...(window.PRODUCT_DATA.productFormOverrides.sunshine_classic_awning_sanzimanli || {}),
+  operationTitle: 'Compatible Sensor & Remote Control',
+  projectDetails: PRF_C76_SUNSHINE_PROJECT_DETAILS,
+  operation: [
+    { id: 'gearboxDirection', label: 'Gearbox Direction', type: 'choice', options: ['Left', 'Right'] },
+    { id: 'crankHandleLength', label: 'Crank Handle Length', type: 'select', options: PRF_C73_CRANK_LENGTH_OPTIONS, defaultValue: 'Yok' },
+    { id: 'motor', label: 'Compatible Sensor', type: 'select', options: ['Somfy RTS', 'Somfy IO'], defaultValue: 'Somfy RTS' },
+    { id: 'remoteControlSomfyRts', label: 'Remote Control', type: 'choice', options: ['1 Channel', '2 Channels', '4 Channels', '16 Channels'], showWhen: { field: 'motor', values: ['Somfy RTS'] } },
+    { id: 'remoteControlSomfyIo', label: 'Remote Control', type: 'choice', options: ['1 Channel', '2 Channels', '4 Channels', '40 Channels'], showWhen: { field: 'motor', values: ['Somfy IO'] } }
+  ]
+};
+
+const PRF_C77_TWINS_PROJECT_DETAILS = [
+  { id: 'systemQuantity', label: 'System Quantity', type: 'number', defaultValue: '1', min: '1', step: '1' },
+  { id: 'width', label: 'Width', type: 'number', unit: 'mm', max: '7000', hint: 'Cephe Max. 7000 mm | Açılım 1 ve Açılım 2 cepheden küçük olmalı' },
+  { id: 'projection1', label: 'Projection 1 (mm)', type: 'select', options: ['1500', '2000', '2500', '3000', '3500', '4000'], defaultValue: '1500', hint: 'Açılım 1 | 1500-4000 mm / 500 mm' },
+  { id: 'projection2', label: 'Projection 2 (mm)', type: 'select', options: ['1500', '2000', '2500', '3000', '3500', '4000'], defaultValue: '1500', hint: 'Açılım 2 | 1500-4000 mm / 500 mm' }
+];
+const PRF_C77_TWINS_MOTORLU_OPERATION = [
+  { id: 'controlType', label: 'Control Type', type: 'choice', options: ['Button Control', 'Remote Control'], defaultValue: 'Remote Control' },
+  { id: 'motor', label: 'Motor', type: 'select', options: ['Somfy RTS', 'Somfy IO'], defaultValue: 'Somfy RTS' },
+  { id: 'motorDirection1', label: 'Motor Direction 1', type: 'choice', options: ['Left', 'Right'] },
+  { id: 'motorDirection2', label: 'Motor Direction 2', type: 'choice', options: ['Same side as Direction 1', 'Opposite side of Direction 1'] },
+  { id: 'remoteControlSomfyRts', label: 'Remote Control', type: 'choice', options: ['1 Channel', '2 Channels', '4 Channels', '16 Channels'], showWhen: { field: 'motor', values: ['Somfy RTS'] } },
+  { id: 'remoteControlSomfyIo', label: 'Remote Control', type: 'choice', options: ['1 Channel', '2 Channels', '4 Channels', '40 Channels'], showWhen: { field: 'motor', values: ['Somfy IO'] } },
+  { id: 'crankHandleLength', label: 'Crank Handle Length', type: 'select', options: PRF_C73_CRANK_LENGTH_OPTIONS, defaultValue: 'Yok' }
+];
+const PRF_C77_TWINS_SANZIMANLI_OPERATION = [
+  { id: 'gearboxDirection1', label: 'Gearbox Direction 1', type: 'choice', options: ['Left', 'Right'] },
+  { id: 'gearboxDirection2', label: 'Gearbox Direction 2', type: 'choice', options: ['Same side as Direction 1', 'Opposite side of Direction 1'] },
+  { id: 'crankHandleLength', label: 'Crank Handle Length', type: 'select', options: PRF_C73_CRANK_LENGTH_OPTIONS, defaultValue: 'Yok' },
+  { id: 'motor', label: 'Compatible Sensor', type: 'select', options: ['Somfy RTS', 'Somfy IO'], defaultValue: 'Somfy RTS' },
+  { id: 'remoteControlSomfyRts', label: 'Remote Control', type: 'choice', options: ['1 Channel', '2 Channels', '4 Channels', '16 Channels'], showWhen: { field: 'motor', values: ['Somfy RTS'] } },
+  { id: 'remoteControlSomfyIo', label: 'Remote Control', type: 'choice', options: ['1 Channel', '2 Channels', '4 Channels', '40 Channels'], showWhen: { field: 'motor', values: ['Somfy IO'] } }
+];
+window.PRODUCT_DATA.productFormOverrides.twins_classic_awning_motorlu = {
+  ...(window.PRODUCT_DATA.productFormOverrides.twins_classic_awning_motorlu || {}),
+  projectDetails: PRF_C77_TWINS_PROJECT_DETAILS,
+  operation: PRF_C77_TWINS_MOTORLU_OPERATION
+};
+window.PRODUCT_DATA.productFormOverrides.twins_classic_awning_sanzimanli = {
+  ...(window.PRODUCT_DATA.productFormOverrides.twins_classic_awning_sanzimanli || {}),
+  operationTitle: 'Compatible Sensor & Remote Control',
+  projectDetails: PRF_C77_TWINS_PROJECT_DETAILS,
+  operation: PRF_C77_TWINS_SANZIMANLI_OPERATION
+};
 {
-  ['moonlight_classic_awning_motorlu', 'moonlight_classic_awning_sanzimanli'].forEach((id) => {
+  ['moonlight_classic_awning_motorlu', 'moonlight_classic_awning_sanzimanli', 'sunshine_classic_awning_motorlu', 'sunshine_classic_awning_sanzimanli', 'twins_classic_awning_motorlu', 'twins_classic_awning_sanzimanli'].forEach((id) => {
     const product = window.PRODUCT_DATA.products.find((item) => item.id === id);
     if (product) Object.assign(product, { group: 'zipAwning', formTemplate: 'janelaForm' });
   });
 }
 
+
+
+// C78: Twins Classic Awning does not use One Sided Roof.
+const PRF_C78_TWINS_SECTIONS_AFTER_DIMMERS = (window.PRODUCT_DATA.janelaForm.sectionsAfterDimmers || [])
+  .filter((section) => section?.title !== 'One Sided Roof');
+['twins_classic_awning_motorlu', 'twins_classic_awning_sanzimanli'].forEach((id) => {
+  window.PRODUCT_DATA.productFormOverrides[id] = {
+    ...(window.PRODUCT_DATA.productFormOverrides[id] || {}),
+    sectionsAfterDimmers: PRF_C78_TWINS_SECTIONS_AFTER_DIMMERS
+  };
+});
 
 // C74: Remove Arm Plastic Color from Pars / Moonlight awning variants only.
 (function removeArmPlasticForParsMoonlight() {
@@ -636,7 +720,11 @@ window.PRODUCT_DATA.productFormOverrides.moonlight_classic_awning_sanzimanli = {
     'pars_plus_cassette_awning',
     'pars_plus_luxe_cassette_awning',
     'moonlight_classic_awning_motorlu',
-    'moonlight_classic_awning_sanzimanli'
+    'moonlight_classic_awning_sanzimanli',
+    'sunshine_classic_awning_motorlu',
+    'sunshine_classic_awning_sanzimanli',
+    'twins_classic_awning_motorlu',
+    'twins_classic_awning_sanzimanli'
   ];
   ids.forEach((id) => {
     const current = window.PRODUCT_DATA.productFormOverrides[id] || {};
