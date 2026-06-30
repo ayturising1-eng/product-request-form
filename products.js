@@ -497,6 +497,7 @@ window.PRODUCT_DATA.janelaForm = {
   operation: [
     { id: 'controlType', label: 'Control Type', type: 'choice', options: ['Button Control', 'Remote Control'], defaultValue: 'Remote Control' },
     { id: 'motor', label: 'Motor', type: 'select', options: ['Somfy RTS', 'Somfy IO'], defaultValue: 'Somfy RTS' },
+    { id: 'motorDirection', label: 'Motor Direction', type: 'choice', options: ['Left', 'Right'] },
     { id: 'remoteControlSomfyRts', label: 'Remote Control', type: 'choice', options: ['1 Channel', '2 Channels', '4 Channels', '16 Channels'], showWhen: { field: 'motor', values: ['Somfy RTS'] } },
     { id: 'remoteControlSomfyIo', label: 'Remote Control', type: 'choice', options: ['1 Channel', '2 Channels', '4 Channels', '40 Channels'], showWhen: { field: 'motor', values: ['Somfy IO'] } }
   ],

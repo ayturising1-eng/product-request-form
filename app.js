@@ -1,4 +1,4 @@
-window.APP_VERSION = 'C70-JANELA-STICKY-BIORISE';
+window.APP_VERSION = 'C71-JANELA-MOTOR-DIRECTION';
 const DATA = window.PRODUCT_DATA;
 const $ = (selector) => document.querySelector(selector);
 const $$ = (selector) => Array.from(document.querySelectorAll(selector));
@@ -13,7 +13,7 @@ const state = {
 };
 
 const STORAGE_PROFILE = 'prf_profile_v2';
-const STORAGE_ORDER = 'prf_order_c70_janela_sticky_biorise';
+const STORAGE_ORDER = 'prf_order_c71_janela_motor_direction';
 const STORAGE_LANGUAGE = 'prf_language_v1';
 
 const COLOR_FIELD_LABELS = new Set([
