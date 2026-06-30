@@ -38,3 +38,9 @@ C44: Dynamic placeholders follow selected language; mobile section headings are 
 
 
 C57 Janela Cassette Awning: detailed form for Janela based on price list dimensions, colors, control, valance/printing, roof, sensors and packing.
+
+
+C65 fabric mobile labels:
+- Sauleda and Acrilla fabric page PNG files were converted to optimized JPG files to reduce GitHub/mobile load size.
+- Fabric page hotspots now show visible tap labels with name/code on the image.
+- Cache and local draft keys were bumped so mobile browsers load the new assets cleanly.

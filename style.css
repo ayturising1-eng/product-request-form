@@ -1212,21 +1212,22 @@ input:focus, textarea:focus, select:focus {
 }
 .sauleda-hotspot {
   position: absolute;
-  border: 1px solid rgba(107,114,128,.34);
-  border-radius: 8px;
-  background: rgba(255,255,255,.03);
-  box-shadow: inset 0 0 0 1px rgba(255,255,255,.12);
+  border: 1px solid rgba(156,163,175,.78);
+  border-radius: 0;
+  background: rgba(255,255,255,.01);
   cursor: pointer;
   touch-action: manipulation;
+  z-index: 2;
 }
+
 .sauleda-hotspot:hover,
 .sauleda-hotspot:focus-visible,
 .sauleda-hotspot.selected-hotspot {
   outline: 3px solid rgba(37,99,235,.35);
   outline-offset: -2px;
-  border-radius: 10px;
-  background: rgba(37,99,235,.08);
+  background: rgba(37,99,235,.06);
 }
+
 @media (max-width: 640px) {
   .sauleda-section-head {
     font-size: 16px;
@@ -1409,5 +1410,59 @@ input:focus, textarea:focus, select:focus {
   .sattler-page-card {
     padding: 8px;
     border-radius: 14px;
+  }
+}
+
+/* C65: mobile-friendly fabric-page tap labels for Sauleda / Acrilla / Sattler catalogs */
+.fabric-page-hotspot {
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  padding: 5px;
+  border: 1px solid rgba(17, 24, 39, .20);
+  background: rgba(255,255,255,.02);
+}
+.fabric-hotspot-label {
+  pointer-events: none;
+  width: min(100%, 164px);
+  max-width: calc(100% - 4px);
+  padding: 4px 6px;
+  border-radius: 9px;
+  background: rgba(17, 24, 39, .78);
+  color: #fff;
+  box-shadow: 0 5px 12px rgba(0,0,0,.20);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1px;
+  line-height: 1.05;
+  text-align: center;
+}
+.fabric-hotspot-name,
+.fabric-hotspot-code {
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.fabric-hotspot-name {
+  font-size: clamp(8px, 1.55vw, 12px);
+  font-weight: 750;
+}
+.fabric-hotspot-code {
+  font-size: clamp(10px, 1.9vw, 14px);
+  font-weight: 950;
+  letter-spacing: .01em;
+}
+.fabric-page-hotspot:hover .fabric-hotspot-label,
+.fabric-page-hotspot:focus-visible .fabric-hotspot-label,
+.fabric-page-hotspot.selected-hotspot .fabric-hotspot-label {
+  background: rgba(37, 99, 235, .92);
+}
+@media (max-width: 640px) {
+  .fabric-page-hotspot { padding: 3px; }
+  .fabric-hotspot-label {
+    padding: 3px 5px;
+    border-radius: 7px;
   }
 }

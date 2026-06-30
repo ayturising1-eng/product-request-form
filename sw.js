@@ -1,4 +1,4 @@
-const CACHE = 'product-request-form-c64-stable-fabric-catalogs';
+const CACHE = 'product-request-form-c65-fabric-mobile-labels';
 const ASSETS = [
   './',
   './index.html',
