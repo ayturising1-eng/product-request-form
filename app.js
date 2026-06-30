@@ -1,4 +1,4 @@
-window.APP_VERSION = 'C73-MOONLIGHT-PARS-LUXE';
+window.APP_VERSION = 'C74-REMOVE-ARM-PLASTIC';
 const DATA = window.PRODUCT_DATA;
 const $ = (selector) => document.querySelector(selector);
 const $$ = (selector) => Array.from(document.querySelectorAll(selector));
@@ -13,7 +13,7 @@ const state = {
 };
 
 const STORAGE_PROFILE = 'prf_profile_v2';
-const STORAGE_ORDER = 'prf_order_c73_moonlight_pars_luxe';
+const STORAGE_ORDER = 'prf_order_c74_remove_arm_plastic';
 const STORAGE_LANGUAGE = 'prf_language_v1';
 
 const COLOR_FIELD_LABELS = new Set([

@@ -627,3 +627,21 @@ window.PRODUCT_DATA.productFormOverrides.moonlight_classic_awning_sanzimanli = {
     if (product) Object.assign(product, { group: 'zipAwning', formTemplate: 'janelaForm' });
   });
 }
+
+
+// C74: Remove Arm Plastic Color from Pars / Moonlight awning variants only.
+(function removeArmPlasticForParsMoonlight() {
+  const ids = [
+    'pars_cassette_awning',
+    'pars_plus_cassette_awning',
+    'pars_plus_luxe_cassette_awning',
+    'moonlight_classic_awning_motorlu',
+    'moonlight_classic_awning_sanzimanli'
+  ];
+  ids.forEach((id) => {
+    const current = window.PRODUCT_DATA.productFormOverrides[id] || {};
+    const hiddenItems = { ...(current.hiddenItems || {}) };
+    hiddenItems.colorDetails = Array.from(new Set([...(hiddenItems.colorDetails || []), 'armPlasticColor']));
+    window.PRODUCT_DATA.productFormOverrides[id] = { ...current, hiddenItems };
+  });
+})();
