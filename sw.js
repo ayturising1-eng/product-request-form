@@ -1,4 +1,4 @@
-const CACHE = 'product-request-form-c80-pergola-rgbwhite-sticky-color-tabs';
+const CACHE = 'product-request-form-c83-pergola-lighting-dimmer-title';
 const ASSETS = [
   './',
   './index.html',

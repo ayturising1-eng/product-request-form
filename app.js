@@ -1,4 +1,4 @@
-window.APP_VERSION = 'C80-PERGOLA-RGBWHITE-STICKY-COLOR-TABS';
+window.APP_VERSION = 'C83-PERGOLA-LIGHTING-DIMMER-TITLE';
 const DATA = window.PRODUCT_DATA;
 const $ = (selector) => document.querySelector(selector);
 const $$ = (selector) => Array.from(document.querySelectorAll(selector));
@@ -13,7 +13,7 @@ const state = {
 };
 
 const STORAGE_PROFILE = 'prf_profile_v2';
-const STORAGE_ORDER = 'prf_order_c80_pergola_rgbwhite_sticky_color_tabs';
+const STORAGE_ORDER = 'prf_order_c83_pergola_lighting_dimmer_title';
 const STORAGE_LANGUAGE = 'prf_language_v1';
 
 const COLOR_FIELD_LABELS = new Set([
@@ -425,6 +425,8 @@ Object.assign(I18N.tr, {
   'Panel Options': 'Panel Seçenekleri',
   'Lighting': 'Aydınlatma',
   'Light Dimmers': 'Işık Dimmerleri',
+  'Lighting & Dimmers': 'Aydınlatma & Dimmerler',
+  'Lighting & Dimmer': 'Aydınlatma & Dimmer',
   'Sensors': 'Sensörler',
   'Heater & Packaging': 'Isıtıcı ve Ambalaj',
   'Colours / System': 'Renkler / Sistem',
@@ -512,6 +514,8 @@ Object.assign(I18N.de, {
   'Panel Options': 'Panel-Optionen',
   'Lighting': 'Beleuchtung',
   'Light Dimmers': 'Lichtdimmer',
+  'Lighting & Dimmers': 'Beleuchtung & Dimmer',
+  'Lighting & Dimmer': 'Beleuchtung & Dimmer',
   'Sensors': 'Sensoren',
   'Heater & Packaging': 'Heizung und Verpackung',
   'Colours / System': 'Farben / System',
@@ -566,6 +570,8 @@ Object.assign(I18N.fr, {
   'Panel Options': 'Options de panneau',
   'Lighting': 'Éclairage',
   'Light Dimmers': 'Variateurs de lumière',
+  'Lighting & Dimmers': 'Éclairage & variateurs',
+  'Lighting & Dimmer': 'Éclairage & variateur',
   'Sensors': 'Capteurs',
   'Heater & Packaging': 'Chauffage et emballage',
   'Colours / System': 'Couleurs / Système',
@@ -620,6 +626,8 @@ Object.assign(I18N.he, {
   'Panel Options': 'אפשרויות פנל',
   'Lighting': 'תאורה',
   'Light Dimmers': 'עמעמי תאורה',
+  'Lighting & Dimmers': 'תאורה ועמעמים',
+  'Lighting & Dimmer': 'תאורה ועמעם',
   'Sensors': 'חיישנים',
   'Heater & Packaging': 'חימום ואריזה',
   'Colours / System': 'צבעים / מערכת',
@@ -5017,6 +5025,82 @@ function createCheckboxSection(title, fieldName, items) {
 }
 
 
+function createLightingDimmersSection(form) {
+  const section = document.createElement('div');
+  section.className = 'dynamic-section lighting-dimmers-section';
+  section.id = 'section_lighting_dimmers';
+
+  const h3 = document.createElement('h3');
+  const sectionTitle = form.lightingDimmersTitle || 'Lighting & Dimmers';
+  h3.textContent = translatedText(sectionTitle);
+  section.appendChild(h3);
+
+  if (form.lighting?.length) {
+    if (typeof form.lighting[0] === 'string') {
+      const grid = document.createElement('div');
+      grid.className = 'checkbox-grid';
+      form.lighting.forEach((option) => {
+        const id = `lighting_${safeId(option)}`;
+        const label = document.createElement('label');
+        const input = document.createElement('input');
+        const span = document.createElement('span');
+        input.id = id;
+        input.type = 'checkbox';
+        input.name = 'lighting';
+        input.value = option;
+        input.addEventListener('change', onAnyInput);
+        span.textContent = translatedText(option);
+        label.appendChild(input);
+        label.appendChild(span);
+        grid.appendChild(label);
+      });
+      section.appendChild(grid);
+
+      if (form.lighting.includes('Other')) {
+        const otherLabel = document.createElement('label');
+        otherLabel.id = 'lightingOtherWrap';
+        otherLabel.className = 'unit-label lighting-other-input';
+        otherLabel.hidden = true;
+        otherLabel.textContent = translatedText('Other Lighting');
+        otherLabel.dataset.dynamicLabelKey = 'Other Lighting';
+
+        const wrap = document.createElement('div');
+        wrap.className = 'input-unit-wrap';
+        const input = document.createElement('input');
+        input.id = 'dyn_lightingOther';
+        input.type = 'text';
+        input.dataset.fieldId = 'lightingOther';
+        input.dataset.fieldLabel = 'Other Lighting';
+        input.dataset.placeholderKey = 'Enter value';
+        input.placeholder = translatedText('Enter value');
+        input.addEventListener('input', onAnyInput);
+        input.addEventListener('change', onAnyInput);
+        input.addEventListener('change', autoAdvanceOnChange);
+        input.addEventListener('keydown', autoAdvanceOnEnter);
+        wrap.appendChild(input);
+        otherLabel.appendChild(wrap);
+        section.appendChild(otherLabel);
+      }
+    } else {
+      const lightingGrid = document.createElement('div');
+      lightingGrid.className = 'grid two';
+      form.lighting.forEach((item) => lightingGrid.appendChild(createInputField(item)));
+      section.appendChild(lightingGrid);
+    }
+  }
+
+  const dimmerItems = form.dimmers?.length ? form.dimmers : (form.dimmer?.length ? form.dimmer : []);
+  if (dimmerItems.length) {
+    const dimmerGrid = document.createElement('div');
+    dimmerGrid.className = 'grid two';
+    dimmerItems.forEach((item) => dimmerGrid.appendChild(createInputField(item)));
+    section.appendChild(dimmerGrid);
+  }
+
+  return section;
+}
+
+
 function isJanelaCassetteAwning(product = getProduct()) {
   return isJanelaAwningProduct(product);
 }
@@ -5062,9 +5146,8 @@ function renderGalaxyForm() {
     wrap.appendChild(createFormSection(form.operationTitle || 'Motor & Remote Control', form.operation, 'grid two'));
   }
   if (form.panelOptions?.length) wrap.appendChild(createFormSection('Panel Options', form.panelOptions, 'grid two'));
-  if (form.lighting?.length) wrap.appendChild(createCheckboxSection('Lighting', 'lighting', form.lighting));
-  if (form.dimmers?.length) {
-    wrap.appendChild(createFormSection('Light Dimmers', form.dimmers, 'grid two'));
+  if (form.lighting?.length || form.dimmers?.length) {
+    wrap.appendChild(createLightingDimmersSection(form));
   }
   if (isJanela) {
     (form.sectionsAfterDimmers || []).forEach((section) => {
@@ -5102,8 +5185,7 @@ function renderPergolaForm() {
   wrap.appendChild(createProjectDetailsSection(form.projectDetails));
   wrap.appendChild(createFormSection('Colours', form.colorDetails, 'grid two'));
   wrap.appendChild(createFormSection('Motor & Remote Control', form.operation, 'grid two'));
-  wrap.appendChild(createFormSection('Lighting', form.lighting, 'grid two'));
-  wrap.appendChild(createFormSection('Dimmer', form.dimmer, 'grid two'));
+  wrap.appendChild(createLightingDimmersSection(form));
   wrap.appendChild(createFormSection('Heater & Sound & Packing', form.heaterPackaging, 'grid two'));
   updateAutoUnits();
   updateConditionalFields();
@@ -5350,9 +5432,12 @@ function galaxyRows(lang = state.language) {
     sections.push({ title: translatedText(form.operationTitle || 'Motor & Remote Control', lang), rows: fieldRows(form.operation, lang) });
   }
   if (form.panelOptions?.length) sections.push({ title: translatedText('Panel Options', lang), rows: fieldRows(form.panelOptions, lang) });
-  if (form.lighting?.length) sections.push({ title: translatedText('Lighting', lang), rows: [[translatedText('Selected', lang), lightingDisplayValue(lang)]] });
-  if (form.dimmers?.length) {
-    sections.push({ title: translatedText('Light Dimmers', lang), rows: fieldRows(form.dimmers, lang) });
+  if (form.lighting?.length || form.dimmers?.length) {
+    const lightingDimmerRows = [];
+    const lightingDimmerTitle = form.lightingDimmersTitle || 'Lighting & Dimmers';
+    if (form.lighting?.length) lightingDimmerRows.push([translatedText('Lighting', lang), lightingDisplayValue(lang)]);
+    if (form.dimmers?.length) lightingDimmerRows.push(...fieldRows(form.dimmers, lang));
+    sections.push({ title: translatedText(lightingDimmerTitle, lang), rows: lightingDimmerRows });
   }
   if (isJanela) {
     appendJanelaPreviewSections(form, sections, lang);
@@ -5382,8 +5467,7 @@ function pergolaRows(lang = state.language) {
       ...projectDetailSections(form.projectDetails, lang),
       { title: translatedText('Colours', lang), rows: fieldRows(form.colorDetails, lang) },
       { title: translatedText('Motor & Remote Control', lang), rows: fieldRows(form.operation, lang) },
-      { title: translatedText('Lighting', lang), rows: fieldRows(form.lighting, lang) },
-      { title: translatedText('Dimmer', lang), rows: fieldRows(form.dimmer, lang) },
+      { title: translatedText(form.lightingDimmersTitle || 'Lighting & Dimmers', lang), rows: [...fieldRows(form.lighting, lang), ...fieldRows(form.dimmer, lang)] },
       { title: translatedText('Heater & Sound & Packing', lang), rows: fieldRows(form.heaterPackaging, lang) }
     ]
   };

@@ -145,6 +145,7 @@ window.PRODUCT_DATA = {
     }
   },
   pergolaForm: {
+    lightingDimmersTitle: 'Lighting & Dimmer',
     projectDetails: [
       { id: 'productQuantity', label: 'Product Quantity', type: 'number', unitAuto: 'pcpcs' },
       { id: 'width', label: 'Width', type: 'number', unit: 'mm' },
@@ -414,6 +415,7 @@ window.PRODUCT_DATA.productFormOverrides.bio_rise = {
   ]
 };
 window.PRODUCT_DATA.galaxyForm.lighting = ['Linear LED', 'Linear RGB', 'Linear Rgb+White', 'Spot LED', 'Other'];
+window.PRODUCT_DATA.galaxyForm.lightingDimmersTitle = 'Lighting & Dimmer';
 window.PRODUCT_DATA.pergolaForm.lighting = [
   { id: 'lightingType', label: 'Lighting', type: 'choice', options: ['No', 'Daylight', 'White', 'RGB', 'Rgb+White', 'Other'] },
   { id: 'lightingOther', label: 'Other Lighting', type: 'text', showWhen: { field: 'lightingType', values: ['Other'] } }
