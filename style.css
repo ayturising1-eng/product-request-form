@@ -471,6 +471,14 @@ td:first-child { width: 42%; font-weight: 800; background: #f9fafb; }
   gap: 10px;
   margin-bottom: 12px;
 }
+.color-chart-panel.janela-fabric-picker .color-catalog-tabs {
+  position: sticky;
+  top: 0;
+  z-index: 6;
+  margin: -6px 0 12px;
+  padding: 6px 0 12px;
+  background: linear-gradient(180deg, #f3f4f6 0%, #f3f4f6 85%, rgba(243, 244, 246, 0) 100%);
+}
 .color-catalog-tab {
   min-height: 44px;
   border: 1px solid #d1d5db;

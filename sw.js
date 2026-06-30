@@ -1,4 +1,4 @@
-const CACHE = 'product-request-form-c69-final-light';
+const CACHE = 'product-request-form-c70-janela-sticky-biorise';
 const ASSETS = [
   './',
   './index.html',

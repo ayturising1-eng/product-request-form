@@ -390,6 +390,19 @@ window.PRODUCT_DATA.productFormOverrides.space = {
     }
   ]
 };
+window.PRODUCT_DATA.productFormOverrides.bio_rise = {
+  ...(window.PRODUCT_DATA.productFormOverrides.bio_rise || {}),
+  operation: [
+    { id: 'motor', label: 'Motor & Reducer', type: 'select', options: ['No', 'Motorlu', 'Manuel'] },
+    {
+      id: 'remoteControl',
+      label: 'Remote Control',
+      type: 'choice',
+      options: ['1 Channel', '2 Channels', '4 Channels', '16 Channels'],
+      showWhen: { field: 'motor', values: ['Motorlu'] }
+    }
+  ]
+};
 window.PRODUCT_DATA.galaxyForm.lighting = ['Linear LED', 'Linear RGB', 'Linear Rgb+White', 'Spot LED', 'Other'];
 window.PRODUCT_DATA.pergolaForm.lighting = [
   { id: 'lightingType', label: 'Lighting', type: 'choice', options: ['No', 'Daylight', 'White', 'RGB', 'Linear Rgb+White', 'Other'] },
@@ -476,9 +489,9 @@ window.PRODUCT_DATA.janelaForm = {
     { id: 'projection', label: 'Projection (mm)', type: 'select', options: ['500', '750', '1000', '1250', '1500', '1750', '2000'], defaultValue: '500' }
   ],
   colorDetails: [
-    { id: 'armPlasticColor', label: 'Arm Plastic Color', type: 'choice', options: ['White', 'Black', 'Brown'], defaultValue: 'White' },
     { id: 'systemColor', label: 'System Color', type: 'text', palette: true, defaultValue: 'RAL 9016' },
     { id: 'systemColorFinish', label: 'Finish', type: 'choice', options: window.PRODUCT_FINISH_OPTIONS, defaultValue: 'Glossy' },
+    { id: 'armPlasticColor', label: 'Arm Plastic Color', type: 'choice', options: ['White', 'Black', 'Brown'], defaultValue: 'White' },
     { id: 'fabric', label: 'Fabric Color', type: 'text', picker: 'fabric', fullWidth: true }
   ],
   operation: [
