@@ -1,4 +1,4 @@
-window.APP_VERSION = 'C98-GUILLOTINE-MOTOR-DIRECTION-PROJECT';
+window.APP_VERSION = 'C99-FIXED-CEILING-GLASS';
 const DATA = window.PRODUCT_DATA;
 const $ = (selector) => document.querySelector(selector);
 const $$ = (selector) => Array.from(document.querySelectorAll(selector));
@@ -13,7 +13,7 @@ const state = {
 };
 
 const STORAGE_PROFILE = 'prf_profile_v2';
-const STORAGE_ORDER = 'prf_order_c98_guillotine_motor_direction_project';
+const STORAGE_ORDER = 'prf_order_c99_fixed_ceiling_glass';
 const STORAGE_LANGUAGE = 'prf_language_v1';
 
 const COLOR_FIELD_LABELS = new Set([
@@ -5234,6 +5234,13 @@ function createLightingDimmersSection(form) {
     section.appendChild(dimmerGrid);
   }
 
+  if (form.lightingRemote?.length) {
+    const remoteGrid = document.createElement('div');
+    remoteGrid.className = 'grid two';
+    form.lightingRemote.forEach((item) => remoteGrid.appendChild(createInputField(item)));
+    section.appendChild(remoteGrid);
+  }
+
   return section;
 }
 
@@ -5327,7 +5334,7 @@ function renderPergolaForm() {
   wrap.innerHTML = '';
   wrap.appendChild(createProjectDetailsSection(form.projectDetails));
   wrap.appendChild(createFormSection('Colours', form.colorDetails, 'grid two'));
-  wrap.appendChild(createFormSection('Motor & Remote Control', form.operation, 'grid two'));
+  if (form.operation?.length) wrap.appendChild(createFormSection('Motor & Remote Control', form.operation, 'grid two'));
   wrap.appendChild(createLightingDimmersSection(form));
   wrap.appendChild(createFormSection('Heater & Sound & Packing', form.heaterPackaging, 'grid two'));
   updateAutoUnits();
@@ -6667,4 +6674,12 @@ Object.assign(I18N.he, {
 
 
 
+
+
+
+Object.assign(I18N.en, { 'Lighting & Dimmer & Remote': 'Lighting & Dimmer & Remote' });
+Object.assign(I18N.tr, { 'Lighting & Dimmer & Remote': 'Aydınlatma & Dimmer & Kumanda' });
+Object.assign(I18N.de, { 'Lighting & Dimmer & Remote': 'Beleuchtung & Dimmer & Fernbedienung' });
+Object.assign(I18N.fr, { 'Lighting & Dimmer & Remote': 'Éclairage & Variateur & Télécommande' });
+Object.assign(I18N.he, { 'Lighting & Dimmer & Remote': 'Lighting & Dimmer & Remote' });
 

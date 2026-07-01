@@ -58,9 +58,7 @@ window.PRODUCT_DATA = {
         { id: 'glass_folding', label: 'Folding' },
         { id: 'glass_sliding', label: 'Sliding' },
         { id: 'glass_guillotine', label: 'Guillotine' },
-        { id: 'glass_fixed_joinery', label: 'Fixed Joinery', productId: 'glass_fixed_joinery' },
-        { id: 'glass_fixed_ceiling', label: 'Fixed Ceiling', productId: 'glass_fixed_ceiling' },
-        { id: 'glass_energetic_ceiling', label: 'Energetic Ceiling', productId: 'glass_energetic_ceiling' }
+        { id: 'glass_fixed_ceiling', label: 'Fixed Ceiling Glass', productId: 'glass_fixed_ceiling' }
       ]
     },
     subGroups: {
@@ -397,9 +395,7 @@ window.PRODUCT_DATA = {
     { id: 'glass_sliding_k_series_smart', name: 'GLASS SYSTEMS SLIDING K SERIES – SMART', family: 'glass_systems', productGroup: 'glass_sliding', subGroup: 'k_series_smart' },
     { id: 'glass_guillotine_a_series_premium', name: 'GLASS SYSTEMS GUILLOTINE A SERIES – PREMIUM', family: 'glass_systems', productGroup: 'glass_guillotine', subGroup: 'a_series_premium' },
     { id: 'glass_guillotine_k_series_smart', name: 'GLASS SYSTEMS GUILLOTINE K SERIES – SMART', family: 'glass_systems', productGroup: 'glass_guillotine', subGroup: 'k_series_smart' },
-    { id: 'glass_fixed_joinery', name: 'GLASS SYSTEMS FIXED JOINERY', family: 'glass_systems', productGroup: 'glass_fixed_joinery', subGroup: '' },
-    { id: 'glass_fixed_ceiling', name: 'GLASS SYSTEMS FIXED CEILING', family: 'glass_systems', productGroup: 'glass_fixed_ceiling', subGroup: '' },
-    { id: 'glass_energetic_ceiling', name: 'GLASS SYSTEMS ENERGETIC CEILING', family: 'glass_systems', productGroup: 'glass_energetic_ceiling', subGroup: '' }
+    { id: 'glass_fixed_ceiling', name: 'GLASS SYSTEMS FIXED CEILING GLASS', family: 'glass_systems', productGroup: 'glass_fixed_ceiling', subGroup: '', group: 'pergola', formTemplate: 'pergolaForm' }
   ]
 };
 
@@ -941,3 +937,21 @@ function PRF_C95_applyGlassGuillotineOverride(productId, projectDetails) {
 PRF_C95_applyGlassGuillotineOverride('glass_guillotine_a_series_premium', PRF_C95_GUILLOTINE_A_PROJECT_DETAILS);
 PRF_C95_applyGlassGuillotineOverride('glass_guillotine_k_series_smart', PRF_C95_GUILLOTINE_K_PROJECT_DETAILS);
 
+
+
+// C99: Fixed Ceiling Glass uses Pergo Rise base without fabric/motor, with B-Cube lighting and remote under the same title.
+window.PRODUCT_DATA.productFormOverrides.glass_fixed_ceiling = {
+  ...(window.PRODUCT_DATA.productFormOverrides.glass_fixed_ceiling || {}),
+  colorDetails: [
+    { id: 'structure', label: 'Structure', type: 'text', palette: true },
+    { id: 'structureFinish', label: 'Finish', type: 'choice', options: window.PRODUCT_FINISH_OPTIONS }
+  ],
+  operation: [],
+  lightingDimmersTitle: 'Lighting & Dimmer & Remote',
+  lighting: window.PRODUCT_DATA.galaxyForm.lighting,
+  dimmers: window.PRODUCT_DATA.galaxyForm.dimmers,
+  lightingRemote: [
+    { id: 'remoteControl', label: 'Remote Control', type: 'choice', options: ['1 Channel', '2 Channels', '4 Channels', '16 Channels'] }
+  ],
+  heaterPackaging: []
+};
