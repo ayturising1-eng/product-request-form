@@ -1,4 +1,4 @@
-window.APP_VERSION = 'C94-SLIDING-SERIES-FORMS';
+window.APP_VERSION = 'C95-GUILLOTINE-SERIES-FORMS';
 const DATA = window.PRODUCT_DATA;
 const $ = (selector) => document.querySelector(selector);
 const $$ = (selector) => Array.from(document.querySelectorAll(selector));
@@ -13,7 +13,7 @@ const state = {
 };
 
 const STORAGE_PROFILE = 'prf_profile_v2';
-const STORAGE_ORDER = 'prf_order_c94_sliding_series_forms';
+const STORAGE_ORDER = 'prf_order_c95_guillotine_series_forms';
 const STORAGE_LANGUAGE = 'prf_language_v1';
 
 const COLOR_FIELD_LABELS = new Set([
@@ -1649,6 +1649,11 @@ const GLASS_SLIDING_SERIES_PRODUCT_IDS = new Set([
   'glass_sliding_k_series_smart'
 ]);
 
+const GLASS_GUILLOTINE_SERIES_PRODUCT_IDS = new Set([
+  'glass_guillotine_a_series_premium',
+  'glass_guillotine_k_series_smart'
+]);
+
 const JANELA_AWNING_LIMITS = {
   janela_cassette_awning: { maxWidth: 4000, projectionLtWidth: false },
   pars_cassette_awning: { maxWidth: 5000, projectionLtWidth: true },
@@ -1679,6 +1684,14 @@ function isGlassFoldingASeriesProduct(product = getProduct()) {
 
 function isGlassSlidingSeriesProduct(product = getProduct()) {
   return GLASS_SLIDING_SERIES_PRODUCT_IDS.has(product?.id);
+}
+
+function isGlassGuillotineSeriesProduct(product = getProduct()) {
+  return GLASS_GUILLOTINE_SERIES_PRODUCT_IDS.has(product?.id);
+}
+
+function isGlassGuillotineKSeriesProduct(product = getProduct()) {
+  return product?.id === 'glass_guillotine_k_series_smart';
 }
 
 function colorCatalogs() {
@@ -5296,10 +5309,12 @@ function renderGalaxyForm() {
   syncJanelaLinkedFields();
   syncGlassFoldingPanelCount();
   syncGlassSlidingPanelCount();
+  updateGlassGuillotineDynamicRules();
   refreshDynamicLanguage();
   updateGlassFoldingDynamicHints();
   validateJanelaAwningRules();
   validateGlassFoldingRules();
+  validateGlassGuillotineRules();
 }
 
 function renderPergolaForm() {
@@ -6011,6 +6026,129 @@ function validateGlassFoldingRules({ showToast = false } = {}) {
   return messages.length === 0;
 }
 
+
+function glassGuillotineWidthLimit(glassThickness, guillotineType) {
+  if (glassThickness === '8 mm') return 3500;
+  if (guillotineType === 'Upward Collecting') return 3500;
+  return 4000;
+}
+
+function glassGuillotineHeightLimit(guillotineType) {
+  return guillotineType === 'Upward Collecting' ? 4500 : 4000;
+}
+
+function glassGuillotineWidthHintText(glassThickness, guillotineType) {
+  if (!glassThickness && !guillotineType) return state.language === 'tr' ? 'Seçime göre Max. değer' : 'Max. depends on selection';
+  return `Max. ${glassGuillotineWidthLimit(glassThickness, guillotineType)} mm`;
+}
+
+function glassGuillotineHeightHintText(guillotineType) {
+  return `Max. ${glassGuillotineHeightLimit(guillotineType)} mm`;
+}
+
+function setChoiceOptionState(fieldId, option, enabled) {
+  $$(`input[type="radio"][name="dyn_${fieldId}"]`).forEach((radio) => {
+    if (radio.value !== option) return;
+    radio.disabled = !enabled;
+    const label = radio.closest('label');
+    if (label) label.classList.toggle('hidden', !enabled);
+    if (!enabled && radio.checked) radio.checked = false;
+  });
+}
+
+function ensureChoiceHasAllowedValue(fieldId, allowedValues) {
+  const radios = $$(`input[type="radio"][name="dyn_${fieldId}"]`);
+  if (!radios.length) return;
+  const checked = radios.find((radio) => radio.checked && !radio.disabled && allowedValues.includes(radio.value));
+  if (checked) return;
+  const next = radios.find((radio) => !radio.disabled && allowedValues.includes(radio.value));
+  if (next) next.checked = true;
+}
+
+function updateGlassGuillotineChoicesForSuffix(suffix = '') {
+  const glassThickness = getFieldValue({ id: `glassThickness${suffix}` });
+  const typeField = `guillotineType${suffix}`;
+  const mechanismField = `mechanism${suffix}`;
+  const panelField = `panelLayout${suffix}`;
+
+  const typeAllowed = isGlassGuillotineKSeriesProduct()
+    ? ['Standard', 'Cleanable']
+    : (glassThickness === '8 mm' ? ['Standard'] : ['Standard', 'Cleanable', 'Upward Collecting']);
+  ['Standard', 'Cleanable', 'Upward Collecting'].forEach((option) => setChoiceOptionState(typeField, option, typeAllowed.includes(option)));
+  ensureChoiceHasAllowedValue(typeField, typeAllowed);
+
+  const guillotineType = getFieldValue({ id: typeField });
+  const mechanismAllowed = isGlassGuillotineKSeriesProduct()
+    ? ['Belt']
+    : ((glassThickness === '8 mm' || guillotineType === 'Upward Collecting') ? ['Chain'] : ['Chain', 'Belt']);
+  ['Chain', 'Belt'].forEach((option) => setChoiceOptionState(mechanismField, option, mechanismAllowed.includes(option)));
+  ensureChoiceHasAllowedValue(mechanismField, mechanismAllowed);
+
+  const panelAllowed = guillotineType === 'Upward Collecting' ? ['1+2'] : ['1+1', '1+2'];
+  ['1+1', '1+2'].forEach((option) => setChoiceOptionState(panelField, option, panelAllowed.includes(option)));
+  ensureChoiceHasAllowedValue(panelField, panelAllowed);
+}
+
+function updateGlassGuillotineDynamicHints() {
+  if (!isGlassGuillotineSeriesProduct()) return;
+  $$('[data-field-id]').filter((el) => /^width(__pos\d+)?$/.test(el.dataset.fieldId || '')).forEach((widthInput) => {
+    const suffix = glassPositionSuffixFromWidthField(widthInput.dataset.fieldId);
+    const glassThickness = getFieldValue({ id: `glassThickness${suffix}` });
+    const guillotineType = getFieldValue({ id: `guillotineType${suffix}` });
+    const widthHint = widthInput.closest('label')?.querySelector('.field-hint');
+    if (widthHint) widthHint.textContent = glassGuillotineWidthHintText(glassThickness, guillotineType);
+    const heightInput = glassFieldInput('height', suffix);
+    const heightHint = heightInput?.closest('label')?.querySelector('.field-hint');
+    if (heightHint) heightHint.textContent = glassGuillotineHeightHintText(guillotineType);
+  });
+}
+
+function updateGlassGuillotineDynamicRules() {
+  if (!isGlassGuillotineSeriesProduct()) return;
+  $$('[data-field-id]').filter((el) => /^width(__pos\d+)?$/.test(el.dataset.fieldId || '')).forEach((widthInput) => {
+    const suffix = glassPositionSuffixFromWidthField(widthInput.dataset.fieldId);
+    updateGlassGuillotineChoicesForSuffix(suffix);
+  });
+  updateGlassGuillotineDynamicHints();
+  updateConditionalFields();
+}
+
+function validateGlassGuillotineRules({ showToast = false } = {}) {
+  if (!isGlassGuillotineSeriesProduct()) return true;
+  const messages = [];
+  let focusTarget = null;
+
+  $$('[data-field-id]').filter((el) => /^width(__pos\d+)?$/.test(el.dataset.fieldId || '')).forEach((widthInput) => {
+    const suffix = glassPositionSuffixFromWidthField(widthInput.dataset.fieldId);
+    const heightInput = glassFieldInput('height', suffix);
+    const glassThickness = getFieldValue({ id: `glassThickness${suffix}` });
+    const guillotineType = getFieldValue({ id: `guillotineType${suffix}` });
+    const width = Number(String(widthInput.value || '').replace(',', '.'));
+    const height = Number(String(heightInput?.value || '').replace(',', '.'));
+    const widthLimit = glassGuillotineWidthLimit(glassThickness, guillotineType);
+    const heightLimit = glassGuillotineHeightLimit(guillotineType);
+    const widthMessages = [];
+    const heightMessages = [];
+    if (Number.isFinite(width) && width > widthLimit) widthMessages.push(glassRuleMessage('maxWidth', widthLimit));
+    if (Number.isFinite(height) && height > heightLimit) heightMessages.push(glassRuleMessage('maxHeight', heightLimit));
+    setFieldValidity(widthInput, widthMessages);
+    setFieldValidity(heightInput, heightMessages);
+    [...widthMessages, ...heightMessages].forEach((message) => {
+      if (!messages.includes(message)) messages.push(message);
+    });
+    if (!focusTarget) {
+      if (widthMessages.length) focusTarget = widthInput;
+      else if (heightMessages.length) focusTarget = heightInput;
+    }
+  });
+
+  if (messages.length && showToast) {
+    toast(messages.join(' '));
+    focusTarget?.focus?.();
+  }
+  return messages.length === 0;
+}
+
 function syncJanelaLinkedFields() {
   if (!isJanelaAwningProduct()) return;
   const fabric = $('#dyn_fabric');
@@ -6030,12 +6168,14 @@ function onAnyInput() {
   syncJanelaLinkedFields();
   syncGlassFoldingPanelCount();
   syncGlassSlidingPanelCount();
+  updateGlassGuillotineDynamicRules();
   updateGlassFoldingDynamicHints();
   updateConditionalFields();
   updateLightingOtherVisibility();
   updateAutoUnits();
   validateJanelaAwningRules();
   validateGlassFoldingRules();
+  validateGlassGuillotineRules();
   saveOrderDraft();
   updatePreview();
 }
@@ -6263,7 +6403,7 @@ function downloadBlob(blob, filename) {
 }
 
 async function downloadPdf() {
-  if (!validateJanelaAwningRules({ showToast: true }) || !validateGlassFoldingRules({ showToast: true })) return;
+  if (!validateJanelaAwningRules({ showToast: true }) || !validateGlassFoldingRules({ showToast: true }) || !validateGlassGuillotineRules({ showToast: true })) return;
   const data = getOrderData('en');
   const blob = buildOrderPdf(data);
   downloadBlob(blob, filenameFromData(data));
@@ -6271,7 +6411,7 @@ async function downloadPdf() {
 }
 
 async function sharePdf() {
-  if (!validateJanelaAwningRules({ showToast: true }) || !validateGlassFoldingRules({ showToast: true })) return;
+  if (!validateJanelaAwningRules({ showToast: true }) || !validateGlassFoldingRules({ showToast: true }) || !validateGlassGuillotineRules({ showToast: true })) return;
   const data = getOrderData('en');
   const blob = buildOrderPdf(data);
   const filename = filenameFromData(data);
@@ -6342,7 +6482,7 @@ $('#installBtn').addEventListener('click', async () => {
 
 async function initPwa() {
   if ('serviceWorker' in navigator && location.protocol.startsWith('http')) {
-    try { await navigator.serviceWorker.register('sw.js?v=c94-sliding-series-forms'); } catch {}
+    try { await navigator.serviceWorker.register('sw.js?v=c95-guillotine-series-forms'); } catch {}
   }
 }
 
@@ -6421,6 +6561,54 @@ Object.assign(I18N.he, {
   'Opening Type': 'Opening Type',
   'Side Opening': 'Side Opening',
   'Center Opening': 'Center Opening'
+});
+
+
+Object.assign(I18N.en, {
+  'Cleanable': 'Cleanable',
+  'Upward Collecting': 'Upward Collecting',
+  'Mechanism': 'Mechanism',
+  'Chain': 'Chain',
+  'Belt': 'Belt',
+  'Motor Direction (Inside View)': 'Motor Direction (Inside View)',
+  'Motor Type': 'Motor Type'
+});
+Object.assign(I18N.tr, {
+  'Cleanable': 'Silinebilir',
+  'Upward Collecting': 'Yukarı Toplanır',
+  'Mechanism': 'Mekanizma',
+  'Chain': 'Zincirli',
+  'Belt': 'Kayışlı',
+  'Motor Direction (Inside View)': 'Motor Yönü (İç Bakış)',
+  'Motor Type': 'Motor Türü',
+  'No': 'Yok'
+});
+Object.assign(I18N.de, {
+  'Cleanable': 'Reinigbar',
+  'Upward Collecting': 'Nach oben sammelnd',
+  'Mechanism': 'Mechanismus',
+  'Chain': 'Kette',
+  'Belt': 'Riemen',
+  'Motor Direction (Inside View)': 'Motorrichtung (Innenansicht)',
+  'Motor Type': 'Motortyp'
+});
+Object.assign(I18N.fr, {
+  'Cleanable': 'Nettoyable',
+  'Upward Collecting': 'Repliable vers le haut',
+  'Mechanism': 'Mécanisme',
+  'Chain': 'Chaîne',
+  'Belt': 'Courroie',
+  'Motor Direction (Inside View)': 'Sens moteur (vue intérieure)',
+  'Motor Type': 'Type de moteur'
+});
+Object.assign(I18N.he, {
+  'Cleanable': 'Cleanable',
+  'Upward Collecting': 'Upward Collecting',
+  'Mechanism': 'Mechanism',
+  'Chain': 'Chain',
+  'Belt': 'Belt',
+  'Motor Direction (Inside View)': 'Motor Direction (Inside View)',
+  'Motor Type': 'Motor Type'
 });
 
 function init() {

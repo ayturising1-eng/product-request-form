@@ -898,3 +898,43 @@ function PRF_C94_applyGlassSlidingOverride(productId, projectDetails) {
 PRF_C94_applyGlassSlidingOverride('glass_sliding_a_series_premium', PRF_C94_SLIDING_A_PROJECT_DETAILS);
 PRF_C94_applyGlassSlidingOverride('glass_sliding_k_series_smart', PRF_C94_SLIDING_K_PROJECT_DETAILS);
 
+// C95: Glass Systems / Guillotine / A & K Series custom forms.
+const PRF_C95_GUILLOTINE_A_PROJECT_DETAILS = [
+  { id: 'glassThickness', label: 'Glass Thickness', type: 'choice', options: ['8 mm', 'Insulated Glass'] },
+  { id: 'guillotineType', label: 'Type', type: 'choice', options: ['Standard', 'Cleanable', 'Upward Collecting'], defaultValue: 'Standard' },
+  { id: 'mechanism', label: 'Mechanism', type: 'choice', options: ['Chain', 'Belt'], defaultValue: 'Chain' },
+  { id: 'width', label: 'Width', type: 'number', unit: 'mm', hint: 'Max. value depends on selection' },
+  { id: 'height', label: 'Height', type: 'number', unit: 'mm', hint: 'Max. value depends on selection' },
+  { id: 'panelLayout', label: 'Panel Count', type: 'choice', options: ['1+1', '1+2'], defaultValue: '1+1' },
+  { id: 'systemQuantity', label: 'Quantity', type: 'number', min: '1', step: '1' },
+  { id: 'motorDirectionInsideView', label: 'Motor Direction (Inside View)', type: 'choice', options: ['Right', 'Left'] },
+  { id: 'motor', label: 'Motor Type', type: 'select', options: ['No', 'Somfy RTS', 'Somfy IO', 'Rising'], defaultValue: 'No' },
+  { id: 'remoteControlSomfyRts', label: 'Remote Control', type: 'choice', options: ['1 Channel', '2 Channels', '4 Channels', '16 Channels'], showWhen: { field: 'motor', values: ['Somfy RTS'] } },
+  { id: 'remoteControlSomfyIo', label: 'Remote Control', type: 'choice', options: ['1 Channel', '2 Channels', '4 Channels', '40 Channels'], showWhen: { field: 'motor', values: ['Somfy IO'] } },
+  { id: 'remoteControlRising', label: 'Remote Control', type: 'choice', options: ['1 Channel', '6 Channels'], showWhen: { field: 'motor', values: ['Rising'] } }
+];
+const PRF_C95_GUILLOTINE_K_PROJECT_DETAILS = PRF_C95_GUILLOTINE_A_PROJECT_DETAILS.map((field) => {
+  if (field.id === 'glassThickness') return { ...field, options: ['Insulated Glass'], defaultValue: 'Insulated Glass' };
+  if (field.id === 'guillotineType') return { ...field, options: ['Standard', 'Cleanable'], defaultValue: 'Standard' };
+  if (field.id === 'mechanism') return { ...field, options: ['Belt'], defaultValue: 'Belt' };
+  return { ...field };
+});
+function PRF_C95_applyGlassGuillotineOverride(productId, projectDetails) {
+  const product = window.PRODUCT_DATA.products.find((item) => item.id === productId);
+  if (product) Object.assign(product, { group: 'zipAwning', formTemplate: 'janelaForm' });
+  window.PRODUCT_DATA.productFormOverrides[productId] = {
+    ...(window.PRODUCT_DATA.productFormOverrides[productId] || {}),
+    projectDetails,
+    colorDetails: PRF_C89_FOLDING_A_COLOR_DETAILS,
+    operation: [],
+    panelOptions: [],
+    lighting: [],
+    dimmers: [],
+    sectionsAfterDimmers: [],
+    sensors: [],
+    heaterPackaging: []
+  };
+}
+PRF_C95_applyGlassGuillotineOverride('glass_guillotine_a_series_premium', PRF_C95_GUILLOTINE_A_PROJECT_DETAILS);
+PRF_C95_applyGlassGuillotineOverride('glass_guillotine_k_series_smart', PRF_C95_GUILLOTINE_K_PROJECT_DETAILS);
+
