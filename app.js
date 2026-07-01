@@ -1,4 +1,4 @@
-window.APP_VERSION = 'C95-GUILLOTINE-SERIES-FORMS';
+window.APP_VERSION = 'C98-GUILLOTINE-MOTOR-DIRECTION-PROJECT';
 const DATA = window.PRODUCT_DATA;
 const $ = (selector) => document.querySelector(selector);
 const $$ = (selector) => Array.from(document.querySelectorAll(selector));
@@ -13,7 +13,7 @@ const state = {
 };
 
 const STORAGE_PROFILE = 'prf_profile_v2';
-const STORAGE_ORDER = 'prf_order_c95_guillotine_series_forms';
+const STORAGE_ORDER = 'prf_order_c98_guillotine_motor_direction_project';
 const STORAGE_LANGUAGE = 'prf_language_v1';
 
 const COLOR_FIELD_LABELS = new Set([
@@ -6051,7 +6051,12 @@ function setChoiceOptionState(fieldId, option, enabled) {
     if (radio.value !== option) return;
     radio.disabled = !enabled;
     const label = radio.closest('label');
-    if (label) label.classList.toggle('hidden', !enabled);
+    if (label) {
+      label.hidden = !enabled;
+      label.style.display = enabled ? '' : 'none';
+      label.classList.toggle('hidden', !enabled);
+      label.setAttribute('aria-hidden', enabled ? 'false' : 'true');
+    }
     if (!enabled && radio.checked) radio.checked = false;
   });
 }
@@ -6482,7 +6487,7 @@ $('#installBtn').addEventListener('click', async () => {
 
 async function initPwa() {
   if ('serviceWorker' in navigator && location.protocol.startsWith('http')) {
-    try { await navigator.serviceWorker.register('sw.js?v=c95-guillotine-series-forms'); } catch {}
+    try { await navigator.serviceWorker.register('sw.js?v=c98-guillotine-motor-direction-project'); } catch {}
   }
 }
 

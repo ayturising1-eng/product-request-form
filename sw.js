@@ -1,4 +1,4 @@
-const CACHE = 'product-request-form-c95-guillotine-series-forms';
+const CACHE = 'product-request-form-c98-guillotine-motor-direction-project';
 const ASSETS = [
   './',
   './index.html',

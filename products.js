@@ -907,7 +907,9 @@ const PRF_C95_GUILLOTINE_A_PROJECT_DETAILS = [
   { id: 'height', label: 'Height', type: 'number', unit: 'mm', hint: 'Max. value depends on selection' },
   { id: 'panelLayout', label: 'Panel Count', type: 'choice', options: ['1+1', '1+2'], defaultValue: '1+1' },
   { id: 'systemQuantity', label: 'Quantity', type: 'number', min: '1', step: '1' },
-  { id: 'motorDirectionInsideView', label: 'Motor Direction (Inside View)', type: 'choice', options: ['Right', 'Left'] },
+  { id: 'motorDirectionInsideView', label: 'Motor Direction (Inside View)', type: 'choice', options: ['Right', 'Left'] }
+];
+const PRF_C98_GUILLOTINE_OPERATION = [
   { id: 'motor', label: 'Motor Type', type: 'select', options: ['No', 'Somfy RTS', 'Somfy IO', 'Rising'], defaultValue: 'No' },
   { id: 'remoteControlSomfyRts', label: 'Remote Control', type: 'choice', options: ['1 Channel', '2 Channels', '4 Channels', '16 Channels'], showWhen: { field: 'motor', values: ['Somfy RTS'] } },
   { id: 'remoteControlSomfyIo', label: 'Remote Control', type: 'choice', options: ['1 Channel', '2 Channels', '4 Channels', '40 Channels'], showWhen: { field: 'motor', values: ['Somfy IO'] } },
@@ -926,7 +928,8 @@ function PRF_C95_applyGlassGuillotineOverride(productId, projectDetails) {
     ...(window.PRODUCT_DATA.productFormOverrides[productId] || {}),
     projectDetails,
     colorDetails: PRF_C89_FOLDING_A_COLOR_DETAILS,
-    operation: [],
+    operationTitle: 'Motor & Remote Control',
+    operation: PRF_C98_GUILLOTINE_OPERATION,
     panelOptions: [],
     lighting: [],
     dimmers: [],
