@@ -355,8 +355,8 @@ window.PRODUCT_DATA = {
     { id: 'classic_plus', name: 'B-Cube CLASSIC PLUS', family: 'bioclimatic', productGroup: 'bcube', subGroup: 'classic_plus', group: 'bcube', formTemplate: 'galaxyForm' },
     { id: 'bio_rise', name: 'BIO-RISE', family: 'bioclimatic', productGroup: 'bio_rise', subGroup: '', group: 'bioRise', formTemplate: 'galaxyForm', formVariant: 'galaxy' },
     { id: 'zip_screen_sun_store', name: 'ZIP SCREEN SUN STORE', family: 'zip_screen_awning_curtain', productGroup: 'zip_screen', subGroup: 'sun_store', group: 'zipAwning', formTemplate: 'janelaForm' },
-    { id: 'zip_screen_manuel_store', name: 'ZIP SCREEN MANUEL STORE', family: 'zip_screen_awning_curtain', productGroup: 'zip_screen', subGroup: 'manuel_store' },
-    { id: 'zip_screen_sky_screen', name: 'ZIP SCREEN SKY SCREEN', family: 'zip_screen_awning_curtain', productGroup: 'zip_screen', subGroup: 'sky_screen' },
+    { id: 'zip_screen_manuel_store', name: 'ZIP SCREEN MANUEL STORE', family: 'zip_screen_awning_curtain', productGroup: 'zip_screen', subGroup: 'manuel_store', group: 'zipAwning', formTemplate: 'janelaForm' },
+    { id: 'zip_screen_sky_screen', name: 'ZIP SCREEN SKY SCREEN', family: 'zip_screen_awning_curtain', productGroup: 'zip_screen', subGroup: 'sky_screen', group: 'zipAwning', formTemplate: 'janelaForm' },
     { id: 'janela_cassette_awning', name: 'JANELA CASSETTE AWNING', family: 'zip_screen_awning_curtain', productGroup: 'janela_cassette_awning', subGroup: '' },
     { id: 'pars_cassette_awning', name: 'PARS CASSETTE AWNING', family: 'zip_screen_awning_curtain', productGroup: 'pars_cassette_awning', subGroup: '' },
     { id: 'pars_plus_cassette_awning', name: 'PARS PLUS CASSETTE AWNING', family: 'zip_screen_awning_curtain', productGroup: 'pars_plus_cassette_awning', subGroup: '' },
@@ -729,18 +729,23 @@ const PRF_C78_TWINS_SECTIONS_AFTER_DIMMERS = (window.PRODUCT_DATA.janelaForm.sec
 })();
 
 
-// C84: ZIP Screen Sun Store uses Pars-style awning form with Serge Ferrari fabric catalog.
-const PRF_C84_SUN_STORE_PROJECT_DETAILS = [
+// C87: ZIP Screen Sun Store / Sky Screen / Manuel Store use Serge Ferrari catalog.
+const PRF_C87_SUN_SKY_PROJECT_DETAILS = [
   { id: 'systemQuantity', label: 'System Quantity', type: 'number', defaultValue: '1', min: '1', step: '1' },
   { id: 'width', label: 'Width', type: 'number', unit: 'mm', max: '7000', hint: 'Cephe Max. 7000 mm' },
-  { id: 'projection', label: 'Projection (mm)', type: 'number', unit: 'mm', max: '4000', hint: 'Açılım maks. 4000 mm' }
+  { id: 'projection', label: 'Projection (mm)', type: 'number', unit: 'mm', max: '6000', hint: 'Açılım maks. 6000 mm' }
 ];
-const PRF_C86_SUN_STORE_COLOR_DETAILS = [
+const PRF_C87_MANUEL_STORE_PROJECT_DETAILS = [
+  { id: 'systemQuantity', label: 'System Quantity', type: 'number', defaultValue: '1', min: '1', step: '1' },
+  { id: 'width', label: 'Width', type: 'number', unit: 'mm', max: '4000', hint: 'Cephe Max. 4000 mm' },
+  { id: 'projection', label: 'Projection (mm)', type: 'number', unit: 'mm', max: '3000', hint: 'Açılım maks. 3000 mm' }
+];
+const PRF_C87_ZIP_SCREEN_COLOR_DETAILS = [
   { id: 'systemColor', label: 'System Color', type: 'text', palette: true, defaultValue: '' },
   { id: 'systemColorFinish', label: 'Finish', type: 'choice', options: window.PRODUCT_FINISH_OPTIONS },
   { id: 'fabric', label: 'Fabric Color', type: 'text', picker: 'fabric', fullWidth: true, defaultValue: '' }
 ];
-const PRF_C84_SUN_STORE_OPERATION = [
+const PRF_C87_ZIP_SCREEN_OPERATION = [
   { id: 'controlType', label: 'Control Type', type: 'choice', options: ['Button Control', 'Remote Control'], defaultValue: 'Remote Control' },
   { id: 'motor', label: 'Motor', type: 'select', options: ['Somfy RTS', 'Somfy IO', 'Rising'], defaultValue: 'Somfy RTS' },
   { id: 'motorDirection', label: 'Motor Direction', type: 'choice', options: ['Left', 'Right'] },
@@ -749,16 +754,27 @@ const PRF_C84_SUN_STORE_OPERATION = [
   { id: 'remoteControlSomfyIo', label: 'Remote Control', type: 'choice', options: ['1 Channel', '2 Channels', '4 Channels', '40 Channels'], showWhen: { field: 'motor', values: ['Somfy IO'] } },
   { id: 'remoteControlRising', label: 'Remote Control', type: 'choice', options: ['1 Channel', '6 Channels'], showWhen: { field: 'motor', values: ['Rising'] } }
 ];
-const PRF_C84_SUN_STORE_SECTIONS_AFTER_DIMMERS = (window.PRODUCT_DATA.janelaForm.sectionsAfterDimmers || [])
+const PRF_C87_ZIP_SCREEN_SECTIONS_AFTER_DIMMERS = (window.PRODUCT_DATA.janelaForm.sectionsAfterDimmers || [])
   .filter((section) => !['Valance & Printing', 'One Sided Roof', 'Packing'].includes(section?.title));
-window.PRODUCT_DATA.productFormOverrides.zip_screen_sun_store = {
-  ...(window.PRODUCT_DATA.productFormOverrides.zip_screen_sun_store || {}),
-  projectDetails: PRF_C84_SUN_STORE_PROJECT_DETAILS,
-  colorDetails: PRF_C86_SUN_STORE_COLOR_DETAILS,
-  operation: PRF_C84_SUN_STORE_OPERATION,
-  sectionsAfterDimmers: PRF_C84_SUN_STORE_SECTIONS_AFTER_DIMMERS,
-  hiddenItems: {
-    ...((window.PRODUCT_DATA.productFormOverrides.zip_screen_sun_store || {}).hiddenItems || {}),
-    colorDetails: Array.from(new Set([...(((window.PRODUCT_DATA.productFormOverrides.zip_screen_sun_store || {}).hiddenItems || {}).colorDetails || []), 'armPlasticColor']))
-  }
-};
+function PRF_C87_applyZipScreenOverride(id, projectDetails, { operation = PRF_C87_ZIP_SCREEN_OPERATION, sectionsAfterDimmers = PRF_C87_ZIP_SCREEN_SECTIONS_AFTER_DIMMERS, sensors } = {}) {
+  const current = window.PRODUCT_DATA.productFormOverrides[id] || {};
+  window.PRODUCT_DATA.productFormOverrides[id] = {
+    ...current,
+    projectDetails,
+    colorDetails: PRF_C87_ZIP_SCREEN_COLOR_DETAILS,
+    operation,
+    sectionsAfterDimmers,
+    ...(Array.isArray(sensors) ? { sensors } : {}),
+    hiddenItems: {
+      ...(current.hiddenItems || {}),
+      colorDetails: Array.from(new Set([...(current.hiddenItems?.colorDetails || []), 'armPlasticColor']))
+    }
+  };
+}
+PRF_C87_applyZipScreenOverride('zip_screen_sun_store', PRF_C87_SUN_SKY_PROJECT_DETAILS);
+PRF_C87_applyZipScreenOverride('zip_screen_sky_screen', PRF_C87_SUN_SKY_PROJECT_DETAILS);
+PRF_C87_applyZipScreenOverride('zip_screen_manuel_store', PRF_C87_MANUEL_STORE_PROJECT_DETAILS, {
+  operation: [],
+  sectionsAfterDimmers: [],
+  sensors: []
+});

@@ -1,4 +1,4 @@
-const CACHE = 'product-request-form-c86-sun-store-manual-projection';
+const CACHE = 'product-request-form-c87-zip-screen-sky-manuel-store';
 const ASSETS = [
   './',
   './index.html',

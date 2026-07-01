@@ -1,4 +1,4 @@
-window.APP_VERSION = 'C86-SUN-STORE-MANUAL-PROJECTION';
+window.APP_VERSION = 'C87-ZIP-SCREEN-SKY-MANUEL-STORE';
 const DATA = window.PRODUCT_DATA;
 const $ = (selector) => document.querySelector(selector);
 const $$ = (selector) => Array.from(document.querySelectorAll(selector));
@@ -13,7 +13,7 @@ const state = {
 };
 
 const STORAGE_PROFILE = 'prf_profile_v2';
-const STORAGE_ORDER = 'prf_order_c86_sun_store_manual_projection';
+const STORAGE_ORDER = 'prf_order_c87_zip_screen_sky_manuel_store';
 const STORAGE_LANGUAGE = 'prf_language_v1';
 
 const COLOR_FIELD_LABELS = new Set([
@@ -1628,7 +1628,9 @@ const JANELA_AWNING_PRODUCT_IDS = new Set([
   'sunshine_classic_awning_sanzimanli',
   'twins_classic_awning_motorlu',
   'twins_classic_awning_sanzimanli',
-  'zip_screen_sun_store'
+  'zip_screen_sun_store',
+  'zip_screen_sky_screen',
+  'zip_screen_manuel_store'
 ]);
 
 const ZIP_SCREEN_FABRIC_PRODUCT_IDS = new Set([
@@ -1648,7 +1650,9 @@ const JANELA_AWNING_LIMITS = {
   sunshine_classic_awning_sanzimanli: { maxWidth: 7000, projectionLtWidth: true },
   twins_classic_awning_motorlu: { maxWidth: 7000, projectionLtWidth: true, projectionFields: ['projection1', 'projection2'] },
   twins_classic_awning_sanzimanli: { maxWidth: 7000, projectionLtWidth: true, projectionFields: ['projection1', 'projection2'] },
-  zip_screen_sun_store: { maxWidth: 7000, projectionLtWidth: false }
+  zip_screen_sun_store: { maxWidth: 7000, projectionLtWidth: false },
+  zip_screen_sky_screen: { maxWidth: 7000, projectionLtWidth: false },
+  zip_screen_manuel_store: { maxWidth: 4000, projectionLtWidth: false }
 };
 
 function isJanelaAwningProduct(product = getProduct()) {
