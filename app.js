@@ -1,4 +1,4 @@
-window.APP_VERSION = 'C90-FOLDING-A-HEIGHT-RULES';
+window.APP_VERSION = 'C93-FOLDING-K-SERIES-FORM';
 const DATA = window.PRODUCT_DATA;
 const $ = (selector) => document.querySelector(selector);
 const $$ = (selector) => Array.from(document.querySelectorAll(selector));
@@ -13,7 +13,7 @@ const state = {
 };
 
 const STORAGE_PROFILE = 'prf_profile_v2';
-const STORAGE_ORDER = 'prf_order_c90_folding_a_height_rules';
+const STORAGE_ORDER = 'prf_order_c93_folding_k_series_form';
 const STORAGE_LANGUAGE = 'prf_language_v1';
 
 const COLOR_FIELD_LABELS = new Set([
@@ -1640,7 +1640,8 @@ const ZIP_SCREEN_FABRIC_PRODUCT_IDS = new Set([
 ]);
 
 const GLASS_FOLDING_A_SERIES_PRODUCT_IDS = new Set([
-  'glass_folding_a_series_premium'
+  'glass_folding_a_series_premium',
+  'glass_folding_k_series_smart'
 ]);
 
 const JANELA_AWNING_LIMITS = {
@@ -4369,6 +4370,7 @@ function applyLanguage() {
   });
   $('#customSelectClose') && ($('#customSelectClose').textContent = translatedText('Close'));
   refreshDynamicLanguage();
+  updateGlassFoldingDynamicHints();
 }
 
 function projectPositionKey(product = getProduct()) {
@@ -5285,6 +5287,7 @@ function renderGalaxyForm() {
   syncJanelaLinkedFields();
   syncGlassFoldingPanelCount();
   refreshDynamicLanguage();
+  updateGlassFoldingDynamicHints();
   validateJanelaAwningRules();
   validateGlassFoldingRules();
 }
@@ -5878,6 +5881,21 @@ function glassFoldingHeightLimit(glassThickness) {
   return 2800;
 }
 
+function glassFoldingHeightHintText(glassThickness) {
+  if (!glassThickness) return state.language === 'tr' ? 'Cam kalınlığına göre Max. değer' : 'Max. depends on glass thickness';
+  return `Max. ${glassFoldingHeightLimit(glassThickness)} mm`;
+}
+
+function updateGlassFoldingDynamicHints() {
+  if (!isGlassFoldingASeriesProduct()) return;
+  $$('[data-field-id]').filter((el) => /^height(__pos\d+)?$/.test(el.dataset.fieldId || '')).forEach((heightInput) => {
+    const suffix = String(heightInput.dataset.fieldId || '').replace(/^height/, '');
+    const glassThickness = getFieldValue({ id: `glassThickness${suffix}` });
+    const hint = heightInput.closest('label')?.querySelector('.field-hint');
+    if (hint) hint.textContent = glassFoldingHeightHintText(glassThickness);
+  });
+}
+
 function glassRuleMessage(type, value) {
   const tr = state.language === 'tr';
   if (type === 'maxWidth') return tr ? `Genişlik max. ${value} mm olmalı.` : `Width max. ${value} mm.`;
@@ -5974,6 +5992,7 @@ function syncJanelaLinkedFields() {
 function onAnyInput() {
   syncJanelaLinkedFields();
   syncGlassFoldingPanelCount();
+  updateGlassFoldingDynamicHints();
   updateConditionalFields();
   updateLightingOtherVisibility();
   updateAutoUnits();
@@ -6285,7 +6304,7 @@ $('#installBtn').addEventListener('click', async () => {
 
 async function initPwa() {
   if ('serviceWorker' in navigator && location.protocol.startsWith('http')) {
-    try { await navigator.serviceWorker.register('sw.js?v=c90-folding-a-height-rules'); } catch {}
+    try { await navigator.serviceWorker.register('sw.js?v=c93-folding-k-series-form'); } catch {}
   }
 }
 

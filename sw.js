@@ -1,4 +1,4 @@
-const CACHE = 'product-request-form-c90-folding-a-height-rules';
+const CACHE = 'product-request-form-c93-folding-k-series-form';
 const ASSETS = [
   './',
   './index.html',

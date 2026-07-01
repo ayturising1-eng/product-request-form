@@ -814,9 +814,9 @@ PRF_C87_applyZipScreenOverride('zip_screen_manuel_store', PRF_C87_MANUEL_STORE_P
 const PRF_C89_FOLDING_A_PROJECT_DETAILS = [
   { id: 'foldingType', label: 'Type', type: 'choice', options: ['Standard', 'Top-Hung'] },
   { id: 'glassThickness', label: 'Glass Thickness', type: 'choice', options: ['8 mm', '10 mm', '12 mm', 'Insulated Glass'] },
-  { id: 'width', label: 'Width', type: 'number', unit: 'mm', max: '6400', hint: 'Tek tarafta maksimum 8 panel | Tek panel maksimum 800 mm' },
-  { id: 'height', label: 'Height', type: 'number', unit: 'mm', hint: '8 mm için max. 2400 mm | 10/12 mm için max. 2600 mm | Isıcam için max. 2800 mm' },
-  { id: 'panelCount', label: 'Panel Count', type: 'number', min: '1', max: '8', step: '1', hint: 'Otomatik: Yukarıyuvarla (Genişlik / 800)' },
+  { id: 'width', label: 'Width', type: 'number', unit: 'mm', max: '6400', hint: 'Max. 8 Panel | Max. Genişlik 800 mm' },
+  { id: 'height', label: 'Height', type: 'number', unit: 'mm', hint: 'Cam kalınlığına göre Max. değer' },
+  { id: 'panelCount', label: 'Panel Count', type: 'number', min: '1', max: '8', step: '1' },
   { id: 'systemQuantity', label: 'Quantity', type: 'number', min: '1', step: '1' },
   { id: 'stackingDirectionInsideView', label: 'Leaf Stacking Direction (Inside View)', type: 'choice', options: ['Right', 'Left'] }
 ];
@@ -830,6 +830,30 @@ const PRF_C89_FOLDING_A_COLOR_DETAILS = [
   window.PRODUCT_DATA.productFormOverrides.glass_folding_a_series_premium = {
     ...(window.PRODUCT_DATA.productFormOverrides.glass_folding_a_series_premium || {}),
     projectDetails: PRF_C89_FOLDING_A_PROJECT_DETAILS,
+    colorDetails: PRF_C89_FOLDING_A_COLOR_DETAILS,
+    operation: [],
+    panelOptions: [],
+    lighting: [],
+    dimmers: [],
+    sectionsAfterDimmers: [],
+    sensors: [],
+    heaterPackaging: []
+  };
+}
+
+
+// C93: Glass Systems / Folding / K Series Smart uses A Series form with limited options.
+const PRF_C93_FOLDING_K_PROJECT_DETAILS = PRF_C89_FOLDING_A_PROJECT_DETAILS.map((field) => {
+  if (field.id === 'foldingType') return { ...field, options: ['Standard'], defaultValue: 'Standard' };
+  if (field.id === 'glassThickness') return { ...field, options: ['Insulated Glass'], defaultValue: 'Insulated Glass' };
+  return { ...field };
+});
+{
+  const product = window.PRODUCT_DATA.products.find((item) => item.id === 'glass_folding_k_series_smart');
+  if (product) Object.assign(product, { group: 'zipAwning', formTemplate: 'janelaForm' });
+  window.PRODUCT_DATA.productFormOverrides.glass_folding_k_series_smart = {
+    ...(window.PRODUCT_DATA.productFormOverrides.glass_folding_k_series_smart || {}),
+    projectDetails: PRF_C93_FOLDING_K_PROJECT_DETAILS,
     colorDetails: PRF_C89_FOLDING_A_COLOR_DETAILS,
     operation: [],
     panelOptions: [],
