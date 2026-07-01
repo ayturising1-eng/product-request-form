@@ -1,4 +1,4 @@
-window.APP_VERSION = 'C99-FIXED-CEILING-GLASS';
+window.APP_VERSION = 'C100-FIXED-CEILING-HEATER-PACKING';
 const DATA = window.PRODUCT_DATA;
 const $ = (selector) => document.querySelector(selector);
 const $$ = (selector) => Array.from(document.querySelectorAll(selector));
@@ -13,7 +13,7 @@ const state = {
 };
 
 const STORAGE_PROFILE = 'prf_profile_v2';
-const STORAGE_ORDER = 'prf_order_c99_fixed_ceiling_glass';
+const STORAGE_ORDER = 'prf_order_c100_fixed_ceiling_heater_packing';
 const STORAGE_LANGUAGE = 'prf_language_v1';
 
 const COLOR_FIELD_LABELS = new Set([

@@ -939,7 +939,13 @@ PRF_C95_applyGlassGuillotineOverride('glass_guillotine_k_series_smart', PRF_C95_
 
 
 
-// C99: Fixed Ceiling Glass uses Pergo Rise base without fabric/motor, with B-Cube lighting and remote under the same title.
+// C100: Fixed Ceiling Glass uses Pergo Rise base without fabric/motor, with B-Cube Galaxy lighting/remote and heater/sound/packing/loading without Heavy-Duty Nylon.
+const PRF_C100_FIXED_CEILING_HEATER_PACKING = window.PRODUCT_DATA.galaxyForm.heaterPackaging.map((field) => {
+  if (field.id === 'packagingType') {
+    return { ...field, options: (field.options || []).filter((option) => option !== 'Heavy-Duty Nylon') };
+  }
+  return { ...field };
+});
 window.PRODUCT_DATA.productFormOverrides.glass_fixed_ceiling = {
   ...(window.PRODUCT_DATA.productFormOverrides.glass_fixed_ceiling || {}),
   colorDetails: [
@@ -953,5 +959,5 @@ window.PRODUCT_DATA.productFormOverrides.glass_fixed_ceiling = {
   lightingRemote: [
     { id: 'remoteControl', label: 'Remote Control', type: 'choice', options: ['1 Channel', '2 Channels', '4 Channels', '16 Channels'] }
   ],
-  heaterPackaging: []
+  heaterPackaging: PRF_C100_FIXED_CEILING_HEATER_PACKING
 };

@@ -1,4 +1,4 @@
-const CACHE = 'product-request-form-c99-fixed-ceiling-glass';
+const CACHE = 'product-request-form-c100-fixed-ceiling-heater-packing';
 const ASSETS = [
   './',
   './index.html',
