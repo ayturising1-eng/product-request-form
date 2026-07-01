@@ -1,4 +1,4 @@
-const CACHE = 'product-request-form-c83-pergola-lighting-dimmer-title';
+const CACHE = 'product-request-form-c85-zip-screen-serge-ferrari';
 const ASSETS = [
   './',
   './index.html',
@@ -12,7 +12,10 @@ const ASSETS = [
   './color-catalogs.js',
   './pergo-rise-fabrics.js',
   './products.js',
-  './manifest.webmanifest'
+  './manifest.webmanifest',
+  './assets/fabric-pages/sun-store/sun-store-page-1.jpg',
+  './assets/fabric-pages/sun-store/sun-store-page-2.jpg',
+  './assets/fabric-pages/sun-store/sun-store-hotspots.json'
 ];
 
 self.addEventListener('install', (event) => {

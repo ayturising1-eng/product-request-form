@@ -1,4 +1,4 @@
-window.APP_VERSION = 'C83-PERGOLA-LIGHTING-DIMMER-TITLE';
+window.APP_VERSION = 'C85-ZIP-SCREEN-SERGE-FERRARI';
 const DATA = window.PRODUCT_DATA;
 const $ = (selector) => document.querySelector(selector);
 const $$ = (selector) => Array.from(document.querySelectorAll(selector));
@@ -13,7 +13,7 @@ const state = {
 };
 
 const STORAGE_PROFILE = 'prf_profile_v2';
-const STORAGE_ORDER = 'prf_order_c83_pergola_lighting_dimmer_title';
+const STORAGE_ORDER = 'prf_order_c85_zip_screen_serge_ferrari';
 const STORAGE_LANGUAGE = 'prf_language_v1';
 
 const COLOR_FIELD_LABELS = new Set([
@@ -1627,7 +1627,14 @@ const JANELA_AWNING_PRODUCT_IDS = new Set([
   'sunshine_classic_awning_motorlu',
   'sunshine_classic_awning_sanzimanli',
   'twins_classic_awning_motorlu',
-  'twins_classic_awning_sanzimanli'
+  'twins_classic_awning_sanzimanli',
+  'zip_screen_sun_store'
+]);
+
+const ZIP_SCREEN_FABRIC_PRODUCT_IDS = new Set([
+  'zip_screen_sun_store',
+  'zip_screen_manuel_store',
+  'zip_screen_sky_screen'
 ]);
 
 const JANELA_AWNING_LIMITS = {
@@ -1640,11 +1647,16 @@ const JANELA_AWNING_LIMITS = {
   sunshine_classic_awning_motorlu: { maxWidth: 7000, projectionLtWidth: true },
   sunshine_classic_awning_sanzimanli: { maxWidth: 7000, projectionLtWidth: true },
   twins_classic_awning_motorlu: { maxWidth: 7000, projectionLtWidth: true, projectionFields: ['projection1', 'projection2'] },
-  twins_classic_awning_sanzimanli: { maxWidth: 7000, projectionLtWidth: true, projectionFields: ['projection1', 'projection2'] }
+  twins_classic_awning_sanzimanli: { maxWidth: 7000, projectionLtWidth: true, projectionFields: ['projection1', 'projection2'] },
+  zip_screen_sun_store: { maxWidth: 7000, projectionLtWidth: false }
 };
 
 function isJanelaAwningProduct(product = getProduct()) {
   return JANELA_AWNING_PRODUCT_IDS.has(product?.id);
+}
+
+function isSunStoreAwningProduct(product = getProduct()) {
+  return ZIP_SCREEN_FABRIC_PRODUCT_IDS.has(product?.id);
 }
 
 function colorCatalogs() {
@@ -1752,8 +1764,12 @@ function isSauledaFabricMode(kind = activePickerKind) {
   return kind === 'fabric' && isJanelaAwningProduct();
 }
 
+function isSunStoreFabricMode(kind = activePickerKind) {
+  return kind === 'fabric' && isSunStoreAwningProduct();
+}
+
 function isJanelaFabricMode(kind = activePickerKind) {
-  return kind === 'fabric' && isJanelaAwningProduct();
+  return kind === 'fabric' && isJanelaAwningProduct() && !isSunStoreAwningProduct();
 }
 
 function isSattlerFabricMode(kind = activePickerKind) {
@@ -1799,6 +1815,79 @@ function createSauledaHotspot(value, left, top, width, height) {
   if ((activePickerInput?.value || '').trim() === value) btn.classList.add('selected-hotspot');
   btn.addEventListener('click', () => selectPickerOption(value));
   return btn;
+}
+
+
+const SUN_STORE_PAGE_SECTIONS = [
+  {
+    title: 'Serge Ferrari',
+    pages: [
+      {
+        image: 'assets/fabric-pages/sun-store/sun-store-page-1.jpg',
+        items: [
+          { value: '7635-52101', left: '52.0362%', top: '2.2805%', width: '39.7059%', height: '14.1961%' },
+          { value: '7635-52102', left: '8.2579%', top: '16.5336%', width: '39.5928%', height: '13.9681%' },
+          { value: '7635-52103', left: '52.4887%', top: '16.5336%', width: '39.5928%', height: '14.1391%' },
+          { value: '7635-52105', left: '8.2579%', top: '30.7868%', width: '39.5928%', height: '14.1961%' },
+          { value: '7635-52106', left: '52.2624%', top: '30.7868%', width: '39.5928%', height: '14.1961%' },
+          { value: '7635-52107', left: '8.1448%', top: '45.2680%', width: '39.5928%', height: '14.1391%' },
+          { value: '7635-52173', left: '52.0362%', top: '45.2109%', width: '39.5928%', height: '14.0251%' },
+          { value: '7635-52174', left: '8.3710%', top: '60.0342%', width: '39.5928%', height: '14.0251%' },
+          { value: '7635-52176', left: '51.6968%', top: '60.0342%', width: '39.7059%', height: '14.0251%' },
+          { value: '7635-52142', left: '8.3710%', top: '76.6819%', width: '38.6878%', height: '14.8233%' },
+          { value: '7635-52144', left: '51.6968%', top: '76.6819%', width: '39.5928%', height: '14.1391%' }
+        ]
+      },
+      {
+        image: 'assets/fabric-pages/sun-store/sun-store-page-2.jpg',
+        items: [
+          { value: '92-2044', left: '53.6830%', top: '0.7412%', width: '39.2857%', height: '12.5428%' },
+          { value: '92-2135', left: '7.2545%', top: '13.0559%', width: '39.0625%', height: '12.8848%' },
+          { value: '92-2171', left: '53.7946%', top: '13.0559%', width: '39.0625%', height: '12.8278%' },
+          { value: '92-2043', left: '7.0312%', top: '25.7127%', width: '38.9509%', height: '12.8848%' },
+          { value: '92-2047', left: '53.3482%', top: '25.6556%', width: '38.9509%', height: '12.8848%' },
+          { value: '86-2044', left: '53.5714%', top: '38.3694%', width: '39.0625%', height: '12.9418%' },
+          { value: '86-2135', left: '7.1429%', top: '51.0832%', width: '39.0625%', height: '12.8278%' },
+          { value: '86-2171', left: '53.5714%', top: '51.0262%', width: '38.9509%', height: '12.8848%' },
+          { value: '86-2043', left: '7.1429%', top: '64.2531%', width: '39.0625%', height: '12.8848%' },
+          { value: '86-2047', left: '53.3482%', top: '64.2531%', width: '39.0625%', height: '12.8848%' },
+          { value: 'W88-8102', left: '7.1429%', top: '78.1072%', width: '39.0625%', height: '16.1345%' },
+          { value: 'W88-2047', left: '53.3482%', top: '78.1072%', width: '39.0625%', height: '16.2486%' }
+        ]
+      }
+    ]
+  }
+];
+
+function buildSunStorePicker() {
+  const list = $('#colorOptionList');
+  if (!list) return;
+  list.classList.add('sauleda-picker-mode');
+  list.innerHTML = '';
+  SUN_STORE_PAGE_SECTIONS.forEach((section) => {
+    const sectionEl = document.createElement('section');
+    sectionEl.className = 'sauleda-section';
+    const body = document.createElement('div');
+    body.className = 'sattler-page-stack';
+    section.pages.forEach((page) => {
+      const card = document.createElement('div');
+      card.className = 'sattler-page-card';
+      const overlay = document.createElement('div');
+      overlay.className = 'sauleda-page-overlay';
+      const img = document.createElement('img');
+      img.src = page.image;
+      img.alt = `${section.title} fabric page`;
+      img.loading = 'lazy';
+      overlay.appendChild(img);
+      page.items.forEach((item) => {
+        overlay.appendChild(createSauledaHotspot(item.value, item.left, item.top, item.width, item.height));
+      });
+      card.appendChild(overlay);
+      body.appendChild(card);
+    });
+    sectionEl.appendChild(body);
+    list.appendChild(sectionEl);
+  });
 }
 
 const SATTLER_PAGES = [
@@ -3999,6 +4088,10 @@ function renderColorCatalogTabs(kind) {
     });
     return;
   }
+  if (isSunStoreFabricMode(kind)) {
+    tabs.hidden = true;
+    return;
+  }
   if (isJanelaFabricMode(kind)) {
     tabs.hidden = false;
     [
@@ -4037,6 +4130,10 @@ function buildPickerList(kind) {
   if (!list) return;
   list.classList.remove('sauleda-picker-mode', 'sattler-picker-mode', 'acrilla-picker-mode');
   list.innerHTML = '';
+  if (isSunStoreFabricMode(kind)) {
+    buildSunStorePicker();
+    return;
+  }
   if (isSauledaCatalogActive(kind)) {
     buildSauledaPicker();
     return;
@@ -4126,7 +4223,7 @@ function openPicker(input, kind = 'color') {
     searchInput.value = '';
     searchInput.placeholder = translatedText('Search code or name');
   }
-  if (searchWrap) searchWrap.hidden = isJanelaFabricMode(kind);
+  if (searchWrap) searchWrap.hidden = (isJanelaFabricMode(kind) || isSunStoreFabricMode(kind));
   renderColorCatalogTabs(kind);
   buildPickerList(kind);
   modal.hidden = false;
@@ -6103,3 +6200,36 @@ function init() {
 }
 
 init();
+
+
+Object.assign(I18N.en, {
+  'Cable Outlet': 'Cable Outlet',
+  'Top': 'Top',
+  'Rear': 'Rear',
+  'Rising': 'Rising'
+});
+Object.assign(I18N.tr, {
+  'Cable Outlet': 'Kablo Çıkışı',
+  'Top': 'Üstten',
+  'Rear': 'Arkadan',
+  'Rising': 'Rising'
+});
+Object.assign(I18N.de, {
+  'Cable Outlet': 'Kabelausgang',
+  'Top': 'Oben',
+  'Rear': 'Hinten',
+  'Rising': 'Rising'
+});
+Object.assign(I18N.fr, {
+  'Cable Outlet': 'Sortie de câble',
+  'Top': 'Haut',
+  'Rear': 'Arrière',
+  'Rising': 'Rising'
+});
+Object.assign(I18N.he, {
+  'Cable Outlet': 'Cable Outlet',
+  'Top': 'Top',
+  'Rear': 'Rear',
+  'Rising': 'Rising'
+});
+

@@ -354,7 +354,7 @@ window.PRODUCT_DATA = {
     { id: 'freedom_plus', name: 'B-Cube FREEDOM PLUS', family: 'bioclimatic', productGroup: 'bcube', subGroup: 'freedom_plus', group: 'bcube', formTemplate: 'galaxyForm' },
     { id: 'classic_plus', name: 'B-Cube CLASSIC PLUS', family: 'bioclimatic', productGroup: 'bcube', subGroup: 'classic_plus', group: 'bcube', formTemplate: 'galaxyForm' },
     { id: 'bio_rise', name: 'BIO-RISE', family: 'bioclimatic', productGroup: 'bio_rise', subGroup: '', group: 'bioRise', formTemplate: 'galaxyForm', formVariant: 'galaxy' },
-    { id: 'zip_screen_sun_store', name: 'ZIP SCREEN SUN STORE', family: 'zip_screen_awning_curtain', productGroup: 'zip_screen', subGroup: 'sun_store' },
+    { id: 'zip_screen_sun_store', name: 'ZIP SCREEN SUN STORE', family: 'zip_screen_awning_curtain', productGroup: 'zip_screen', subGroup: 'sun_store', group: 'zipAwning', formTemplate: 'janelaForm' },
     { id: 'zip_screen_manuel_store', name: 'ZIP SCREEN MANUEL STORE', family: 'zip_screen_awning_curtain', productGroup: 'zip_screen', subGroup: 'manuel_store' },
     { id: 'zip_screen_sky_screen', name: 'ZIP SCREEN SKY SCREEN', family: 'zip_screen_awning_curtain', productGroup: 'zip_screen', subGroup: 'sky_screen' },
     { id: 'janela_cassette_awning', name: 'JANELA CASSETTE AWNING', family: 'zip_screen_awning_curtain', productGroup: 'janela_cassette_awning', subGroup: '' },
@@ -727,3 +727,32 @@ const PRF_C78_TWINS_SECTIONS_AFTER_DIMMERS = (window.PRODUCT_DATA.janelaForm.sec
     window.PRODUCT_DATA.productFormOverrides[id] = { ...current, hiddenItems };
   });
 })();
+
+
+// C84: ZIP Screen Sun Store uses Pars-style awning form with Serge Ferrari fabric catalog.
+const PRF_C84_SUN_STORE_PROJECT_DETAILS = [
+  { id: 'systemQuantity', label: 'System Quantity', type: 'number', defaultValue: '1', min: '1', step: '1' },
+  { id: 'width', label: 'Width', type: 'number', unit: 'mm', max: '7000', hint: 'Cephe Max. 7000 mm' },
+  { id: 'projection', label: 'Projection (mm)', type: 'select', options: ['1500', '2000', '2500', '3000', '3500', '4000'], defaultValue: '1500', hint: 'Açılım maks. 4000 mm' }
+];
+const PRF_C84_SUN_STORE_OPERATION = [
+  { id: 'controlType', label: 'Control Type', type: 'choice', options: ['Button Control', 'Remote Control'], defaultValue: 'Remote Control' },
+  { id: 'motor', label: 'Motor', type: 'select', options: ['Somfy RTS', 'Somfy IO', 'Rising'], defaultValue: 'Somfy RTS' },
+  { id: 'motorDirection', label: 'Motor Direction', type: 'choice', options: ['Left', 'Right'] },
+  { id: 'cableOutlet', label: 'Cable Outlet', type: 'choice', options: ['Top', 'Rear', 'Side'] },
+  { id: 'remoteControlSomfyRts', label: 'Remote Control', type: 'choice', options: ['1 Channel', '2 Channels', '4 Channels', '16 Channels'], showWhen: { field: 'motor', values: ['Somfy RTS'] } },
+  { id: 'remoteControlSomfyIo', label: 'Remote Control', type: 'choice', options: ['1 Channel', '2 Channels', '4 Channels', '40 Channels'], showWhen: { field: 'motor', values: ['Somfy IO'] } },
+  { id: 'remoteControlRising', label: 'Remote Control', type: 'choice', options: ['1 Channel', '6 Channels'], showWhen: { field: 'motor', values: ['Rising'] } }
+];
+const PRF_C84_SUN_STORE_SECTIONS_AFTER_DIMMERS = (window.PRODUCT_DATA.janelaForm.sectionsAfterDimmers || [])
+  .filter((section) => !['Valance & Printing', 'One Sided Roof', 'Packing'].includes(section?.title));
+window.PRODUCT_DATA.productFormOverrides.zip_screen_sun_store = {
+  ...(window.PRODUCT_DATA.productFormOverrides.zip_screen_sun_store || {}),
+  projectDetails: PRF_C84_SUN_STORE_PROJECT_DETAILS,
+  operation: PRF_C84_SUN_STORE_OPERATION,
+  sectionsAfterDimmers: PRF_C84_SUN_STORE_SECTIONS_AFTER_DIMMERS,
+  hiddenItems: {
+    ...((window.PRODUCT_DATA.productFormOverrides.zip_screen_sun_store || {}).hiddenItems || {}),
+    colorDetails: Array.from(new Set([...(((window.PRODUCT_DATA.productFormOverrides.zip_screen_sun_store || {}).hiddenItems || {}).colorDetails || []), 'armPlasticColor']))
+  }
+};
