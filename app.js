@@ -1,4 +1,4 @@
-window.APP_VERSION = 'C93-FOLDING-K-SERIES-FORM';
+window.APP_VERSION = 'C94-SLIDING-SERIES-FORMS';
 const DATA = window.PRODUCT_DATA;
 const $ = (selector) => document.querySelector(selector);
 const $$ = (selector) => Array.from(document.querySelectorAll(selector));
@@ -13,7 +13,7 @@ const state = {
 };
 
 const STORAGE_PROFILE = 'prf_profile_v2';
-const STORAGE_ORDER = 'prf_order_c93_folding_k_series_form';
+const STORAGE_ORDER = 'prf_order_c94_sliding_series_forms';
 const STORAGE_LANGUAGE = 'prf_language_v1';
 
 const COLOR_FIELD_LABELS = new Set([
@@ -1644,6 +1644,11 @@ const GLASS_FOLDING_A_SERIES_PRODUCT_IDS = new Set([
   'glass_folding_k_series_smart'
 ]);
 
+const GLASS_SLIDING_SERIES_PRODUCT_IDS = new Set([
+  'glass_sliding_a_series_premium',
+  'glass_sliding_k_series_smart'
+]);
+
 const JANELA_AWNING_LIMITS = {
   janela_cassette_awning: { maxWidth: 4000, projectionLtWidth: false },
   pars_cassette_awning: { maxWidth: 5000, projectionLtWidth: true },
@@ -1670,6 +1675,10 @@ function isSunStoreAwningProduct(product = getProduct()) {
 
 function isGlassFoldingASeriesProduct(product = getProduct()) {
   return GLASS_FOLDING_A_SERIES_PRODUCT_IDS.has(product?.id);
+}
+
+function isGlassSlidingSeriesProduct(product = getProduct()) {
+  return GLASS_SLIDING_SERIES_PRODUCT_IDS.has(product?.id);
 }
 
 function colorCatalogs() {
@@ -5286,6 +5295,7 @@ function renderGalaxyForm() {
   updateConditionalFields();
   syncJanelaLinkedFields();
   syncGlassFoldingPanelCount();
+  syncGlassSlidingPanelCount();
   refreshDynamicLanguage();
   updateGlassFoldingDynamicHints();
   validateJanelaAwningRules();
@@ -5928,6 +5938,33 @@ function syncGlassFoldingPanelCount() {
   });
 }
 
+
+function roundUpToEven(value) {
+  const rounded = Math.ceil(value);
+  if (!Number.isFinite(rounded) || rounded <= 0) return '';
+  return rounded % 2 === 0 ? rounded : rounded + 1;
+}
+
+function syncGlassSlidingPanelCount() {
+  if (!isGlassSlidingSeriesProduct()) return;
+  $$('[data-field-id]').filter((el) => /^width(__pos\d+)?$/.test(el.dataset.fieldId || '')).forEach((widthInput) => {
+    const suffix = glassPositionSuffixFromWidthField(widthInput.dataset.fieldId);
+    const panelInput = glassFieldInput('panelCount', suffix);
+    if (!panelInput || panelInput.dataset.userOverridden === '1') return;
+    const width = Number(String(widthInput.value || '').replace(',', '.'));
+    const openingType = getFieldValue({ id: `openingType${suffix}` });
+    if (!Number.isFinite(width) || width <= 0) {
+      panelInput.value = '';
+      return;
+    }
+    if (openingType === 'Center Opening') {
+      panelInput.value = String(Math.max(2, roundUpToEven(width / 1200)));
+    } else {
+      panelInput.value = String(Math.max(1, Math.ceil(width / 1000)));
+    }
+  });
+}
+
 function validateGlassFoldingRules({ showToast = false } = {}) {
   if (!isGlassFoldingASeriesProduct()) return true;
   const messages = [];
@@ -5992,6 +6029,7 @@ function syncJanelaLinkedFields() {
 function onAnyInput() {
   syncJanelaLinkedFields();
   syncGlassFoldingPanelCount();
+  syncGlassSlidingPanelCount();
   updateGlassFoldingDynamicHints();
   updateConditionalFields();
   updateLightingOtherVisibility();
@@ -6304,7 +6342,7 @@ $('#installBtn').addEventListener('click', async () => {
 
 async function initPwa() {
   if ('serviceWorker' in navigator && location.protocol.startsWith('http')) {
-    try { await navigator.serviceWorker.register('sw.js?v=c93-folding-k-series-form'); } catch {}
+    try { await navigator.serviceWorker.register('sw.js?v=c94-sliding-series-forms'); } catch {}
   }
 }
 
@@ -6317,7 +6355,12 @@ Object.assign(I18N.en, {
   'Insulated Glass': 'Insulated Glass',
   'Height': 'Height',
   'Panel Count': 'Panel Count',
-  'Leaf Stacking Direction (Inside View)': 'Leaf Stacking Direction (Inside View)'
+  'Leaf Stacking Direction (Inside View)': 'Leaf Stacking Direction (Inside View)',
+  'With Threshold': 'With Threshold',
+  'Without Threshold': 'Without Threshold',
+  'Opening Type': 'Opening Type',
+  'Side Opening': 'Side Opening',
+  'Center Opening': 'Center Opening'
 });
 Object.assign(I18N.tr, {
   'Type': 'Tür',
@@ -6327,7 +6370,12 @@ Object.assign(I18N.tr, {
   'Insulated Glass': 'Isıcam',
   'Height': 'Yükseklik',
   'Panel Count': 'Panel Sayısı',
-  'Leaf Stacking Direction (Inside View)': 'Kanat Toplanma Yönü (İç Bakış)'
+  'Leaf Stacking Direction (Inside View)': 'Kanat Toplanma Yönü (İç Bakış)',
+  'With Threshold': 'Eşikli',
+  'Without Threshold': 'Eşiksiz',
+  'Opening Type': 'Açılış Türü',
+  'Side Opening': 'Kenardan',
+  'Center Opening': 'Ortadan'
 });
 Object.assign(I18N.de, {
   'Type': 'Typ',
@@ -6337,7 +6385,12 @@ Object.assign(I18N.de, {
   'Insulated Glass': 'Isolierglas',
   'Height': 'Höhe',
   'Panel Count': 'Paneelanzahl',
-  'Leaf Stacking Direction (Inside View)': 'Flügel-Parkrichtung (Innenansicht)'
+  'Leaf Stacking Direction (Inside View)': 'Flügel-Parkrichtung (Innenansicht)',
+  'With Threshold': 'Mit Schwelle',
+  'Without Threshold': 'Ohne Schwelle',
+  'Opening Type': 'Öffnungsart',
+  'Side Opening': 'Seitlich',
+  'Center Opening': 'Mittig'
 });
 Object.assign(I18N.fr, {
   'Type': 'Type',
@@ -6347,7 +6400,12 @@ Object.assign(I18N.fr, {
   'Insulated Glass': 'Double vitrage',
   'Height': 'Hauteur',
   'Panel Count': 'Nombre de panneaux',
-  'Leaf Stacking Direction (Inside View)': 'Sens de refoulement des vantaux (vue intérieure)'
+  'Leaf Stacking Direction (Inside View)': 'Sens de refoulement des vantaux (vue intérieure)',
+  'With Threshold': 'Avec seuil',
+  'Without Threshold': 'Sans seuil',
+  'Opening Type': 'Type d’ouverture',
+  'Side Opening': 'Latérale',
+  'Center Opening': 'Centrale'
 });
 Object.assign(I18N.he, {
   'Type': 'Type',
@@ -6357,7 +6415,12 @@ Object.assign(I18N.he, {
   'Insulated Glass': 'Insulated Glass',
   'Height': 'Height',
   'Panel Count': 'Panel Count',
-  'Leaf Stacking Direction (Inside View)': 'Leaf Stacking Direction (Inside View)'
+  'Leaf Stacking Direction (Inside View)': 'Leaf Stacking Direction (Inside View)',
+  'With Threshold': 'With Threshold',
+  'Without Threshold': 'Without Threshold',
+  'Opening Type': 'Opening Type',
+  'Side Opening': 'Side Opening',
+  'Center Opening': 'Center Opening'
 });
 
 function init() {

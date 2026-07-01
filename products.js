@@ -864,3 +864,37 @@ const PRF_C93_FOLDING_K_PROJECT_DETAILS = PRF_C89_FOLDING_A_PROJECT_DETAILS.map(
     heaterPackaging: []
   };
 }
+
+// C94: Glass Systems / Sliding / A & K Series custom forms.
+const PRF_C94_SLIDING_A_PROJECT_DETAILS = [
+  { id: 'slidingType', label: 'Type', type: 'choice', options: ['With Threshold', 'Without Threshold'], defaultValue: 'With Threshold' },
+  { id: 'openingType', label: 'Opening Type', type: 'choice', options: ['Side Opening', 'Center Opening'], defaultValue: 'Side Opening' },
+  { id: 'glassThickness', label: 'Glass Thickness', type: 'choice', options: ['8 mm', '10 mm', 'Insulated Glass'] },
+  { id: 'width', label: 'Width', type: 'number', unit: 'mm' },
+  { id: 'height', label: 'Height', type: 'number', unit: 'mm' },
+  { id: 'panelCount', label: 'Panel Count', type: 'number', min: '1', step: '1' },
+  { id: 'systemQuantity', label: 'Quantity', type: 'number', min: '1', step: '1' }
+];
+const PRF_C94_SLIDING_K_PROJECT_DETAILS = PRF_C94_SLIDING_A_PROJECT_DETAILS.map((field) => {
+  if (field.id === 'glassThickness') return { ...field, options: ['8 mm', 'Insulated Glass'] };
+  return { ...field };
+});
+function PRF_C94_applyGlassSlidingOverride(productId, projectDetails) {
+  const product = window.PRODUCT_DATA.products.find((item) => item.id === productId);
+  if (product) Object.assign(product, { group: 'zipAwning', formTemplate: 'janelaForm' });
+  window.PRODUCT_DATA.productFormOverrides[productId] = {
+    ...(window.PRODUCT_DATA.productFormOverrides[productId] || {}),
+    projectDetails,
+    colorDetails: PRF_C89_FOLDING_A_COLOR_DETAILS,
+    operation: [],
+    panelOptions: [],
+    lighting: [],
+    dimmers: [],
+    sectionsAfterDimmers: [],
+    sensors: [],
+    heaterPackaging: []
+  };
+}
+PRF_C94_applyGlassSlidingOverride('glass_sliding_a_series_premium', PRF_C94_SLIDING_A_PROJECT_DETAILS);
+PRF_C94_applyGlassSlidingOverride('glass_sliding_k_series_smart', PRF_C94_SLIDING_K_PROJECT_DETAILS);
+
