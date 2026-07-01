@@ -1,4 +1,4 @@
-const CACHE = 'product-request-form-c87-zip-screen-sky-manuel-store';
+const CACHE = 'product-request-form-c90-folding-a-height-rules';
 const ASSETS = [
   './',
   './index.html',

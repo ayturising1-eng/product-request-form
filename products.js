@@ -30,7 +30,8 @@ window.PRODUCT_DATA = {
     families: [
       { id: 'pergola', label: 'Pergola' },
       { id: 'bioclimatic', label: 'Bioclimatic' },
-      { id: 'zip_screen_awning_curtain', label: 'Zip Screen - Awning - Curtain' }
+      { id: 'zip_screen_awning_curtain', label: 'Zip Screen - Awning - Curtain' },
+      { id: 'glass_systems', label: 'Glass Systems' }
     ],
     groups: {
       pergola: [
@@ -52,6 +53,14 @@ window.PRODUCT_DATA = {
         { id: 'moonlight_classic_awning', label: 'Moonlight Classic Awning' },
         { id: 'sunshine_classic_awning', label: 'Sunshine Classic Awning' },
         { id: 'twins_classic_awning', label: 'Twins Classic Awning' }
+      ],
+      glass_systems: [
+        { id: 'glass_folding', label: 'Folding' },
+        { id: 'glass_sliding', label: 'Sliding' },
+        { id: 'glass_guillotine', label: 'Guillotine' },
+        { id: 'glass_fixed_joinery', label: 'Fixed Joinery', productId: 'glass_fixed_joinery' },
+        { id: 'glass_fixed_ceiling', label: 'Fixed Ceiling', productId: 'glass_fixed_ceiling' },
+        { id: 'glass_energetic_ceiling', label: 'Energetic Ceiling', productId: 'glass_energetic_ceiling' }
       ]
     },
     subGroups: {
@@ -96,6 +105,18 @@ window.PRODUCT_DATA = {
       twins_classic_awning: [
         { id: 'motorlu', label: 'Motorlu', productId: 'twins_classic_awning_motorlu' },
         { id: 'sanzimanli', label: 'Şanzımanlı', productId: 'twins_classic_awning_sanzimanli' }
+      ],
+      glass_folding: [
+        { id: 'a_series_premium', label: 'A Series – Premium', productId: 'glass_folding_a_series_premium' },
+        { id: 'k_series_smart', label: 'K Series – Smart', productId: 'glass_folding_k_series_smart' }
+      ],
+      glass_sliding: [
+        { id: 'a_series_premium', label: 'A Series – Premium', productId: 'glass_sliding_a_series_premium' },
+        { id: 'k_series_smart', label: 'K Series – Smart', productId: 'glass_sliding_k_series_smart' }
+      ],
+      glass_guillotine: [
+        { id: 'a_series_premium', label: 'A Series – Premium', productId: 'glass_guillotine_a_series_premium' },
+        { id: 'k_series_smart', label: 'K Series – Smart', productId: 'glass_guillotine_k_series_smart' }
       ]
     }
   },
@@ -369,7 +390,16 @@ window.PRODUCT_DATA = {
     { id: 'sunshine_classic_awning_sanzimanli', name: 'SUNSHINE CLASSIC AWNING ŞANZIMANLI', family: 'zip_screen_awning_curtain', productGroup: 'sunshine_classic_awning', subGroup: 'sanzimanli', group: 'zipAwning', formTemplate: 'janelaForm' },
     { id: 'twins_classic_awning', name: 'TWINS CLASSIC AWNING', family: 'zip_screen_awning_curtain', productGroup: 'twins_classic_awning', subGroup: '' },
     { id: 'twins_classic_awning_motorlu', name: 'TWINS CLASSIC AWNING MOTORLU', family: 'zip_screen_awning_curtain', productGroup: 'twins_classic_awning', subGroup: 'motorlu', group: 'zipAwning', formTemplate: 'janelaForm' },
-    { id: 'twins_classic_awning_sanzimanli', name: 'TWINS CLASSIC AWNING ŞANZIMANLI', family: 'zip_screen_awning_curtain', productGroup: 'twins_classic_awning', subGroup: 'sanzimanli', group: 'zipAwning', formTemplate: 'janelaForm' }
+    { id: 'twins_classic_awning_sanzimanli', name: 'TWINS CLASSIC AWNING ŞANZIMANLI', family: 'zip_screen_awning_curtain', productGroup: 'twins_classic_awning', subGroup: 'sanzimanli', group: 'zipAwning', formTemplate: 'janelaForm' },
+    { id: 'glass_folding_a_series_premium', name: 'GLASS SYSTEMS FOLDING A SERIES – PREMIUM', family: 'glass_systems', productGroup: 'glass_folding', subGroup: 'a_series_premium' },
+    { id: 'glass_folding_k_series_smart', name: 'GLASS SYSTEMS FOLDING K SERIES – SMART', family: 'glass_systems', productGroup: 'glass_folding', subGroup: 'k_series_smart' },
+    { id: 'glass_sliding_a_series_premium', name: 'GLASS SYSTEMS SLIDING A SERIES – PREMIUM', family: 'glass_systems', productGroup: 'glass_sliding', subGroup: 'a_series_premium' },
+    { id: 'glass_sliding_k_series_smart', name: 'GLASS SYSTEMS SLIDING K SERIES – SMART', family: 'glass_systems', productGroup: 'glass_sliding', subGroup: 'k_series_smart' },
+    { id: 'glass_guillotine_a_series_premium', name: 'GLASS SYSTEMS GUILLOTINE A SERIES – PREMIUM', family: 'glass_systems', productGroup: 'glass_guillotine', subGroup: 'a_series_premium' },
+    { id: 'glass_guillotine_k_series_smart', name: 'GLASS SYSTEMS GUILLOTINE K SERIES – SMART', family: 'glass_systems', productGroup: 'glass_guillotine', subGroup: 'k_series_smart' },
+    { id: 'glass_fixed_joinery', name: 'GLASS SYSTEMS FIXED JOINERY', family: 'glass_systems', productGroup: 'glass_fixed_joinery', subGroup: '' },
+    { id: 'glass_fixed_ceiling', name: 'GLASS SYSTEMS FIXED CEILING', family: 'glass_systems', productGroup: 'glass_fixed_ceiling', subGroup: '' },
+    { id: 'glass_energetic_ceiling', name: 'GLASS SYSTEMS ENERGETIC CEILING', family: 'glass_systems', productGroup: 'glass_energetic_ceiling', subGroup: '' }
   ]
 };
 
@@ -778,3 +808,35 @@ PRF_C87_applyZipScreenOverride('zip_screen_manuel_store', PRF_C87_MANUEL_STORE_P
   sectionsAfterDimmers: [],
   sensors: []
 });
+
+
+// C89: Glass Systems / Folding / A Series Premium custom form.
+const PRF_C89_FOLDING_A_PROJECT_DETAILS = [
+  { id: 'foldingType', label: 'Type', type: 'choice', options: ['Standard', 'Top-Hung'] },
+  { id: 'glassThickness', label: 'Glass Thickness', type: 'choice', options: ['8 mm', '10 mm', '12 mm', 'Insulated Glass'] },
+  { id: 'width', label: 'Width', type: 'number', unit: 'mm', max: '6400', hint: 'Tek tarafta maksimum 8 panel | Tek panel maksimum 800 mm' },
+  { id: 'height', label: 'Height', type: 'number', unit: 'mm', hint: '8 mm için max. 2400 mm | 10/12 mm için max. 2600 mm | Isıcam için max. 2800 mm' },
+  { id: 'panelCount', label: 'Panel Count', type: 'number', min: '1', max: '8', step: '1', hint: 'Otomatik: Yukarıyuvarla (Genişlik / 800)' },
+  { id: 'systemQuantity', label: 'Quantity', type: 'number', min: '1', step: '1' },
+  { id: 'stackingDirectionInsideView', label: 'Leaf Stacking Direction (Inside View)', type: 'choice', options: ['Right', 'Left'] }
+];
+const PRF_C89_FOLDING_A_COLOR_DETAILS = [
+  { id: 'systemColor', label: 'System Color', type: 'text', palette: true, defaultValue: '' },
+  { id: 'systemColorFinish', label: 'Finish', type: 'choice', options: window.PRODUCT_FINISH_OPTIONS }
+];
+{
+  const product = window.PRODUCT_DATA.products.find((item) => item.id === 'glass_folding_a_series_premium');
+  if (product) Object.assign(product, { group: 'zipAwning', formTemplate: 'janelaForm' });
+  window.PRODUCT_DATA.productFormOverrides.glass_folding_a_series_premium = {
+    ...(window.PRODUCT_DATA.productFormOverrides.glass_folding_a_series_premium || {}),
+    projectDetails: PRF_C89_FOLDING_A_PROJECT_DETAILS,
+    colorDetails: PRF_C89_FOLDING_A_COLOR_DETAILS,
+    operation: [],
+    panelOptions: [],
+    lighting: [],
+    dimmers: [],
+    sectionsAfterDimmers: [],
+    sensors: [],
+    heaterPackaging: []
+  };
+}

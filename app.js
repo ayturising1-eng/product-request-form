@@ -1,4 +1,4 @@
-window.APP_VERSION = 'C87-ZIP-SCREEN-SKY-MANUEL-STORE';
+window.APP_VERSION = 'C90-FOLDING-A-HEIGHT-RULES';
 const DATA = window.PRODUCT_DATA;
 const $ = (selector) => document.querySelector(selector);
 const $$ = (selector) => Array.from(document.querySelectorAll(selector));
@@ -13,7 +13,7 @@ const state = {
 };
 
 const STORAGE_PROFILE = 'prf_profile_v2';
-const STORAGE_ORDER = 'prf_order_c87_zip_screen_sky_manuel_store';
+const STORAGE_ORDER = 'prf_order_c90_folding_a_height_rules';
 const STORAGE_LANGUAGE = 'prf_language_v1';
 
 const COLOR_FIELD_LABELS = new Set([
@@ -1639,6 +1639,10 @@ const ZIP_SCREEN_FABRIC_PRODUCT_IDS = new Set([
   'zip_screen_sky_screen'
 ]);
 
+const GLASS_FOLDING_A_SERIES_PRODUCT_IDS = new Set([
+  'glass_folding_a_series_premium'
+]);
+
 const JANELA_AWNING_LIMITS = {
   janela_cassette_awning: { maxWidth: 4000, projectionLtWidth: false },
   pars_cassette_awning: { maxWidth: 5000, projectionLtWidth: true },
@@ -1661,6 +1665,10 @@ function isJanelaAwningProduct(product = getProduct()) {
 
 function isSunStoreAwningProduct(product = getProduct()) {
   return ZIP_SCREEN_FABRIC_PRODUCT_IDS.has(product?.id);
+}
+
+function isGlassFoldingASeriesProduct(product = getProduct()) {
+  return GLASS_FOLDING_A_SERIES_PRODUCT_IDS.has(product?.id);
 }
 
 function colorCatalogs() {
@@ -4804,6 +4812,10 @@ function createInputField(field) {
   if (field.min !== undefined) control.min = field.min;
   if (field.max !== undefined) control.max = field.max;
   if (field.step !== undefined) control.step = field.step;
+  if (/^panelCount(__pos\d+)?$/.test(field.id)) {
+    control.addEventListener('input', (event) => { if (event.isTrusted) control.dataset.userOverridden = '1'; });
+    control.addEventListener('change', (event) => { if (event.isTrusted) control.dataset.userOverridden = '1'; });
+  }
   control.addEventListener('input', onAnyInput);
   control.addEventListener('change', onAnyInput);
   control.addEventListener('change', autoAdvanceOnChange);
@@ -5271,8 +5283,10 @@ function renderGalaxyForm() {
   updateAutoUnits();
   updateConditionalFields();
   syncJanelaLinkedFields();
+  syncGlassFoldingPanelCount();
   refreshDynamicLanguage();
   validateJanelaAwningRules();
+  validateGlassFoldingRules();
 }
 
 function renderPergolaForm() {
@@ -5857,6 +5871,91 @@ function validateJanelaAwningRules({ showToast = false } = {}) {
   return messages.length === 0;
 }
 
+
+function glassFoldingHeightLimit(glassThickness) {
+  if (glassThickness === '8 mm') return 2400;
+  if (glassThickness === '10 mm' || glassThickness === '12 mm') return 2600;
+  return 2800;
+}
+
+function glassRuleMessage(type, value) {
+  const tr = state.language === 'tr';
+  if (type === 'maxWidth') return tr ? `Genişlik max. ${value} mm olmalı.` : `Width max. ${value} mm.`;
+  if (type === 'maxHeight') return tr ? `Yükseklik max. ${value} mm olmalı.` : `Height max. ${value} mm.`;
+  if (type === 'maxPanels') return tr ? 'Panel sayısı en fazla 8 olabilir.' : 'Panel count can be max. 8.';
+  if (type === 'panelWidth') return tr ? 'Tek panel maksimum 800 mm olmalı.' : 'Each panel must be max. 800 mm.';
+  return '';
+}
+
+function glassPositionSuffixFromWidthField(fieldId) {
+  return String(fieldId || '').replace(/^width/, '');
+}
+
+function glassFieldInput(baseId, suffix = '') {
+  return document.querySelector(`[data-field-id="${baseId}${suffix}"]`);
+}
+
+function syncGlassFoldingPanelCount() {
+  if (!isGlassFoldingASeriesProduct()) return;
+  $$('[data-field-id]').filter((el) => /^width(__pos\d+)?$/.test(el.dataset.fieldId || '')).forEach((widthInput) => {
+    const suffix = glassPositionSuffixFromWidthField(widthInput.dataset.fieldId);
+    const panelInput = glassFieldInput('panelCount', suffix);
+    if (!panelInput || panelInput.dataset.userOverridden === '1') return;
+    const width = Number(String(widthInput.value || '').replace(',', '.'));
+    if (Number.isFinite(width) && width > 0) {
+      panelInput.value = String(Math.min(8, Math.max(1, Math.ceil(width / 800))));
+    } else {
+      panelInput.value = '';
+    }
+  });
+}
+
+function validateGlassFoldingRules({ showToast = false } = {}) {
+  if (!isGlassFoldingASeriesProduct()) return true;
+  const messages = [];
+  let focusTarget = null;
+
+  $$('[data-field-id]').filter((el) => /^width(__pos\d+)?$/.test(el.dataset.fieldId || '')).forEach((widthInput) => {
+    const suffix = glassPositionSuffixFromWidthField(widthInput.dataset.fieldId);
+    const heightInput = glassFieldInput('height', suffix);
+    const panelInput = glassFieldInput('panelCount', suffix);
+    const width = Number(String(widthInput.value || '').replace(',', '.'));
+    const height = Number(String(heightInput?.value || '').replace(',', '.'));
+    const panelCount = Number(String(panelInput?.value || '').replace(',', '.'));
+    const glassThickness = getFieldValue({ id: `glassThickness${suffix}` });
+    const heightLimit = glassFoldingHeightLimit(glassThickness);
+
+    const widthMessages = [];
+    const heightMessages = [];
+    const panelMessages = [];
+
+    if (Number.isFinite(width) && width > 6400) widthMessages.push(glassRuleMessage('maxWidth', 6400));
+    if (Number.isFinite(height) && height > heightLimit) heightMessages.push(glassRuleMessage('maxHeight', heightLimit));
+    if (Number.isFinite(panelCount) && panelCount > 8) panelMessages.push(glassRuleMessage('maxPanels'));
+    if (Number.isFinite(width) && width > 0 && Number.isFinite(panelCount) && panelCount > 0 && width / panelCount > 800) {
+      panelMessages.push(glassRuleMessage('panelWidth'));
+    }
+
+    setFieldValidity(widthInput, widthMessages);
+    setFieldValidity(heightInput, heightMessages);
+    setFieldValidity(panelInput, panelMessages);
+    [...widthMessages, ...heightMessages, ...panelMessages].forEach((message) => {
+      if (!messages.includes(message)) messages.push(message);
+    });
+    if (!focusTarget) {
+      if (widthMessages.length) focusTarget = widthInput;
+      else if (heightMessages.length) focusTarget = heightInput;
+      else if (panelMessages.length) focusTarget = panelInput;
+    }
+  });
+
+  if (messages.length && showToast) {
+    toast(messages.join(' '));
+    focusTarget?.focus?.();
+  }
+  return messages.length === 0;
+}
+
 function syncJanelaLinkedFields() {
   if (!isJanelaAwningProduct()) return;
   const fabric = $('#dyn_fabric');
@@ -5874,10 +5973,12 @@ function syncJanelaLinkedFields() {
 
 function onAnyInput() {
   syncJanelaLinkedFields();
+  syncGlassFoldingPanelCount();
   updateConditionalFields();
   updateLightingOtherVisibility();
   updateAutoUnits();
   validateJanelaAwningRules();
+  validateGlassFoldingRules();
   saveOrderDraft();
   updatePreview();
 }
@@ -6105,7 +6206,7 @@ function downloadBlob(blob, filename) {
 }
 
 async function downloadPdf() {
-  if (!validateJanelaAwningRules({ showToast: true })) return;
+  if (!validateJanelaAwningRules({ showToast: true }) || !validateGlassFoldingRules({ showToast: true })) return;
   const data = getOrderData('en');
   const blob = buildOrderPdf(data);
   downloadBlob(blob, filenameFromData(data));
@@ -6113,7 +6214,7 @@ async function downloadPdf() {
 }
 
 async function sharePdf() {
-  if (!validateJanelaAwningRules({ showToast: true })) return;
+  if (!validateJanelaAwningRules({ showToast: true }) || !validateGlassFoldingRules({ showToast: true })) return;
   const data = getOrderData('en');
   const blob = buildOrderPdf(data);
   const filename = filenameFromData(data);
@@ -6184,9 +6285,61 @@ $('#installBtn').addEventListener('click', async () => {
 
 async function initPwa() {
   if ('serviceWorker' in navigator && location.protocol.startsWith('http')) {
-    try { await navigator.serviceWorker.register('sw.js?v=c47-linear-rgbwhite'); } catch {}
+    try { await navigator.serviceWorker.register('sw.js?v=c90-folding-a-height-rules'); } catch {}
   }
 }
+
+
+Object.assign(I18N.en, {
+  'Type': 'Type',
+  'Standard': 'Standard',
+  'Top-Hung': 'Top-Hung',
+  'Glass Thickness': 'Glass Thickness',
+  'Insulated Glass': 'Insulated Glass',
+  'Height': 'Height',
+  'Panel Count': 'Panel Count',
+  'Leaf Stacking Direction (Inside View)': 'Leaf Stacking Direction (Inside View)'
+});
+Object.assign(I18N.tr, {
+  'Type': 'Tür',
+  'Standard': 'Standart',
+  'Top-Hung': 'Üstten Taşımalı',
+  'Glass Thickness': 'Cam Kalınlığı',
+  'Insulated Glass': 'Isıcam',
+  'Height': 'Yükseklik',
+  'Panel Count': 'Panel Sayısı',
+  'Leaf Stacking Direction (Inside View)': 'Kanat Toplanma Yönü (İç Bakış)'
+});
+Object.assign(I18N.de, {
+  'Type': 'Typ',
+  'Standard': 'Standard',
+  'Top-Hung': 'Oben getragen',
+  'Glass Thickness': 'Glasdicke',
+  'Insulated Glass': 'Isolierglas',
+  'Height': 'Höhe',
+  'Panel Count': 'Paneelanzahl',
+  'Leaf Stacking Direction (Inside View)': 'Flügel-Parkrichtung (Innenansicht)'
+});
+Object.assign(I18N.fr, {
+  'Type': 'Type',
+  'Standard': 'Standard',
+  'Top-Hung': 'Suspendu en partie haute',
+  'Glass Thickness': 'Épaisseur du verre',
+  'Insulated Glass': 'Double vitrage',
+  'Height': 'Hauteur',
+  'Panel Count': 'Nombre de panneaux',
+  'Leaf Stacking Direction (Inside View)': 'Sens de refoulement des vantaux (vue intérieure)'
+});
+Object.assign(I18N.he, {
+  'Type': 'Type',
+  'Standard': 'Standard',
+  'Top-Hung': 'Top-Hung',
+  'Glass Thickness': 'Glass Thickness',
+  'Insulated Glass': 'Insulated Glass',
+  'Height': 'Height',
+  'Panel Count': 'Panel Count',
+  'Leaf Stacking Direction (Inside View)': 'Leaf Stacking Direction (Inside View)'
+});
 
 function init() {
   loadLanguage();
@@ -6236,4 +6389,7 @@ Object.assign(I18N.he, {
   'Rear': 'Rear',
   'Rising': 'Rising'
 });
+
+
+
 
