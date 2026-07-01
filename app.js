@@ -1,4 +1,4 @@
-window.APP_VERSION = 'C85-ZIP-SCREEN-SERGE-FERRARI';
+window.APP_VERSION = 'C86-SUN-STORE-MANUAL-PROJECTION';
 const DATA = window.PRODUCT_DATA;
 const $ = (selector) => document.querySelector(selector);
 const $$ = (selector) => Array.from(document.querySelectorAll(selector));
@@ -13,7 +13,7 @@ const state = {
 };
 
 const STORAGE_PROFILE = 'prf_profile_v2';
-const STORAGE_ORDER = 'prf_order_c85_zip_screen_serge_ferrari';
+const STORAGE_ORDER = 'prf_order_c86_sun_store_manual_projection';
 const STORAGE_LANGUAGE = 'prf_language_v1';
 
 const COLOR_FIELD_LABELS = new Set([

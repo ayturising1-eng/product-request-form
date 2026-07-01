@@ -733,7 +733,12 @@ const PRF_C78_TWINS_SECTIONS_AFTER_DIMMERS = (window.PRODUCT_DATA.janelaForm.sec
 const PRF_C84_SUN_STORE_PROJECT_DETAILS = [
   { id: 'systemQuantity', label: 'System Quantity', type: 'number', defaultValue: '1', min: '1', step: '1' },
   { id: 'width', label: 'Width', type: 'number', unit: 'mm', max: '7000', hint: 'Cephe Max. 7000 mm' },
-  { id: 'projection', label: 'Projection (mm)', type: 'select', options: ['1500', '2000', '2500', '3000', '3500', '4000'], defaultValue: '1500', hint: 'Açılım maks. 4000 mm' }
+  { id: 'projection', label: 'Projection (mm)', type: 'number', unit: 'mm', max: '4000', hint: 'Açılım maks. 4000 mm' }
+];
+const PRF_C86_SUN_STORE_COLOR_DETAILS = [
+  { id: 'systemColor', label: 'System Color', type: 'text', palette: true, defaultValue: '' },
+  { id: 'systemColorFinish', label: 'Finish', type: 'choice', options: window.PRODUCT_FINISH_OPTIONS },
+  { id: 'fabric', label: 'Fabric Color', type: 'text', picker: 'fabric', fullWidth: true, defaultValue: '' }
 ];
 const PRF_C84_SUN_STORE_OPERATION = [
   { id: 'controlType', label: 'Control Type', type: 'choice', options: ['Button Control', 'Remote Control'], defaultValue: 'Remote Control' },
@@ -749,6 +754,7 @@ const PRF_C84_SUN_STORE_SECTIONS_AFTER_DIMMERS = (window.PRODUCT_DATA.janelaForm
 window.PRODUCT_DATA.productFormOverrides.zip_screen_sun_store = {
   ...(window.PRODUCT_DATA.productFormOverrides.zip_screen_sun_store || {}),
   projectDetails: PRF_C84_SUN_STORE_PROJECT_DETAILS,
+  colorDetails: PRF_C86_SUN_STORE_COLOR_DETAILS,
   operation: PRF_C84_SUN_STORE_OPERATION,
   sectionsAfterDimmers: PRF_C84_SUN_STORE_SECTIONS_AFTER_DIMMERS,
   hiddenItems: {

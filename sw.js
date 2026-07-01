@@ -1,4 +1,4 @@
-const CACHE = 'product-request-form-c85-zip-screen-serge-ferrari';
+const CACHE = 'product-request-form-c86-sun-store-manual-projection';
 const ASSETS = [
   './',
   './index.html',
