@@ -1,4 +1,4 @@
-const CACHE = 'product-request-form-c123-rising-icon';
+const CACHE = 'product-request-form-c126-fixed-mobile-section-nav';
 const ASSETS = [
   './',
   './index.html',

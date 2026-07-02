@@ -1,4 +1,4 @@
-window.APP_VERSION = 'C125-MOBILE-FORM-SECTION-NAV';
+window.APP_VERSION = 'C126-FIXED-MOBILE-SECTION-NAV';
 const DATA = window.PRODUCT_DATA;
 const $ = (selector) => document.querySelector(selector);
 const $$ = (selector) => Array.from(document.querySelectorAll(selector));
@@ -7121,7 +7121,7 @@ $('#installBtn').addEventListener('click', async () => {
 
 async function initPwa() {
   if ('serviceWorker' in navigator && location.protocol.startsWith('http')) {
-    try { await navigator.serviceWorker.register('sw.js?v=c125-mobile-form-section-nav'); } catch {}
+    try { await navigator.serviceWorker.register('sw.js?v=c126-fixed-mobile-section-nav'); } catch {}
   }
 }
 
@@ -8254,33 +8254,19 @@ try {
 })();
 
 
-// C125: dynamic sticky mobile quick navigation for product form sections only
+
+// C126: fixed mobile quick navigation for current product form section headings
 (function setupDynamicFormQuickNav() {
   const nav = document.getElementById('formQuickNav') || document.querySelector('.mobile-quick-nav');
   const formArea = document.getElementById('formArea');
   if (!nav || !formArea) return;
 
-  const HEADING_SELECTOR = [
-    '.form-section-title',
-    '.section-title h2',
-    '.section-title h3',
-    '.form-section h2',
-    '.form-section h3',
-    '.option-section h2',
-    '.option-section h3',
-    '.field-section h2',
-    '.field-section h3',
-    '.section-heading',
-    '.group-title',
-    'h2',
-    'h3'
-  ].join(',');
-
   function isVisible(el) {
     if (!el) return false;
-    const rect = el.getBoundingClientRect();
     const style = window.getComputedStyle(el);
-    return style.display !== 'none' && style.visibility !== 'hidden' && rect.width > 0 && rect.height > 0;
+    if (style.display === 'none' || style.visibility === 'hidden') return false;
+    const rect = el.getBoundingClientRect();
+    return rect.width > 0 && rect.height > 0;
   }
 
   function cleanHeadingText(text) {
@@ -8290,52 +8276,49 @@ try {
       .trim();
   }
 
-  function getTargetForHeading(heading, index) {
-    const target =
-      heading.closest('.form-section, .option-section, .field-section, .section-card, .form-card, .section-block, fieldset, section') ||
-      heading.parentElement ||
-      heading;
-    if (!target.id) target.id = `form-section-nav-${index + 1}`;
-    target.classList.add('form-quick-nav-target');
-    return target;
+  function setNavVisibility(visible) {
+    nav.classList.toggle('hidden', !visible);
+    document.body.classList.toggle('has-form-quick-nav', visible);
   }
 
   function refreshFormQuickNav() {
-    const headings = [];
-    const seen = new Set();
-
-    Array.from(formArea.querySelectorAll(HEADING_SELECTOR)).forEach((heading) => {
-      if (!isVisible(heading)) return;
-      if (heading.closest('.picker-modal, .modal, .dropdown, template')) return;
-
-      const text = cleanHeadingText(heading.textContent);
-      if (!text) return;
-
-      const key = text.toLocaleLowerCase();
-      if (seen.has(key)) return;
-      seen.add(key);
-      headings.push({ heading, text });
-    });
+    const sections = Array.from(formArea.querySelectorAll('.dynamic-section'))
+      .filter(isVisible)
+      .map((section) => {
+        const heading = section.querySelector(':scope > h3');
+        const text = cleanHeadingText(heading?.textContent || '');
+        return text ? { section, text } : null;
+      })
+      .filter(Boolean);
 
     nav.innerHTML = '';
-    if (!headings.length) {
-      nav.classList.add('hidden');
+    if (!sections.length) {
+      setNavVisibility(false);
       return;
     }
 
-    headings.forEach((item, index) => {
-      const target = getTargetForHeading(item.heading, index);
+    const seen = new Set();
+    sections.forEach((item, index) => {
+      const key = item.text.toLocaleLowerCase();
+      if (seen.has(key)) return;
+      seen.add(key);
+
+      if (!item.section.id) item.section.id = `form-section-nav-${index + 1}`;
+      item.section.classList.add('form-quick-nav-target');
+
       const link = document.createElement('a');
-      link.href = `#${target.id}`;
+      link.href = `#${item.section.id}`;
       link.textContent = item.text;
       link.addEventListener('click', (event) => {
         event.preventDefault();
-        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        const navHeight = nav.classList.contains('hidden') ? 0 : nav.offsetHeight;
+        const top = item.section.getBoundingClientRect().top + window.pageYOffset - navHeight - 12;
+        window.scrollTo({ top: Math.max(0, top), behavior: 'smooth' });
       });
       nav.appendChild(link);
     });
 
-    nav.classList.remove('hidden');
+    setNavVisibility(Boolean(nav.children.length));
   }
 
   let navRefreshTimer = null;
@@ -8345,13 +8328,15 @@ try {
   };
 
   const observer = new MutationObserver(scheduleRefresh);
-  observer.observe(formArea, { childList: true, subtree: true, characterData: true });
+  observer.observe(formArea, { childList: true, subtree: true, characterData: true, attributes: true, attributeFilter: ['hidden', 'style', 'class'] });
 
   document.addEventListener('change', scheduleRefresh, true);
   document.addEventListener('click', scheduleRefresh, true);
+  window.addEventListener('resize', scheduleRefresh);
   window.addEventListener('load', scheduleRefresh);
   window.refreshFormQuickNav = refreshFormQuickNav;
 
   scheduleRefresh();
 })();
+
 
