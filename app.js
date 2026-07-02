@@ -1,4 +1,4 @@
-window.APP_VERSION = 'C123-RISING-ICON';
+window.APP_VERSION = 'C125-MOBILE-FORM-SECTION-NAV';
 const DATA = window.PRODUCT_DATA;
 const $ = (selector) => document.querySelector(selector);
 const $$ = (selector) => Array.from(document.querySelectorAll(selector));
@@ -7121,7 +7121,7 @@ $('#installBtn').addEventListener('click', async () => {
 
 async function initPwa() {
   if ('serviceWorker' in navigator && location.protocol.startsWith('http')) {
-    try { await navigator.serviceWorker.register('sw.js?v=c123-rising-icon'); } catch {}
+    try { await navigator.serviceWorker.register('sw.js?v=c125-mobile-form-section-nav'); } catch {}
   }
 }
 
@@ -8252,3 +8252,106 @@ try {
   }, true);
   try { applyLanguage(); renderForm(); setTimeout(applyFixedCeilingGlassType2, 0); } catch {}
 })();
+
+
+// C125: dynamic sticky mobile quick navigation for product form sections only
+(function setupDynamicFormQuickNav() {
+  const nav = document.getElementById('formQuickNav') || document.querySelector('.mobile-quick-nav');
+  const formArea = document.getElementById('formArea');
+  if (!nav || !formArea) return;
+
+  const HEADING_SELECTOR = [
+    '.form-section-title',
+    '.section-title h2',
+    '.section-title h3',
+    '.form-section h2',
+    '.form-section h3',
+    '.option-section h2',
+    '.option-section h3',
+    '.field-section h2',
+    '.field-section h3',
+    '.section-heading',
+    '.group-title',
+    'h2',
+    'h3'
+  ].join(',');
+
+  function isVisible(el) {
+    if (!el) return false;
+    const rect = el.getBoundingClientRect();
+    const style = window.getComputedStyle(el);
+    return style.display !== 'none' && style.visibility !== 'hidden' && rect.width > 0 && rect.height > 0;
+  }
+
+  function cleanHeadingText(text) {
+    return String(text || '')
+      .replace(/\s+/g, ' ')
+      .replace(/^\d+\s*[.)-]\s*/, '')
+      .trim();
+  }
+
+  function getTargetForHeading(heading, index) {
+    const target =
+      heading.closest('.form-section, .option-section, .field-section, .section-card, .form-card, .section-block, fieldset, section') ||
+      heading.parentElement ||
+      heading;
+    if (!target.id) target.id = `form-section-nav-${index + 1}`;
+    target.classList.add('form-quick-nav-target');
+    return target;
+  }
+
+  function refreshFormQuickNav() {
+    const headings = [];
+    const seen = new Set();
+
+    Array.from(formArea.querySelectorAll(HEADING_SELECTOR)).forEach((heading) => {
+      if (!isVisible(heading)) return;
+      if (heading.closest('.picker-modal, .modal, .dropdown, template')) return;
+
+      const text = cleanHeadingText(heading.textContent);
+      if (!text) return;
+
+      const key = text.toLocaleLowerCase();
+      if (seen.has(key)) return;
+      seen.add(key);
+      headings.push({ heading, text });
+    });
+
+    nav.innerHTML = '';
+    if (!headings.length) {
+      nav.classList.add('hidden');
+      return;
+    }
+
+    headings.forEach((item, index) => {
+      const target = getTargetForHeading(item.heading, index);
+      const link = document.createElement('a');
+      link.href = `#${target.id}`;
+      link.textContent = item.text;
+      link.addEventListener('click', (event) => {
+        event.preventDefault();
+        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      });
+      nav.appendChild(link);
+    });
+
+    nav.classList.remove('hidden');
+  }
+
+  let navRefreshTimer = null;
+  const scheduleRefresh = () => {
+    clearTimeout(navRefreshTimer);
+    navRefreshTimer = setTimeout(refreshFormQuickNav, 80);
+  };
+
+  const observer = new MutationObserver(scheduleRefresh);
+  observer.observe(formArea, { childList: true, subtree: true, characterData: true });
+
+  document.addEventListener('change', scheduleRefresh, true);
+  document.addEventListener('click', scheduleRefresh, true);
+  window.addEventListener('load', scheduleRefresh);
+  window.refreshFormQuickNav = refreshFormQuickNav;
+
+  scheduleRefresh();
+})();
+
