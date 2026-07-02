@@ -233,12 +233,44 @@ button.hidden { display: none; }
   width: 794px;
   min-height: 1123px;
   margin: 0 auto;
-  padding: 34px;
-  background: #fff;
+  position: relative;
+  padding: 34px 42px 150px;
+  background-color: #fff;
   border: 1px solid #d1d5db;
   color: #111827;
   box-shadow: 0 15px 40px rgba(17,24,39,.12);
   font-size: 13px;
+}
+
+
+.pdf-template-bg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: fill;
+  z-index: 0;
+  pointer-events: none;
+  user-select: none;
+}
+.a4-sheet > :not(.pdf-template-bg) {
+  position: relative;
+  z-index: 1;
+}
+.pdf-template-meta {
+  position: absolute;
+  top: 62px;
+  right: 26px;
+  width: 150px;
+  text-align: right;
+  z-index: 2;
+  font-size: 11px;
+  color: #111827;
+}
+.pdf-template-meta p { margin: 4px 0; }
+.pdf-content-start { height: 155px; }
+#pdfPreview .pdf-section {
+  background: rgba(255,255,255,.88);
 }
 
 .pdf-header {
@@ -276,7 +308,33 @@ button.hidden { display: none; }
   letter-spacing: .08em;
 }
 .pdf-section p { margin: 7px 0; min-height: 16px; }
-.two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+ .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+.pdf-section-pair {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  align-items: start;
+  margin-top: 12px;
+}
+.pdf-section-pair .pdf-section {
+  margin-top: 0;
+}
+.pdf-section-pair .pdf-section + .pdf-section {
+  margin-top: 10px;
+}
+.pdf-section-tight {
+  padding: 10px;
+}
+.pdf-section-tight h3 {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.pdf-section-tight td,
+.pdf-section-tight th {
+  padding: 6px;
+  font-size: 12px;
+}
 
 table { width: 100%; border-collapse: collapse; }
 td, th {
@@ -311,11 +369,13 @@ td:first-child { width: 42%; font-weight: 800; background: #f9fafb; }
   .a4-sheet {
     width: 100%;
     min-height: auto;
-    padding: 22px;
+    padding: 22px 18px 110px;
     font-size: 12px;
   }
-  .pdf-header, .two-col { grid-template-columns: 1fr; }
+  .pdf-header, .two-col, .pdf-section-pair { grid-template-columns: 1fr; }
   .pdf-meta { text-align: left; }
+  .pdf-template-meta { top: 52px; right: 18px; width: 140px; font-size: 9px; }
+  .pdf-content-start { height: 125px; }
 }
 
 @media print {
@@ -327,7 +387,7 @@ td:first-child { width: 42%; font-weight: 800; background: #f9fafb; }
   .a4-sheet {
     width: 210mm;
     min-height: 297mm;
-    padding: 10mm;
+    padding: 10mm 11mm 38mm;
     border: 0;
     box-shadow: none;
   }
@@ -837,7 +897,24 @@ input:focus, textarea:focus, select:focus {
     font-size: 11px;
     box-shadow: none;
   }
-  .pdf-header {
+  
+.pdf-template-meta {
+  position: absolute;
+  top: 62px;
+  right: 26px;
+  width: 150px;
+  text-align: right;
+  z-index: 2;
+  font-size: 11px;
+  color: #111827;
+}
+.pdf-template-meta p { margin: 4px 0; }
+.pdf-content-start { height: 155px; }
+#pdfPreview .pdf-section {
+  background: rgba(255,255,255,.88);
+}
+
+.pdf-header {
     grid-template-columns: 54px 1fr;
     gap: 10px;
     padding-bottom: 12px;
@@ -1478,4 +1555,125 @@ input:focus, textarea:focus, select:focus {
 .custom-select-btn.field-invalid {
   border-color: #dc2626 !important;
   outline: 2px solid rgba(220, 38, 38, .16) !important;
+}
+
+/* C104: PDF antet meta and compact table readability */
+#pdfPreview .pdf-template-meta {
+  top: 64px !important;
+  right: 14px !important;
+  width: 150px !important;
+  text-align: left !important;
+  font-size: 10.5px !important;
+  line-height: 1.18 !important;
+}
+#pdfPreview .pdf-template-meta p {
+  display: grid;
+  grid-template-columns: max-content minmax(0, 1fr);
+  column-gap: 4px;
+  align-items: start;
+  margin: 4px 0 !important;
+}
+#pdfPreview .pdf-template-meta span {
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+#pdfPreview .pdf-section-tight table {
+  table-layout: auto;
+}
+#pdfPreview .pdf-section-tight td:first-child,
+#pdfPreview .pdf-section-tight th:first-child {
+  width: 1%;
+  min-width: 118px;
+  white-space: nowrap;
+}
+#pdfPreview .pdf-section-tight td + td,
+#pdfPreview .pdf-section-tight th + th {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+@media (max-width: 860px) {
+  #pdfPreview .pdf-template-meta {
+    top: 52px !important;
+    right: 10px !important;
+    width: 132px !important;
+    font-size: 8.6px !important;
+  }
+  #pdfPreview .pdf-section-tight td:first-child,
+  #pdfPreview .pdf-section-tight th:first-child {
+    min-width: 102px;
+  }
+}
+
+/* C105: compact color details and controlled PDF notes */
+.pdf-color-table td:nth-child(1),
+.pdf-color-table td:nth-child(3) {
+  background: #f7f7f8;
+  font-weight: 800;
+  white-space: nowrap;
+}
+.pdf-color-table td:nth-child(2),
+.pdf-color-table td:nth-child(4) {
+  white-space: nowrap;
+}
+.notes-box p { white-space: pre-wrap; }
+#notes { min-height: 128px; resize: vertical; }
+
+
+/* C110: heater/sound/packing/loading 2-row matrix */
+.pdf-heater-matrix-table {
+  width: 100%;
+  table-layout: fixed;
+}
+.pdf-heater-matrix-table td:nth-child(1),
+.pdf-heater-matrix-table td:nth-child(3),
+.pdf-heater-matrix-table td:nth-child(6) {
+  background: #f7f7f8;
+  font-weight: 800;
+  width: 20%;
+}
+.pdf-heater-matrix-table td:nth-child(2),
+.pdf-heater-matrix-table td:nth-child(4),
+.pdf-heater-matrix-table td:nth-child(5) {
+  width: 13.333%;
+}
+.pdf-heater-matrix-table td:nth-child(5) {
+  background: #f7f7f8;
+  font-weight: 800;
+}
+.pdf-heater-matrix-table td:nth-child(6) {
+  background: transparent;
+  font-weight: 400;
+}
+.pdf-heater-matrix-table td {
+  vertical-align: top;
+}
+
+
+/* C114: heater matrix uses 3/2/3/2/2/3 ratio; sensors remains compact 2x2 */
+/* C111: compact 2x2 sensors matrix next to heater table */
+.pdf-sensors-matrix-table {
+  width: 100%;
+  table-layout: fixed;
+}
+.pdf-sensors-matrix-table td:nth-child(1),
+.pdf-sensors-matrix-table td:nth-child(3) {
+  background: #f7f7f8;
+  font-weight: 800;
+  width: 32%;
+}
+.pdf-sensors-matrix-table td:nth-child(2),
+.pdf-sensors-matrix-table td:nth-child(4) {
+  width: 18%;
+}
+.pdf-sensors-matrix-table td {
+  vertical-align: top;
+}
+
+
+/* C121: PDF preview is cancelled; keep only create/share PDF controls. */
+#pdfPreview {
+  display: none !important;
+}
+#pdfSection.preview-panel {
+  overflow: visible;
 }

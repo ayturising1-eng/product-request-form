@@ -1,4 +1,4 @@
-const CACHE = 'product-request-form-c100-fixed-ceiling-heater-packing';
+const CACHE = 'product-request-form-c121-no-preview-unifoliate-fixedglass';
 const ASSETS = [
   './',
   './index.html',
@@ -11,6 +11,8 @@ const ASSETS = [
   './assets-4.js',
   './color-catalogs.js',
   './pergo-rise-fabrics.js',
+  './pdf-template-assets.js',
+  './assets/pdf/antet-template.jpg',
   './products.js',
   './manifest.webmanifest',
   './assets/fabric-pages/sun-store/sun-store-page-1.jpg',

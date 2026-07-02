@@ -1,4 +1,4 @@
-window.APP_VERSION = 'C100-FIXED-CEILING-HEATER-PACKING';
+window.APP_VERSION = 'C121-NO-PREVIEW-UNIFOLIATE-FIXEDGLASS';
 const DATA = window.PRODUCT_DATA;
 const $ = (selector) => document.querySelector(selector);
 const $$ = (selector) => Array.from(document.querySelectorAll(selector));
@@ -13,7 +13,7 @@ const state = {
 };
 
 const STORAGE_PROFILE = 'prf_profile_v2';
-const STORAGE_ORDER = 'prf_order_c100_fixed_ceiling_heater_packing';
+const STORAGE_ORDER = 'prf_order_c121_no_preview_unifoliate_fixedglass';
 const STORAGE_LANGUAGE = 'prf_language_v1';
 
 const COLOR_FIELD_LABELS = new Set([
@@ -1377,6 +1377,43 @@ const fields = {
   notes: $('#notes')
 };
 
+const NOTES_MAX_LINES = 5;
+const NOTES_MAX_CHARS_PER_LINE = 82;
+const NOTES_MAX_CHARS = NOTES_MAX_LINES * NOTES_MAX_CHARS_PER_LINE;
+
+function normalizeNotesValue(value) {
+  const output = [];
+  const source = String(value ?? '').replace(/\r\n?/g, '\n').slice(0, NOTES_MAX_CHARS * 2);
+  source.split('\n').forEach((rawLine) => {
+    if (output.length >= NOTES_MAX_LINES) return;
+    let line = rawLine;
+    while (line.length > NOTES_MAX_CHARS_PER_LINE && output.length < NOTES_MAX_LINES) {
+      output.push(line.slice(0, NOTES_MAX_CHARS_PER_LINE));
+      line = line.slice(NOTES_MAX_CHARS_PER_LINE);
+    }
+    if (output.length < NOTES_MAX_LINES) output.push(line);
+  });
+  return output.slice(0, NOTES_MAX_LINES).join('\n').slice(0, NOTES_MAX_CHARS + NOTES_MAX_LINES - 1);
+}
+
+function enforceNotesLimit(event) {
+  const el = event?.currentTarget || fields.notes;
+  if (!el) return;
+  const normalized = normalizeNotesValue(el.value);
+  if (el.value !== normalized) {
+    const end = normalized.length;
+    el.value = normalized;
+    try { el.setSelectionRange(end, end); } catch {}
+  }
+}
+
+function handleNotesKeydown(event) {
+  if (event.key !== 'Enter') return;
+  const el = event.currentTarget;
+  const lines = String(el.value || '').replace(/\r\n?/g, '\n').split('\n');
+  if (lines.length >= NOTES_MAX_LINES) event.preventDefault();
+}
+
 function todayISO() {
   return new Date().toISOString().slice(0, 10);
 }
@@ -1609,6 +1646,34 @@ Object.assign(I18N.tr, {
   '1003 Red': '1003 Kırmızı',
   'Gold Gilding': 'Sarı Yaldız',
   'Silver Gilding': 'Gümüş Yaldız'
+});
+
+
+// C109: final Turkish wording cleanup requested for all form labels/options.
+Object.assign(I18N.tr, {
+  'Projection': 'Açılım',
+  'Projection (mm)': 'Açılım',
+  'Projection 1 (mm)': 'Açılım 1',
+  'Projection 2 (mm)': 'Açılım 2',
+  'Remote Control': 'Kumanda',
+  'Light Dimmer (For Linear LED)': 'Dimmer (Linear LED için)',
+  'Light Dimmer (For Spot LED)': 'Dimmer (Spot LED için)',
+  'Dimmer Heater': 'Dimmer (Isıtıcı için)',
+  'Side Beam': 'Cam Kayıt Profili',
+  'Structure': 'Sistem',
+  'System Color': 'Sistem',
+  'Panel Color': 'Panel',
+  'Colours': 'Renkler',
+  'Color Details': 'Renk Bilgileri',
+  'Motor & Remote Control': 'Motor ve Kumanda',
+  'Lighting & Dimmer': 'Aydınlatma & Dimmer',
+  'Lighting & Dimmers': 'Aydınlatma & Dimmer',
+  'Lighting & Dimmer & Remote': 'Aydınlatma & Dimmer & Kumanda',
+  'Heater & Sound & Packing': 'Isıtıcı, Ses, Ambalaj',
+  'Heater & Sound & Packing & Loading': 'Isıtıcı, Ses, Ambalaj & Yükleme',
+  'System Quantity': 'Sistem Adedi',
+  'Product Quantity': 'Ürün Adedi',
+  'Quantity': 'Adet'
 });
 
 let activePickerInput = null;
@@ -4819,16 +4884,27 @@ function createInputField(field) {
       const text = translatedOption(option);
       return `<option value="${option}">${text}</option>`;
     }).join('');
-    if (field.defaultValue !== undefined) control.value = field.defaultValue;
   } else {
     control = document.createElement('input');
     control.type = field.type === 'number' ? 'number' : 'text';
     if (field.type === 'number') control.inputMode = 'decimal';
     control.dataset.placeholderI18n = 'enterValue';
     control.placeholder = t('enterValue');
-    if (field.defaultValue !== undefined) control.value = field.defaultValue;
   }
   control.id = `dyn_${field.id}`;
+  if (field.type !== 'select' && Array.isArray(field.options) && field.options.length) {
+    const listId = `list_${safeId(field.id)}`;
+    control.setAttribute('list', listId);
+    const datalist = document.createElement('datalist');
+    datalist.id = listId;
+    field.options.forEach((option) => {
+      const optionNode = document.createElement('option');
+      optionNode.value = String(option);
+      optionNode.label = translatedOption(option);
+      datalist.appendChild(optionNode);
+    });
+    control.pendingDatalist = datalist;
+  }
   control.dataset.fieldId = field.id;
   control.dataset.fieldLabel = field.label;
   control.dataset.unit = field.unit || '';
@@ -4850,6 +4926,10 @@ function createInputField(field) {
   }
 
   wrap.appendChild(control);
+  if (control.pendingDatalist) {
+    wrap.appendChild(control.pendingDatalist);
+    delete control.pendingDatalist;
+  }
   if (field.type === 'select') enhanceCustomSelect(control);
   const pickerKind = pickerKindForField(field, control);
   if (pickerKind) {
@@ -4922,7 +5002,6 @@ function createChoiceField(field) {
     input.value = option;
     input.dataset.fieldId = field.id;
     input.dataset.fieldLabel = field.label;
-    if (field.defaultValue !== undefined && option === field.defaultValue) input.checked = true;
     input.addEventListener('change', (event) => {
       onAnyInput();
       scheduleAutoAdvance(event.currentTarget);
@@ -5072,7 +5151,7 @@ function createProjectDetailsSection(items) {
       divider.className = 'project-position-divider';
       divider.setAttribute('role', 'separator');
       const label = document.createElement('span');
-      label.textContent = `${translatedText('Position')} ${positionIndex}`;
+      label.textContent = `Poz ${positionIndex}`;
       divider.appendChild(label);
       const removeButton = document.createElement('button');
       removeButton.type = 'button';
@@ -5249,6 +5328,10 @@ function isJanelaCassetteAwning(product = getProduct()) {
   return isJanelaAwningProduct(product);
 }
 
+function isBcubeProduct(product = getProduct()) {
+  return product?.productGroup === 'bcube';
+}
+
 function janelaAdditionalSections(form) {
   const titledSections = (form.sectionsAfterDimmers || []).filter((section) => ['One Sided Roof', 'Packing'].includes(section?.title));
   const fields = titledSections.flatMap((section) => Array.isArray(section.fields) ? section.fields : []);
@@ -5306,11 +5389,18 @@ function renderGalaxyForm() {
         wrap.appendChild(createFormSection(section.title, section.fields, 'grid two'));
       }
     });
+    const swapHeaterSensors = isBcubeProduct();
+    if (swapHeaterSensors && form.heaterPackaging?.length) {
+      wrap.appendChild(createFormSection('Heater & Sound & Packing', form.heaterPackaging, 'grid two'));
+    }
     if (form.sensors?.length) {
       wrap.appendChild(createFormSection('Sensors', form.sensors, 'grid two'));
     }
+    if (!swapHeaterSensors && form.heaterPackaging?.length) {
+      wrap.appendChild(createFormSection('Heater & Sound & Packing', form.heaterPackaging, 'grid two'));
+    }
   }
-  if (form.heaterPackaging?.length) wrap.appendChild(createFormSection('Heater & Sound & Packing', form.heaterPackaging, 'grid two'));
+  if (isJanela && form.heaterPackaging?.length) wrap.appendChild(createFormSection('Heater & Sound & Packing', form.heaterPackaging, 'grid two'));
   updateAutoUnits();
   updateConditionalFields();
   syncJanelaLinkedFields();
@@ -5336,7 +5426,8 @@ function renderPergolaForm() {
   wrap.appendChild(createFormSection('Colours', form.colorDetails, 'grid two'));
   if (form.operation?.length) wrap.appendChild(createFormSection('Motor & Remote Control', form.operation, 'grid two'));
   wrap.appendChild(createLightingDimmersSection(form));
-  wrap.appendChild(createFormSection('Heater & Sound & Packing', form.heaterPackaging, 'grid two'));
+  if (form.heaterPackaging?.length) wrap.appendChild(createFormSection('Heater & Sound & Packing', form.heaterPackaging, 'grid two'));
+  if (form.sensors?.length) wrap.appendChild(createFormSection('Sensors', form.sensors, 'grid two'));
   updateAutoUnits();
   updateConditionalFields();
   refreshDynamicLanguage();
@@ -5504,25 +5595,69 @@ function fieldIsActive(field) {
   return (field.showWhen.values || []).includes(getFieldValue({ id: field.showWhen.field }));
 }
 
+function baseFieldId(fieldId = '') {
+  return String(fieldId || '').replace(/__pos\d+$/, '');
+}
+
+function fieldPositionSuffix(fieldId = '') {
+  const match = String(fieldId || '').match(/(__pos\d+)$/);
+  return match ? match[1] : '';
+}
+
+function isRealPergolaProduct(product = getProduct()) {
+  return product?.family === 'pergola';
+}
+
 function fieldRows(fieldList, lang = state.language) {
-  return fieldList.filter(fieldIsActive).map((field) => {
-    return [
+  const isPergola = isRealPergolaProduct();
+  const rows = [];
+  fieldList.filter(fieldIsActive).forEach((field) => {
+    const id = field.id || '';
+    const baseId = baseFieldId(id);
+    if (isPergola && (baseId === 'pipeLengthOther' || baseId === 'lightingOther')) return;
+
+    let value = getFieldValue(field);
+    let unit = field.unit || '';
+    let unitAuto = field.unitAuto || '';
+
+    if (isPergola && baseId === 'pipeLengthType' && value === 'Other') {
+      const suffix = fieldPositionSuffix(id);
+      const otherValue = getFieldValue({ id: `pipeLengthOther${suffix}` });
+      if (String(otherValue || '').trim()) {
+        value = otherValue;
+        unit = 'mm';
+        unitAuto = '';
+      }
+    }
+
+    if (isPergola && baseId === 'lightingType' && value === 'Other') {
+      const otherValue = getFieldValue({ id: 'lightingOther' });
+      if (String(otherValue || '').trim()) {
+        value = otherValue;
+        unit = '';
+        unitAuto = '';
+      }
+    }
+
+    rows.push([
       translatedText(field.label, lang),
-      formatValue(getFieldValue(field), field.unit || '', field.unitAuto || '', lang)
-    ];
+      formatValue(value, unit, unitAuto, lang),
+      id
+    ]);
   });
+  return rows;
 }
 
 function projectDetailSections(fieldList, lang = state.language) {
   const positionCount = getProjectPositionCount();
   const projectTitle = translatedText('Project Details', lang);
-  const positionLabel = translatedText('Position', lang);
   return Array.from({ length: positionCount }, (_, index) => {
     const positionIndex = index + 1;
     return {
       kind: 'projectDetails',
+      role: 'project',
       baseTitle: projectTitle,
-      title: positionCount > 1 ? `${positionLabel} ${positionIndex}` : projectTitle,
+      title: positionCount > 1 ? `Poz ${positionIndex}` : projectTitle,
       rows: fieldRows(positionedFields(fieldList, positionIndex), lang)
     };
   });
@@ -5556,13 +5691,13 @@ function genericRows(lang = state.language) {
   });
   const sections = [
     ...projectDetailSections(projectFields, lang),
-    { title: translatedText('Colours / System', lang), rows: fieldRows(colorFields, lang) }
+    { role: 'colors', title: translatedText('Colours / System', lang), rows: fieldRows(colorFields, lang) }
   ];
   if (techFields.length) {
-    sections.push({ title: translatedText('Technical Selections', lang), rows: techFields });
+    sections.push({ role: 'operation', title: translatedText('Technical Selections', lang), rows: techFields });
   }
   sections.push(
-    { title: translatedText('Lighting', lang), rows: [[translatedText('Selected', lang), lightingDisplayValue(lang)]] },
+    { role: 'lighting', title: translatedText('Lighting', lang), rows: [[translatedText('Selected', lang), lightingDisplayValue(lang)]] },
     { title: translatedText('Additional Accessories', lang), rows: [[translatedText('Selected', lang), translatedList(getChecked('accessories'), lang)]] }
   );
   return {
@@ -5572,22 +5707,23 @@ function genericRows(lang = state.language) {
 }
 
 function galaxyRows(lang = state.language) {
+  const product = getProduct();
   const form = getProductForm();
   if (!form) return { systemQuantity: '-', sections: [] };
   const sections = [];
   const isJanela = isJanelaCassetteAwning();
   if (form.projectDetails?.length) sections.push(...projectDetailSections(form.projectDetails, lang));
-  if (form.colorDetails?.length) sections.push({ title: translatedText('Color Details', lang), rows: fieldRows(form.colorDetails, lang) });
+  if (form.colorDetails?.length) sections.push({ role: 'colors', title: translatedText('Color Details', lang), rows: fieldRows(form.colorDetails, lang) });
   if (form.operation?.length) {
-    sections.push({ title: translatedText(form.operationTitle || 'Motor & Remote Control', lang), rows: fieldRows(form.operation, lang) });
+    sections.push({ role: 'operation', title: translatedText(form.operationTitle || 'Motor & Remote Control', lang), rows: fieldRows(form.operation, lang) });
   }
-  if (form.panelOptions?.length) sections.push({ title: translatedText('Panel Options', lang), rows: fieldRows(form.panelOptions, lang) });
+  if (form.panelOptions?.length) sections.push({ role: 'panelOptions', title: translatedText('Panel Options', lang), rows: fieldRows(form.panelOptions, lang) });
   if (form.lighting?.length || form.dimmers?.length) {
     const lightingDimmerRows = [];
     const lightingDimmerTitle = form.lightingDimmersTitle || 'Lighting & Dimmers';
     if (form.lighting?.length) lightingDimmerRows.push([translatedText('Lighting', lang), lightingDisplayValue(lang)]);
     if (form.dimmers?.length) lightingDimmerRows.push(...fieldRows(form.dimmers, lang));
-    sections.push({ title: translatedText(lightingDimmerTitle, lang), rows: lightingDimmerRows });
+    sections.push({ role: 'lighting', title: translatedText(lightingDimmerTitle, lang), rows: lightingDimmerRows });
   }
   if (isJanela) {
     appendJanelaPreviewSections(form, sections, lang);
@@ -5597,11 +5733,18 @@ function galaxyRows(lang = state.language) {
         sections.push({ title: translatedText(section.title, lang), rows: fieldRows(section.fields, lang) });
       }
     });
+    const swapHeaterSensors = isBcubeProduct(product);
+    if (swapHeaterSensors && form.heaterPackaging?.length) {
+      sections.push({ role: 'heater', title: translatedText('Heater & Sound & Packing', lang), rows: fieldRows(form.heaterPackaging, lang) });
+    }
     if (form.sensors?.length) {
-      sections.push({ title: translatedText('Sensors', lang), rows: fieldRows(form.sensors, lang) });
+      sections.push({ role: 'sensors', title: translatedText('Sensors', lang), rows: fieldRows(form.sensors, lang) });
+    }
+    if (!swapHeaterSensors && form.heaterPackaging?.length) {
+      sections.push({ role: 'heater', title: translatedText('Heater & Sound & Packing', lang), rows: fieldRows(form.heaterPackaging, lang) });
     }
   }
-  if (form.heaterPackaging?.length) sections.push({ title: translatedText('Heater & Sound & Packing', lang), rows: fieldRows(form.heaterPackaging, lang) });
+  if (isJanela && form.heaterPackaging?.length) sections.push({ role: 'heater', title: translatedText('Heater & Sound & Packing', lang), rows: fieldRows(form.heaterPackaging, lang) });
   return {
     systemQuantity: formatValue($('#dyn_systemQuantity')?.value || '', '', '', lang),
     sections
@@ -5611,16 +5754,17 @@ function galaxyRows(lang = state.language) {
 function pergolaRows(lang = state.language) {
   const form = getProductForm();
   if (!form) return { systemQuantity: '-', sections: [] };
-  return {
-    systemQuantity: '-',
-    sections: [
-      ...projectDetailSections(form.projectDetails, lang),
-      { title: translatedText('Colours', lang), rows: fieldRows(form.colorDetails, lang) },
-      { title: translatedText('Motor & Remote Control', lang), rows: fieldRows(form.operation, lang) },
-      { title: translatedText(form.lightingDimmersTitle || 'Lighting & Dimmers', lang), rows: [...fieldRows(form.lighting, lang), ...fieldRows(form.dimmer, lang)] },
-      { title: translatedText('Heater & Sound & Packing', lang), rows: fieldRows(form.heaterPackaging, lang) }
-    ]
-  };
+  const sections = [
+    ...projectDetailSections(form.projectDetails, lang),
+    { role: 'colors', title: translatedText('Colours', lang), rows: fieldRows(form.colorDetails, lang) }
+  ];
+  if (form.operation?.length) sections.push({ role: 'operation', title: translatedText('Motor & Remote Control', lang), rows: fieldRows(form.operation, lang) });
+  if (form.lighting?.length || form.dimmer?.length) {
+    sections.push({ role: 'lighting', title: translatedText(form.lightingDimmersTitle || 'Lighting & Dimmers', lang), rows: [...fieldRows(form.lighting, lang), ...fieldRows(form.dimmer, lang)] });
+  }
+  if (form.heaterPackaging?.length) sections.push({ role: 'heater', title: translatedText('Heater & Sound & Packing', lang), rows: fieldRows(form.heaterPackaging, lang) });
+  if (form.sensors?.length) sections.push({ role: 'sensors', title: translatedText('Sensors', lang), rows: fieldRows(form.sensors, lang) });
+  return { systemQuantity: '-', sections };
 }
 
 function getOrderData(lang = state.language) {
@@ -5644,13 +5788,16 @@ function getOrderData(lang = state.language) {
     orderNo: manualOrderNo || generatedOrderNo(profile, product?.name || selection.subGroup || selection.group, values),
     manualOrderNo,
     orderDate: fields.orderDate.value,
+    productId: product?.id || '',
+    productFamilyId: product?.family || '',
+    productGroupId: product?.productGroup || '',
     productName: product?.name || '-',
     productFamily: selection.family || '-',
     productGroup: selection.group || translatedText(group?.label || '', lang) || '-',
     productSubGroup: selection.subGroup || '-',
     sections: dynamic.sections,
     values,
-    notes: fields.notes.value.trim()
+    notes: normalizeNotesValue(fields.notes.value).trim()
   };
 }
 
@@ -5662,7 +5809,7 @@ function setText(key, value) {
 
 function normalizeSectionBaseTitle(title) {
   const raw = String(title || '').trim();
-  if (/^(Position|Poz|Position|מיקום)\s+\d+$/i.test(raw)) return translatedText('Project Details');
+  if (/^(Position|Poz|מיקום)\s+\d+$/i.test(raw)) return translatedText('Project Details');
   return raw.replace(/\s*-\s*(Position|Poz|מיקום)\s+\d+$/i, '').trim();
 }
 
@@ -5700,31 +5847,200 @@ function renderPositionMatrixSection(baseTitle, sections) {
   `;
 }
 
+function isFinishLabel(label) {
+  const raw = String(label || '').trim();
+  const normalized = ascii(raw).toLowerCase();
+  return ['finish', 'yuzey', 'oberflache', 'finition'].includes(normalized) || raw === 'גימור';
+}
+
+function compactColorRows(rows) {
+  const compact = [];
+  const source = rows || [];
+  for (let i = 0; i < source.length; i += 1) {
+    const [label, value] = source[i] || [];
+    if (isFinishLabel(label)) {
+      compact.push([label || '-', value || '-', '', '']);
+      continue;
+    }
+    const next = source[i + 1] || [];
+    if (isFinishLabel(next[0])) {
+      compact.push([label || '-', value || '-', next[0] || 'Finish', next[1] || '-']);
+      i += 1;
+    } else {
+      compact.push([label || '-', value || '-', '', '']);
+    }
+  }
+  return compact;
+}
+
+function renderColorSectionTable(section) {
+  const rows = compactColorRows(section?.rows || []);
+  return `
+    <div class="pdf-section pdf-section-tight">
+      <h3>${section.title}</h3>
+      <table class="pdf-color-table"><tbody>
+        ${rows.map(([label, value, finishLabel, finishValue]) => `<tr><td>${label}</td><td>${value || '-'}</td><td>${finishLabel || ''}</td><td>${finishLabel ? (finishValue || '-') : ''}</td></tr>`).join('')}
+      </tbody></table>
+    </div>
+  `;
+}
+
+
+function isCompactHeaterLayoutProduct(product = getProduct()) {
+  return product?.family === 'pergola' || product?.id === 'glass_fixed_ceiling';
+}
+
+function heaterRowById(rows, id, fallbackText = '') {
+  const cleanId = String(id || '').toLowerCase();
+  const direct = (rows || []).find((row) => String(row?.[2] || '').toLowerCase() === cleanId);
+  if (direct) return direct;
+  const needle = ascii(fallbackText || id).toLowerCase();
+  return (rows || []).find((row) => ascii(row?.[0] || '').toLowerCase().includes(needle)) || [fallbackText || id, '-', id];
+}
+
+function compactHeaterMatrixRows(rows) {
+  return [
+    [
+      heaterRowById(rows, 'heater2000Quantity', 'Heater 2000W 220V Quantity'),
+      heaterRowById(rows, 'soundSystemQuantity', 'Sound System Quantity'),
+      heaterRowById(rows, 'packagingType', 'Packaging Type')
+    ],
+    [
+      heaterRowById(rows, 'heater3000Quantity', 'Heater 3000W 220V Quantity'),
+      heaterRowById(rows, 'dimmerHeater', 'Dimmer Heater'),
+      heaterRowById(rows, 'loadingType', 'Loading')
+    ]
+  ];
+}
+
+function renderHeaterCompactSectionTable(section) {
+  const matrix = compactHeaterMatrixRows(section?.rows || []);
+  return `
+    <div class="pdf-section pdf-section-tight">
+      <h3>${section.title}</h3>
+      <table class="pdf-heater-matrix-table"><tbody>
+        ${matrix.map((row) => `<tr>${row.map(([label, value]) => `<td>${label}</td><td>${value || '-'}</td>`).join('')}</tr>`).join('')}
+      </tbody></table>
+    </div>
+  `;
+}
+
+function sensorRowById(rows, id, fallbackText = '') {
+  const cleanId = String(id || '').toLowerCase();
+  const direct = (rows || []).find((row) => String(row?.[2] || '').toLowerCase() === cleanId);
+  if (direct) return direct;
+  const needle = ascii(fallbackText || id).toLowerCase();
+  return (rows || []).find((row) => ascii(row?.[0] || '').toLowerCase().includes(needle)) || [fallbackText || id, '-', id];
+}
+
+function compactSensorMatrixRows(rows) {
+  return [
+    [
+      sensorRowById(rows, 'rainSensor', 'Rain Sensor'),
+      sensorRowById(rows, 'windSensor', 'Wind Sensor')
+    ],
+    [
+      sensorRowById(rows, 'vibrationSensor', 'Vibration Sensor'),
+      sensorRowById(rows, 'windSunSensor', 'Wind & Sun Sensor')
+    ]
+  ];
+}
+
+function renderSensorsCompactSectionTable(section) {
+  const matrix = compactSensorMatrixRows(section?.rows || []);
+  return `
+    <div class="pdf-section pdf-section-tight">
+      <h3>${section.title}</h3>
+      <table class="pdf-sensors-matrix-table"><tbody>
+        ${matrix.map((row) => `<tr>${row.map(([label, value]) => `<td>${label}</td><td>${value || '-'}</td>`).join('')}</tr>`).join('')}
+      </tbody></table>
+    </div>
+  `;
+}
+
+function renderSectionTable(section) {
+  const rows = section?.rows || [];
+  if (section?.role === 'colors') return renderColorSectionTable(section);
+  if (section?.role === 'heater' && isCompactHeaterLayoutProduct()) return renderHeaterCompactSectionTable(section);
+  if (section?.role === 'sensors' && isCompactHeaterLayoutProduct()) return renderSensorsCompactSectionTable(section);
+  return `
+    <div class="pdf-section pdf-section-tight">
+      <h3>${section.title}</h3>
+      <table><tbody>
+        ${rows.map(([label, value]) => `<tr><td>${label}</td><td>${value || '-'}</td></tr>`).join('')}
+      </tbody></table>
+    </div>
+  `;
+}
+
+function renderPreviewSectionGroup(sections) {
+  return sections.map(renderSectionTable).join('');
+}
+
+function renderPreviewPair(leftSections, rightSections) {
+  return `
+    <div class="pdf-section-pair">
+      <div>${renderPreviewSectionGroup(leftSections)}</div>
+      <div>${renderPreviewSectionGroup(rightSections)}</div>
+    </div>
+  `;
+}
+
+function renderSinglePreviewSection(current) {
+  return renderSectionTable(current);
+}
+
 function renderPreviewSections(sections) {
   const html = [];
   for (let i = 0; i < sections.length; i += 1) {
     const current = sections[i];
-    const key = sectionGroupKey(current);
-    const baseTitle = sectionBaseTitle(current);
-    const group = [current];
-    let j = i + 1;
-    while (j < sections.length && sectionGroupKey(sections[j]) === key) {
-      group.push(sections[j]);
-      j += 1;
-    }
-    if (group.length > 1 && isProjectDetailsGroup(group)) {
-      html.push(renderPositionMatrixSection(baseTitle, group));
+
+    if (current?.role === 'project') {
+      const group = [current];
+      let j = i + 1;
+      while (j < sections.length && sections[j]?.role === 'project') {
+        group.push(sections[j]);
+        j += 1;
+      }
+      if (group.length === 1 && sections[j]?.role === 'colors') {
+        html.push(renderPreviewSectionGroup(group));
+        i = j - 1;
+        continue;
+      }
+      if (group.length > 1 && isProjectDetailsGroup(group)) {
+        html.push(renderPositionMatrixSection(sectionBaseTitle(group[0]), group));
+        i = j - 1;
+        continue;
+      }
+      html.push(renderPreviewSectionGroup(group));
       i = j - 1;
       continue;
     }
-    html.push(`
-      <div class="pdf-section">
-        <h3>${current.title}</h3>
-        <table><tbody>
-          ${current.rows.map(([label, value]) => `<tr><td>${label}</td><td>${value || '-'}</td></tr>`).join('')}
-        </tbody></table>
-      </div>
-    `);
+
+    if (current?.role === 'operation') {
+      const leftSections = [current];
+      let j = i + 1;
+      if (sections[j]?.role === 'panelOptions') {
+        leftSections.push(sections[j]);
+        j += 1;
+      }
+      if (sections[j]?.role === 'lighting') {
+        html.push(renderPreviewPair(leftSections, [sections[j]]));
+        i = j;
+        continue;
+      }
+      html.push(renderPreviewSectionGroup(leftSections));
+      i = j - 1;
+      continue;
+    }
+
+    if ((current?.role === 'heater' && sections[i + 1]?.role === 'sensors') || (current?.role === 'sensors' && sections[i + 1]?.role === 'heater')) {
+      html.push(renderPreviewPair([current], [sections[i + 1]]));
+      i += 1;
+      continue;
+    }
+
+    html.push(renderSinglePreviewSection(current));
   }
   $('#previewSections').innerHTML = html.join('');
 }
@@ -5818,7 +6134,7 @@ function loadOrderDraft() {
     renderForm();
     fields.orderNo.value = saved.orderNo || '';
     fields.orderDate.value = saved.orderDate || todayISO();
-    fields.notes.value = saved.notes || '';
+    fields.notes.value = normalizeNotesValue(saved.notes || '');
     Object.entries(saved.values || {}).forEach(([id, value]) => {
       const radio = $$(`input[type="radio"][name="dyn_${id}"]`).find((x) => x.value === value);
       if (radio) radio.checked = true;
@@ -5851,8 +6167,8 @@ function resetOrder() {
 
 function janelaRuleMessage(type, value) {
   const tr = state.language === 'tr';
-  if (type === 'maxWidth') return tr ? `Cephe max. ${value} mm olmalı.` : `Width max. ${value} mm.`;
-  if (type === 'projectionLtWidth') return tr ? 'Açılım cepheden küçük olmalı.' : 'Projection must be smaller than width.';
+  if (type === 'maxWidth') return tr ? `Genişlik max. ${value} mm olmalı.` : `Width max. ${value} mm.`;
+  if (type === 'projectionLtWidth') return tr ? 'Açılım genişlikten küçük olmalı.' : 'Projection must be smaller than width.';
   return '';
 }
 
@@ -6071,14 +6387,25 @@ function setChoiceOptionState(fieldId, option, enabled) {
 function ensureChoiceHasAllowedValue(fieldId, allowedValues) {
   const radios = $$(`input[type="radio"][name="dyn_${fieldId}"]`);
   if (!radios.length) return;
-  const checked = radios.find((radio) => radio.checked && !radio.disabled && allowedValues.includes(radio.value));
-  if (checked) return;
-  const next = radios.find((radio) => !radio.disabled && allowedValues.includes(radio.value));
-  if (next) next.checked = true;
+  radios.forEach((radio) => {
+    if (radio.checked && (radio.disabled || !allowedValues.includes(radio.value))) {
+      radio.checked = false;
+    }
+  });
+  const visibleAllowed = radios.filter((radio) => {
+    const label = radio.closest('label');
+    return allowedValues.includes(radio.value) && !radio.disabled && !label?.hidden && label?.style.display !== 'none';
+  });
+  if (visibleAllowed.length === 1 && !visibleAllowed.some((radio) => radio.checked)) {
+    visibleAllowed[0].checked = true;
+  }
 }
 
 function updateGlassGuillotineChoicesForSuffix(suffix = '') {
-  const glassThickness = getFieldValue({ id: `glassThickness${suffix}` });
+  const glassField = `glassThickness${suffix}`;
+  const glassAllowed = isGlassGuillotineKSeriesProduct() ? ['Insulated Glass'] : ['8 mm', 'Insulated Glass'];
+  ensureChoiceHasAllowedValue(glassField, glassAllowed);
+  const glassThickness = getFieldValue({ id: glassField });
   const typeField = `guillotineType${suffix}`;
   const mechanismField = `mechanism${suffix}`;
   const panelField = `panelLayout${suffix}`;
@@ -6200,39 +6527,103 @@ function ascii(text) {
     .replace(/ı/g, 'i').replace(/İ/g, 'I')
     .replace(/ö/g, 'o').replace(/Ö/g, 'O')
     .replace(/ç/g, 'c').replace(/Ç/g, 'C')
+    .replace(/[’‘`]/g, "'")
+    .replace(/[“”]/g, '"')
+    .replace(/[–—−]/g, '-')
     .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
     .replace(/[^\x20-\x7E]/g, '?');
 }
 
+function pdfSafeText(text) {
+  return String(text ?? '')
+    .replace(/\u00A0/g, ' ')
+    .replace(/ğ/g, 'g').replace(/Ğ/g, 'G')
+    .replace(/ü/g, 'u').replace(/Ü/g, 'U')
+    .replace(/ş/g, 's').replace(/Ş/g, 'S')
+    .replace(/ı/g, 'i').replace(/İ/g, 'I')
+    .replace(/ö/g, 'o').replace(/Ö/g, 'O')
+    .replace(/ç/g, 'c').replace(/Ç/g, 'C')
+    .replace(/[’‘`]/g, "'")
+    .replace(/[“”]/g, '"')
+    .replace(/[–—−]/g, '-')
+    .replace(/×/g, 'x')
+    .replace(/≤/g, '<=')
+    .replace(/≥/g, '>=')
+    .replace(/±/g, '+/-')
+    .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+    .replace(/[^\x20-\x7E°]/g, '?');
+}
+
 function pdfEscape(text) {
-  return ascii(text).replace(/\\/g, '\\\\').replace(/\(/g, '\\(').replace(/\)/g, '\\)');
+  const source = pdfSafeText(text);
+  let output = '';
+  for (const ch of source) {
+    if (ch === '\\') output += '\\\\';
+    else if (ch === '(') output += '\\(';
+    else if (ch === ')') output += '\\)';
+    else if (ch === '°') output += '\\260';
+    else output += ch;
+  }
+  return output;
 }
 
 function wrapText(text, maxChars) {
-  const words = ascii(text || '-').split(/\s+/);
+  const source = pdfSafeText(text || '-').replace(/\r\n?/g, '\n');
   const lines = [];
-  let current = '';
-  words.forEach((word) => {
-    if ((current + ' ' + word).trim().length > maxChars) {
-      if (current) lines.push(current);
-      current = word;
-    } else {
-      current = `${current} ${word}`.trim();
-    }
+  source.split('\n').forEach((paragraph) => {
+    const words = paragraph.trim() ? paragraph.trim().split(/\s+/) : [''];
+    let current = '';
+    words.forEach((rawWord) => {
+      let word = rawWord;
+      while (word.length > maxChars) {
+        if (current) {
+          lines.push(current);
+          current = '';
+        }
+        lines.push(word.slice(0, maxChars));
+        word = word.slice(maxChars);
+      }
+      if ((current + ' ' + word).trim().length > maxChars) {
+        if (current) lines.push(current);
+        current = word;
+      } else {
+        current = `${current} ${word}`.trim();
+      }
+    });
+    if (current || !paragraph.trim()) lines.push(current);
   });
-  if (current) lines.push(current);
   return lines.length ? lines : ['-'];
+}
+
+
+function base64ToUint8Array(base64) {
+  const binary = atob(base64);
+  const bytes = new Uint8Array(binary.length);
+  for (let i = 0; i < binary.length; i += 1) bytes[i] = binary.charCodeAt(i);
+  return bytes;
+}
+
+function dataUriToBytes(dataUri) {
+  const raw = String(dataUri || '');
+  const comma = raw.indexOf(',');
+  if (comma < 0) return new Uint8Array();
+  return base64ToUint8Array(raw.slice(comma + 1));
+}
+
+function pdfTemplateCommand(width, height) {
+  return 'q ' + width.toFixed(2) + ' 0 0 ' + height.toFixed(2) + ' 0 0 cm /BG Do Q\n';
 }
 
 
 function buildOrderPdf(data) {
   const W = 595.28;
   const H = 841.89;
-  const margin = 36;
-  let y = 36;
+  const margin = 42;
+  const contentBottom = 735;
+  let y = 145;
   const commands = [];
 
-  const cmd = (s) => commands.push(s);
+  const cmd = (value) => commands.push(value);
   const topY = (v) => H - v;
   const text = (x, yTop, value, size = 9, bold = false) => {
     cmd(`BT /${bold ? 'F2' : 'F1'} ${size} Tf ${x.toFixed(2)} ${topY(yTop).toFixed(2)} Td (${pdfEscape(value)}) Tj ET`);
@@ -6243,131 +6634,361 @@ function buildOrderPdf(data) {
   const fillRect = (x, yTop, w, h, gray = 0.94) => {
     cmd(`${gray} g ${x.toFixed(2)} ${topY(yTop + h).toFixed(2)} ${w.toFixed(2)} ${h.toFixed(2)} re f 0 g`);
   };
-  const line = (x1, y1, x2, y2) => {
-    cmd(`${x1.toFixed(2)} ${topY(y1).toFixed(2)} m ${x2.toFixed(2)} ${topY(y2).toFixed(2)} l S`);
-  };
-
-  const section = (title) => {
-    y += 7;
-    fillRect(margin, y, W - margin * 2, 17, 0.92);
-    rect(margin, y, W - margin * 2, 17);
-    text(margin + 7, y + 11.5, title.toUpperCase(), 8.5, true);
-    y += 21;
+  const ensureSpace = (needed = 30) => {
+    if (y + needed > contentBottom) y = 145;
   };
 
   const rowHeight = 13;
-  const tableRows = (rows, x, startY, width) => {
+  const sectionGap = 7;
+  const colGap = 10;
+  const tableWidth = W - margin * 2;
+  const halfWidth = (tableWidth - colGap) / 2;
+
+  const sectionTitle = (title, x, yTop, width) => {
+    fillRect(x, yTop, width, 17, 0.92);
+    rect(x, yTop, width, 17);
+    text(x + 6, yTop + 11.5, title.toUpperCase(), 8.1, true);
+    return yTop + 19;
+  };
+
+  const labelTextWidthApprox = (value, size = 6.6) => pdfSafeText(value || '').length * size * 0.54;
+  const calcLabelWidthFromRows = (rows, width) => {
+    const maxLabel = Math.max(0, ...(rows || []).map(([label]) => labelTextWidthApprox(label)));
+    const estimated = Math.ceil(Math.max(68, maxLabel + 14));
+    const maxAllowed = Math.max(78, width * 0.64);
+    return Math.min(maxAllowed, estimated);
+  };
+  const calcSectionLabelWidth = (section, width) => calcLabelWidthFromRows(section?.rows || [], width);
+  const calcStackLabelWidth = (items, width) => {
+    const rows = (items || []).flatMap((section) => section?.rows || []);
+    return calcLabelWidthFromRows(rows, width);
+  };
+
+  const isLightingSummaryLabel = (label) => ascii(label || '').trim().toLowerCase() === 'lighting';
+
+  const tableRowsCompact = (rows, x, startY, width, labelWidth = null) => {
     let yy = startY;
-    rows.forEach(([a, b]) => {
-      fillRect(x, yy, 170, rowHeight, 0.97);
-      rect(x, yy, 170, rowHeight);
-      rect(x + 170, yy, width - 170, rowHeight);
-      text(x + 6, yy + 9, a, 7.3, true);
-      const valLines = wrapText(b || '-', 58).slice(0, 1);
-      valLines.forEach((ln, idx) => text(x + 178, yy + 9 + idx * 7, ln, 7.3));
+    const effectiveLabelWidth = Number.isFinite(labelWidth) ? labelWidth : calcLabelWidthFromRows(rows, width);
+    (rows || []).forEach(([a, b]) => {
+      const valueMaxChars = Math.max(8, Math.floor((width - effectiveLabelWidth) / 4.6));
+      const valueLines = wrapText(b || '-', valueMaxChars);
+      const forceTwoLineRow = isLightingSummaryLabel(a) && data?.productGroupId === 'bcube';
+      const lineCount = forceTwoLineRow ? 2 : 1;
+      const currentRowHeight = rowHeight * lineCount;
+      if (yy + currentRowHeight > contentBottom) return;
+      fillRect(x, yy, effectiveLabelWidth, currentRowHeight, 0.97);
+      rect(x, yy, effectiveLabelWidth, currentRowHeight);
+      rect(x + effectiveLabelWidth, yy, width - effectiveLabelWidth, currentRowHeight);
+      const labelMaxChars = Math.max(8, Math.floor((effectiveLabelWidth - 7) / 3.55));
+      text(x + 4, yy + 9, wrapText(a || '-', labelMaxChars)[0], 6.35, true);
+      const printableLines = valueLines.slice(0, lineCount);
+      printableLines.forEach((line, lineIndex) => {
+        text(x + effectiveLabelWidth + 4, yy + 9 + lineIndex * 9, line, 6.6);
+      });
+      yy += currentRowHeight;
+    });
+    return yy;
+  };
+
+  const drawColorRowsCompact = (rows, x, startY, width) => {
+    let yy = startY;
+    const compactRows = compactColorRows(rows);
+    const firstLabels = compactRows.map((row) => [row[0], '']);
+    const finishLabels = compactRows.filter((row) => row[2]).map((row) => [row[2], '']);
+    const label1Width = Math.min(width * 0.34, Math.max(56, calcLabelWidthFromRows(firstLabels, width) - 6));
+    const label2Width = finishLabels.length ? Math.min(width * 0.22, Math.max(40, calcLabelWidthFromRows(finishLabels, width) - 8)) : 0;
+    const valueSpace = width - label1Width - label2Width;
+    const value1Width = label2Width ? valueSpace * 0.5 : valueSpace;
+    const value2Width = label2Width ? valueSpace - value1Width : 0;
+    compactRows.forEach(([label, value, finishLabel, finishValue]) => {
+      if (yy + rowHeight > contentBottom) return;
+      fillRect(x, yy, label1Width, rowHeight, 0.97);
+      rect(x, yy, label1Width, rowHeight);
+      rect(x + label1Width, yy, value1Width, rowHeight);
+      text(x + 4, yy + 9, wrapText(label || '-', Math.max(8, Math.floor((label1Width - 7) / 3.55)))[0], 6.35, true);
+      text(x + label1Width + 4, yy + 9, wrapText(value || '-', Math.max(8, Math.floor((value1Width - 7) / 4.6)))[0], 6.45);
+      if (label2Width) {
+        const x2 = x + label1Width + value1Width;
+        fillRect(x2, yy, label2Width, rowHeight, 0.97);
+        rect(x2, yy, label2Width, rowHeight);
+        rect(x2 + label2Width, yy, value2Width, rowHeight);
+        text(x2 + 4, yy + 9, finishLabel ? wrapText(finishLabel, Math.max(8, Math.floor((label2Width - 7) / 3.55)))[0] : '', 6.35, true);
+        text(x2 + label2Width + 4, yy + 9, finishLabel ? wrapText(finishValue || '-', Math.max(8, Math.floor((value2Width - 7) / 4.6)))[0] : '', 6.45);
+      }
       yy += rowHeight;
     });
     return yy;
   };
 
-  const tableMatrix = (sections) => {
-    const titles = sections.map((s) => s.title);
-    const rowLabels = sections[0]?.rows.map(([label]) => label) || [];
-    const maps = sections.map((s) => buildSectionMap(s.rows));
-    const tableWidth = W - margin * 2;
-    const labelWidth = 145;
-    const colWidth = (tableWidth - labelWidth) / Math.max(1, titles.length);
-    let yy = y;
+  const isCompactHeaterPdf = data?.productFamilyId === 'pergola' || data?.productId === 'glass_fixed_ceiling';
 
-    fillRect(margin, yy, labelWidth, rowHeight, 0.93);
-    rect(margin, yy, labelWidth, rowHeight);
-    for (let i = 0; i < titles.length; i += 1) {
-      const x = margin + labelWidth + i * colWidth;
-      fillRect(x, yy, colWidth, rowHeight, 0.93);
-      rect(x, yy, colWidth, rowHeight);
-      text(x + 4, yy + 9, titles[i], 6.7, true);
-    }
-    yy += rowHeight;
-
-    rowLabels.forEach((label) => {
-      fillRect(margin, yy, labelWidth, rowHeight, 0.97);
-      rect(margin, yy, labelWidth, rowHeight);
-      text(margin + 6, yy + 9, label, 7.1, true);
-      maps.forEach((m, idx) => {
-        const x = margin + labelWidth + idx * colWidth;
-        rect(x, yy, colWidth, rowHeight);
-        const val = String(m.get(label) || '-');
-        text(x + 4, yy + 9, wrapText(val, Math.max(8, Math.floor(colWidth / 4.8)))[0], 6.7);
+  const drawHeaterRowsMatrix = (rows, x, startY, width) => {
+    let yy = startY;
+    const matrix = compactHeaterMatrixRows(rows);
+    // C114: keep total width fixed as 15x, but use column ratios 3/2/3/2/2/3.
+    // Columns 1-3-6 are 3x, columns 2-4-5 are 2x as requested.
+    const unit = width / 15;
+    const colWidths = [3, 2, 3, 2, 2, 3].map((ratio) => unit * ratio);
+    const heaterRowHeight = rowHeight * 1.55;
+    matrix.forEach((row) => {
+      if (yy + heaterRowHeight > contentBottom) return;
+      let colX = x;
+      row.forEach(([label, value], idx) => {
+        const labelWidth = colWidths[idx * 2] || unit * 3;
+        const valueWidth = colWidths[idx * 2 + 1] || unit * 2;
+        fillRect(colX, yy, labelWidth, heaterRowHeight, 0.97);
+        rect(colX, yy, labelWidth, heaterRowHeight);
+        rect(colX + labelWidth, yy, valueWidth, heaterRowHeight);
+        const labelLines = wrapText(label || '-', Math.max(10, Math.floor((labelWidth - 7) / 3.1))).slice(0, 2);
+        labelLines.forEach((line, lineIndex) => text(colX + 4, yy + 8 + lineIndex * 8, line, 5.9, true));
+        const valueLines = wrapText(value || '-', Math.max(8, Math.floor((valueWidth - 7) / 4.4))).slice(0, 2);
+        valueLines.forEach((line, lineIndex) => text(colX + labelWidth + 4, yy + 8 + lineIndex * 8, line, 6.2));
+        colX += labelWidth + valueWidth;
       });
-      yy += rowHeight;
+      yy += heaterRowHeight;
     });
     return yy;
+  };
+
+  const drawSensorsRowsMatrix = (rows, x, startY, width) => {
+    let yy = startY;
+    const matrix = compactSensorMatrixRows(rows);
+    const pairWidth = width / 2;
+    const labelWidth = Math.min(74, Math.max(58, pairWidth * 0.58));
+    const valueWidth = pairWidth - labelWidth;
+    const sensorRowHeight = rowHeight * 1.55;
+    matrix.forEach((row) => {
+      if (yy + sensorRowHeight > contentBottom) return;
+      row.forEach(([label, value], idx) => {
+        const pairX = x + idx * pairWidth;
+        fillRect(pairX, yy, labelWidth, sensorRowHeight, 0.97);
+        rect(pairX, yy, labelWidth, sensorRowHeight);
+        rect(pairX + labelWidth, yy, valueWidth, sensorRowHeight);
+        const labelLines = wrapText(label || '-', Math.max(8, Math.floor((labelWidth - 7) / 3.1))).slice(0, 2);
+        labelLines.forEach((line, lineIndex) => text(pairX + 4, yy + 8 + lineIndex * 8, line, 5.9, true));
+        const valueLines = wrapText(value || '-', Math.max(5, Math.floor((valueWidth - 7) / 4.4))).slice(0, 2);
+        valueLines.forEach((line, lineIndex) => text(pairX + labelWidth + 4, yy + 8 + lineIndex * 8, line, 6.2));
+      });
+      yy += sensorRowHeight;
+    });
+    return yy;
+  };
+
+  const drawHeaterSectionBox = (section, x, startY, width) => {
+    let yy = sectionTitle(section.title, x, startY, width);
+    yy = drawHeaterRowsMatrix(section.rows, x, yy, width);
+    return yy;
+  };
+
+  const drawSensorsSectionBox = (section, x, startY, width) => {
+    let yy = sectionTitle(section.title, x, startY, width);
+    yy = drawSensorsRowsMatrix(section.rows, x, yy, width);
+    return yy;
+  };
+
+  const drawColorSectionBox = (section, x, startY, width) => {
+    let yy = sectionTitle(section.title, x, startY, width);
+    yy = drawColorRowsCompact(section.rows, x, yy, width);
+    return yy;
+  };
+
+  const drawSectionBox = (section, x, startY, width, labelWidth = null) => {
+    if (section?.role === 'colors') return drawColorSectionBox(section, x, startY, width);
+    if (section?.role === 'heater' && isCompactHeaterPdf) return drawHeaterSectionBox(section, x, startY, width);
+    if (section?.role === 'sensors' && isCompactHeaterPdf) return drawSensorsSectionBox(section, x, startY, width);
+    const effectiveLabelWidth = Number.isFinite(labelWidth) ? labelWidth : calcSectionLabelWidth(section, width);
+    let yy = sectionTitle(section.title, x, startY, width);
+    yy = tableRowsCompact(section.rows, x, yy, width, effectiveLabelWidth);
+    return yy;
+  };
+
+  const drawSectionStack = (items, x, startY, width, labelWidth = null) => {
+    const effectiveLabelWidth = Number.isFinite(labelWidth) ? labelWidth : calcStackLabelWidth(items, width);
+    let yy = startY;
+    items.forEach((section, idx) => {
+      if (idx) yy += sectionGap;
+      yy = drawSectionBox(section, x, yy, width, effectiveLabelWidth);
+    });
+    return yy;
+  };
+
+  const drawSectionPair = (leftSections, rightSections) => {
+    ensureSpace(54);
+    const leftLabelWidth = calcStackLabelWidth(leftSections, halfWidth);
+    const rightLabelWidth = calcStackLabelWidth(rightSections, halfWidth);
+    const leftY = drawSectionStack(leftSections, margin, y, halfWidth, leftLabelWidth);
+    const rightY = drawSectionStack(rightSections, margin + halfWidth + colGap, y, halfWidth, rightLabelWidth);
+    y = Math.max(leftY, rightY) + 9;
+  };
+
+  const drawFullSection = (section) => {
+    ensureSpace(35);
+    y = drawSectionBox(section, margin, y, tableWidth, calcSectionLabelWidth(section, tableWidth)) + 9;
+  };
+
+  const drawProjectMatrix = (sections) => {
+    ensureSpace(35);
+    const titles = sections.map((item) => item.title);
+    const rowLabels = sections[0]?.rows.map(([label]) => label) || [];
+    const maps = sections.map((item) => buildSectionMap(item.rows));
+    const labelWidth = 120;
+    const colWidth = (tableWidth - labelWidth) / Math.max(1, titles.length);
+    y = sectionTitle(sectionBaseTitle(sections[0]), margin, y, tableWidth);
+
+    fillRect(margin, y, labelWidth, rowHeight, 0.93);
+    rect(margin, y, labelWidth, rowHeight);
+    for (let i = 0; i < titles.length; i += 1) {
+      const x = margin + labelWidth + i * colWidth;
+      fillRect(x, y, colWidth, rowHeight, 0.93);
+      rect(x, y, colWidth, rowHeight);
+      text(x + 4, y + 9, titles[i], 6.5, true);
+    }
+    y += rowHeight;
+
+    rowLabels.forEach((label) => {
+      if (y + rowHeight > contentBottom) return;
+      fillRect(margin, y, labelWidth, rowHeight, 0.97);
+      rect(margin, y, labelWidth, rowHeight);
+      text(margin + 5, y + 9, label, 6.7, true);
+      maps.forEach((m, idx) => {
+        const x = margin + labelWidth + idx * colWidth;
+        rect(x, y, colWidth, rowHeight);
+        const val = String(m.get(label) || '-');
+        text(x + 4, y + 9, wrapText(val, Math.max(8, Math.floor(colWidth / 4.8)))[0], 6.4);
+      });
+      y += rowHeight;
+    });
+    y += 9;
   };
 
   cmd('0.1 w');
-  rect(margin, y, 70, 46);
-  text(margin + 18, y + 28, 'LOGO', 13, true);
-  text(margin + 84, y + 16, 'PRODUCT REQUEST FORM', 18, true);
-  text(margin + 84, y + 31, 'Clean A4 order request summary', 8.5);
-  text(405, y + 16, `Date: ${data.orderDate || '-'}`, 8.5, true);
-  text(405, y + 31, `Order: ${data.orderNo || '-'}`, 8.5, true);
-  line(margin, y + 55, W - margin, y + 55);
-  y += 65;
+  // Date / Order: placed on the right side of the red slash. Long order names wrap under the value column.
+  const metaLine = (label, value, yTop) => {
+    const metaX = 480;
+    const labelWidth = 31;
+    const lines = wrapText(value || '-', 13).slice(0, 4);
+    text(metaX, yTop, label, 7.4, true);
+    lines.forEach((line, index) => text(metaX + labelWidth, yTop + index * 9, line, 7.4, true));
+    return yTop + Math.max(1, lines.length) * 9 + 2;
+  };
+  let metaY = 64;
+  metaY = metaLine('Date:', data.orderDate || '-', metaY);
+  metaLine('Order:', data.orderNo || '-', metaY);
 
-  section('Company / Product');
-  const productRows = [
-    ['Company', data.profile.companyName || '-'],
-    ['Contact', data.profile.contactPerson || '-'],
-    ['Phone', data.profile.phone || '-'],
-    ['E-mail', data.profile.email || '-'],
-    ['Family', data.productFamily || '-'],
-    ['Group', data.productGroup || '-'],
-    ['Sub Group', data.productSubGroup || '-'],
-    ['Product', data.productName || '-']
-  ];
-  y = tableRows(productRows, margin, y, W - margin * 2) + 2;
+  drawSectionPair([
+    {
+      title: 'Company',
+      rows: [
+        ['Company', data.profile.companyName || '-'],
+        ['Contact', data.profile.contactPerson || '-'],
+        ['Phone', data.profile.phone || '-'],
+        ['E-mail', data.profile.email || '-']
+      ]
+    }
+  ], [
+    {
+      title: 'Product',
+      rows: [
+        ['Family', data.productFamily || '-'],
+        ['Group', data.productGroup || '-'],
+        ['Sub Group', data.productSubGroup || '-'],
+        ['Product', data.productName || '-']
+      ]
+    }
+  ]);
 
   for (let i = 0; i < data.sections.length; i += 1) {
     const current = data.sections[i];
-    const key = sectionGroupKey(current);
-    const baseTitle = sectionBaseTitle(current);
-    const group = [current];
-    let j = i + 1;
-    while (j < data.sections.length && sectionGroupKey(data.sections[j]) === key) {
-      group.push(data.sections[j]);
-      j += 1;
-    }
-    section(baseTitle);
-    if (group.length > 1 && isProjectDetailsGroup(group)) {
-      y = tableMatrix(group) + 2;
+
+    if (current?.role === 'project') {
+      const group = [current];
+      let j = i + 1;
+      while (j < data.sections.length && data.sections[j]?.role === 'project') {
+        group.push(data.sections[j]);
+        j += 1;
+      }
+      if (group.length === 1 && data.sections[j]?.role === 'colors') {
+        group.forEach(drawFullSection);
+        i = j - 1;
+        continue;
+      }
+      if (group.length > 1 && isProjectDetailsGroup(group)) {
+        drawProjectMatrix(group);
+        i = j - 1;
+        continue;
+      }
+      group.forEach(drawFullSection);
       i = j - 1;
       continue;
     }
-    y = tableRows(current.rows, margin, y, W - margin * 2) + 2;
+
+    if (current?.role === 'operation') {
+      const leftSections = [current];
+      let j = i + 1;
+      if (data.sections[j]?.role === 'panelOptions') {
+        leftSections.push(data.sections[j]);
+        j += 1;
+      }
+      if (data.sections[j]?.role === 'lighting') {
+        drawSectionPair(leftSections, [data.sections[j]]);
+        i = j;
+        continue;
+      }
+      leftSections.forEach(drawFullSection);
+      i = j - 1;
+      continue;
+    }
+
+    if ((current?.role === 'heater' && data.sections[i + 1]?.role === 'sensors') || (current?.role === 'sensors' && data.sections[i + 1]?.role === 'heater')) {
+      drawSectionPair([current], [data.sections[i + 1]]);
+      i += 1;
+      continue;
+    }
+
+    drawFullSection(current);
   }
 
-  section('Notes');
+  ensureSpace(65);
+  y += 2;
+  y = sectionTitle('Notes', margin, y, tableWidth);
   const noteLines = wrapText(data.notes || '-', 82).slice(0, 5);
-  rect(margin, y, W - margin * 2, 58);
-  noteLines.forEach((ln, idx) => text(margin + 8, y + 14 + idx * 10, ln, 8.5));
+  rect(margin, y, tableWidth, 56);
+  noteLines.forEach((ln, idx) => text(margin + 8, y + 14 + idx * 10, ln, 8));
 
-  return createPdf(commands.join('\n'), W, H);
+  return createPdf(commands.join('\n'), W, H, {
+    backgroundJpegDataUri: window.PDF_TEMPLATE_ASSET?.dataUri || '',
+    backgroundWidth: window.PDF_TEMPLATE_ASSET?.width || 1241,
+    backgroundHeight: window.PDF_TEMPLATE_ASSET?.height || 1754
+  });
 }
 
-function createPdf(content, width, height) {
+function createPdf(content, width, height, options = {}) {
   const encoder = new TextEncoder();
   const encode = (value) => encoder.encode(value);
-  const contentBytes = encode(content);
-  const pageResources = `<< /Font << /F1 4 0 R /F2 5 0 R >> >>`;
+  const bgBytes = options.backgroundJpegDataUri ? dataUriToBytes(options.backgroundJpegDataUri) : null;
+  const contentPrefix = bgBytes?.length ? pdfTemplateCommand(width, height) : '';
+  const contentBytes = encode(contentPrefix + content);
+  const hasBg = Boolean(bgBytes?.length);
+  const pageResources = `<< /Font << /F1 4 0 R /F2 5 0 R >>${hasBg ? ' /XObject << /BG 6 0 R >>' : ''} >>`;
+  const contentObjectNumber = hasBg ? 7 : 6;
 
   const objects = [
     [encode('<< /Type /Catalog /Pages 2 0 R >>')],
     [encode('<< /Type /Pages /Kids [3 0 R] /Count 1 >>')],
-    [encode(`<< /Type /Page /Parent 2 0 R /MediaBox [0 0 ${width} ${height}] /Resources ${pageResources} /Contents 6 0 R >>`)],
-    [encode('<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>')],
-    [encode('<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica-Bold >>')],
-    [encode(`<< /Length ${contentBytes.length} >>\nstream\n`), contentBytes, encode('\nendstream')]
+    [encode(`<< /Type /Page /Parent 2 0 R /MediaBox [0 0 ${width} ${height}] /Resources ${pageResources} /Contents ${contentObjectNumber} 0 R >>`)],
+    [encode('<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica /Encoding /WinAnsiEncoding >>')],
+    [encode('<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica-Bold /Encoding /WinAnsiEncoding >>')]
   ];
+
+  if (hasBg) {
+    objects.push([
+      encode(`<< /Type /XObject /Subtype /Image /Width ${Number(options.backgroundWidth) || 1241} /Height ${Number(options.backgroundHeight) || 1754} /ColorSpace /DeviceRGB /BitsPerComponent 8 /Filter /DCTDecode /Length ${bgBytes.length} >>\nstream\n`),
+      bgBytes,
+      encode('\nendstream')
+    ]);
+  }
+
+  objects.push([encode(`<< /Length ${contentBytes.length} >>\nstream\n`), contentBytes, encode('\nendstream')]);
 
   const chunks = [];
   const offsets = [0];
@@ -6459,6 +7080,12 @@ async function sharePdf() {
 
 function registerEvents() {
   Object.values(fields).forEach((el) => {
+    if (el === fields.notes) {
+      el.maxLength = NOTES_MAX_CHARS + NOTES_MAX_LINES - 1;
+      el.rows = NOTES_MAX_LINES;
+      el.addEventListener('input', enforceNotesLimit);
+      el.addEventListener('keydown', handleNotesKeydown);
+    }
     el.addEventListener('input', onAnyInput);
     el.addEventListener('change', autoAdvanceOnChange);
     el.addEventListener('keydown', autoAdvanceOnEnter);
@@ -6494,7 +7121,7 @@ $('#installBtn').addEventListener('click', async () => {
 
 async function initPwa() {
   if ('serviceWorker' in navigator && location.protocol.startsWith('http')) {
-    try { await navigator.serviceWorker.register('sw.js?v=c98-guillotine-motor-direction-project'); } catch {}
+    try { await navigator.serviceWorker.register('sw.js?v=c121-no-preview-unifoliate-fixedglass'); } catch {}
   }
 }
 
@@ -6623,6 +7250,118 @@ Object.assign(I18N.he, {
   'Motor Type': 'Motor Type'
 });
 
+
+// C108: final translation pass for current form labels and option texts.
+Object.assign(I18N.en, {
+  'Glass Systems': 'Glass Systems',
+  'Folding': 'Folding',
+  'Sliding': 'Sliding',
+  'Guillotine': 'Guillotine',
+  'Fixed Ceiling Glass': 'Fixed Ceiling Glass',
+  'A Series – Premium': 'A Series – Premium',
+  'K Series – Smart': 'K Series – Smart',
+  'Motorlu': 'Motorized',
+  'Manuel': 'Manual',
+  'Motor & Reducer': 'Motor & Reducer',
+  'Lighting & Dimmer & Remote': 'Lighting & Dimmer & Remote',
+  'Heater & Sound & Packing': 'Heater, Sound, Packing & Loading',
+  'Heater 2000W 220V Quantity': 'Heater 2000W 220V Quantity',
+  'Heater 3000W 220V Quantity': 'Heater 3000W 220V Quantity',
+  'Sound System Quantity': 'Sound System Quantity',
+  'Packaging Type': 'Packaging Type',
+  'Loading': 'Loading',
+  'Truck': 'Truck',
+  'Container': 'Container'
+});
+Object.assign(I18N.tr, {
+  'Glass Systems': 'Cam Sistemleri',
+  'Folding': 'Katlanır',
+  'Sliding': 'Sürme',
+  'Guillotine': 'Giyotin',
+  'Fixed Ceiling Glass': 'Sabit Cam Tavan',
+  'A Series – Premium': 'A Series – Premium',
+  'K Series – Smart': 'K Series – Smart',
+  'Motorlu': 'Motorlu',
+  'Manuel': 'Manuel',
+  'Motor & Reducer': 'Motor & Redüktör',
+  'Lighting & Dimmer & Remote': 'Aydınlatma & Dimmer & Kumanda',
+  'Heater & Sound & Packing': 'Isıtıcı, Ses, Ambalaj ve Yükleme',
+  'Heater 2000W 220V Quantity': 'Isıtıcı 2000W 220V Adedi',
+  'Heater 3000W 220V Quantity': 'Isıtıcı 3000W 220V Adedi',
+  'Sound System Quantity': 'Ses Sistemi Adedi',
+  'Packaging Type': 'Ambalaj Tipi',
+  'Loading': 'Yükleme',
+  'Truck': 'Tır',
+  'Container': 'Konteyner',
+  'Top-Hung': 'Üstten Taşımalı',
+  'Glass Thickness': 'Cam Kalınlığı',
+  'Insulated Glass': 'Isıcam',
+  'Leaf Stacking Direction (Inside View)': 'Kanat Toplanma Yönü (İç Bakış)',
+  'With Threshold': 'Eşikli',
+  'Without Threshold': 'Eşiksiz',
+  'Opening Type': 'Açılış Türü',
+  'Side Opening': 'Kenardan',
+  'Center Opening': 'Ortadan',
+  'Cleanable': 'Silinebilir',
+  'Upward Collecting': 'Yukarı Toplanır',
+  'Mechanism': 'Mekanizma',
+  'Chain': 'Zincirli',
+  'Belt': 'Kayışlı',
+  'Motor Direction (Inside View)': 'Motor Yönü (İç Bakış)',
+  'Motor Type': 'Motor Türü'
+});
+Object.assign(I18N.de, {
+  'Glass Systems': 'Glassysteme',
+  'Folding': 'Faltsysteme',
+  'Sliding': 'Schiebesysteme',
+  'Guillotine': 'Vertikalschiebefenster',
+  'Fixed Ceiling Glass': 'Festes Glasdach',
+  'A Series – Premium': 'A Series – Premium',
+  'K Series – Smart': 'K Series – Smart',
+  'Motorlu': 'Motorisiert',
+  'Manuel': 'Manuell',
+  'Motor & Reducer': 'Motor & Getriebe',
+  'Lighting & Dimmer & Remote': 'Beleuchtung & Dimmer & Fernbedienung',
+  'Heater & Sound & Packing': 'Heizung, Sound, Verpackung und Verladung',
+  'Loading': 'Verladung',
+  'Truck': 'Lkw',
+  'Container': 'Container'
+});
+Object.assign(I18N.fr, {
+  'Glass Systems': 'Systèmes vitrés',
+  'Folding': 'Pliant',
+  'Sliding': 'Coulissant',
+  'Guillotine': 'Guillotine',
+  'Fixed Ceiling Glass': 'Plafond vitré fixe',
+  'A Series – Premium': 'A Series – Premium',
+  'K Series – Smart': 'K Series – Smart',
+  'Motorlu': 'Motorisé',
+  'Manuel': 'Manuel',
+  'Motor & Reducer': 'Moteur & réducteur',
+  'Lighting & Dimmer & Remote': 'Éclairage & variateur & télécommande',
+  'Heater & Sound & Packing': 'Chauffage, son, emballage et chargement',
+  'Loading': 'Chargement',
+  'Truck': 'Camion',
+  'Container': 'Conteneur'
+});
+Object.assign(I18N.he, {
+  'Glass Systems': 'Glass Systems',
+  'Folding': 'Folding',
+  'Sliding': 'Sliding',
+  'Guillotine': 'Guillotine',
+  'Fixed Ceiling Glass': 'Fixed Ceiling Glass',
+  'A Series – Premium': 'A Series – Premium',
+  'K Series – Smart': 'K Series – Smart',
+  'Motorlu': 'Motorized',
+  'Manuel': 'Manual',
+  'Motor & Reducer': 'Motor & Reducer',
+  'Lighting & Dimmer & Remote': 'Lighting & Dimmer & Remote',
+  'Heater & Sound & Packing': 'Heater, Sound, Packing & Loading',
+  'Loading': 'Loading',
+  'Truck': 'Truck',
+  'Container': 'Container'
+});
+
 function init() {
   loadLanguage();
   applyLanguage();
@@ -6683,3 +7422,833 @@ Object.assign(I18N.de, { 'Lighting & Dimmer & Remote': 'Beleuchtung & Dimmer & F
 Object.assign(I18N.fr, { 'Lighting & Dimmer & Remote': 'Éclairage & Variateur & Télécommande' });
 Object.assign(I18N.he, { 'Lighting & Dimmer & Remote': 'Lighting & Dimmer & Remote' });
 
+
+// C109: enforce final Turkish wording after all translation patches.
+Object.assign(I18N.tr, {
+  'Projection': 'Açılım',
+  'Projection (mm)': 'Açılım',
+  'Projection 1 (mm)': 'Açılım 1',
+  'Projection 2 (mm)': 'Açılım 2',
+  'Remote Control': 'Kumanda',
+  'Light Dimmer (For Linear LED)': 'Dimmer (Linear LED için)',
+  'Light Dimmer (For Spot LED)': 'Dimmer (Spot LED için)',
+  'Dimmer Heater': 'Dimmer (Isıtıcı için)',
+  'Side Beam': 'Cam Kayıt Profili',
+  'Structure': 'Sistem',
+  'System Color': 'Sistem',
+  'Panel Color': 'Panel',
+  'Colours': 'Renkler',
+  'Color Details': 'Renk Bilgileri',
+  'Motor & Remote Control': 'Motor ve Kumanda',
+  'Lighting & Dimmer': 'Aydınlatma & Dimmer',
+  'Lighting & Dimmers': 'Aydınlatma & Dimmer',
+  'Lighting & Dimmer & Remote': 'Aydınlatma & Dimmer & Kumanda',
+  'Heater & Sound & Packing': 'Isıtıcı, Ses, Ambalaj ve Yükleme',
+  'Heater & Sound & Packing & Loading': 'Isıtıcı, Ses, Ambalaj ve Yükleme',
+  'System Quantity': 'Sistem Adedi',
+  'Product Quantity': 'Ürün Adedi',
+  'Quantity': 'Adet'
+});
+if (state.language === 'tr') {
+  applyLanguage();
+  renderProducts();
+  renderForm();
+  updatePreview();
+}
+
+
+// C110: hint translations, PDF/table layout refresh.
+Object.assign(I18N.en, {
+  'Max. 4500 mm | 1 Sistem': 'Max. 4500 mm | 1 System',
+  '2010 mm - 9010 mm | 200 mm | 1 Sistem': '2010 mm - 9010 mm | 200 mm | 1 System',
+  'Max. 4050 mm | 1 Sistem': 'Max. 4050 mm | 1 System',
+  '2038 mm - 7060 mm | 216 mm | 1 Sistem': '2038 mm - 7060 mm | 216 mm | 1 System',
+  '2108 mm - 6860 mm | 216 mm | 1 Sistem': '2108 mm - 6860 mm | 216 mm | 1 System',
+  '2012 mm - 5036 mm | 216 mm | 1 Sistem': '2012 mm - 5036 mm | 216 mm | 1 System',
+  '2288 mm - 5960 mm | 216 mm | 1 Sistem': '2288 mm - 5960 mm | 216 mm | 1 System',
+  'Max. 8000 mm | 1 Sistem (3 Rafters)': 'Max. 8000 mm | 1 System (3 Rafters)',
+  'Max. 13500 mm | 1 Sistem (4 Rafters)': 'Max. 13500 mm | 1 System (4 Rafters)',
+  'Max. 7000 mm | 1 Sistem': 'Max. 7000 mm | 1 System',
+  'Max. 10000 mm | 1 Sistem': 'Max. 10000 mm | 1 System',
+  'Max. 8 Panel | Max. Panel Genişlik 800 mm': 'Max. 8 Panels | Max. Panel Width 800 mm',
+  'Max. 7000 mm | Açılım < Genişlik': 'Max. 7000 mm | Projection < Width',
+  'Max. 5000 mm | Açılım < Genişlik': 'Max. 5000 mm | Projection < Width',
+  'Max. 7000 mm | Açılım 1 ve Açılım 2 genişlikten küçük olmalı': 'Max. 7000 mm | Projection 1 and Projection 2 must be smaller than width',
+  'Açılım maks. 6000 mm': 'Projection max. 6000 mm',
+  'Açılım maks. 3000 mm': 'Projection max. 3000 mm',
+  'Cam kalınlığına göre Max. değer': 'Max. depends on glass thickness',
+  'Seçime göre Max. değer': 'Max. depends on selection'
+});
+Object.assign(I18N.tr, {
+  'Max. 4500 mm | 1 Sistem': 'Max. 4500 mm | 1 Sistem',
+  '2010 mm - 9010 mm | 200 mm | 1 Sistem': '2010 mm - 9010 mm | 200 mm | 1 Sistem',
+  'Max. 4050 mm | 1 Sistem': 'Max. 4050 mm | 1 Sistem',
+  '2038 mm - 7060 mm | 216 mm | 1 Sistem': '2038 mm - 7060 mm | 216 mm | 1 Sistem',
+  '2108 mm - 6860 mm | 216 mm | 1 Sistem': '2108 mm - 6860 mm | 216 mm | 1 Sistem',
+  '2012 mm - 5036 mm | 216 mm | 1 Sistem': '2012 mm - 5036 mm | 216 mm | 1 Sistem',
+  '2288 mm - 5960 mm | 216 mm | 1 Sistem': '2288 mm - 5960 mm | 216 mm | 1 Sistem',
+  'Max. 8000 mm | 1 Sistem (3 Rafters)': 'Max. 8000 mm | 1 Sistem (3 Ray)',
+  'Max. 13500 mm | 1 Sistem (4 Rafters)': 'Max. 13500 mm | 1 Sistem (4 Ray)',
+  'Max. 7000 mm | 1 Sistem': 'Max. 7000 mm | 1 Sistem',
+  'Max. 10000 mm | 1 Sistem': 'Max. 10000 mm | 1 Sistem',
+  'Max. 8 Panel | Max. Panel Genişlik 800 mm': 'Max. 8 Panel | Max. Panel Genişlik 800 mm',
+  'Max. 7000 mm | Açılım < Genişlik': 'Max. 7000 mm | Açılım < Genişlik',
+  'Max. 5000 mm | Açılım < Genişlik': 'Max. 5000 mm | Açılım < Genişlik',
+  'Max. 7000 mm | Açılım 1 ve Açılım 2 genişlikten küçük olmalı': 'Max. 7000 mm | Açılım 1 ve Açılım 2 genişlikten küçük olmalı',
+  'Açılım maks. 6000 mm': 'Açılım maks. 6000 mm',
+  'Açılım maks. 3000 mm': 'Açılım maks. 3000 mm',
+  'Cam kalınlığına göre Max. değer': 'Cam kalınlığına göre Max. değer',
+  'Seçime göre Max. değer': 'Seçime göre Max. değer'
+});
+Object.assign(I18N.de, {
+  'Max. 4500 mm | 1 Sistem': 'Max. 4500 mm | 1 System',
+  '2010 mm - 9010 mm | 200 mm | 1 Sistem': '2010 mm - 9010 mm | 200 mm | 1 System',
+  'Max. 4050 mm | 1 Sistem': 'Max. 4050 mm | 1 System',
+  '2038 mm - 7060 mm | 216 mm | 1 Sistem': '2038 mm - 7060 mm | 216 mm | 1 System',
+  '2108 mm - 6860 mm | 216 mm | 1 Sistem': '2108 mm - 6860 mm | 216 mm | 1 System',
+  '2012 mm - 5036 mm | 216 mm | 1 Sistem': '2012 mm - 5036 mm | 216 mm | 1 System',
+  '2288 mm - 5960 mm | 216 mm | 1 Sistem': '2288 mm - 5960 mm | 216 mm | 1 System',
+  'Max. 8000 mm | 1 Sistem (3 Rafters)': 'Max. 8000 mm | 1 System (3 Schienen)',
+  'Max. 13500 mm | 1 Sistem (4 Rafters)': 'Max. 13500 mm | 1 System (4 Schienen)',
+  'Max. 7000 mm | 1 Sistem': 'Max. 7000 mm | 1 System',
+  'Max. 10000 mm | 1 Sistem': 'Max. 10000 mm | 1 System',
+  'Max. 8 Panel | Max. Panel Genişlik 800 mm': 'Max. 8 Paneele | Max. Panelbreite 800 mm',
+  'Max. 7000 mm | Açılım < Genişlik': 'Max. 7000 mm | Ausladung < Breite',
+  'Max. 5000 mm | Açılım < Genişlik': 'Max. 5000 mm | Ausladung < Breite',
+  'Max. 7000 mm | Açılım 1 ve Açılım 2 genişlikten küçük olmalı': 'Max. 7000 mm | Ausladung 1 und 2 muessen kleiner als die Breite sein',
+  'Açılım maks. 6000 mm': 'Ausladung max. 6000 mm',
+  'Açılım maks. 3000 mm': 'Ausladung max. 3000 mm',
+  'Cam kalınlığına göre Max. değer': 'Max. abhaengig von Glasstaerke',
+  'Seçime göre Max. değer': 'Max. abhaengig von Auswahl'
+});
+Object.assign(I18N.fr, {
+  'Max. 4500 mm | 1 Sistem': 'Max. 4500 mm | 1 système',
+  '2010 mm - 9010 mm | 200 mm | 1 Sistem': '2010 mm - 9010 mm | 200 mm | 1 système',
+  'Max. 4050 mm | 1 Sistem': 'Max. 4050 mm | 1 système',
+  '2038 mm - 7060 mm | 216 mm | 1 Sistem': '2038 mm - 7060 mm | 216 mm | 1 système',
+  '2108 mm - 6860 mm | 216 mm | 1 Sistem': '2108 mm - 6860 mm | 216 mm | 1 système',
+  '2012 mm - 5036 mm | 216 mm | 1 Sistem': '2012 mm - 5036 mm | 216 mm | 1 système',
+  '2288 mm - 5960 mm | 216 mm | 1 Sistem': '2288 mm - 5960 mm | 216 mm | 1 système',
+  'Max. 8000 mm | 1 Sistem (3 Rafters)': 'Max. 8000 mm | 1 système (3 rails)',
+  'Max. 13500 mm | 1 Sistem (4 Rafters)': 'Max. 13500 mm | 1 système (4 rails)',
+  'Max. 7000 mm | 1 Sistem': 'Max. 7000 mm | 1 système',
+  'Max. 10000 mm | 1 Sistem': 'Max. 10000 mm | 1 système',
+  'Max. 8 Panel | Max. Panel Genişlik 800 mm': 'Max. 8 panneaux | largeur panneau max. 800 mm',
+  'Max. 7000 mm | Açılım < Genişlik': 'Max. 7000 mm | projection < largeur',
+  'Max. 5000 mm | Açılım < Genişlik': 'Max. 5000 mm | projection < largeur',
+  'Max. 7000 mm | Açılım 1 ve Açılım 2 genişlikten küçük olmalı': 'Max. 7000 mm | projection 1 et 2 doivent être inférieures à la largeur',
+  'Açılım maks. 6000 mm': 'Projection max. 6000 mm',
+  'Açılım maks. 3000 mm': 'Projection max. 3000 mm',
+  'Cam kalınlığına göre Max. değer': 'Max. selon épaisseur du verre',
+  'Seçime göre Max. değer': 'Max. selon sélection'
+});
+Object.assign(I18N.he, {
+  'Max. 4500 mm | 1 Sistem': 'מקס. 4500 mm | מערכת 1',
+  '2010 mm - 9010 mm | 200 mm | 1 Sistem': '2010 mm - 9010 mm | 200 mm | מערכת 1',
+  'Max. 4050 mm | 1 Sistem': 'מקס. 4050 mm | מערכת 1',
+  '2038 mm - 7060 mm | 216 mm | 1 Sistem': '2038 mm - 7060 mm | 216 mm | מערכת 1',
+  '2108 mm - 6860 mm | 216 mm | 1 Sistem': '2108 mm - 6860 mm | 216 mm | מערכת 1',
+  '2012 mm - 5036 mm | 216 mm | 1 Sistem': '2012 mm - 5036 mm | 216 mm | מערכת 1',
+  '2288 mm - 5960 mm | 216 mm | 1 Sistem': '2288 mm - 5960 mm | 216 mm | מערכת 1',
+  'Max. 8000 mm | 1 Sistem (3 Rafters)': 'מקס. 8000 mm | מערכת 1 (3 מסילות)',
+  'Max. 13500 mm | 1 Sistem (4 Rafters)': 'מקס. 13500 mm | מערכת 1 (4 מסילות)',
+  'Max. 7000 mm | 1 Sistem': 'מקס. 7000 mm | מערכת 1',
+  'Max. 10000 mm | 1 Sistem': 'מקס. 10000 mm | מערכת 1',
+  'Max. 8 Panel | Max. Panel Genişlik 800 mm': 'מקס. 8 פנלים | רוחב פנל מקס. 800 mm',
+  'Max. 7000 mm | Açılım < Genişlik': 'מקס. 7000 mm | פתיחה < רוחב',
+  'Max. 5000 mm | Açılım < Genişlik': 'מקס. 5000 mm | פתיחה < רוחב',
+  'Max. 7000 mm | Açılım 1 ve Açılım 2 genişlikten küçük olmalı': 'מקס. 7000 mm | פתיחה 1 ו-2 חייבות להיות קטנות מהרוחב',
+  'Açılım maks. 6000 mm': 'פתיחה מקס. 6000 mm',
+  'Açılım maks. 3000 mm': 'פתיחה מקס. 3000 mm',
+  'Cam kalınlığına göre Max. değer': 'מקס. לפי עובי זכוכית',
+  'Seçime göre Max. değer': 'מקס. לפי בחירה'
+});
+try {
+  applyLanguage();
+  renderProducts();
+  renderForm();
+  updatePreview();
+} catch {}
+
+// C115: Glass color/type dynamic visibility, product-specific note reset, and PDF/preview value cleanup.
+(function PRF_C115_runtimeUpdates() {
+  const GLASS_PRODUCT_IDS = new Set([
+    'glass_folding_a_series_premium',
+    'glass_folding_k_series_smart',
+    'glass_sliding_a_series_premium',
+    'glass_sliding_k_series_smart',
+    'glass_guillotine_a_series_premium',
+    'glass_guillotine_k_series_smart'
+  ]);
+  const OTHER_FIELD_IDS = new Set(['glassColorOther', 'glassType2GlassOther', 'glassType2PanelOther']);
+  const lastProductKey = 'prf_c115_last_product_id';
+
+  function c115SuffixesForField(baseId) {
+    return $$(`[data-field-id^="${baseId}"]`)
+      .map((el) => String(el.dataset.fieldId || '').replace(baseId, ''))
+      .filter((suffix, index, arr) => arr.indexOf(suffix) === index);
+  }
+
+  function c115SetOptionVisibility(fieldId, option, visible) {
+    $$(`input[type="radio"][name="dyn_${fieldId}"]`).forEach((radio) => {
+      if (radio.value !== option) return;
+      radio.disabled = !visible;
+      const label = radio.closest('label');
+      if (label) {
+        label.hidden = !visible;
+        label.style.display = visible ? '' : 'none';
+        label.classList.toggle('hidden', !visible);
+        label.setAttribute('aria-hidden', visible ? 'false' : 'true');
+      }
+      if (!visible && radio.checked) radio.checked = false;
+    });
+  }
+
+  function c115EnsureOneVisible(fieldId) {
+    const radios = $$(`input[type="radio"][name="dyn_${fieldId}"]`);
+    const visible = radios.filter((radio) => {
+      const label = radio.closest('label');
+      return !radio.disabled && !label?.hidden && label?.style.display !== 'none';
+    });
+    if (visible.length === 1 && !visible[0].checked) visible[0].checked = true;
+  }
+
+  function updateGlassColorChoices() {
+    const product = getProduct();
+    if (!product) return;
+    if (GLASS_PRODUCT_IDS.has(product.id)) {
+      c115SuffixesForField('glassThickness').forEach((suffix) => {
+        const thickness = getFieldValue({ id: `glassThickness${suffix}` });
+        const allowLowE = thickness === 'Insulated Glass';
+        c115SetOptionVisibility(`glassColor${suffix}`, 'Low-e Glass', allowLowE);
+        c115EnsureOneVisible(`glassColor${suffix}`);
+      });
+    }
+    if (product.id === 'glass_fixed_ceiling') {
+      c115SuffixesForField('glassType1').forEach((suffix) => {
+        const type1 = getFieldValue({ id: `glassType1${suffix}` });
+        const allowLowE = type1 === 'Insulated Glass';
+        c115SetOptionVisibility(`glassType2Glass${suffix}`, 'Low-e Glass', allowLowE);
+        c115EnsureOneVisible(`glassType2Glass${suffix}`);
+        c115EnsureOneVisible(`glassType2Panel${suffix}`);
+      });
+    }
+    updateConditionalFields();
+  }
+
+  const originalRenderFormC115 = renderForm;
+  renderForm = function renderFormC115Wrapper() {
+    originalRenderFormC115();
+    updateGlassColorChoices();
+  };
+
+  document.addEventListener('input', (event) => {
+    if (event.target?.matches?.('[data-field-id]')) setTimeout(updateGlassColorChoices, 0);
+  }, true);
+  document.addEventListener('change', (event) => {
+    if (event.target?.matches?.('[data-field-id]')) setTimeout(updateGlassColorChoices, 0);
+  }, true);
+
+  ['productFamilySelect', 'productGroupSelect', 'productSubGroupSelect'].forEach((id) => {
+    const el = document.getElementById(id);
+    if (!el) return;
+    el.addEventListener('change', () => {
+      const currentProductId = state.selectedProductId || '';
+      const previousProductId = sessionStorage.getItem(lastProductKey) || '';
+      if (previousProductId && currentProductId && currentProductId !== previousProductId) {
+        fields.notes.value = '';
+        saveOrderDraft();
+        updatePreview();
+      }
+      sessionStorage.setItem(lastProductKey, currentProductId);
+    });
+  });
+  sessionStorage.setItem(lastProductKey, state.selectedProductId || '');
+
+  const oldFieldRowsC115 = fieldRows;
+  fieldRows = function fieldRowsC115(fieldList, lang = state.language) {
+    const isPergola = isRealPergolaProduct();
+    const rows = [];
+    (fieldList || []).filter(fieldIsActive).forEach((field) => {
+      const id = field.id || '';
+      const baseId = baseFieldId(id);
+      if (isPergola && (baseId === 'pipeLengthOther' || baseId === 'lightingOther')) return;
+      if (OTHER_FIELD_IDS.has(baseId)) return;
+
+      let value = getFieldValue(field);
+      let unit = field.unit || '';
+      let unitAuto = field.unitAuto || '';
+
+      if (isPergola && baseId === 'pipeLengthType' && value === 'Other') {
+        const suffix = fieldPositionSuffix(id);
+        const otherValue = getFieldValue({ id: `pipeLengthOther${suffix}` });
+        if (String(otherValue || '').trim()) {
+          value = otherValue;
+          unit = 'mm';
+          unitAuto = '';
+        }
+      }
+
+      if (isPergola && baseId === 'lightingType' && value === 'Other') {
+        const otherValue = getFieldValue({ id: 'lightingOther' });
+        if (String(otherValue || '').trim()) {
+          value = otherValue;
+          unit = '';
+          unitAuto = '';
+        }
+      }
+
+      if (baseId === 'glassColor' && value === 'Other') {
+        const suffix = fieldPositionSuffix(id);
+        const otherValue = getFieldValue({ id: `glassColorOther${suffix}` });
+        if (String(otherValue || '').trim()) value = otherValue;
+      }
+      if (baseId === 'glassType2Glass' && value === 'Other') {
+        const suffix = fieldPositionSuffix(id);
+        const otherValue = getFieldValue({ id: `glassType2GlassOther${suffix}` });
+        if (String(otherValue || '').trim()) value = otherValue;
+      }
+      if (baseId === 'glassType2Panel' && value === 'Other (Thickness)') {
+        const suffix = fieldPositionSuffix(id);
+        const otherValue = getFieldValue({ id: `glassType2PanelOther${suffix}` });
+        if (String(otherValue || '').trim()) value = otherValue;
+      }
+
+      rows.push([
+        translatedText(field.label, lang),
+        formatValue(value, unit, unitAuto, lang),
+        id
+      ]);
+    });
+    return rows;
+  };
+
+  Object.assign(I18N.en, {
+    'Glass Type 1': 'Glass Type 1',
+    'Glass Type 2': 'Glass Type 2',
+    'Single Glass': 'Single Glass',
+    'Insulated Glass': 'Insulated Glass',
+    'Polycarbonate': 'Polycarbonate',
+    'Sandwich Panel': 'Sandwich Panel',
+    'Transparent': 'Transparent',
+    'Grey': 'Grey',
+    'Low-e Glass': 'Low-e Glass',
+    'Glass Color': 'Glass Color',
+    'Other Value': 'Other Value',
+    'Other (Thickness)': 'Other (Thickness)'
+  });
+  Object.assign(I18N.tr, {
+    'Glass Type 1': 'Cam Tipi 1',
+    'Glass Type 2': 'Cam Tipi 2',
+    'Single Glass': 'Tek Cam',
+    'Insulated Glass': 'Isıcam',
+    'Polycarbonate': 'Polikarbon',
+    'Sandwich Panel': 'Sandviç Panel',
+    'Transparent': 'Şeffaf',
+    'Grey': 'Gri',
+    'Low-e Glass': 'Low-e Cam',
+    'Glass Color': 'Cam Rengi',
+    'Other Value': 'Diğer Değer',
+    'Other (Thickness)': 'Diğer (Kalınlık)'
+  });
+  Object.assign(I18N.de, {
+    'Glass Type 1': 'Glasart 1',
+    'Glass Type 2': 'Glasart 2',
+    'Single Glass': 'Einfachglas',
+    'Insulated Glass': 'Isolierglas',
+    'Polycarbonate': 'Polycarbonat',
+    'Sandwich Panel': 'Sandwichpaneel',
+    'Transparent': 'Transparent',
+    'Grey': 'Grau',
+    'Low-e Glass': 'Low-e-Glas',
+    'Glass Color': 'Glasfarbe',
+    'Other Value': 'Anderer Wert',
+    'Other (Thickness)': 'Andere (Staerke)'
+  });
+  Object.assign(I18N.fr, {
+    'Glass Type 1': 'Type de vitrage 1',
+    'Glass Type 2': 'Type de vitrage 2',
+    'Single Glass': 'Simple vitrage',
+    'Insulated Glass': 'Double vitrage',
+    'Polycarbonate': 'Polycarbonate',
+    'Sandwich Panel': 'Panneau sandwich',
+    'Transparent': 'Transparent',
+    'Grey': 'Gris',
+    'Low-e Glass': 'Verre Low-e',
+    'Glass Color': 'Couleur du verre',
+    'Other Value': 'Autre valeur',
+    'Other (Thickness)': 'Autre (épaisseur)'
+  });
+  Object.assign(I18N.he, {
+    'Glass Type 1': 'Glass Type 1',
+    'Glass Type 2': 'Glass Type 2',
+    'Single Glass': 'Single Glass',
+    'Insulated Glass': 'Insulated Glass',
+    'Polycarbonate': 'Polycarbonate',
+    'Sandwich Panel': 'Sandwich Panel',
+    'Transparent': 'Transparent',
+    'Grey': 'Grey',
+    'Low-e Glass': 'Low-e Glass',
+    'Glass Color': 'Glass Color',
+    'Other Value': 'Other Value',
+    'Other (Thickness)': 'Other (Thickness)'
+  });
+
+  try {
+    applyLanguage();
+    updateGlassColorChoices();
+    updatePreview();
+  } catch {}
+})();
+
+// C115B: keep dependent "Other" cells hidden when their parent choice is not active.
+(function PRF_C115_dependentOtherVisibility() {
+  function fieldControlIdsStartingWith(baseId) {
+    return $$(`[data-field-id^="${baseId}"]`)
+      .map((el) => String(el.dataset.fieldId || ''))
+      .filter((id, index, arr) => id && arr.indexOf(id) === index);
+  }
+  function suffixFromFieldId(fieldId, baseId) {
+    return String(fieldId || '').replace(baseId, '');
+  }
+  function setFieldWrapHidden(fieldId, hidden) {
+    $$(`[data-field-id="${fieldId}"]`).forEach((el) => {
+      const wrap = el.closest('label, .choice-field, .singlecheck-field');
+      if (!wrap) return;
+      wrap.hidden = hidden;
+      wrap.style.display = hidden ? 'none' : '';
+      wrap.classList.toggle('hidden', hidden);
+      wrap.setAttribute('aria-hidden', hidden ? 'true' : 'false');
+    });
+  }
+  function fixGlassDependentOtherVisibility() {
+    fieldControlIdsStartingWith('glassColor').forEach((fieldId) => {
+      if (!/^glassColor(__pos\d+)?$/.test(fieldId)) return;
+      const suffix = suffixFromFieldId(fieldId, 'glassColor');
+      setFieldWrapHidden(`glassColorOther${suffix}`, getFieldValue({ id: fieldId }) !== 'Other');
+    });
+    fieldControlIdsStartingWith('glassType1').forEach((fieldId) => {
+      const suffix = suffixFromFieldId(fieldId, 'glassType1');
+      const type1 = getFieldValue({ id: fieldId });
+      const isGlass = ['Single Glass', 'Insulated Glass'].includes(type1);
+      const isPanel = ['Polycarbonate', 'Sandwich Panel'].includes(type1);
+      setFieldWrapHidden(`glassType2GlassOther${suffix}`, !isGlass || getFieldValue({ id: `glassType2Glass${suffix}` }) !== 'Other');
+      setFieldWrapHidden(`glassType2PanelOther${suffix}`, !isPanel || getFieldValue({ id: `glassType2Panel${suffix}` }) !== 'Other (Thickness)');
+    });
+  }
+  const originalUpdateConditionalFieldsC115B = updateConditionalFields;
+  updateConditionalFields = function updateConditionalFieldsC115B() {
+    originalUpdateConditionalFieldsC115B();
+    fixGlassDependentOtherVisibility();
+  };
+  document.addEventListener('input', () => setTimeout(fixGlassDependentOtherVisibility, 0), true);
+  document.addEventListener('change', () => setTimeout(fixGlassDependentOtherVisibility, 0), true);
+  try { fixGlassDependentOtherVisibility(); } catch {}
+})();
+
+
+// C116: requested fast-entry defaults and dependent remote/single-choice behavior.
+(function PRF_C116_defaultsRemoteAndSensors() {
+  let applying = false;
+  const isVisibleRadio = (radio) => {
+    const label = radio.closest('label');
+    const field = radio.closest('.choice-field, .singlecheck-field');
+    return !radio.disabled && !radio.hidden && !(label?.hidden) && label?.style.display !== 'none' && !(field?.hidden) && field?.style.display !== 'none';
+  };
+  const radioGroups = () => Array.from(new Set($$('input[type="radio"][name^="dyn_"]').map((radio) => radio.name)));
+  const fieldIdFromName = (name) => String(name || '').replace(/^dyn_/, '');
+  const radiosForField = (fieldId) => $$(`input[type="radio"][name="dyn_${fieldId}"]`);
+  const checkedValue = (fieldId) => radiosForField(fieldId).find((radio) => radio.checked)?.value || '';
+  const setRadioIfEmpty = (fieldId, preferredValue) => {
+    const radios = radiosForField(fieldId);
+    if (!radios.length || checkedValue(fieldId)) return false;
+    const target = radios.find((radio) => radio.value === preferredValue && isVisibleRadio(radio));
+    if (!target) return false;
+    target.checked = true;
+    return true;
+  };
+  const setOptionVisible = (fieldId, option, visible) => {
+    radiosForField(fieldId).forEach((radio) => {
+      if (radio.value !== option) return;
+      radio.disabled = !visible;
+      const label = radio.closest('label');
+      if (label) {
+        label.hidden = !visible;
+        label.style.display = visible ? '' : 'none';
+        label.classList.toggle('hidden', !visible);
+        label.setAttribute('aria-hidden', visible ? 'false' : 'true');
+      }
+      if (!visible && radio.checked) radio.checked = false;
+    });
+  };
+  const setChoiceFieldHidden = (fieldId, hidden) => {
+    radiosForField(fieldId).forEach((radio) => {
+      const field = radio.closest('.choice-field, .singlecheck-field');
+      if (!field) return;
+      field.hidden = hidden;
+      field.style.display = hidden ? 'none' : '';
+      field.classList.toggle('hidden', hidden);
+      field.setAttribute('aria-hidden', hidden ? 'true' : 'false');
+      if (hidden) radio.checked = false;
+    });
+  };
+  const remoteOptionsForMotor = (motorValue) => {
+    const motor = String(motorValue || '').toLowerCase();
+    if (motor.includes('rising')) return ['1 Channel', '6 Channels'];
+    if (motor.includes('io')) return ['1 Channel', '2 Channels', '4 Channels', '40 Channels'];
+    return ['1 Channel', '2 Channels', '4 Channels', '16 Channels'];
+  };
+  const fieldSuffixes = (baseId) => Array.from(new Set($$(`[data-field-id^="${baseId}"]`)
+    .map((el) => String(el.dataset.fieldId || ''))
+    .filter((id) => id === baseId || id.startsWith(`${baseId}__pos`))
+    .map((id) => id.replace(baseId, ''))));
+
+  const applyZipRemoteRules = () => {
+    const product = getProduct();
+    const isRemoteDynamicProduct = product?.family === 'zip_screen_awning_curtain' || product?.productGroup === 'glass_guillotine';
+    if (!isRemoteDynamicProduct) return false;
+    let changed = false;
+    const controlTypeValue = checkedValue('controlType');
+    if (!controlTypeValue) changed = setRadioIfEmpty('controlType', 'Remote Control') || changed;
+    const isButtonControl = checkedValue('controlType') === 'Button Control';
+    setChoiceFieldHidden('remoteControl', isButtonControl);
+    if (isButtonControl) return changed;
+    const allowed = remoteOptionsForMotor(checkedValue('motor'));
+    const allRemoteOptions = ['1 Channel', '2 Channels', '4 Channels', '6 Channels', '16 Channels', '40 Channels'];
+    allRemoteOptions.forEach((option) => setOptionVisible('remoteControl', option, allowed.includes(option)));
+    return changed;
+  };
+
+  const applyRequestedDefaults = () => {
+    const product = getProduct();
+    let changed = false;
+    if (product && (product.family === 'pergola' || product.id === 'glass_fixed_ceiling')) {
+      fieldSuffixes('waterOutletDetail').forEach((suffix) => { changed = setRadioIfEmpty(`waterOutletDetail${suffix}`, 'From Post') || changed; });
+      fieldSuffixes('waterOutletDirection').forEach((suffix) => { changed = setRadioIfEmpty(`waterOutletDirection${suffix}`, 'Front') || changed; });
+      fieldSuffixes('pipeLengthType').forEach((suffix) => { changed = setRadioIfEmpty(`pipeLengthType${suffix}`, 'Standard') || changed; });
+    }
+    fieldSuffixes('dimmerHeater').forEach((suffix) => { changed = setRadioIfEmpty(`dimmerHeater${suffix}`, 'No') || changed; });
+    if (product?.family === 'zip_screen_awning_curtain') {
+      fieldSuffixes('packagingType').forEach((suffix) => { changed = setRadioIfEmpty(`packagingType${suffix}`, 'Kraft') || changed; });
+    }
+    radioGroups().forEach((name) => {
+      const fieldId = fieldIdFromName(name);
+      const baseId = baseFieldId(fieldId);
+      if (/sensor/i.test(baseId)) {
+        changed = setRadioIfEmpty(fieldId, 'No') || changed;
+      }
+    });
+    return changed;
+  };
+
+  const autoSelectSingleVisibleChoices = () => {
+    let changed = false;
+    radioGroups().forEach((name) => {
+      const radios = $$(`input[type="radio"][name="${name}"]`);
+      if (!radios.length) return;
+      const visible = radios.filter(isVisibleRadio);
+      const hasCheckedVisible = visible.some((radio) => radio.checked);
+      if (visible.length === 1 && !hasCheckedVisible) {
+        visible[0].checked = true;
+        changed = true;
+      }
+    });
+    return changed;
+  };
+
+  const applyAll = () => {
+    if (applying) return;
+    applying = true;
+    try {
+      let changed = false;
+      changed = applyZipRemoteRules() || changed;
+      changed = applyRequestedDefaults() || changed;
+      changed = autoSelectSingleVisibleChoices() || changed;
+      if (changed) {
+        updateConditionalFields();
+        updateGlassGuillotineDynamicRules?.();
+        if (typeof updateGlassColorChoices === 'function') updateGlassColorChoices();
+        saveOrderDraft();
+        updatePreview();
+      }
+    } finally {
+      applying = false;
+    }
+  };
+
+  const originalUpdateConditionalFieldsC116 = updateConditionalFields;
+  updateConditionalFields = function updateConditionalFieldsC116() {
+    originalUpdateConditionalFieldsC116();
+    if (!applying) setTimeout(applyAll, 0);
+  };
+
+  const originalRenderFormC116 = renderForm;
+  renderForm = function renderFormC116() {
+    originalRenderFormC116();
+    setTimeout(applyAll, 0);
+  };
+
+  document.addEventListener('input', (event) => {
+    if (event.target?.matches?.('[data-field-id]')) setTimeout(applyAll, 0);
+  }, true);
+  document.addEventListener('change', (event) => {
+    if (event.target?.matches?.('[data-field-id]')) setTimeout(applyAll, 0);
+  }, true);
+
+  try { setTimeout(applyAll, 0); } catch {}
+})();
+
+
+// C118: Bio-Rise heater/sensors order, final heater title, and shared translations.
+(function PRF_C118_bioRiseHeaterTitleAndTranslations() {
+  try {
+    const previousIsBcubeProductC118 = isBcubeProduct;
+    isBcubeProduct = function isBcubeProductC118(product = getProduct()) {
+      return previousIsBcubeProductC118(product) || product?.id === 'bio_rise';
+    };
+  } catch {}
+  const heaterTitle = 'Heater & Sound & Packing & Loading';
+  ['en', 'tr', 'de', 'fr', 'he'].forEach((lang) => {
+    if (!I18N[lang]) return;
+    I18N[lang]['Heater & Sound & Packing'] = heaterTitle;
+    I18N[lang]['Heater, Sound, Packing & Loading'] = heaterTitle;
+    I18N[lang]['Heater & Sound & Packing & Loading'] = heaterTitle;
+  });
+})();
+
+
+// C119: Bio Rise hint translations.
+(function PRF_C119_bioRiseHintTranslations() {
+  if (typeof I18N === 'undefined') return;
+  Object.assign(I18N.en, {
+    'Max. 4000 mm | 1 Sistem': 'Max. 4000 mm | 1 System',
+    '2070 mm - 6070 mm | 200 mm | 1 Sistem': '2070 mm - 6070 mm | 200 mm | 1 System'
+  });
+  Object.assign(I18N.tr, {
+    'Max. 4000 mm | 1 Sistem': 'Max. 4000 mm | 1 Sistem',
+    '2070 mm - 6070 mm | 200 mm | 1 Sistem': '2070 mm - 6070 mm | 200 mm | 1 Sistem'
+  });
+  Object.assign(I18N.de, {
+    'Max. 4000 mm | 1 Sistem': 'Max. 4000 mm | 1 System',
+    '2070 mm - 6070 mm | 200 mm | 1 Sistem': '2070 mm - 6070 mm | 200 mm | 1 System'
+  });
+  Object.assign(I18N.fr, {
+    'Max. 4000 mm | 1 Sistem': 'Max. 4000 mm | 1 système',
+    '2070 mm - 6070 mm | 200 mm | 1 Sistem': '2070 mm - 6070 mm | 200 mm | 1 système'
+  });
+  Object.assign(I18N.he, {
+    'Max. 4000 mm | 1 Sistem': 'מקס. 4000 mm | מערכת 1',
+    '2070 mm - 6070 mm | 200 mm | 1 Sistem': '2070 mm - 6070 mm | 200 mm | מערכת 1'
+  });
+  try { applyLanguage(); renderForm(); updatePreview(); } catch {}
+})();
+
+
+// C120: final title/language polish and One Sided Roof default for Zip/Awning/Curtain forms.
+(function PRF_C120_finalPolish() {
+  try {
+    const heaterTitles = {
+      en: 'Heater & Sound & Packing & Loading',
+      tr: 'Isıtıcı & Ses & Ambalaj & Yükleme',
+      de: 'Heizung & Sound & Verpackung & Verladung',
+      fr: 'Chauffage & son & emballage & chargement',
+      he: 'חימום & שמע & אריזה & טעינה'
+    };
+    Object.entries(heaterTitles).forEach(([lang, value]) => {
+      if (!I18N?.[lang]) return;
+      [
+        'Heater & Sound & Packing',
+        'Heater & Sound & Packing & Loading',
+        'Heater, Sound, Packing & Loading',
+        'Heater&Sound&Packing & Loading'
+      ].forEach((key) => { I18N[lang][key] = value; });
+    });
+    Object.assign(I18N.tr, {
+      'Yes': 'Evet',
+      'No': 'Hayır',
+      'Remote Control': 'Kumanda',
+      'Projection': 'Açılım',
+      'Projection (mm)': 'Açılım',
+      'Light Dimmer (For Linear LED)': 'Dimmer (Linear LED için)',
+      'Light Dimmer (For Spot LED)': 'Dimmer (Spot LED için)',
+      'Dimmer Heater': 'Dimmer (Isıtıcı için)',
+      'Side Beam': 'Cam Kayıt Profili',
+      'Structure': 'Sistem',
+      'System Color': 'Sistem',
+      'Panel Color': 'Panel'
+    });
+  } catch {}
+
+  let applyingC120 = false;
+  const visibleRadioC120 = (radio) => {
+    const label = radio?.closest?.('label');
+    const field = radio?.closest?.('.choice-field, .singlecheck-field');
+    return !!radio && (!label || label.style.display !== 'none') && (!field || field.style.display !== 'none');
+  };
+  const selectOneSidedRoofNo = () => {
+    const product = typeof getProduct === 'function' ? getProduct() : null;
+    if (product?.family !== 'zip_screen_awning_curtain') return false;
+    let changed = false;
+    const names = Array.from(new Set($$('input[type="radio"][data-field-id^="oneSidedRoof"]').map((radio) => radio.name)));
+    names.forEach((name) => {
+      const radios = $$(`input[type="radio"][name="${name}"]`).filter(visibleRadioC120);
+      if (!radios.length || radios.some((radio) => radio.checked)) return;
+      const target = radios.find((radio) => radio.value === 'Yok') || radios.find((radio) => radio.value === 'No') || radios[0];
+      if (target) {
+        target.checked = true;
+        changed = true;
+      }
+    });
+    return changed;
+  };
+  const applyC120Defaults = () => {
+    if (applyingC120) return;
+    applyingC120 = true;
+    try {
+      const changed = selectOneSidedRoofNo();
+      if (changed) {
+        if (typeof updateConditionalFields === 'function') updateConditionalFields();
+        if (typeof saveOrderDraft === 'function') saveOrderDraft();
+        if (typeof updatePreview === 'function') updatePreview();
+      }
+    } finally {
+      applyingC120 = false;
+    }
+  };
+
+  try {
+    const previousRenderFormC120 = renderForm;
+    renderForm = function renderFormC120() {
+      previousRenderFormC120();
+      setTimeout(applyC120Defaults, 0);
+    };
+  } catch {}
+  try {
+    const previousUpdateConditionalFieldsC120 = updateConditionalFields;
+    updateConditionalFields = function updateConditionalFieldsC120() {
+      previousUpdateConditionalFieldsC120();
+      if (!applyingC120) setTimeout(applyC120Defaults, 0);
+    };
+  } catch {}
+  document.addEventListener('change', (event) => {
+    if (event.target?.matches?.('[data-field-id]')) setTimeout(applyC120Defaults, 0);
+  }, true);
+  try {
+    applyLanguage();
+    renderForm();
+    updatePreview();
+    setTimeout(applyC120Defaults, 0);
+  } catch {}
+})();
+
+
+// C121: cancel PDF preview UI and manage unified Fixed Ceiling Glass Type 2 options.
+(function PRF_C121_previewAndFixedGlassType2() {
+  try {
+    Object.assign(I18N.en, { pdfPreview: 'PDF', pdfPreviewHelp: 'Create, download or share the PDF.' });
+    Object.assign(I18N.tr, { pdfPreview: 'PDF', pdfPreviewHelp: 'PDF oluşturun, indirin veya paylaşın.' });
+    Object.assign(I18N.de, { pdfPreview: 'PDF', pdfPreviewHelp: 'PDF erstellen, herunterladen oder teilen.' });
+    Object.assign(I18N.fr, { pdfPreview: 'PDF', pdfPreviewHelp: 'Créer, télécharger ou partager le PDF.' });
+    Object.assign(I18N.he, { pdfPreview: 'PDF', pdfPreviewHelp: 'צור, הורד או שתף PDF.' });
+  } catch {}
+
+  const fieldSuffixesC121 = (baseId) => Array.from(new Set($$(`[data-field-id^="${baseId}"]`)
+    .map((el) => String(el.dataset.fieldId || ''))
+    .filter((id) => id === baseId || id.startsWith(`${baseId}__pos`))
+    .map((id) => id.replace(baseId, ''))));
+
+  const radiosForC121 = (fieldId) => $$(`input[type="radio"][name="dyn_${fieldId}"]`);
+
+  const setFieldHiddenC121 = (fieldId, hidden) => {
+    $$(`[data-field-id="${fieldId}"]`).forEach((el) => {
+      const wrap = el.closest('label, .choice-field, .singlecheck-field');
+      if (!wrap) return;
+      wrap.hidden = hidden;
+      wrap.style.display = hidden ? 'none' : '';
+      wrap.classList.toggle('hidden', hidden);
+      wrap.setAttribute('aria-hidden', hidden ? 'true' : 'false');
+    });
+  };
+
+  const setOptionVisibleC121 = (fieldId, option, visible) => {
+    radiosForC121(fieldId).forEach((radio) => {
+      if (radio.value !== option) return;
+      const label = radio.closest('label');
+      radio.disabled = !visible;
+      if (label) {
+        label.hidden = !visible;
+        label.style.display = visible ? '' : 'none';
+        label.classList.toggle('hidden', !visible);
+        label.setAttribute('aria-hidden', visible ? 'false' : 'true');
+      }
+      if (!visible && radio.checked) radio.checked = false;
+    });
+  };
+
+  const ensureOneVisibleC121 = (fieldId) => {
+    const visible = radiosForC121(fieldId).filter((radio) => {
+      const label = radio.closest('label');
+      const field = radio.closest('.choice-field, .singlecheck-field');
+      return !radio.disabled && !label?.hidden && label?.style.display !== 'none' && !field?.hidden && field?.style.display !== 'none';
+    });
+    if (visible.length === 1 && !visible[0].checked) visible[0].checked = true;
+  };
+
+  const applyFixedCeilingGlassType2 = () => {
+    const product = typeof getProduct === 'function' ? getProduct() : null;
+    if (product?.id !== 'glass_fixed_ceiling') return;
+    fieldSuffixesC121('glassType1').forEach((suffix) => {
+      const type1 = getFieldValue({ id: `glassType1${suffix}` });
+      const fieldId = `glassType2${suffix}`;
+      const otherId = `glassType2GlassOther${suffix}`;
+      const glassOptions = ['Transparent', 'Grey', 'Low-e Glass', 'Other'];
+      const panelOptions = ['Standard', 'Other (Thickness)'];
+      const isPanel = ['Polycarbonate', 'Sandwich Panel'].includes(type1);
+      const isInsulated = type1 === 'Insulated Glass';
+      const visibleOptions = isPanel ? panelOptions : (isInsulated ? glassOptions : ['Transparent', 'Grey', 'Other']);
+      ['Transparent', 'Grey', 'Low-e Glass', 'Standard', 'Other', 'Other (Thickness)'].forEach((option) => {
+        setOptionVisibleC121(fieldId, option, visibleOptions.includes(option));
+      });
+      const value = getFieldValue({ id: fieldId });
+      setFieldHiddenC121(otherId, !(value === 'Other' || value === 'Other (Thickness)'));
+      ensureOneVisibleC121(fieldId);
+    });
+  };
+
+  const previousFieldRowsC121 = fieldRows;
+  fieldRows = function fieldRowsC121(fieldList, lang = state.language) {
+    return previousFieldRowsC121(fieldList, lang).map((row) => {
+      const baseId = baseFieldId(row?.[2]);
+      if (baseId !== 'glassType2') return row;
+      const suffix = fieldPositionSuffix(row[2]);
+      const value = getFieldValue({ id: row[2] });
+      if (value === 'Other' || value === 'Other (Thickness)') {
+        const otherValue = getFieldValue({ id: `glassType2GlassOther${suffix}` });
+        if (String(otherValue || '').trim()) return [row[0], String(otherValue).trim(), row[2]];
+      }
+      return row;
+    });
+  };
+
+  try {
+    const previousUpdateConditionalFieldsC121 = updateConditionalFields;
+    updateConditionalFields = function updateConditionalFieldsC121() {
+      previousUpdateConditionalFieldsC121();
+      setTimeout(applyFixedCeilingGlassType2, 0);
+    };
+  } catch {}
+  try {
+    const previousRenderFormC121 = renderForm;
+    renderForm = function renderFormC121() {
+      previousRenderFormC121();
+      setTimeout(applyFixedCeilingGlassType2, 0);
+    };
+  } catch {}
+  document.addEventListener('input', (event) => {
+    if (event.target?.matches?.('[data-field-id]')) setTimeout(applyFixedCeilingGlassType2, 0);
+  }, true);
+  document.addEventListener('change', (event) => {
+    if (event.target?.matches?.('[data-field-id]')) setTimeout(applyFixedCeilingGlassType2, 0);
+  }, true);
+  try { applyLanguage(); renderForm(); setTimeout(applyFixedCeilingGlassType2, 0); } catch {}
+})();

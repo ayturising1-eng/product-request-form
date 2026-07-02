@@ -4,8 +4,8 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <title>Product Request Form</title>
-  <link rel="manifest" href="manifest.webmanifest?v=c100-fixed-ceiling-heater-packing" />
-  <link rel="stylesheet" href="style.css?v=c100-fixed-ceiling-heater-packing" />
+  <link rel="manifest" href="manifest.webmanifest?v=c121-no-preview-unifoliate-fixedglass" />
+  <link rel="stylesheet" href="style.css?v=c121-no-preview-unifoliate-fixedglass" />
   <meta name="theme-color" content="#111827" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
@@ -113,7 +113,7 @@
       <div id="formArea"></div>
 
       <label class="notes-input wide"><span data-i18n="notes">Notes</span>
-        <textarea id="notes" rows="3" placeholder="Optional notes" data-i18n-placeholder="notesPlaceholder"></textarea>
+        <textarea id="notes" rows="5" maxlength="414" placeholder="Optional notes" data-i18n-placeholder="notesPlaceholder"></textarea><small class="field-hint">Max. 5 lines | 82 characters per line</small>
       </label>
     </section>
 
@@ -132,17 +132,12 @@
       </div>
 
       <article id="pdfPreview" class="a4-sheet">
-        <div class="pdf-header">
-          <div class="logo-box">LOGO</div>
-          <div>
-            <h2 data-i18n="pdfTitle">PRODUCT REQUEST FORM</h2>
-            
-          </div>
-          <div class="pdf-meta">
-            <p><strong data-i18n="pdfDate">Date:</strong> <span data-preview="orderDate"></span></p>
-            <p><strong data-i18n="pdfOrder">Order:</strong> <span data-preview="orderNo"></span></p>
-          </div>
+        <img class="pdf-template-bg" src="assets/pdf/antet-template.jpg" alt="" aria-hidden="true" />
+        <div class="pdf-template-meta">
+          <p><strong data-i18n="pdfDate">Date:</strong> <span data-preview="orderDate"></span></p>
+          <p><strong data-i18n="pdfOrder">Order:</strong> <span data-preview="orderNo"></span></p>
         </div>
+        <div class="pdf-content-start"></div>
 
         <div class="pdf-section two-col">
           <div>
@@ -192,14 +187,15 @@
 
   <div id="toast" class="toast no-print"></div>
 
-  <script src="products.js?v=c100-fixed-ceiling-heater-packing"></script>
-  <script src="assets.js?v=c100-fixed-ceiling-heater-packing"></script>
-  <script src="assets-1.js?v=c100-fixed-ceiling-heater-packing"></script>
-  <script src="assets-2.js?v=c100-fixed-ceiling-heater-packing"></script>
-  <script src="assets-3.js?v=c100-fixed-ceiling-heater-packing"></script>
-  <script src="assets-4.js?v=c100-fixed-ceiling-heater-packing"></script>
-  <script src="color-catalogs.js?v=c100-fixed-ceiling-heater-packing"></script>
-  <script src="pergo-rise-fabrics.js?v=c100-fixed-ceiling-heater-packing"></script>
-  <script src="app.js?v=c100-fixed-ceiling-heater-packing"></script>
+  <script src="products.js?v=c121-no-preview-unifoliate-fixedglass"></script>
+  <script src="assets.js?v=c121-no-preview-unifoliate-fixedglass"></script>
+  <script src="assets-1.js?v=c121-no-preview-unifoliate-fixedglass"></script>
+  <script src="assets-2.js?v=c121-no-preview-unifoliate-fixedglass"></script>
+  <script src="assets-3.js?v=c121-no-preview-unifoliate-fixedglass"></script>
+  <script src="assets-4.js?v=c121-no-preview-unifoliate-fixedglass"></script>
+  <script src="color-catalogs.js?v=c121-no-preview-unifoliate-fixedglass"></script>
+  <script src="pergo-rise-fabrics.js?v=c121-no-preview-unifoliate-fixedglass"></script>
+  <script src="pdf-template-assets.js?v=c121-no-preview-unifoliate-fixedglass"></script>
+  <script src="app.js?v=c121-no-preview-unifoliate-fixedglass"></script>
 </body>
 </html>
