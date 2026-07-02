@@ -1,4 +1,4 @@
-const CACHE = 'product-request-form-c121-no-preview-unifoliate-fixedglass';
+const CACHE = 'product-request-form-c123-rising-icon';
 const ASSETS = [
   './',
   './index.html',

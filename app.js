@@ -1,4 +1,4 @@
-window.APP_VERSION = 'C121-NO-PREVIEW-UNIFOLIATE-FIXEDGLASS';
+window.APP_VERSION = 'C123-RISING-ICON';
 const DATA = window.PRODUCT_DATA;
 const $ = (selector) => document.querySelector(selector);
 const $$ = (selector) => Array.from(document.querySelectorAll(selector));
@@ -7121,7 +7121,7 @@ $('#installBtn').addEventListener('click', async () => {
 
 async function initPwa() {
   if ('serviceWorker' in navigator && location.protocol.startsWith('http')) {
-    try { await navigator.serviceWorker.register('sw.js?v=c121-no-preview-unifoliate-fixedglass'); } catch {}
+    try { await navigator.serviceWorker.register('sw.js?v=c123-rising-icon'); } catch {}
   }
 }
 
