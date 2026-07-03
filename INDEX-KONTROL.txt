@@ -1,0 +1,14 @@
+index.html kontrolü
+
+product-request-form reposundaki index.html dosyasının en altında, </body> satırından hemen önce şu satır olmalı:
+
+<script src="technical-sheet-path-fix.js?v=c130-technical-sheet-path-fix"></script>
+
+Sende bu satır daha önce yüklendiği için büyük ihtimalle zaten var.
+
+Yoksa şu satırı </body> üstüne ekle:
+
+<script src="technical-sheet-path-fix.js?v=c131-technical-data-repo"></script>
+
+Bu pakette index.html vermedim; çünkü mevcut dosyanı ezip bozmak istemiyoruz.
+Sadece technical-sheet-path-fix.js ve sw.js dosyalarını güncellemek yeterli.

@@ -1,4 +1,4 @@
-const CACHE = 'product-request-form-c130-technical-sheet-path-fix';
+const CACHE = 'product-request-form-c131-technical-data-repo';
 const ASSETS = [
   './',
   './index.html',
