@@ -1,4 +1,4 @@
-window.APP_VERSION = 'C126-FIXED-MOBILE-SECTION-NAV';
+window.APP_VERSION = 'C127-LOADING-BIORISE-CLEANUP';
 const DATA = window.PRODUCT_DATA;
 const $ = (selector) => document.querySelector(selector);
 const $$ = (selector) => Array.from(document.querySelectorAll(selector));
@@ -7121,7 +7121,7 @@ $('#installBtn').addEventListener('click', async () => {
 
 async function initPwa() {
   if ('serviceWorker' in navigator && location.protocol.startsWith('http')) {
-    try { await navigator.serviceWorker.register('sw.js?v=c126-fixed-mobile-section-nav'); } catch {}
+    try { await navigator.serviceWorker.register('sw.js?v=c127-loading-biorise-cleanup'); } catch {}
   }
 }
 
@@ -8340,3 +8340,105 @@ try {
 })();
 
 
+
+
+// C127: final cleanup - remove Loading everywhere, remove Bio-Rise remote, and update heater heading.
+(function PRF_C127_removeLoadingAndBioRiseRemoteUi() {
+  const noLoadingTitles = {
+    en: 'Heater & Sound & Packing',
+    tr: 'Isıtıcı & Ses & Ambalaj',
+    de: 'Heizung & Sound & Verpackung',
+    fr: 'Chauffage & son & emballage',
+    he: 'חימום & שמע & אריזה'
+  };
+  try {
+    Object.entries(noLoadingTitles).forEach(([lang, value]) => {
+      if (!I18N?.[lang]) return;
+      [
+        'Heater & Sound & Packing',
+        'Heater & Sound & Packing & Loading',
+        'Heater, Sound, Packing & Loading',
+        'Heater&Sound&Packing & Loading',
+        'Isıtıcı & Ses & Ambalaj & Yükleme'
+      ].forEach((key) => { I18N[lang][key] = value; });
+    });
+  } catch {}
+
+  const stripLoadingRows = (rows) => (Array.isArray(rows)
+    ? rows.filter((row) => String(row?.[2] || '').toLowerCase() !== 'loadingtype'
+      && !/^\s*loading\s*$/i.test(String(row?.[0] || '')))
+    : rows);
+
+  try {
+    const previousFieldRowsC127 = fieldRows;
+    fieldRows = function fieldRowsC127(fields, lang = activeLang) {
+      return stripLoadingRows(previousFieldRowsC127(fields, lang));
+    };
+  } catch {}
+
+  try {
+    compactHeaterMatrixRows = function compactHeaterMatrixRowsC127(rows) {
+      const cleanRows = stripLoadingRows(rows);
+      const blank = ['', '', '__blank'];
+      return [
+        [
+          heaterRowById(cleanRows, 'packagingType', 'Packaging Type'),
+          heaterRowById(cleanRows, 'heater2000Quantity', 'Heater 2000W 220V Quantity'),
+          heaterRowById(cleanRows, 'soundSystemQuantity', 'Sound System Quantity')
+        ],
+        [
+          heaterRowById(cleanRows, 'heater3000Quantity', 'Heater 3000W 220V Quantity'),
+          heaterRowById(cleanRows, 'dimmerHeater', 'Dimmer Heater'),
+          blank
+        ]
+      ];
+    };
+  } catch {}
+
+  const removeLoadingAndBioRiseRemoteFromFormData = () => {
+    try {
+      const product = typeof getProduct === 'function' ? getProduct() : null;
+      const form = typeof buildFormForProduct === 'function' ? buildFormForProduct(product) : null;
+      if (form?.heaterPackaging) form.heaterPackaging = form.heaterPackaging.filter((field) => field?.id !== 'loadingType');
+      if (product?.id === 'bio_rise' && Array.isArray(form?.operation)) {
+        form.operation = form.operation.filter((field) => {
+          const id = String(field?.id || '').toLowerCase();
+          const label = String(field?.label || '').toLowerCase();
+          return !id.includes('remotecontrol') && !label.includes('remote control') && !label.includes('kumanda');
+        });
+      }
+    } catch {}
+  };
+
+  try {
+    const previousRenderFormC127 = renderForm;
+    renderForm = function renderFormC127() {
+      previousRenderFormC127();
+      const product = typeof getProduct === 'function' ? getProduct() : null;
+      if (product?.id === 'bio_rise') {
+        document.querySelectorAll('[data-field-id^="remoteControl"]').forEach((el) => {
+          const field = el.closest('.choice-field, .singlecheck-field, label');
+          if (field) field.remove();
+        });
+      }
+      document.querySelectorAll('[data-field-id^="loadingType"]').forEach((el) => {
+        const field = el.closest('.choice-field, .singlecheck-field, label');
+        if (field) field.remove();
+      });
+    };
+  } catch {}
+
+  try {
+    const previousRenderHeaterCompactSectionTableC127 = renderHeaterCompactSectionTable;
+    renderHeaterCompactSectionTable = function renderHeaterCompactSectionTableC127(section) {
+      const cleaned = { ...section, title: translatedText('Heater & Sound & Packing', activeLang), rows: stripLoadingRows(section?.rows || []) };
+      return previousRenderHeaterCompactSectionTableC127(cleaned);
+    };
+  } catch {}
+
+  try {
+    applyLanguage();
+    renderForm();
+    updatePreview();
+  } catch {}
+})();

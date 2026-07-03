@@ -1755,3 +1755,6 @@ input:focus, textarea:focus, select:focus {
     scroll-margin-top: calc(64px + env(safe-area-inset-top, 0px));
   }
 }
+
+/* C127: hide placeholder cells in compact heater PDF table */
+.pdf-heater-matrix-table td:empty { background: transparent; }

@@ -1313,3 +1313,51 @@ window.PRODUCT_DATA.productFormOverrides.glass_fixed_ceiling = {
     ]
   });
 })();
+
+
+// C127: remove Loading from all forms and cancel Bio-Rise remote control selection.
+(function PRF_C127_removeLoadingAndBioRiseRemote() {
+  const data = window.PRODUCT_DATA;
+  if (!data) return;
+  const removeIds = new Set(['loadingType']);
+
+  const cleanFieldList = (list) => {
+    if (!Array.isArray(list)) return list;
+    return list
+      .filter((field) => !removeIds.has(field?.id))
+      .map((field) => {
+        if (!field || typeof field !== 'object') return field;
+        const next = { ...field };
+        Object.keys(next).forEach((key) => {
+          if (Array.isArray(next[key])) next[key] = cleanFieldList(next[key]);
+        });
+        return next;
+      });
+  };
+
+  const walk = (value) => {
+    if (!value || typeof value !== 'object') return;
+    Object.keys(value).forEach((key) => {
+      if (Array.isArray(value[key])) value[key] = cleanFieldList(value[key]);
+      else walk(value[key]);
+    });
+  };
+  walk(data);
+
+  const bio = data.productFormOverrides?.bio_rise;
+  if (bio && Array.isArray(bio.operation)) {
+    bio.operation = bio.operation.filter((field) => {
+      const id = String(field?.id || '').toLowerCase();
+      const label = String(field?.label || '').toLowerCase();
+      return !id.includes('remotecontrol') && !label.includes('remote control') && !label.includes('kumanda');
+    });
+  }
+
+  const cleanHidden = (hidden) => {
+    if (!hidden || typeof hidden !== 'object') return;
+    Object.keys(hidden).forEach((key) => {
+      if (Array.isArray(hidden[key])) hidden[key] = Array.from(new Set([...hidden[key], 'loadingType']));
+    });
+  };
+  Object.values(data.productFormOverrides || {}).forEach((override) => cleanHidden(override?.hiddenItems));
+})();
