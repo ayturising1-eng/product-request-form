@@ -4,14 +4,14 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <title>Product Request Form</title>
-  <link rel="manifest" href="manifest.webmanifest?v=c127-loading-biorise-cleanup" />
-  <link rel="stylesheet" href="style.css?v=c127-loading-biorise-cleanup" />
+  <link rel="manifest" href="manifest.webmanifest?v=c129-technical-sheet-close-fix" />
+  <link rel="stylesheet" href="style.css?v=c129-technical-sheet-close-fix" />
   <meta name="theme-color" content="#111827" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
   
-  <link rel="icon" type="image/png" href="assets/app-icons/favicon.png?v=c127-loading-biorise-cleanup" />
-  <link rel="apple-touch-icon" href="assets/app-icons/apple-touch-icon.png?v=c127-loading-biorise-cleanup" />
+  <link rel="icon" type="image/png" href="assets/app-icons/favicon.png?v=c129-technical-sheet-close-fix" />
+  <link rel="apple-touch-icon" href="assets/app-icons/apple-touch-icon.png?v=c129-technical-sheet-close-fix" />
 </head>
 <body>
   <header class="app-header no-print">
@@ -105,6 +105,9 @@
           </label>
         </div>
         <p id="productGroupHint" class="product-hint"></p>
+        <div id="technicalSheetWrap" class="technical-sheet-wrap hidden">
+          <button id="technicalSheetBtn" class="secondary technical-sheet-btn" type="button" data-i18n="technicalSheet">Technical Sheet</button>
+        </div>
       </div>
 
       <div id="formArea"></div>
@@ -184,15 +187,29 @@
 
   <div id="toast" class="toast no-print"></div>
 
-  <script src="products.js?v=c127-loading-biorise-cleanup"></script>
-  <script src="assets.js?v=c127-loading-biorise-cleanup"></script>
-  <script src="assets-1.js?v=c127-loading-biorise-cleanup"></script>
-  <script src="assets-2.js?v=c127-loading-biorise-cleanup"></script>
-  <script src="assets-3.js?v=c127-loading-biorise-cleanup"></script>
-  <script src="assets-4.js?v=c127-loading-biorise-cleanup"></script>
-  <script src="color-catalogs.js?v=c127-loading-biorise-cleanup"></script>
-  <script src="pergo-rise-fabrics.js?v=c127-loading-biorise-cleanup"></script>
-  <script src="pdf-template-assets.js?v=c127-loading-biorise-cleanup"></script>
-  <script src="app.js?v=c127-loading-biorise-cleanup"></script>
+  <script src="products.js?v=c129-technical-sheet-close-fix"></script>
+  <script src="assets.js?v=c129-technical-sheet-close-fix"></script>
+  <script src="assets-1.js?v=c129-technical-sheet-close-fix"></script>
+  <script src="assets-2.js?v=c129-technical-sheet-close-fix"></script>
+  <script src="assets-3.js?v=c129-technical-sheet-close-fix"></script>
+  <script src="assets-4.js?v=c129-technical-sheet-close-fix"></script>
+  <script src="color-catalogs.js?v=c129-technical-sheet-close-fix"></script>
+  <script src="pergo-rise-fabrics.js?v=c129-technical-sheet-close-fix"></script>
+  <script src="pdf-template-assets.js?v=c129-technical-sheet-close-fix"></script>
+  <script src="app.js?v=c129-technical-sheet-close-fix"></script>
+
+  <div id="technicalSheetModal" class="technical-sheet-modal hidden no-print" role="dialog" aria-modal="true" aria-labelledby="technicalSheetTitle">
+    <div class="technical-sheet-panel">
+      <div class="technical-sheet-bar">
+        <strong id="technicalSheetTitle" data-i18n="technicalSheet">Technical Sheet</strong>
+        <div class="technical-sheet-actions">
+          <a id="technicalSheetOpenLink" class="ghost technical-sheet-open-link" href="#" target="_blank" rel="noopener" data-i18n="openPdf">Open PDF</a>
+          <button id="technicalSheetCloseBtn" type="button" class="danger" data-i18n="close">Close</button>
+        </div>
+      </div>
+      <iframe id="technicalSheetFrame" class="technical-sheet-frame" title="Technical Sheet"></iframe>
+    </div>
+  </div>
+
 </body>
 </html>

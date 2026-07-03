@@ -1,4 +1,4 @@
-const CACHE = 'product-request-form-c127-loading-biorise-cleanup';
+const CACHE = 'product-request-form-c129-technical-sheet-close-fix';
 const ASSETS = [
   './',
   './index.html',

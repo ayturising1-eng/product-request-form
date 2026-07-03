@@ -1,4 +1,4 @@
-window.APP_VERSION = 'C127-LOADING-BIORISE-CLEANUP';
+window.APP_VERSION = 'C129-TECHNICAL-SHEET-CLOSE-FIX';
 const DATA = window.PRODUCT_DATA;
 const $ = (selector) => document.querySelector(selector);
 const $$ = (selector) => Array.from(document.querySelectorAll(selector));
@@ -13,7 +13,7 @@ const state = {
 };
 
 const STORAGE_PROFILE = 'prf_profile_v2';
-const STORAGE_ORDER = 'prf_order_c121_no_preview_unifoliate_fixedglass';
+const STORAGE_ORDER = 'prf_order_c129-technical-sheet-close-fix_no_preview_unifoliate_fixedglass';
 const STORAGE_LANGUAGE = 'prf_language_v1';
 
 const COLOR_FIELD_LABELS = new Set([
@@ -7121,7 +7121,7 @@ $('#installBtn').addEventListener('click', async () => {
 
 async function initPwa() {
   if ('serviceWorker' in navigator && location.protocol.startsWith('http')) {
-    try { await navigator.serviceWorker.register('sw.js?v=c127-loading-biorise-cleanup'); } catch {}
+    try { await navigator.serviceWorker.register('sw.js?v=c129-technical-sheet-close-fix'); } catch {}
   }
 }
 
@@ -8442,3 +8442,178 @@ try {
     updatePreview();
   } catch {}
 })();
+
+
+// C128: Technical sheet mapping and viewer
+const TECHNICAL_SHEET_MAP = {
+  // Pergola
+  'pergola|falcate|minima': 'technical-sheets/falcate-minima.pdf',
+  'pergola|falcate|tectona': 'technical-sheets/falcate-tectona.pdf',
+  'pergola|subulate|minima': 'technical-sheets/subulate-minima.pdf',
+  'pergola|subulate|tectona': 'technical-sheets/subulate-tectona.pdf',
+  'pergola|unifoliate|minima': 'technical-sheets/unifoliate-minima.pdf',
+  'pergola|unifoliate|tectona': 'technical-sheets/unifoliate-tectona.pdf',
+  'pergola|pergo rise|': 'technical-sheets/pergo-rise.pdf',
+  'pergola|pergo rise|pergo rise': 'technical-sheets/pergo-rise.pdf',
+
+  // Bioclimatic
+  'bioclimatic|b-cube|galaxy': 'technical-sheets/b-cube-galaxy-space.pdf',
+  'bioclimatic|b-cube|space': 'technical-sheets/b-cube-galaxy-space.pdf',
+  'bioclimatic|b-cube|freedom': 'technical-sheets/b-cube-freedom-classic.pdf',
+  'bioclimatic|b-cube|classic': 'technical-sheets/b-cube-freedom-classic.pdf',
+  'bioclimatic|b-cube|urban': 'technical-sheets/b-cube-urban.pdf',
+  'bioclimatic|bio-rise|': 'technical-sheets/bio-rise.pdf',
+  'bioclimatic|bio rise|': 'technical-sheets/bio-rise.pdf',
+  'bioclimatic|bio-rise|bio-rise': 'technical-sheets/bio-rise.pdf',
+  'bioclimatic|bio rise|bio rise': 'technical-sheets/bio-rise.pdf',
+
+  // Zip Screen - Awning - Curtain
+  'zip screen - awning - curtain|janela cassette awning|': 'technical-sheets/janela.pdf',
+  'zip screen - awning - curtain|janela awning|': 'technical-sheets/janela.pdf',
+  'zip screen - awning - curtain|pars cassette awning|': 'technical-sheets/pars.pdf',
+  'zip screen - awning - curtain|pars plus cassette awning|': 'technical-sheets/pars-plus.pdf',
+  'zip screen - awning - curtain|pars plus luxe cassette awning|': 'technical-sheets/pars-plus-lux.pdf',
+  'zip screen - awning - curtain|pars plus lux cassette awning|': 'technical-sheets/pars-plus-lux.pdf',
+  'zip screen - awning - curtain|moonlight classic awning|motorlu': 'technical-sheets/moonlight.pdf',
+  'zip screen - awning - curtain|moonlight classic awning|şanzımanlı': 'technical-sheets/moonlight.pdf',
+  'zip screen - awning - curtain|moonlight awning|motorlu': 'technical-sheets/moonlight.pdf',
+  'zip screen - awning - curtain|moonlight awning|şanzımanlı': 'technical-sheets/moonlight.pdf',
+  'zip screen - awning - curtain|sunshine classic awning|motorlu': 'technical-sheets/sunshine-awning.pdf',
+  'zip screen - awning - curtain|sunshine classic awning|şanzımanlı': 'technical-sheets/sunshine-awning.pdf',
+  'zip screen - awning - curtain|sunshine awning|motorlu': 'technical-sheets/sunshine-awning.pdf',
+  'zip screen - awning - curtain|sunshine awning|şanzımanlı': 'technical-sheets/sunshine-awning.pdf',
+  'zip screen - awning - curtain|twins classic awning|motorlu': 'technical-sheets/twins-awning.pdf',
+  'zip screen - awning - curtain|twins classic awning|şanzımanlı': 'technical-sheets/twins-awning.pdf',
+  'zip screen - awning - curtain|twins awning|motorlu': 'technical-sheets/twins-awning.pdf',
+  'zip screen - awning - curtain|twins awning|şanzımanlı': 'technical-sheets/twins-awning.pdf'
+};
+
+function normalizeTechnicalSheetKey(value) {
+  return String(value || '')
+    .trim()
+    .toLocaleLowerCase('tr-TR')
+    .replace(/\s+/g, ' ');
+}
+
+function getSelectedOptionText(selectId) {
+  const select = document.getElementById(selectId);
+  if (!select) return '';
+  const option = select.options && select.selectedIndex >= 0 ? select.options[select.selectedIndex] : null;
+  return option ? option.textContent.trim() : '';
+}
+
+function getTechnicalSheetLabel() {
+  const lang = (window.currentLang || document.documentElement.lang || 'en').toLowerCase();
+  if (lang === 'tr') return 'Teknik Döküman';
+  if (lang === 'de') return 'Technisches Datenblatt';
+  if (lang === 'fr') return 'Fiche technique';
+  if (lang === 'he') return 'Technical Sheet';
+  return 'Technical Sheet';
+}
+
+function getOpenPdfLabel() {
+  const lang = (window.currentLang || document.documentElement.lang || 'en').toLowerCase();
+  if (lang === 'tr') return 'PDF Aç';
+  if (lang === 'de') return 'PDF öffnen';
+  if (lang === 'fr') return 'Ouvrir PDF';
+  if (lang === 'he') return 'Open PDF';
+  return 'Open PDF';
+}
+
+function getCloseLabel() {
+  const lang = (window.currentLang || document.documentElement.lang || 'en').toLowerCase();
+  if (lang === 'tr') return 'Kapat';
+  if (lang === 'de') return 'Schließen';
+  if (lang === 'fr') return 'Fermer';
+  if (lang === 'he') return 'Close';
+  return 'Close';
+}
+
+function getCurrentTechnicalSheetUrl() {
+  const family = normalizeTechnicalSheetKey(getSelectedOptionText('productFamilySelect'));
+  const group = normalizeTechnicalSheetKey(getSelectedOptionText('productGroupSelect'));
+  const subGroup = normalizeTechnicalSheetKey(getSelectedOptionText('productSubGroupSelect'));
+  const directKey = `${family}|${group}|${subGroup}`;
+  const emptySubKey = `${family}|${group}|`;
+  return TECHNICAL_SHEET_MAP[directKey] || TECHNICAL_SHEET_MAP[emptySubKey] || '';
+}
+
+function refreshTechnicalSheetButton() {
+  const wrap = document.getElementById('technicalSheetWrap');
+  const btn = document.getElementById('technicalSheetBtn');
+  if (!wrap || !btn) return;
+  const url = getCurrentTechnicalSheetUrl();
+  btn.textContent = getTechnicalSheetLabel();
+  btn.dataset.sheetUrl = url;
+  wrap.classList.toggle('hidden', !url);
+}
+
+function openTechnicalSheet() {
+  const url = getCurrentTechnicalSheetUrl();
+  if (!url) return;
+  const modal = document.getElementById('technicalSheetModal');
+  const frame = document.getElementById('technicalSheetFrame');
+  const title = document.getElementById('technicalSheetTitle');
+  const openLink = document.getElementById('technicalSheetOpenLink');
+  const closeBtn = document.getElementById('technicalSheetCloseBtn');
+  if (!modal || !frame) {
+    window.open(url, '_blank', 'noopener');
+    return;
+  }
+  if (title) title.textContent = getTechnicalSheetLabel();
+  if (openLink) {
+    openLink.textContent = getOpenPdfLabel();
+    openLink.href = url;
+  }
+  if (closeBtn) closeBtn.textContent = getCloseLabel();
+  frame.src = url;
+  modal.classList.remove('hidden');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeTechnicalSheet() {
+  const modal = document.getElementById('technicalSheetModal');
+  const frame = document.getElementById('technicalSheetFrame');
+  if (modal) modal.classList.add('hidden');
+  if (frame) frame.src = 'about:blank';
+  document.body.style.overflow = '';
+}
+
+(function initTechnicalSheetViewer() {
+  const btn = document.getElementById('technicalSheetBtn');
+  const closeBtn = document.getElementById('technicalSheetCloseBtn');
+  const modal = document.getElementById('technicalSheetModal');
+  if (btn) btn.addEventListener('click', openTechnicalSheet);
+  if (closeBtn) closeBtn.addEventListener('click', closeTechnicalSheet);
+  if (modal) {
+    modal.addEventListener('click', (event) => {
+      if (event.target === modal) closeTechnicalSheet();
+    });
+  }
+  // Modal markup is placed after the script tags in index.html, so use delegated
+  // click handling as a reliable fallback for the Close button and backdrop.
+  document.addEventListener('click', (event) => {
+    const closeButton = event.target && event.target.closest ? event.target.closest('#technicalSheetCloseBtn') : null;
+    if (closeButton) {
+      event.preventDefault();
+      event.stopPropagation();
+      closeTechnicalSheet();
+      return;
+    }
+    const liveModal = document.getElementById('technicalSheetModal');
+    if (liveModal && event.target === liveModal) closeTechnicalSheet();
+  }, true);
+  ['productFamilySelect', 'productGroupSelect', 'productSubGroupSelect'].forEach((id) => {
+    const el = document.getElementById(id);
+    if (el) el.addEventListener('change', () => setTimeout(refreshTechnicalSheetButton, 50));
+  });
+  document.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape') closeTechnicalSheet();
+  });
+  window.addEventListener('load', refreshTechnicalSheetButton);
+  document.addEventListener('change', () => setTimeout(refreshTechnicalSheetButton, 80), true);
+  document.addEventListener('click', () => setTimeout(refreshTechnicalSheetButton, 80), true);
+  window.refreshTechnicalSheetButton = refreshTechnicalSheetButton;
+  setTimeout(refreshTechnicalSheetButton, 120);
+})();
+
