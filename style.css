@@ -1844,3 +1844,59 @@ input:focus, textarea:focus, select:focus {
     min-height: 54px;
   }
 }
+
+
+/* C132: header title stays on one line; language tabs scroll instead of pushing title */
+.brand-headline {
+  flex-wrap: nowrap !important;
+  min-width: 0;
+}
+.app-header h1 {
+  white-space: nowrap !important;
+  flex: 0 0 auto;
+  min-width: max-content;
+}
+.language-tabs {
+  flex: 1 1 auto;
+  min-width: 0;
+  flex-wrap: nowrap !important;
+  overflow-x: auto;
+  overflow-y: hidden;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+}
+.language-tabs::-webkit-scrollbar {
+  display: none;
+}
+.header-actions {
+  flex: 0 0 auto;
+}
+@media (max-width: 640px) {
+  .app-header {
+    gap: 10px;
+    padding: 14px 12px;
+  }
+  .app-header h1 {
+    font-size: 19px;
+  }
+  .brand-headline {
+    gap: 10px;
+  }
+}
+
+/* C132: disable print color when Print Placement = No */
+.print-color-disabled {
+  opacity: .55;
+}
+.print-color-disabled input,
+.print-color-disabled button {
+  cursor: not-allowed !important;
+}
+.print-color-disabled .field-label-text::after {
+  content: ' — passive';
+  font-weight: 700;
+  color: #94a3b8;
+}
+html[lang="tr"] .print-color-disabled .field-label-text::after {
+  content: ' — pasif';
+}

@@ -1,4 +1,4 @@
-window.APP_VERSION = 'C129-TECHNICAL-SHEET-CLOSE-FIX';
+window.APP_VERSION = 'C132-AWNING-HEADER-FIX';
 const DATA = window.PRODUCT_DATA;
 const $ = (selector) => document.querySelector(selector);
 const $$ = (selector) => Array.from(document.querySelectorAll(selector));
@@ -7121,7 +7121,7 @@ $('#installBtn').addEventListener('click', async () => {
 
 async function initPwa() {
   if ('serviceWorker' in navigator && location.protocol.startsWith('http')) {
-    try { await navigator.serviceWorker.register('sw.js?v=c129-technical-sheet-close-fix'); } catch {}
+    try { await navigator.serviceWorker.register('sw.js?v=c132-awning-header-fix'); } catch {}
   }
 }
 
@@ -8617,3 +8617,101 @@ function closeTechnicalSheet() {
   setTimeout(refreshTechnicalSheetButton, 120);
 })();
 
+
+
+/* C132: Awning Print Placement = No disables Print Color */
+(function initAwningPrintPlacementNo() {
+  if (typeof I18N !== 'undefined') {
+    Object.assign(I18N.en, { 'Print Placement No Color Disabled': 'Disabled because print placement is No' });
+    Object.assign(I18N.tr, { 'Print Placement No Color Disabled': 'Yazı seçeneği Hayır olduğu için pasif' });
+    Object.assign(I18N.de, { 'Print Placement No Color Disabled': 'Deaktiviert, weil Druckposition Nein ist' });
+    Object.assign(I18N.fr, { 'Print Placement No Color Disabled': 'Désactivé car le marquage est Non' });
+    Object.assign(I18N.he, { 'Print Placement No Color Disabled': 'מושבת כי מיקום ההדפסה הוא לא' });
+  }
+
+  function getCheckedValue(name) {
+    const checked = document.querySelector(`input[type="radio"][name="${name}"]:checked`);
+    return checked ? checked.value : '';
+  }
+
+  function suffixFromFieldId(fieldId) {
+    const match = String(fieldId || '').match(/(__pos\d+)$/);
+    return match ? match[1] : '';
+  }
+
+  function clearAndDisablePrintColor(input, disabled) {
+    if (!input) return false;
+
+    const label = input.closest('label');
+    const wrap = input.closest('.input-unit-wrap');
+    const relatedButtons = Array.from((wrap || label || document).querySelectorAll('button'));
+
+    let changed = false;
+    if (disabled && input.value) {
+      input.value = '';
+      changed = true;
+    }
+
+    input.disabled = disabled;
+    input.readOnly = disabled;
+    input.classList.toggle('is-disabled-by-print-placement', disabled);
+    if (label) label.classList.toggle('print-color-disabled', disabled);
+
+    relatedButtons.forEach((button) => {
+      button.disabled = disabled;
+      button.setAttribute('aria-disabled', disabled ? 'true' : 'false');
+    });
+
+    if (disabled) {
+      input.placeholder = translatedText('Print Placement No Color Disabled');
+    } else {
+      input.placeholder = input.dataset.placeholderKey ? pickerButtonLabel(input.dataset.placeholderKey === 'Select Fabric' ? 'fabric' : 'textColor') : t('enterValue');
+    }
+
+    return changed;
+  }
+
+  function updateAwningPrintColorState() {
+    let needsPreviewUpdate = false;
+
+    document.querySelectorAll('input[id^="dyn_printColor"]').forEach((input) => {
+      const fieldId = input.dataset.fieldId || input.id.replace(/^dyn_/, '');
+      const suffix = suffixFromFieldId(fieldId);
+      const placement = getCheckedValue(`dyn_printPlacement${suffix}`);
+      const placementGroup = document.querySelector(`input[name="dyn_printPlacement${suffix}"]`)?.closest('.choice-field');
+      const placementVisible = placementGroup ? !placementGroup.hidden : true;
+      const disabled = placementVisible && placement === 'No';
+
+      if (clearAndDisablePrintColor(input, disabled)) {
+        needsPreviewUpdate = true;
+      }
+    });
+
+    if (needsPreviewUpdate) {
+      if (typeof updatePreview === 'function') updatePreview();
+      if (typeof saveOrderDraft === 'function') saveOrderDraft();
+    }
+  }
+
+  document.addEventListener('change', (event) => {
+    const target = event.target;
+    if (!target) return;
+    const name = target.name || '';
+    const id = target.id || '';
+    const fieldId = target.dataset?.fieldId || '';
+    if (
+      name.startsWith('dyn_printPlacement') ||
+      id.startsWith('dyn_printColor') ||
+      fieldId.startsWith('valanceType') ||
+      fieldId.startsWith('printPlacement')
+    ) {
+      setTimeout(updateAwningPrintColorState, 0);
+    }
+  }, true);
+
+  document.addEventListener('click', () => setTimeout(updateAwningPrintColorState, 80), true);
+  window.addEventListener('load', () => setTimeout(updateAwningPrintColorState, 250));
+  setTimeout(updateAwningPrintColorState, 350);
+
+  window.updateAwningPrintColorState = updateAwningPrintColorState;
+})();

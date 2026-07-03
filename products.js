@@ -549,7 +549,7 @@ window.PRODUCT_DATA.janelaForm = {
         { id: 'valanceType', label: 'Valance Type', type: 'select', options: ['Yok', 'Straight', 'Wavy'] },
         { id: 'valanceHeight', label: 'Valance Height', type: 'number', unit: 'mm', showWhen: { field: 'valanceType', values: ['Straight', 'Wavy'] } },
         { id: 'valanceFabric', label: 'Valance Fabric', type: 'text', picker: 'fabric', fullWidth: true, showWhen: { field: 'valanceType', values: ['Straight', 'Wavy'] } },
-        { id: 'printPlacement', label: 'Print Placement', type: 'choice', options: ['Valance', 'Body', 'Valance and Body'], showWhen: { field: 'valanceType', values: ['Straight', 'Wavy'] } },
+        { id: 'printPlacement', label: 'Print Placement', type: 'choice', options: ['No', 'Valance', 'Body', 'Valance and Body'], showWhen: { field: 'valanceType', values: ['Straight', 'Wavy'] } },
         { id: 'printColor', label: 'Print Color', type: 'text', picker: 'textColor', fullWidth: true, showWhen: { field: 'valanceType', values: ['Straight', 'Wavy'] } }
       ]
     },
