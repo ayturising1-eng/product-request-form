@@ -8548,16 +8548,8 @@ function refreshTechnicalSheetButton() {
   wrap.classList.toggle('hidden', !url);
 }
 
-function resolvePageAsset(path) {
-  const cleanPath = String(path || '').replace(/^\/+/, '');
-  const base = window.location.pathname.endsWith('/')
-    ? window.location.href
-    : window.location.href.replace(/[^/]*$/, '');
-  return new URL(cleanPath, base).href;
-}
-
 function openTechnicalSheet() {
-  const url = resolvePageAsset(getCurrentTechnicalSheetUrl());
+  const url = getCurrentTechnicalSheetUrl();
   if (!url) return;
   const modal = document.getElementById('technicalSheetModal');
   const frame = document.getElementById('technicalSheetFrame');

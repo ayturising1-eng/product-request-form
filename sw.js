@@ -1,9 +1,10 @@
-const CACHE = 'product-request-form-c129-technical-sheet-close-fix';
+const CACHE = 'product-request-form-c130-technical-sheet-path-fix';
 const ASSETS = [
   './',
   './index.html',
   './style.css',
   './app.js',
+  './technical-sheet-path-fix.js',
   './assets.js',
   './assets-1.js',
   './assets-2.js',
