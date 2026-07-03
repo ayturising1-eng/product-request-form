@@ -3,7 +3,7 @@
 // Technical Sheet butonlarını ayrı technical-data reposundaki PDF linklerine bağlar.
 
 (function () {
-  const FIX_VERSION = 'c132-awning-header-fix';
+  const FIX_VERSION = 'c133-mobile-header-stable';
   const TECHNICAL_DATA_BASE = 'https://ayturising1-eng.github.io/technical-data/technical-sheets/';
 
   const TECHNICAL_DATA_MAP = {
@@ -198,7 +198,7 @@
     caches.keys()
       .then((keys) => Promise.all(keys
         .filter((key) => key.includes('product-request-form-c129') || key.includes('product-request-form-c130') || key.includes('product-request-form-c131'))
-        .map((key) => key === 'product-request-form-c132-awning-header-fix' ? null : caches.delete(key))
+        .map((key) => key === 'product-request-form-c133-mobile-header-stable' ? null : caches.delete(key))
         .filter(Boolean)))
       .catch(() => {});
   }

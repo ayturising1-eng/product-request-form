@@ -1900,3 +1900,20 @@ input:focus, textarea:focus, select:focus {
 html[lang="tr"] .print-color-disabled .field-label-text::after {
   content: ' — pasif';
 }
+
+
+/* C133: mobile header must not stick under the fixed quick navigation */
+@media (max-width: 860px) {
+  .app-header {
+    position: relative !important;
+    top: auto !important;
+    z-index: 60 !important;
+  }
+  .form-quick-nav,
+  .mobile-quick-nav {
+    z-index: 9999 !important;
+  }
+  body.has-form-quick-nav {
+    padding-top: calc(48px + env(safe-area-inset-top, 0px));
+  }
+}
