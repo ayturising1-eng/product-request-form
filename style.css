@@ -1902,18 +1902,64 @@ html[lang="tr"] .print-color-disabled .field-label-text::after {
 }
 
 
-/* C133: mobile header must not stick under the fixed quick navigation */
+/* C134: keep Product Request Form header locked below the fixed quick menu on mobile */
+:root {
+  --form-quick-nav-height: 0px;
+}
+
 @media (max-width: 860px) {
-  .app-header {
-    position: relative !important;
-    top: auto !important;
-    z-index: 60 !important;
-  }
   .form-quick-nav,
   .mobile-quick-nav {
-    z-index: 9999 !important;
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    z-index: 10000 !important;
   }
+
   body.has-form-quick-nav {
-    padding-top: calc(48px + env(safe-area-inset-top, 0px));
+    padding-top: var(--form-quick-nav-height) !important;
+  }
+
+  body.has-form-quick-nav .app-header {
+    position: sticky !important;
+    top: var(--form-quick-nav-height) !important;
+    z-index: 9990 !important;
+    transform: translateZ(0);
+  }
+
+  body.has-form-quick-nav .brand-headline {
+    width: 100%;
+    flex-wrap: nowrap !important;
+    overflow: hidden;
+  }
+
+  body.has-form-quick-nav .app-header h1 {
+    white-space: nowrap !important;
+    flex: 0 0 auto;
+    min-width: max-content;
+  }
+
+  body.has-form-quick-nav .language-tabs {
+    flex: 1 1 auto;
+    min-width: 0;
+    max-width: 100%;
+    overflow-x: auto;
+    overflow-y: hidden;
+    flex-wrap: nowrap !important;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+
+  body.has-form-quick-nav .language-tabs::-webkit-scrollbar {
+    display: none;
+  }
+
+  section,
+  .dynamic-section,
+  #pdfPreview,
+  .form-quick-nav-target {
+    scroll-margin-top: calc(var(--form-quick-nav-height) + 150px) !important;
   }
 }
+

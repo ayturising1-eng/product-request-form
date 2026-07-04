@@ -7121,7 +7121,7 @@ $('#installBtn').addEventListener('click', async () => {
 
 async function initPwa() {
   if ('serviceWorker' in navigator && location.protocol.startsWith('http')) {
-    try { await navigator.serviceWorker.register('sw.js?v=c133-mobile-header-stable'); } catch {}
+    try { await navigator.serviceWorker.register('sw.js?v=c134-header-fixed-under-nav'); } catch {}
   }
 }
 
@@ -8715,3 +8715,39 @@ function closeTechnicalSheet() {
 
   window.updateAwningPrintColorState = updateAwningPrintColorState;
 })();
+
+
+// C134: measure fixed quick navigation height so the main header never slides under it
+(function setupStableMobileHeaderUnderQuickNav() {
+  const nav = document.getElementById('formQuickNav') || document.querySelector('.mobile-quick-nav');
+  if (!nav) return;
+
+  function isNavVisible() {
+    if (!nav || nav.classList.contains('hidden')) return false;
+    const style = window.getComputedStyle(nav);
+    if (style.display === 'none' || style.visibility === 'hidden') return false;
+    const rect = nav.getBoundingClientRect();
+    return rect.height > 0;
+  }
+
+  function updateHeaderOffset() {
+    const visible = isNavVisible();
+    const height = visible ? Math.ceil(nav.getBoundingClientRect().height) : 0;
+    document.documentElement.style.setProperty('--form-quick-nav-height', `${height}px`);
+  }
+
+  window.addEventListener('load', () => setTimeout(updateHeaderOffset, 50));
+  window.addEventListener('resize', () => setTimeout(updateHeaderOffset, 50));
+  window.addEventListener('orientationchange', () => setTimeout(updateHeaderOffset, 250));
+  document.addEventListener('click', () => setTimeout(updateHeaderOffset, 120), true);
+  document.addEventListener('change', () => setTimeout(updateHeaderOffset, 120), true);
+
+  try {
+    new MutationObserver(() => setTimeout(updateHeaderOffset, 30))
+      .observe(nav, { attributes: true, childList: true, subtree: true });
+  } catch {}
+
+  setTimeout(updateHeaderOffset, 100);
+  setTimeout(updateHeaderOffset, 500);
+})();
+
