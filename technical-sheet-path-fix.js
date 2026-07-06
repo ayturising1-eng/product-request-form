@@ -3,7 +3,7 @@
 // Technical Sheet butonlarını ayrı technical-data reposundaki PDF linklerine bağlar.
 
 (function () {
-  const FIX_VERSION = 'c134-header-fixed-under-nav';
+  const FIX_VERSION = 'c135-header-modal-fix';
   const TECHNICAL_DATA_BASE = 'https://ayturising1-eng.github.io/technical-data/technical-sheets/';
 
   const TECHNICAL_DATA_MAP = {
@@ -155,6 +155,7 @@
 
     frame.src = url;
     modal.classList.remove('hidden');
+    document.body.classList.add('technical-sheet-open');
     document.body.style.overflow = 'hidden';
   }
 
@@ -171,6 +172,7 @@
     }
 
     if (modal) modal.classList.add('hidden');
+    document.body.classList.remove('technical-sheet-open');
 
     const frame = document.getElementById('technicalSheetFrame');
     if (frame) frame.src = 'about:blank';
@@ -197,8 +199,8 @@
   if ('caches' in window) {
     caches.keys()
       .then((keys) => Promise.all(keys
-        .filter((key) => key.includes('product-request-form-c129') || key.includes('product-request-form-c130') || key.includes('product-request-form-c131') || key.includes('product-request-form-c132') || key.includes('product-request-form-c133') || key.includes('product-request-form-c134'))
-        .map((key) => key === 'product-request-form-c134-header-fixed-under-nav' ? null : caches.delete(key))
+        .filter((key) => key.includes('product-request-form-c129') || key.includes('product-request-form-c130') || key.includes('product-request-form-c131') || key.includes('product-request-form-c132') || key.includes('product-request-form-c133') || key.includes('product-request-form-c134') || key.includes('product-request-form-c135'))
+        .map((key) => key === 'product-request-form-c135-header-modal-fix' ? null : caches.delete(key))
         .filter(Boolean)))
       .catch(() => {});
   }
@@ -209,6 +211,25 @@
       navigator.serviceWorker.register(`sw.js?v=${FIX_VERSION}`).catch(() => {});
     });
   }
+
+
+  // C135 modal state sync: hide shortcut buttons while the Technical Sheet modal is open.
+  function syncTechnicalSheetOpenClass() {
+    const modal = document.getElementById('technicalSheetModal');
+    const isOpen = !!(modal && !modal.classList.contains('hidden'));
+    document.body.classList.toggle('technical-sheet-open', isOpen);
+  }
+
+  try {
+    const modal = document.getElementById('technicalSheetModal');
+    if (modal) {
+      new MutationObserver(syncTechnicalSheetOpenClass)
+        .observe(modal, { attributes: true, attributeFilter: ['class'] });
+    }
+  } catch {}
+
+  window.addEventListener('load', syncTechnicalSheetOpenClass);
+  setTimeout(syncTechnicalSheetOpenClass, 300);
 
   window.getCurrentTechnicalDataUrl = getCurrentTechnicalDataUrl;
   window.refreshTechnicalSheetButtonFixed = refreshTechnicalSheetButtonFixed;

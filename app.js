@@ -7121,7 +7121,7 @@ $('#installBtn').addEventListener('click', async () => {
 
 async function initPwa() {
   if ('serviceWorker' in navigator && location.protocol.startsWith('http')) {
-    try { await navigator.serviceWorker.register('sw.js?v=c134-header-fixed-under-nav'); } catch {}
+    try { await navigator.serviceWorker.register('sw.js?v=c135-header-modal-fix'); } catch {}
   }
 }
 
@@ -8717,37 +8717,66 @@ function closeTechnicalSheet() {
 })();
 
 
-// C134: measure fixed quick navigation height so the main header never slides under it
-(function setupStableMobileHeaderUnderQuickNav() {
+// C135: keep top bars measured and keep Technical Sheet modal above shortcut buttons
+(function setupStableTopBarsAndTechnicalSheetModal() {
   const nav = document.getElementById('formQuickNav') || document.querySelector('.mobile-quick-nav');
-  if (!nav) return;
+  const header = document.querySelector('.app-header');
+  const modal = document.getElementById('technicalSheetModal');
 
-  function isNavVisible() {
-    if (!nav || nav.classList.contains('hidden')) return false;
+  function modalIsOpen() {
+    return !!(modal && !modal.classList.contains('hidden'));
+  }
+
+  function navIsVisible() {
+    if (!nav || nav.classList.contains('hidden') || modalIsOpen()) return false;
     const style = window.getComputedStyle(nav);
     if (style.display === 'none' || style.visibility === 'hidden') return false;
     const rect = nav.getBoundingClientRect();
-    return rect.height > 0;
+    return rect.width > 0 && rect.height > 0;
   }
 
-  function updateHeaderOffset() {
-    const visible = isNavVisible();
-    const height = visible ? Math.ceil(nav.getBoundingClientRect().height) : 0;
-    document.documentElement.style.setProperty('--form-quick-nav-height', `${height}px`);
+  function updateTopBarLayout() {
+    const navVisible = navIsVisible();
+    document.body.classList.toggle('technical-sheet-open', modalIsOpen());
+
+    const navHeight = navVisible && nav ? Math.ceil(nav.getBoundingClientRect().height) : 0;
+    const headerHeight = navVisible && header ? Math.ceil(header.getBoundingClientRect().height) : 0;
+    const totalHeight = navVisible ? navHeight + headerHeight : 0;
+
+    document.documentElement.style.setProperty('--form-quick-nav-height', `${navHeight}px`);
+    document.documentElement.style.setProperty('--app-header-height', `${headerHeight}px`);
+    document.documentElement.style.setProperty('--fixed-top-stack-height', `${totalHeight}px`);
   }
 
-  window.addEventListener('load', () => setTimeout(updateHeaderOffset, 50));
-  window.addEventListener('resize', () => setTimeout(updateHeaderOffset, 50));
-  window.addEventListener('orientationchange', () => setTimeout(updateHeaderOffset, 250));
-  document.addEventListener('click', () => setTimeout(updateHeaderOffset, 120), true);
-  document.addEventListener('change', () => setTimeout(updateHeaderOffset, 120), true);
+  const delayedUpdate = (delay = 60) => setTimeout(updateTopBarLayout, delay);
+
+  window.addEventListener('load', () => {
+    delayedUpdate(50);
+    delayedUpdate(300);
+    delayedUpdate(800);
+  });
+  window.addEventListener('resize', () => delayedUpdate(80));
+  window.addEventListener('orientationchange', () => delayedUpdate(300));
+  document.addEventListener('click', () => delayedUpdate(120), true);
+  document.addEventListener('change', () => delayedUpdate(120), true);
+  document.addEventListener('scroll', () => delayedUpdate(40), true);
 
   try {
-    new MutationObserver(() => setTimeout(updateHeaderOffset, 30))
-      .observe(nav, { attributes: true, childList: true, subtree: true });
+    if (nav) {
+      new MutationObserver(() => delayedUpdate(30))
+        .observe(nav, { attributes: true, childList: true, subtree: true });
+    }
   } catch {}
 
-  setTimeout(updateHeaderOffset, 100);
-  setTimeout(updateHeaderOffset, 500);
+  try {
+    if (modal) {
+      new MutationObserver(() => delayedUpdate(20))
+        .observe(modal, { attributes: true, childList: true, subtree: true });
+    }
+  } catch {}
+
+  updateTopBarLayout();
+  delayedUpdate(100);
+  delayedUpdate(500);
 })();
 
