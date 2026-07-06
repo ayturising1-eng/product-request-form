@@ -2089,3 +2089,96 @@ section,
   }
 }
 
+
+/* C136: shortcut buttons and language buttons wrap to 2-3 rows instead of horizontal clipping */
+body.has-form-quick-nav .form-quick-nav,
+body.has-form-quick-nav .mobile-quick-nav,
+body.has-form-quick-nav #formQuickNav {
+  flex-wrap: wrap !important;
+  align-content: flex-start !important;
+  justify-content: flex-start !important;
+  overflow-x: visible !important;
+  overflow-y: visible !important;
+  white-space: normal !important;
+  row-gap: 8px !important;
+  column-gap: 8px !important;
+  height: auto !important;
+  max-height: none !important;
+}
+
+body.has-form-quick-nav .form-quick-nav a,
+body.has-form-quick-nav .form-quick-nav button,
+body.has-form-quick-nav .mobile-quick-nav a,
+body.has-form-quick-nav .mobile-quick-nav button,
+body.has-form-quick-nav #formQuickNav a,
+body.has-form-quick-nav #formQuickNav button {
+  flex: 0 0 auto !important;
+  white-space: nowrap !important;
+}
+
+/* Product Request Form blue header keeps its current usable height, language buttons wrap inside it */
+body.has-form-quick-nav .app-header {
+  min-height: 170px !important;
+  height: auto !important;
+  align-items: flex-start !important;
+  overflow: visible !important;
+}
+
+body.has-form-quick-nav .brand-headline {
+  display: flex !important;
+  flex-wrap: wrap !important;
+  align-items: flex-start !important;
+  gap: 10px 12px !important;
+  overflow: visible !important;
+}
+
+body.has-form-quick-nav .app-header h1 {
+  flex: 0 0 auto !important;
+  white-space: nowrap !important;
+  min-width: 0 !important;
+  max-width: 100% !important;
+}
+
+body.has-form-quick-nav .language-tabs {
+  display: flex !important;
+  flex: 1 1 260px !important;
+  flex-wrap: wrap !important;
+  align-items: center !important;
+  justify-content: flex-start !important;
+  gap: 8px !important;
+  overflow: visible !important;
+  white-space: normal !important;
+  min-width: 0 !important;
+  max-width: 100% !important;
+  height: auto !important;
+  max-height: none !important;
+}
+
+body.has-form-quick-nav .language-tabs button {
+  flex: 0 0 auto !important;
+  white-space: nowrap !important;
+}
+
+@media (max-width: 520px) {
+  body.has-form-quick-nav .app-header {
+    min-height: 185px !important;
+  }
+
+  body.has-form-quick-nav .language-tabs {
+    flex: 0 0 100% !important;
+  }
+}
+
+@media (max-width: 390px) {
+  body.has-form-quick-nav .app-header {
+    min-height: 200px !important;
+  }
+
+  body.has-form-quick-nav .form-quick-nav,
+  body.has-form-quick-nav .mobile-quick-nav,
+  body.has-form-quick-nav #formQuickNav {
+    row-gap: 7px !important;
+    column-gap: 6px !important;
+  }
+}
+
