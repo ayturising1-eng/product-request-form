@@ -1,4 +1,4 @@
-const CACHE = 'product-request-form-c136-wrap-header-buttons';
+const CACHE = 'product-request-form-c137-compact-header-new-request';
 const ASSETS = [
   './',
   './index.html',

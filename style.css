@@ -2182,3 +2182,132 @@ body.has-form-quick-nav .language-tabs button {
   }
 }
 
+
+/* C137: compact blue header - remove subtitle and place New Request next to title */
+.app-header .mobile-subtitle {
+  display: none !important;
+}
+
+.app-header {
+  min-height: 0 !important;
+  height: auto !important;
+  align-items: flex-start !important;
+  overflow: visible !important;
+}
+
+.app-header .brand-block {
+  width: 100% !important;
+  min-width: 0 !important;
+}
+
+.app-header .brand-headline {
+  display: flex !important;
+  align-items: center !important;
+  align-content: flex-start !important;
+  gap: 10px 12px !important;
+  flex-wrap: wrap !important;
+  width: 100% !important;
+  overflow: visible !important;
+}
+
+.app-header h1 {
+  margin: 0 !important;
+  white-space: nowrap !important;
+  flex: 0 0 auto !important;
+}
+
+.app-header .header-actions {
+  display: flex !important;
+  align-items: center !important;
+  gap: 8px !important;
+  margin: 0 !important;
+  flex: 0 0 auto !important;
+  order: 2 !important;
+}
+
+.app-header #resetOrderTopBtn {
+  margin: 0 !important;
+  white-space: nowrap !important;
+}
+
+.app-header .language-tabs {
+  order: 3 !important;
+  display: flex !important;
+  flex-wrap: wrap !important;
+  align-items: center !important;
+  justify-content: flex-start !important;
+  gap: 8px !important;
+  min-width: 0 !important;
+  overflow: visible !important;
+  white-space: normal !important;
+}
+
+body.has-form-quick-nav .app-header {
+  min-height: 0 !important;
+  height: auto !important;
+  padding-top: 14px !important;
+  padding-bottom: 14px !important;
+  overflow: visible !important;
+}
+
+body.has-form-quick-nav .brand-headline {
+  display: flex !important;
+  flex-wrap: wrap !important;
+  align-items: center !important;
+  align-content: flex-start !important;
+  gap: 10px 12px !important;
+}
+
+body.has-form-quick-nav .app-header h1 {
+  order: 1 !important;
+  max-width: calc(100% - 130px) !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+}
+
+body.has-form-quick-nav .header-actions {
+  order: 2 !important;
+  flex: 0 0 auto !important;
+}
+
+body.has-form-quick-nav .language-tabs {
+  order: 3 !important;
+  flex: 0 0 100% !important;
+  width: 100% !important;
+}
+
+@media (max-width: 430px) {
+  .app-header h1,
+  body.has-form-quick-nav .app-header h1 {
+    font-size: 22px !important;
+    max-width: calc(100% - 122px) !important;
+  }
+
+  .app-header #resetOrderTopBtn {
+    padding: 10px 13px !important;
+    font-size: 13px !important;
+  }
+
+  body.has-form-quick-nav .app-header {
+    padding: 12px 14px !important;
+  }
+}
+
+@media (max-width: 360px) {
+  .app-header h1,
+  body.has-form-quick-nav .app-header h1 {
+    flex: 0 0 100% !important;
+    max-width: 100% !important;
+  }
+
+  .app-header .header-actions,
+  body.has-form-quick-nav .header-actions {
+    order: 2 !important;
+  }
+
+  .app-header .language-tabs,
+  body.has-form-quick-nav .language-tabs {
+    order: 3 !important;
+  }
+}
+
