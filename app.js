@@ -7121,7 +7121,7 @@ $('#installBtn').addEventListener('click', async () => {
 
 async function initPwa() {
   if ('serviceWorker' in navigator && location.protocol.startsWith('http')) {
-    try { await navigator.serviceWorker.register('sw.js?v=c137-compact-header-new-request'); } catch {}
+    try { await navigator.serviceWorker.register('sw.js?v=c138-title-new-request-same-row'); } catch {}
   }
 }
 

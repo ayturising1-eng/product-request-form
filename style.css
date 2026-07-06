@@ -2311,3 +2311,117 @@ body.has-form-quick-nav .language-tabs {
   }
 }
 
+
+/* C138: Product Request Form title and New Request button always stay on the same row */
+.app-header .brand-headline,
+body.has-form-quick-nav .brand-headline {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: stretch !important;
+  gap: 8px !important;
+  width: 100% !important;
+  overflow: visible !important;
+}
+
+.app-header .title-action-row,
+body.has-form-quick-nav .title-action-row {
+  display: flex !important;
+  flex-direction: row !important;
+  flex-wrap: nowrap !important;
+  align-items: center !important;
+  justify-content: flex-start !important;
+  gap: 8px !important;
+  width: 100% !important;
+  min-width: 0 !important;
+  overflow: visible !important;
+}
+
+.app-header .title-action-row h1,
+body.has-form-quick-nav .title-action-row h1 {
+  flex: 1 1 auto !important;
+  min-width: 0 !important;
+  max-width: none !important;
+  margin: 0 !important;
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: clip !important;
+  font-size: clamp(21px, 5.2vw, 30px) !important;
+  line-height: 1.1 !important;
+  order: 0 !important;
+}
+
+.app-header .title-action-row .header-actions,
+body.has-form-quick-nav .title-action-row .header-actions {
+  display: flex !important;
+  flex: 0 0 auto !important;
+  order: 0 !important;
+  margin: 0 !important;
+  gap: 0 !important;
+  align-items: center !important;
+  justify-content: flex-end !important;
+}
+
+.app-header .title-action-row #resetOrderTopBtn,
+body.has-form-quick-nav .title-action-row #resetOrderTopBtn {
+  flex: 0 0 auto !important;
+  white-space: nowrap !important;
+  margin: 0 !important;
+  padding: clamp(8px, 2.2vw, 12px) clamp(10px, 3vw, 16px) !important;
+  font-size: clamp(11px, 3.2vw, 14px) !important;
+  line-height: 1.15 !important;
+  border-radius: 14px !important;
+}
+
+.app-header .language-tabs,
+body.has-form-quick-nav .language-tabs {
+  width: 100% !important;
+  flex: 0 0 auto !important;
+  order: 0 !important;
+  display: flex !important;
+  flex-wrap: wrap !important;
+  align-items: center !important;
+  justify-content: flex-start !important;
+  gap: 7px !important;
+  overflow: visible !important;
+  white-space: normal !important;
+}
+
+body.has-form-quick-nav .app-header {
+  min-height: 0 !important;
+  height: auto !important;
+  padding-top: 12px !important;
+  padding-bottom: 12px !important;
+}
+
+@media (max-width: 390px) {
+  .app-header .title-action-row,
+  body.has-form-quick-nav .title-action-row {
+    gap: 6px !important;
+  }
+
+  .app-header .title-action-row h1,
+  body.has-form-quick-nav .title-action-row h1 {
+    font-size: clamp(19px, 5vw, 24px) !important;
+  }
+
+  .app-header .title-action-row #resetOrderTopBtn,
+  body.has-form-quick-nav .title-action-row #resetOrderTopBtn {
+    padding: 8px 10px !important;
+    font-size: 11px !important;
+    border-radius: 12px !important;
+  }
+}
+
+@media (max-width: 340px) {
+  .app-header .title-action-row h1,
+  body.has-form-quick-nav .title-action-row h1 {
+    font-size: 17px !important;
+  }
+
+  .app-header .title-action-row #resetOrderTopBtn,
+  body.has-form-quick-nav .title-action-row #resetOrderTopBtn {
+    padding: 7px 8px !important;
+    font-size: 10px !important;
+  }
+}
+
