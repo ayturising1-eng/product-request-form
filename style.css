@@ -2425,3 +2425,93 @@ body.has-form-quick-nav .app-header {
   }
 }
 
+
+/* C139: prevent New Request from overlapping/hiding Product Request Form on very narrow widths */
+.app-header .title-action-row,
+body.has-form-quick-nav .title-action-row {
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr) auto !important;
+  align-items: center !important;
+  column-gap: clamp(4px, 2vw, 10px) !important;
+  width: 100% !important;
+  min-width: 0 !important;
+  overflow: hidden !important;
+}
+
+.app-header .title-action-row h1,
+body.has-form-quick-nav .title-action-row h1 {
+  grid-column: 1 !important;
+  min-width: 0 !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  white-space: nowrap !important;
+  font-size: clamp(18px, 4.9vw, 30px) !important;
+  line-height: 1.08 !important;
+}
+
+.app-header .title-action-row .header-actions,
+body.has-form-quick-nav .title-action-row .header-actions {
+  grid-column: 2 !important;
+  min-width: 0 !important;
+  max-width: 40vw !important;
+  overflow: visible !important;
+}
+
+.app-header .title-action-row #resetOrderTopBtn,
+body.has-form-quick-nav .title-action-row #resetOrderTopBtn {
+  min-width: 0 !important;
+  max-width: 40vw !important;
+  width: auto !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  white-space: nowrap !important;
+  padding: clamp(7px, 2vw, 12px) clamp(8px, 2.6vw, 15px) !important;
+  font-size: clamp(10px, 2.9vw, 14px) !important;
+  line-height: 1.1 !important;
+}
+
+/* Extra narrow test widths: keep both title and button visible instead of letting one cover the other */
+@media (max-width: 360px) {
+  .app-header .title-action-row,
+  body.has-form-quick-nav .title-action-row {
+    grid-template-columns: minmax(0, 1fr) max-content !important;
+    column-gap: 5px !important;
+  }
+
+  .app-header .title-action-row h1,
+  body.has-form-quick-nav .title-action-row h1 {
+    font-size: clamp(15px, 4.7vw, 19px) !important;
+  }
+
+  .app-header .title-action-row #resetOrderTopBtn,
+  body.has-form-quick-nav .title-action-row #resetOrderTopBtn {
+    max-width: 36vw !important;
+    padding: 7px 8px !important;
+    font-size: 10px !important;
+    border-radius: 11px !important;
+  }
+}
+
+/* Ultra narrow desktop simulation: shorten button text visually so the title never disappears */
+@media (max-width: 300px) {
+  .app-header .title-action-row #resetOrderTopBtn,
+  body.has-form-quick-nav .title-action-row #resetOrderTopBtn {
+    font-size: 0 !important;
+    padding: 7px 9px !important;
+  }
+
+  .app-header .title-action-row #resetOrderTopBtn::after,
+  body.has-form-quick-nav .title-action-row #resetOrderTopBtn::after {
+    content: "New";
+    font-size: 10px !important;
+    line-height: 1.1 !important;
+  }
+
+  .app-header .title-action-row h1,
+  body.has-form-quick-nav .title-action-row h1 {
+    font-size: 14px !important;
+  }
+}
+
