@@ -1,4 +1,4 @@
-const CACHE = 'product-request-form-c141-title-button-one-row';
+const CACHE = 'product-request-form-c143-hide-header-on-catalogs';
 const ASSETS = [
   './',
   './index.html',

@@ -2716,3 +2716,127 @@ body.has-form-quick-nav .title-action-row h1 {
   }
 }
 
+
+/* C142: title and New Request shrink/grow together with proportional row heights */
+@media (max-width: 520px) {
+  .app-header .title-action-row,
+  body.has-form-quick-nav .title-action-row {
+    --title-row-scale: clamp(10px, 2.9vw, 14px);
+    display: grid !important;
+    grid-template-columns: minmax(0, 1fr) auto !important;
+    grid-template-rows: auto !important;
+    align-items: center !important;
+    column-gap: 0.45em !important;
+    row-gap: 0 !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    overflow: hidden !important;
+    font-size: var(--title-row-scale) !important;
+    line-height: 1 !important;
+  }
+
+  .app-header .title-action-row h1,
+  body.has-form-quick-nav .title-action-row h1 {
+    grid-column: 1 !important;
+    grid-row: 1 !important;
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    max-width: 100% !important;
+    overflow: hidden !important;
+    text-overflow: clip !important;
+    white-space: nowrap !important;
+    color: #fff !important;
+    font-size: 1.72em !important;
+    line-height: 1.08 !important;
+    margin: 0 !important;
+  }
+
+  .app-header .title-action-row .header-actions,
+  body.has-form-quick-nav .title-action-row .header-actions {
+    grid-column: 2 !important;
+    grid-row: 1 !important;
+    display: flex !important;
+    justify-content: flex-end !important;
+    align-items: center !important;
+    width: auto !important;
+    min-width: 0 !important;
+    max-width: 35vw !important;
+    overflow: visible !important;
+    margin: 0 !important;
+  }
+
+  .app-header .title-action-row #resetOrderTopBtn,
+  body.has-form-quick-nav .title-action-row #resetOrderTopBtn {
+    width: auto !important;
+    min-width: 0 !important;
+    max-width: 35vw !important;
+    overflow: hidden !important;
+    text-overflow: clip !important;
+    white-space: nowrap !important;
+    padding: 0.68em 0.82em !important;
+    font-size: 0.86em !important;
+    line-height: 1.08 !important;
+    border-radius: 0.92em !important;
+    margin: 0 !important;
+  }
+}
+
+@media (max-width: 360px) {
+  .app-header .title-action-row,
+  body.has-form-quick-nav .title-action-row {
+    --title-row-scale: clamp(9px, 2.8vw, 11.5px);
+    column-gap: 0.36em !important;
+  }
+
+  .app-header .title-action-row .header-actions,
+  body.has-form-quick-nav .title-action-row .header-actions,
+  .app-header .title-action-row #resetOrderTopBtn,
+  body.has-form-quick-nav .title-action-row #resetOrderTopBtn {
+    max-width: 33vw !important;
+  }
+}
+
+@media (max-width: 300px) {
+  .app-header .title-action-row,
+  body.has-form-quick-nav .title-action-row {
+    --title-row-scale: 8px;
+  }
+
+  .app-header .title-action-row .header-actions,
+  body.has-form-quick-nav .title-action-row .header-actions,
+  .app-header .title-action-row #resetOrderTopBtn,
+  body.has-form-quick-nav .title-action-row #resetOrderTopBtn {
+    max-width: 32vw !important;
+  }
+}
+
+
+/* C143: when color/fabric catalogs or technical sheet are open, hide Product Request Form header and shortcut buttons */
+body.modal-open .app-header,
+body.modal-open .form-quick-nav,
+body.modal-open .mobile-quick-nav,
+body.modal-open #formQuickNav,
+body.technical-sheet-open .app-header,
+body.technical-sheet-open .form-quick-nav,
+body.technical-sheet-open .mobile-quick-nav,
+body.technical-sheet-open #formQuickNav {
+  display: none !important;
+  pointer-events: none !important;
+}
+
+body.modal-open,
+body.technical-sheet-open {
+  padding-top: 0 !important;
+}
+
+.color-chart-modal {
+  z-index: 40000 !important;
+}
+
+.technical-sheet-modal {
+  z-index: 40000 !important;
+}
+
