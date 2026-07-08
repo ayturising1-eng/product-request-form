@@ -2991,3 +2991,225 @@ body.force-desktop-view.technical-sheet-open #formQuickNav {
   display: none !important;
 }
 
+
+/* C145: view mode as two separate fixed tabs above Product Request Form title */
+#viewModeToggleBtn {
+  display: none !important;
+}
+
+.app-header .brand-headline,
+body.has-form-quick-nav .brand-headline {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: stretch !important;
+  gap: 8px !important;
+  width: 100% !important;
+}
+
+.view-mode-tabs {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: flex-start !important;
+  gap: 6px !important;
+  width: 100% !important;
+  flex-wrap: wrap !important;
+  order: 0 !important;
+}
+
+.view-mode-tab {
+  min-height: 30px !important;
+  padding: 7px 10px !important;
+  border: 1px solid rgba(255,255,255,.26) !important;
+  border-radius: 999px !important;
+  background: rgba(255,255,255,.08) !important;
+  color: #fff !important;
+  font-size: 11px !important;
+  line-height: 1 !important;
+  font-weight: 900 !important;
+  white-space: nowrap !important;
+}
+
+.view-mode-tab.active {
+  background: #fff !important;
+  color: #111827 !important;
+  border-color: #fff !important;
+}
+
+.app-header .title-action-row,
+body.has-form-quick-nav .title-action-row {
+  order: 1 !important;
+}
+
+.app-header .language-tabs,
+body.has-form-quick-nav .language-tabs {
+  order: 2 !important;
+}
+
+/* Keep Product Request Form + New Request in a safe row below the mode tabs */
+.app-header .title-action-row,
+body.has-form-quick-nav .title-action-row {
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr) auto !important;
+  align-items: center !important;
+  column-gap: 8px !important;
+  width: 100% !important;
+  min-width: 0 !important;
+  overflow: hidden !important;
+}
+
+.app-header .title-action-row h1,
+body.has-form-quick-nav .title-action-row h1 {
+  grid-column: 1 !important;
+  min-width: 0 !important;
+  max-width: 100% !important;
+  overflow: hidden !important;
+  white-space: nowrap !important;
+  font-size: clamp(19px, 5vw, 28px) !important;
+  line-height: 1.08 !important;
+}
+
+.app-header .title-action-row .header-actions,
+body.has-form-quick-nav .title-action-row .header-actions {
+  grid-column: 2 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: flex-end !important;
+  gap: 5px !important;
+  min-width: 0 !important;
+  max-width: 34vw !important;
+}
+
+.app-header .title-action-row #resetOrderTopBtn,
+body.has-form-quick-nav .title-action-row #resetOrderTopBtn {
+  min-width: 0 !important;
+  max-width: 34vw !important;
+  width: auto !important;
+  overflow: hidden !important;
+  white-space: nowrap !important;
+  padding: clamp(7px, 1.8vw, 10px) clamp(8px, 2.2vw, 13px) !important;
+  font-size: clamp(10px, 2.8vw, 13px) !important;
+  line-height: 1.05 !important;
+  border-radius: 12px !important;
+}
+
+@media (max-width: 390px) {
+  .view-mode-tab {
+    padding: 7px 9px !important;
+    font-size: 10px !important;
+  }
+
+  .app-header .title-action-row,
+  body.has-form-quick-nav .title-action-row {
+    column-gap: 5px !important;
+  }
+
+  .app-header .title-action-row h1,
+  body.has-form-quick-nav .title-action-row h1 {
+    font-size: clamp(16px, 4.8vw, 21px) !important;
+  }
+
+  .app-header .title-action-row .header-actions,
+  body.has-form-quick-nav .title-action-row .header-actions,
+  .app-header .title-action-row #resetOrderTopBtn,
+  body.has-form-quick-nav .title-action-row #resetOrderTopBtn {
+    max-width: 31vw !important;
+  }
+
+  .app-header .title-action-row #resetOrderTopBtn,
+  body.has-form-quick-nav .title-action-row #resetOrderTopBtn {
+    padding: 7px 7px !important;
+    font-size: 9px !important;
+  }
+}
+
+/* Forced desktop view: make phone/tablet behave like a desktop canvas */
+html.force-desktop-view,
+body.force-desktop-view {
+  min-width: 1180px !important;
+  overflow-x: auto !important;
+}
+
+body.force-desktop-view .app-shell {
+  width: 1100px !important;
+  min-width: 1100px !important;
+  max-width: none !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
+}
+
+body.force-desktop-view .app-header {
+  min-width: 1180px !important;
+}
+
+body.force-desktop-view .form-quick-nav,
+body.force-desktop-view .mobile-quick-nav,
+body.force-desktop-view #formQuickNav {
+  min-width: 1180px !important;
+  flex-wrap: nowrap !important;
+  overflow-x: visible !important;
+  justify-content: center !important;
+}
+
+body.force-desktop-view .view-mode-tabs {
+  flex-wrap: nowrap !important;
+}
+
+body.force-desktop-view .title-action-row {
+  display: flex !important;
+  flex-wrap: nowrap !important;
+  align-items: center !important;
+  justify-content: flex-start !important;
+  gap: 12px !important;
+  overflow: visible !important;
+}
+
+body.force-desktop-view .title-action-row h1 {
+  flex: 0 0 auto !important;
+  font-size: 26px !important;
+  overflow: visible !important;
+}
+
+body.force-desktop-view .title-action-row .header-actions {
+  flex: 0 0 auto !important;
+  max-width: none !important;
+}
+
+body.force-desktop-view .title-action-row #resetOrderTopBtn {
+  max-width: none !important;
+  font-size: 13px !important;
+  padding: 10px 14px !important;
+  border-radius: 14px !important;
+}
+
+body.force-desktop-view .language-tabs {
+  flex-wrap: wrap !important;
+  overflow: visible !important;
+}
+
+/* Desktop-like field layout */
+body.force-desktop-view .grid.two {
+  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+}
+
+body.force-desktop-view .grid.three {
+  grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+}
+
+body.force-desktop-view #formArea .grid,
+body.force-desktop-view .dynamic-grid,
+body.force-desktop-view .form-grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+}
+
+/* Catalog / PDF modal opens alone */
+body.force-desktop-view.modal-open .app-header,
+body.force-desktop-view.modal-open .form-quick-nav,
+body.force-desktop-view.modal-open .mobile-quick-nav,
+body.force-desktop-view.modal-open #formQuickNav,
+body.force-desktop-view.technical-sheet-open .app-header,
+body.force-desktop-view.technical-sheet-open .form-quick-nav,
+body.force-desktop-view.technical-sheet-open .mobile-quick-nav,
+body.force-desktop-view.technical-sheet-open #formQuickNav {
+  display: none !important;
+}
+

@@ -7121,7 +7121,7 @@ $('#installBtn').addEventListener('click', async () => {
 
 async function initPwa() {
   if ('serviceWorker' in navigator && location.protocol.startsWith('http')) {
-    try { await navigator.serviceWorker.register('sw.js?v=c144-view-mode-toggle'); } catch {}
+    try { await navigator.serviceWorker.register('sw.js?v=c145-view-mode-tabs-fixed'); } catch {}
   }
 }
 
@@ -8780,51 +8780,69 @@ function closeTechnicalSheet() {
   delayedUpdate(500);
 })();
 
-// C144: user selectable view mode - Mobile View / Desktop View
-(function setupUserSelectableViewMode() {
-  const STORAGE_KEY = 'prf_view_mode_v1';
-  function getLang() {
-    return (window.currentLang || document.documentElement.lang || 'en').toLowerCase();
-  }
-  function labelFor(mode) {
-    const lang = getLang();
-    const desktopLabel = lang === 'tr' ? 'Masaüstü Görünüm' : 'Desktop View';
-    const mobileLabel = lang === 'tr' ? 'Mobil Görünüm' : 'Mobile View';
-    return mode === 'desktop' ? mobileLabel : desktopLabel;
-  }
+
+// C145: view mode tabs - separate Mobile View and Desktop View buttons
+(function setupViewModeTabs() {
+  const STORAGE_KEY = 'prf_view_mode_v2';
+
   function applyViewMode(mode) {
     const desktop = mode === 'desktop';
     document.documentElement.classList.toggle('force-desktop-view', desktop);
     document.body.classList.toggle('force-desktop-view', desktop);
-    const btn = document.getElementById('viewModeToggleBtn');
-    if (btn) {
-      btn.textContent = labelFor(mode);
-      btn.setAttribute('aria-pressed', desktop ? 'true' : 'false');
-      btn.dataset.viewMode = mode;
+
+    const mobileBtn = document.getElementById('mobileViewBtn');
+    const desktopBtn = document.getElementById('desktopViewBtn');
+
+    if (mobileBtn) {
+      mobileBtn.classList.toggle('active', !desktop);
+      mobileBtn.setAttribute('aria-pressed', desktop ? 'false' : 'true');
     }
+    if (desktopBtn) {
+      desktopBtn.classList.toggle('active', desktop);
+      desktopBtn.setAttribute('aria-pressed', desktop ? 'true' : 'false');
+    }
+
     setTimeout(() => window.dispatchEvent(new Event('resize')), 60);
+    setTimeout(() => window.dispatchEvent(new Event('resize')), 250);
   }
+
+  function setViewMode(mode) {
+    const safeMode = mode === 'desktop' ? 'desktop' : 'mobile';
+    localStorage.setItem(STORAGE_KEY, safeMode);
+    applyViewMode(safeMode);
+  }
+
   function currentMode() {
     return localStorage.getItem(STORAGE_KEY) === 'desktop' ? 'desktop' : 'mobile';
   }
-  function toggleViewMode() {
-    const next = currentMode() === 'desktop' ? 'mobile' : 'desktop';
-    localStorage.setItem(STORAGE_KEY, next);
-    applyViewMode(next);
-  }
+
   function init() {
-    const btn = document.getElementById('viewModeToggleBtn');
-    if (btn && !btn.dataset.viewModeBound) {
-      btn.dataset.viewModeBound = '1';
-      btn.addEventListener('click', toggleViewMode);
+    const mobileBtn = document.getElementById('mobileViewBtn');
+    const desktopBtn = document.getElementById('desktopViewBtn');
+
+    if (mobileBtn && !mobileBtn.dataset.viewModeBound) {
+      mobileBtn.dataset.viewModeBound = '1';
+      mobileBtn.addEventListener('click', () => setViewMode('mobile'));
     }
+
+    if (desktopBtn && !desktopBtn.dataset.viewModeBound) {
+      desktopBtn.dataset.viewModeBound = '1';
+      desktopBtn.addEventListener('click', () => setViewMode('desktop'));
+    }
+
     applyViewMode(currentMode());
   }
-  window.addEventListener('load', () => setTimeout(init, 100));
-  document.addEventListener('click', () => setTimeout(() => applyViewMode(currentMode()), 120), true);
-  document.addEventListener('change', () => setTimeout(() => applyViewMode(currentMode()), 120), true);
-  setTimeout(init, 200);
-  setTimeout(init, 800);
+
+  window.addEventListener('load', () => setTimeout(init, 80));
+  document.addEventListener('click', () => setTimeout(() => applyViewMode(currentMode()), 100), true);
+  document.addEventListener('change', () => setTimeout(() => applyViewMode(currentMode()), 100), true);
+  window.addEventListener('resize', () => setTimeout(() => applyViewMode(currentMode()), 80));
+
+  setTimeout(init, 100);
+  setTimeout(init, 500);
+  setTimeout(init, 1000);
+
+  window.setProductRequestViewMode = setViewMode;
   window.applyProductRequestViewMode = applyViewMode;
 })();
 
