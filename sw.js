@@ -1,4 +1,4 @@
-const CACHE = 'product-request-form-c143-hide-header-on-catalogs';
+const CACHE = 'product-request-form-c144-view-mode-toggle';
 const ASSETS = [
   './',
   './index.html',

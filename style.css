@@ -2840,3 +2840,154 @@ body.technical-sheet-open {
   z-index: 40000 !important;
 }
 
+/* C144: user-selectable Mobile/Desktop view mode */
+.view-mode-toggle-btn {
+  white-space: nowrap !important;
+  border: 1px solid rgba(255,255,255,.35) !important;
+  background: rgba(255,255,255,.10) !important;
+  color: #fff !important;
+  border-radius: 999px !important;
+  font-weight: 900 !important;
+}
+.app-header .title-action-row .header-actions,
+body.has-form-quick-nav .title-action-row .header-actions {
+  gap: 6px !important;
+}
+.app-header .title-action-row #resetOrderTopBtn,
+body.has-form-quick-nav .title-action-row #resetOrderTopBtn,
+.app-header .title-action-row #viewModeToggleBtn,
+body.has-form-quick-nav .title-action-row #viewModeToggleBtn {
+  flex: 0 0 auto !important;
+  min-width: 0 !important;
+  width: auto !important;
+  overflow: hidden !important;
+  text-overflow: clip !important;
+  white-space: nowrap !important;
+  padding: 0.64em 0.72em !important;
+  font-size: 0.78em !important;
+  line-height: 1.05 !important;
+  border-radius: 0.9em !important;
+  margin: 0 !important;
+}
+@media (max-width: 640px) {
+  .app-header .title-action-row,
+  body.has-form-quick-nav .title-action-row {
+    --title-row-scale: clamp(8px, 2.55vw, 12px);
+    display: grid !important;
+    grid-template-columns: minmax(0, 1fr) auto !important;
+    align-items: center !important;
+    column-gap: 0.42em !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    overflow: hidden !important;
+    font-size: var(--title-row-scale) !important;
+  }
+  .app-header .title-action-row h1,
+  body.has-form-quick-nav .title-action-row h1 {
+    font-size: 1.65em !important;
+    line-height: 1.08 !important;
+    min-width: 0 !important;
+    overflow: hidden !important;
+    white-space: nowrap !important;
+  }
+  .app-header .title-action-row .header-actions,
+  body.has-form-quick-nav .title-action-row .header-actions {
+    max-width: 55vw !important;
+    min-width: 0 !important;
+  }
+  .app-header .title-action-row #resetOrderTopBtn,
+  body.has-form-quick-nav .title-action-row #resetOrderTopBtn,
+  .app-header .title-action-row #viewModeToggleBtn,
+  body.has-form-quick-nav .title-action-row #viewModeToggleBtn {
+    padding: 0.58em 0.52em !important;
+    font-size: 0.68em !important;
+  }
+}
+@media (max-width: 390px) {
+  .app-header .title-action-row,
+  body.has-form-quick-nav .title-action-row {
+    --title-row-scale: clamp(7px, 2.35vw, 9.5px);
+    column-gap: 0.28em !important;
+  }
+  .app-header .title-action-row .header-actions,
+  body.has-form-quick-nav .title-action-row .header-actions {
+    gap: 3px !important;
+    max-width: 58vw !important;
+  }
+  .app-header .title-action-row #resetOrderTopBtn,
+  body.has-form-quick-nav .title-action-row #resetOrderTopBtn,
+  .app-header .title-action-row #viewModeToggleBtn,
+  body.has-form-quick-nav .title-action-row #viewModeToggleBtn {
+    padding: 0.54em 0.42em !important;
+    font-size: 0.62em !important;
+    border-radius: 0.74em !important;
+  }
+}
+html.force-desktop-view,
+body.force-desktop-view {
+  min-width: 1180px !important;
+  overflow-x: auto !important;
+}
+body.force-desktop-view {
+  padding-top: var(--fixed-top-stack-height) !important;
+}
+body.force-desktop-view .app-shell {
+  width: 1100px !important;
+  min-width: 1100px !important;
+  max-width: none !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
+}
+body.force-desktop-view .app-header {
+  min-width: 1180px !important;
+}
+body.force-desktop-view .form-quick-nav,
+body.force-desktop-view .mobile-quick-nav,
+body.force-desktop-view #formQuickNav {
+  min-width: 1180px !important;
+  flex-wrap: nowrap !important;
+  overflow-x: visible !important;
+  justify-content: center !important;
+}
+body.force-desktop-view .title-action-row {
+  display: flex !important;
+  flex-wrap: nowrap !important;
+  align-items: center !important;
+  gap: 12px !important;
+}
+body.force-desktop-view .title-action-row h1 {
+  flex: 0 0 auto !important;
+  font-size: 26px !important;
+  overflow: visible !important;
+}
+body.force-desktop-view .title-action-row #resetOrderTopBtn,
+body.force-desktop-view .title-action-row #viewModeToggleBtn {
+  font-size: 13px !important;
+  padding: 10px 14px !important;
+  border-radius: 14px !important;
+}
+body.force-desktop-view .language-tabs {
+  flex-wrap: wrap !important;
+  overflow: visible !important;
+}
+body.force-desktop-view .grid.two {
+  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+}
+body.force-desktop-view .grid.three {
+  grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+}
+body.force-desktop-view #formArea .grid,
+body.force-desktop-view .dynamic-grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+}
+body.force-desktop-view.modal-open .app-header,
+body.force-desktop-view.modal-open .form-quick-nav,
+body.force-desktop-view.modal-open .mobile-quick-nav,
+body.force-desktop-view.modal-open #formQuickNav,
+body.force-desktop-view.technical-sheet-open .app-header,
+body.force-desktop-view.technical-sheet-open .form-quick-nav,
+body.force-desktop-view.technical-sheet-open .mobile-quick-nav,
+body.force-desktop-view.technical-sheet-open #formQuickNav {
+  display: none !important;
+}
+

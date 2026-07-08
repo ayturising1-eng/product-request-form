@@ -7121,7 +7121,7 @@ $('#installBtn').addEventListener('click', async () => {
 
 async function initPwa() {
   if ('serviceWorker' in navigator && location.protocol.startsWith('http')) {
-    try { await navigator.serviceWorker.register('sw.js?v=c143-hide-header-on-catalogs'); } catch {}
+    try { await navigator.serviceWorker.register('sw.js?v=c144-view-mode-toggle'); } catch {}
   }
 }
 
@@ -8778,5 +8778,53 @@ function closeTechnicalSheet() {
   updateTopBarLayout();
   delayedUpdate(100);
   delayedUpdate(500);
+})();
+
+// C144: user selectable view mode - Mobile View / Desktop View
+(function setupUserSelectableViewMode() {
+  const STORAGE_KEY = 'prf_view_mode_v1';
+  function getLang() {
+    return (window.currentLang || document.documentElement.lang || 'en').toLowerCase();
+  }
+  function labelFor(mode) {
+    const lang = getLang();
+    const desktopLabel = lang === 'tr' ? 'Masaüstü Görünüm' : 'Desktop View';
+    const mobileLabel = lang === 'tr' ? 'Mobil Görünüm' : 'Mobile View';
+    return mode === 'desktop' ? mobileLabel : desktopLabel;
+  }
+  function applyViewMode(mode) {
+    const desktop = mode === 'desktop';
+    document.documentElement.classList.toggle('force-desktop-view', desktop);
+    document.body.classList.toggle('force-desktop-view', desktop);
+    const btn = document.getElementById('viewModeToggleBtn');
+    if (btn) {
+      btn.textContent = labelFor(mode);
+      btn.setAttribute('aria-pressed', desktop ? 'true' : 'false');
+      btn.dataset.viewMode = mode;
+    }
+    setTimeout(() => window.dispatchEvent(new Event('resize')), 60);
+  }
+  function currentMode() {
+    return localStorage.getItem(STORAGE_KEY) === 'desktop' ? 'desktop' : 'mobile';
+  }
+  function toggleViewMode() {
+    const next = currentMode() === 'desktop' ? 'mobile' : 'desktop';
+    localStorage.setItem(STORAGE_KEY, next);
+    applyViewMode(next);
+  }
+  function init() {
+    const btn = document.getElementById('viewModeToggleBtn');
+    if (btn && !btn.dataset.viewModeBound) {
+      btn.dataset.viewModeBound = '1';
+      btn.addEventListener('click', toggleViewMode);
+    }
+    applyViewMode(currentMode());
+  }
+  window.addEventListener('load', () => setTimeout(init, 100));
+  document.addEventListener('click', () => setTimeout(() => applyViewMode(currentMode()), 120), true);
+  document.addEventListener('change', () => setTimeout(() => applyViewMode(currentMode()), 120), true);
+  setTimeout(init, 200);
+  setTimeout(init, 800);
+  window.applyProductRequestViewMode = applyViewMode;
 })();
 
