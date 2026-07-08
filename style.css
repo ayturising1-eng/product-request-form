@@ -3444,3 +3444,196 @@ body.force-desktop-view.technical-sheet-open #formQuickNav {
   }
 }
 
+
+/* C147: STABLE view modes - Mobile always fits, Tablet/Desktop auto zoom out */
+
+/* Mobile selected: kill every wide-canvas rule and force true phone layout */
+html.force-mobile-view,
+body.force-mobile-view {
+  min-width: 0 !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  overflow-x: hidden !important;
+  zoom: 1 !important;
+  transform: none !important;
+}
+
+body.force-mobile-view * {
+  box-sizing: border-box;
+}
+
+body.force-mobile-view .app-shell,
+body.force-mobile-view main.app-shell {
+  width: 100% !important;
+  min-width: 0 !important;
+  max-width: 100% !important;
+  margin-left: 0 !important;
+  margin-right: 0 !important;
+  padding-left: 14px !important;
+  padding-right: 14px !important;
+}
+
+body.force-mobile-view .app-header,
+body.force-mobile-view .form-quick-nav,
+body.force-mobile-view .mobile-quick-nav,
+body.force-mobile-view #formQuickNav {
+  width: 100% !important;
+  min-width: 0 !important;
+  max-width: 100% !important;
+}
+
+body.force-mobile-view .form-quick-nav,
+body.force-mobile-view .mobile-quick-nav,
+body.force-mobile-view #formQuickNav {
+  justify-content: flex-start !important;
+  flex-wrap: wrap !important;
+  overflow-x: visible !important;
+}
+
+/* This is the critical fix: mobile view must not keep desktop/tablet two-column grids */
+body.force-mobile-view .grid,
+body.force-mobile-view .grid.two,
+body.force-mobile-view .grid.three,
+body.force-mobile-view #formArea .grid,
+body.force-mobile-view .dynamic-grid,
+body.force-mobile-view .form-grid,
+body.force-mobile-view .option-grid,
+body.force-mobile-view .measurement-grid,
+body.force-mobile-view .request-grid,
+body.force-mobile-view .field-grid,
+body.force-mobile-view .panel-grid {
+  grid-template-columns: 1fr !important;
+}
+
+body.force-mobile-view label,
+body.force-mobile-view .field,
+body.force-mobile-view .choice-field,
+body.force-mobile-view .input-unit-wrap,
+body.force-mobile-view input,
+body.force-mobile-view select,
+body.force-mobile-view textarea {
+  min-width: 0 !important;
+  max-width: 100% !important;
+}
+
+/* Tablet/Desktop use a fixed virtual canvas, then CSS zoom scales to the real screen */
+html.force-tablet-view,
+html.force-desktop-view {
+  overflow-x: hidden !important;
+}
+
+body.force-tablet-view,
+body.force-desktop-view {
+  transform: none !important;
+  transform-origin: top left !important;
+  overflow-x: hidden !important;
+}
+
+body.force-tablet-view {
+  width: 820px !important;
+  min-width: 820px !important;
+  max-width: 820px !important;
+  zoom: var(--forced-view-zoom, 1) !important;
+}
+
+body.force-desktop-view {
+  width: 1180px !important;
+  min-width: 1180px !important;
+  max-width: 1180px !important;
+  zoom: var(--forced-view-zoom, 1) !important;
+}
+
+body.force-tablet-view .app-shell,
+body.force-tablet-view main.app-shell {
+  width: 780px !important;
+  min-width: 780px !important;
+  max-width: 780px !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
+}
+
+body.force-desktop-view .app-shell,
+body.force-desktop-view main.app-shell {
+  width: 1100px !important;
+  min-width: 1100px !important;
+  max-width: 1100px !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
+}
+
+body.force-tablet-view .app-header,
+body.force-tablet-view .form-quick-nav,
+body.force-tablet-view .mobile-quick-nav,
+body.force-tablet-view #formQuickNav {
+  width: 820px !important;
+  min-width: 820px !important;
+  max-width: 820px !important;
+}
+
+body.force-desktop-view .app-header,
+body.force-desktop-view .form-quick-nav,
+body.force-desktop-view .mobile-quick-nav,
+body.force-desktop-view #formQuickNav {
+  width: 1180px !important;
+  min-width: 1180px !important;
+  max-width: 1180px !important;
+}
+
+/* Tablet = 2 columns */
+body.force-tablet-view .grid,
+body.force-tablet-view .grid.two,
+body.force-tablet-view #formArea .grid,
+body.force-tablet-view .dynamic-grid,
+body.force-tablet-view .form-grid,
+body.force-tablet-view .measurement-grid,
+body.force-tablet-view .request-grid,
+body.force-tablet-view .field-grid,
+body.force-tablet-view .panel-grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+}
+
+body.force-tablet-view .grid.three {
+  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+}
+
+/* Desktop = wider desktop layout */
+body.force-desktop-view .grid,
+body.force-desktop-view .grid.two,
+body.force-desktop-view #formArea .grid,
+body.force-desktop-view .dynamic-grid,
+body.force-desktop-view .form-grid,
+body.force-desktop-view .measurement-grid,
+body.force-desktop-view .request-grid,
+body.force-desktop-view .field-grid,
+body.force-desktop-view .panel-grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+}
+
+body.force-desktop-view .grid.three {
+  grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+}
+
+/* Header tabs stay translated and active */
+.view-mode-tabs {
+  display: flex !important;
+  flex-wrap: wrap !important;
+  gap: 6px !important;
+}
+.view-mode-tab.active {
+  background: #fff !important;
+  color: #111827 !important;
+  border-color: #fff !important;
+}
+
+/* Modal-only view remains clean */
+body.modal-open .app-header,
+body.modal-open .form-quick-nav,
+body.modal-open .mobile-quick-nav,
+body.modal-open #formQuickNav,
+body.technical-sheet-open .app-header,
+body.technical-sheet-open .form-quick-nav,
+body.technical-sheet-open .mobile-quick-nav,
+body.technical-sheet-open #formQuickNav {
+  display: none !important;
+}
+

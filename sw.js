@@ -1,4 +1,4 @@
-const CACHE = 'product-request-form-c146-mobile-tablet-desktop-fit';
+const CACHE = 'product-request-form-c147-stable-view-modes';
 const ASSETS = [
   './',
   './index.html',

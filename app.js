@@ -7121,7 +7121,7 @@ $('#installBtn').addEventListener('click', async () => {
 
 async function initPwa() {
   if ('serviceWorker' in navigator && location.protocol.startsWith('http')) {
-    try { await navigator.serviceWorker.register('sw.js?v=c146-mobile-tablet-desktop-fit'); } catch {}
+    try { await navigator.serviceWorker.register('sw.js?v=c147-stable-view-modes'); } catch {}
   }
 }
 
@@ -8781,14 +8781,11 @@ function closeTechnicalSheet() {
 })();
 
 
-// C146: translated Mobile / Tablet / Desktop view tabs with automatic fit zoom
-(function setupResponsiveViewModeTabs() {
-  const STORAGE_KEY = 'prf_view_mode_v3';
-  const MODES = {
-    mobile: { width: 0 },
-    tablet: { width: 820 },
-    desktop: { width: 1180 }
-  };
+// C147: stable translated Mobile / Tablet / Desktop view tabs with defensive class cleanup
+(function setupStableViewModeTabs() {
+  const STORAGE_KEY = 'prf_view_mode_v4';
+  const OLD_KEYS = ['prf_view_mode_v1', 'prf_view_mode_v2', 'prf_view_mode_v3'];
+  const WIDTHS = { mobile: 0, tablet: 820, desktop: 1180 };
 
   const LABELS = {
     tr: { mobile: 'Mobil Görünüm', tablet: 'Tablet Görünüm', desktop: 'Masaüstü Görünüm' },
@@ -8797,6 +8794,10 @@ function closeTechnicalSheet() {
     fr: { mobile: 'Vue mobile', tablet: 'Vue tablette', desktop: 'Vue bureau' },
     he: { mobile: 'תצוגת מובייל', tablet: 'תצוגת טאבלט', desktop: 'תצוגת מחשב' }
   };
+
+  function safeMode(mode) {
+    return WIDTHS.hasOwnProperty(mode) ? mode : 'mobile';
+  }
 
   function normalizeLang(value) {
     const lang = String(value || '').toLowerCase();
@@ -8808,86 +8809,101 @@ function closeTechnicalSheet() {
   }
 
   function currentLanguage() {
-    const activeLang = document.querySelector('.language-tabs button.active');
-    const raw = activeLang?.dataset?.lang || activeLang?.getAttribute('lang') || document.documentElement.lang || window.currentLang || localStorage.getItem('prf_language_v1') || 'en';
-    return normalizeLang(raw);
+    const active = document.querySelector('.language-tabs button.active');
+    return normalizeLang(active?.dataset?.lang || document.documentElement.lang || localStorage.getItem('prf_language_v1') || 'en');
   }
 
-  function safeMode(mode) {
-    return MODES[mode] ? mode : 'mobile';
+  function viewportWidth() {
+    return Math.max(280, window.innerWidth || document.documentElement.clientWidth || 360);
   }
 
-  function fitZoomFor(mode) {
-    const target = MODES[mode]?.width || 0;
+  function zoomFor(mode) {
+    const target = WIDTHS[mode] || 0;
     if (!target) return 1;
-    const viewport = Math.max(280, window.innerWidth || document.documentElement.clientWidth || target);
-    return Math.min(1, viewport / target);
-  }
-
-  function applyLabels(mode) {
-    const lang = currentLanguage();
-    const labels = LABELS[lang] || LABELS.en;
-    const mobileBtn = document.getElementById('mobileViewBtn');
-    const tabletBtn = document.getElementById('tabletViewBtn');
-    const desktopBtn = document.getElementById('desktopViewBtn');
-
-    if (mobileBtn) mobileBtn.textContent = labels.mobile;
-    if (tabletBtn) tabletBtn.textContent = labels.tablet;
-    if (desktopBtn) desktopBtn.textContent = labels.desktop;
-
-    [
-      [mobileBtn, 'mobile'],
-      [tabletBtn, 'tablet'],
-      [desktopBtn, 'desktop']
-    ].forEach(([btn, key]) => {
-      if (!btn) return;
-      const active = mode === key;
-      btn.classList.toggle('active', active);
-      btn.setAttribute('aria-pressed', active ? 'true' : 'false');
-    });
+    return Math.min(1, viewportWidth() / target);
   }
 
   function clearModeClasses() {
-    ['force-mobile-view', 'force-tablet-view', 'force-desktop-view'].forEach((className) => {
-      document.documentElement.classList.remove(className);
-      document.body.classList.remove(className);
+    const classes = ['force-mobile-view', 'force-tablet-view', 'force-desktop-view'];
+    classes.forEach((cls) => {
+      document.documentElement.classList.remove(cls);
+      if (document.body) document.body.classList.remove(cls);
+    });
+
+    if (document.body) {
+      document.body.style.removeProperty('zoom');
+      document.body.style.removeProperty('width');
+      document.body.style.removeProperty('min-width');
+      document.body.style.removeProperty('max-width');
+      document.body.style.removeProperty('transform');
+    }
+    document.documentElement.style.removeProperty('zoom');
+    document.documentElement.style.removeProperty('width');
+    document.documentElement.style.removeProperty('min-width');
+    document.documentElement.style.removeProperty('max-width');
+  }
+
+  function updateButtons(mode) {
+    const labels = LABELS[currentLanguage()] || LABELS.en;
+    const map = {
+      mobile: document.getElementById('mobileViewBtn'),
+      tablet: document.getElementById('tabletViewBtn'),
+      desktop: document.getElementById('desktopViewBtn')
+    };
+
+    Object.entries(map).forEach(([key, btn]) => {
+      if (!btn) return;
+      btn.textContent = labels[key];
+      const active = key === mode;
+      btn.classList.toggle('active', active);
+      btn.setAttribute('aria-pressed', active ? 'true' : 'false');
+      btn.dataset.viewMode = key;
     });
   }
 
   function applyViewMode(requestedMode) {
     const mode = safeMode(requestedMode);
     clearModeClasses();
+
     document.documentElement.classList.add(`force-${mode}-view`);
-    document.body.classList.add(`force-${mode}-view`);
+    if (document.body) document.body.classList.add(`force-${mode}-view`);
 
-    const zoom = fitZoomFor(mode);
-    document.documentElement.style.setProperty('--forced-view-zoom', String(zoom));
-    document.documentElement.style.setProperty('--forced-view-width', `${MODES[mode].width || window.innerWidth}px`);
+    const z = zoomFor(mode);
+    document.documentElement.style.setProperty('--forced-view-zoom', String(z));
 
-    applyLabels(mode);
+    updateButtons(mode);
+
+    // Mobile must always return to exact screen fit.
+    if (mode === 'mobile') {
+      document.documentElement.style.setProperty('--forced-view-zoom', '1');
+      if (document.body) document.body.scrollLeft = 0;
+      document.documentElement.scrollLeft = 0;
+      window.scrollTo({ left: 0, top: window.scrollY });
+    }
 
     setTimeout(() => window.dispatchEvent(new Event('resize')), 40);
-    setTimeout(() => window.dispatchEvent(new Event('resize')), 220);
-  }
-
-  function setViewMode(mode) {
-    const next = safeMode(mode);
-    localStorage.setItem(STORAGE_KEY, next);
-    applyViewMode(next);
+    setTimeout(() => window.dispatchEvent(new Event('resize')), 250);
   }
 
   function currentMode() {
     return safeMode(localStorage.getItem(STORAGE_KEY) || 'mobile');
   }
 
+  function setViewMode(mode) {
+    const next = safeMode(mode);
+    localStorage.setItem(STORAGE_KEY, next);
+    OLD_KEYS.forEach((key) => {
+      try { localStorage.removeItem(key); } catch {}
+    });
+    applyViewMode(next);
+  }
+
   function bindButtons() {
-    const pairs = [
+    [
       ['mobileViewBtn', 'mobile'],
       ['tabletViewBtn', 'tablet'],
       ['desktopViewBtn', 'desktop']
-    ];
-
-    pairs.forEach(([id, mode]) => {
+    ].forEach(([id, mode]) => {
       const btn = document.getElementById(id);
       if (!btn || btn.dataset.viewModeBound) return;
       btn.dataset.viewModeBound = '1';
@@ -8897,26 +8913,19 @@ function closeTechnicalSheet() {
 
   function init() {
     bindButtons();
+    // Always prefer the v4 key; old desktop/tablet selections must not leak into the new logic.
     applyViewMode(currentMode());
   }
 
   window.addEventListener('load', () => setTimeout(init, 80));
   window.addEventListener('resize', () => setTimeout(() => applyViewMode(currentMode()), 80));
-  window.addEventListener('orientationchange', () => setTimeout(() => applyViewMode(currentMode()), 250));
+  window.addEventListener('orientationchange', () => setTimeout(() => applyViewMode(currentMode()), 260));
   document.addEventListener('click', () => setTimeout(() => applyViewMode(currentMode()), 120), true);
   document.addEventListener('change', () => setTimeout(() => applyViewMode(currentMode()), 120), true);
 
-  try {
-    const langTabs = document.querySelector('.language-tabs');
-    if (langTabs) {
-      new MutationObserver(() => setTimeout(() => applyViewMode(currentMode()), 80))
-        .observe(langTabs, { attributes: true, childList: true, subtree: true });
-    }
-  } catch {}
-
-  setTimeout(init, 100);
-  setTimeout(init, 500);
-  setTimeout(init, 1000);
+  setTimeout(init, 50);
+  setTimeout(init, 300);
+  setTimeout(init, 900);
 
   window.setProductRequestViewMode = setViewMode;
   window.applyProductRequestViewMode = applyViewMode;
