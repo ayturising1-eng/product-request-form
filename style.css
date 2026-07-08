@@ -3213,3 +3213,234 @@ body.force-desktop-view.technical-sheet-open #formQuickNav {
   display: none !important;
 }
 
+
+/* C146: translated Mobile/Tablet/Desktop tabs + auto fit/zoom */
+:root {
+  --forced-view-width: auto;
+  --forced-view-zoom: 1;
+}
+
+.view-mode-tabs {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: flex-start !important;
+  gap: 6px !important;
+  width: 100% !important;
+  flex-wrap: wrap !important;
+}
+
+.view-mode-tab {
+  min-height: 30px !important;
+  padding: 7px 10px !important;
+  border: 1px solid rgba(255,255,255,.26) !important;
+  border-radius: 999px !important;
+  background: rgba(255,255,255,.08) !important;
+  color: #fff !important;
+  font-size: 11px !important;
+  line-height: 1 !important;
+  font-weight: 900 !important;
+  white-space: nowrap !important;
+}
+
+.view-mode-tab.active {
+  background: #fff !important;
+  color: #111827 !important;
+  border-color: #fff !important;
+}
+
+/* Mobile view: always fit exactly to the phone/tablet screen */
+html.force-mobile-view,
+body.force-mobile-view {
+  min-width: 0 !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  overflow-x: hidden !important;
+}
+
+body.force-mobile-view {
+  zoom: 1 !important;
+}
+
+body.force-mobile-view .app-shell {
+  width: min(1100px, 100%) !important;
+  min-width: 0 !important;
+  max-width: 100% !important;
+}
+
+body.force-mobile-view .app-header,
+body.force-mobile-view .form-quick-nav,
+body.force-mobile-view .mobile-quick-nav,
+body.force-mobile-view #formQuickNav {
+  min-width: 0 !important;
+  width: 100% !important;
+  max-width: 100% !important;
+}
+
+/* Tablet/Desktop views: create a wider canvas and zoom it out to fit screen */
+html.force-tablet-view,
+html.force-desktop-view {
+  overflow-x: hidden !important;
+}
+
+body.force-tablet-view,
+body.force-desktop-view {
+  zoom: var(--forced-view-zoom) !important;
+  transform-origin: top left !important;
+  overflow-x: hidden !important;
+}
+
+body.force-tablet-view {
+  min-width: 820px !important;
+  width: 820px !important;
+}
+
+body.force-desktop-view {
+  min-width: 1180px !important;
+  width: 1180px !important;
+}
+
+body.force-tablet-view .app-shell {
+  width: 780px !important;
+  min-width: 780px !important;
+  max-width: none !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
+}
+
+body.force-desktop-view .app-shell {
+  width: 1100px !important;
+  min-width: 1100px !important;
+  max-width: none !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
+}
+
+body.force-tablet-view .app-header,
+body.force-tablet-view .form-quick-nav,
+body.force-tablet-view .mobile-quick-nav,
+body.force-tablet-view #formQuickNav {
+  min-width: 820px !important;
+  width: 820px !important;
+}
+
+body.force-desktop-view .app-header,
+body.force-desktop-view .form-quick-nav,
+body.force-desktop-view .mobile-quick-nav,
+body.force-desktop-view #formQuickNav {
+  min-width: 1180px !important;
+  width: 1180px !important;
+}
+
+body.force-tablet-view .form-quick-nav,
+body.force-tablet-view .mobile-quick-nav,
+body.force-tablet-view #formQuickNav,
+body.force-desktop-view .form-quick-nav,
+body.force-desktop-view .mobile-quick-nav,
+body.force-desktop-view #formQuickNav {
+  flex-wrap: wrap !important;
+  overflow-x: visible !important;
+  justify-content: center !important;
+}
+
+/* Tablet layout */
+body.force-tablet-view .grid.two,
+body.force-tablet-view #formArea .grid,
+body.force-tablet-view .dynamic-grid,
+body.force-tablet-view .form-grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+}
+
+body.force-tablet-view .grid.three {
+  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+}
+
+/* Desktop layout */
+body.force-desktop-view .grid.two,
+body.force-desktop-view #formArea .grid,
+body.force-desktop-view .dynamic-grid,
+body.force-desktop-view .form-grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+}
+
+body.force-desktop-view .grid.three {
+  grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+}
+
+body.force-tablet-view .title-action-row,
+body.force-desktop-view .title-action-row {
+  display: flex !important;
+  flex-wrap: nowrap !important;
+  align-items: center !important;
+  justify-content: flex-start !important;
+  gap: 12px !important;
+  overflow: visible !important;
+}
+
+body.force-tablet-view .title-action-row h1 {
+  flex: 0 0 auto !important;
+  font-size: 24px !important;
+  overflow: visible !important;
+}
+
+body.force-desktop-view .title-action-row h1 {
+  flex: 0 0 auto !important;
+  font-size: 26px !important;
+  overflow: visible !important;
+}
+
+body.force-tablet-view .title-action-row .header-actions,
+body.force-desktop-view .title-action-row .header-actions {
+  flex: 0 0 auto !important;
+  max-width: none !important;
+}
+
+body.force-tablet-view .title-action-row #resetOrderTopBtn,
+body.force-desktop-view .title-action-row #resetOrderTopBtn {
+  max-width: none !important;
+  font-size: 13px !important;
+  padding: 10px 14px !important;
+  border-radius: 14px !important;
+}
+
+/* Catalog / PDF modal opens alone in every view mode */
+body.force-mobile-view.modal-open .app-header,
+body.force-mobile-view.modal-open .form-quick-nav,
+body.force-mobile-view.modal-open .mobile-quick-nav,
+body.force-mobile-view.modal-open #formQuickNav,
+body.force-tablet-view.modal-open .app-header,
+body.force-tablet-view.modal-open .form-quick-nav,
+body.force-tablet-view.modal-open .mobile-quick-nav,
+body.force-tablet-view.modal-open #formQuickNav,
+body.force-desktop-view.modal-open .app-header,
+body.force-desktop-view.modal-open .form-quick-nav,
+body.force-desktop-view.modal-open .mobile-quick-nav,
+body.force-desktop-view.modal-open #formQuickNav,
+body.force-mobile-view.technical-sheet-open .app-header,
+body.force-mobile-view.technical-sheet-open .form-quick-nav,
+body.force-mobile-view.technical-sheet-open .mobile-quick-nav,
+body.force-mobile-view.technical-sheet-open #formQuickNav,
+body.force-tablet-view.technical-sheet-open .app-header,
+body.force-tablet-view.technical-sheet-open .form-quick-nav,
+body.force-tablet-view.technical-sheet-open .mobile-quick-nav,
+body.force-tablet-view.technical-sheet-open #formQuickNav,
+body.force-desktop-view.technical-sheet-open .app-header,
+body.force-desktop-view.technical-sheet-open .form-quick-nav,
+body.force-desktop-view.technical-sheet-open .mobile-quick-nav,
+body.force-desktop-view.technical-sheet-open #formQuickNav {
+  display: none !important;
+}
+
+@media (max-width: 390px) {
+  .view-mode-tab {
+    padding: 7px 8px !important;
+    font-size: 10px !important;
+  }
+}
+
+@media (max-width: 340px) {
+  .view-mode-tab {
+    padding: 6px 7px !important;
+    font-size: 9px !important;
+  }
+}
+

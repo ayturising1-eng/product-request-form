@@ -7121,7 +7121,7 @@ $('#installBtn').addEventListener('click', async () => {
 
 async function initPwa() {
   if ('serviceWorker' in navigator && location.protocol.startsWith('http')) {
-    try { await navigator.serviceWorker.register('sw.js?v=c145-view-mode-tabs-fixed'); } catch {}
+    try { await navigator.serviceWorker.register('sw.js?v=c146-mobile-tablet-desktop-fit'); } catch {}
   }
 }
 
@@ -8781,62 +8781,138 @@ function closeTechnicalSheet() {
 })();
 
 
-// C145: view mode tabs - separate Mobile View and Desktop View buttons
-(function setupViewModeTabs() {
-  const STORAGE_KEY = 'prf_view_mode_v2';
+// C146: translated Mobile / Tablet / Desktop view tabs with automatic fit zoom
+(function setupResponsiveViewModeTabs() {
+  const STORAGE_KEY = 'prf_view_mode_v3';
+  const MODES = {
+    mobile: { width: 0 },
+    tablet: { width: 820 },
+    desktop: { width: 1180 }
+  };
 
-  function applyViewMode(mode) {
-    const desktop = mode === 'desktop';
-    document.documentElement.classList.toggle('force-desktop-view', desktop);
-    document.body.classList.toggle('force-desktop-view', desktop);
+  const LABELS = {
+    tr: { mobile: 'Mobil Görünüm', tablet: 'Tablet Görünüm', desktop: 'Masaüstü Görünüm' },
+    en: { mobile: 'Mobile View', tablet: 'Tablet View', desktop: 'Desktop View' },
+    de: { mobile: 'Mobilansicht', tablet: 'Tabletansicht', desktop: 'Desktopansicht' },
+    fr: { mobile: 'Vue mobile', tablet: 'Vue tablette', desktop: 'Vue bureau' },
+    he: { mobile: 'תצוגת מובייל', tablet: 'תצוגת טאבלט', desktop: 'תצוגת מחשב' }
+  };
 
+  function normalizeLang(value) {
+    const lang = String(value || '').toLowerCase();
+    if (lang.startsWith('tr')) return 'tr';
+    if (lang.startsWith('de')) return 'de';
+    if (lang.startsWith('fr')) return 'fr';
+    if (lang.startsWith('he') || lang.startsWith('iw') || lang.includes('עבר')) return 'he';
+    return 'en';
+  }
+
+  function currentLanguage() {
+    const activeLang = document.querySelector('.language-tabs button.active');
+    const raw = activeLang?.dataset?.lang || activeLang?.getAttribute('lang') || document.documentElement.lang || window.currentLang || localStorage.getItem('prf_language_v1') || 'en';
+    return normalizeLang(raw);
+  }
+
+  function safeMode(mode) {
+    return MODES[mode] ? mode : 'mobile';
+  }
+
+  function fitZoomFor(mode) {
+    const target = MODES[mode]?.width || 0;
+    if (!target) return 1;
+    const viewport = Math.max(280, window.innerWidth || document.documentElement.clientWidth || target);
+    return Math.min(1, viewport / target);
+  }
+
+  function applyLabels(mode) {
+    const lang = currentLanguage();
+    const labels = LABELS[lang] || LABELS.en;
     const mobileBtn = document.getElementById('mobileViewBtn');
+    const tabletBtn = document.getElementById('tabletViewBtn');
     const desktopBtn = document.getElementById('desktopViewBtn');
 
-    if (mobileBtn) {
-      mobileBtn.classList.toggle('active', !desktop);
-      mobileBtn.setAttribute('aria-pressed', desktop ? 'false' : 'true');
-    }
-    if (desktopBtn) {
-      desktopBtn.classList.toggle('active', desktop);
-      desktopBtn.setAttribute('aria-pressed', desktop ? 'true' : 'false');
-    }
+    if (mobileBtn) mobileBtn.textContent = labels.mobile;
+    if (tabletBtn) tabletBtn.textContent = labels.tablet;
+    if (desktopBtn) desktopBtn.textContent = labels.desktop;
 
-    setTimeout(() => window.dispatchEvent(new Event('resize')), 60);
-    setTimeout(() => window.dispatchEvent(new Event('resize')), 250);
+    [
+      [mobileBtn, 'mobile'],
+      [tabletBtn, 'tablet'],
+      [desktopBtn, 'desktop']
+    ].forEach(([btn, key]) => {
+      if (!btn) return;
+      const active = mode === key;
+      btn.classList.toggle('active', active);
+      btn.setAttribute('aria-pressed', active ? 'true' : 'false');
+    });
+  }
+
+  function clearModeClasses() {
+    ['force-mobile-view', 'force-tablet-view', 'force-desktop-view'].forEach((className) => {
+      document.documentElement.classList.remove(className);
+      document.body.classList.remove(className);
+    });
+  }
+
+  function applyViewMode(requestedMode) {
+    const mode = safeMode(requestedMode);
+    clearModeClasses();
+    document.documentElement.classList.add(`force-${mode}-view`);
+    document.body.classList.add(`force-${mode}-view`);
+
+    const zoom = fitZoomFor(mode);
+    document.documentElement.style.setProperty('--forced-view-zoom', String(zoom));
+    document.documentElement.style.setProperty('--forced-view-width', `${MODES[mode].width || window.innerWidth}px`);
+
+    applyLabels(mode);
+
+    setTimeout(() => window.dispatchEvent(new Event('resize')), 40);
+    setTimeout(() => window.dispatchEvent(new Event('resize')), 220);
   }
 
   function setViewMode(mode) {
-    const safeMode = mode === 'desktop' ? 'desktop' : 'mobile';
-    localStorage.setItem(STORAGE_KEY, safeMode);
-    applyViewMode(safeMode);
+    const next = safeMode(mode);
+    localStorage.setItem(STORAGE_KEY, next);
+    applyViewMode(next);
   }
 
   function currentMode() {
-    return localStorage.getItem(STORAGE_KEY) === 'desktop' ? 'desktop' : 'mobile';
+    return safeMode(localStorage.getItem(STORAGE_KEY) || 'mobile');
+  }
+
+  function bindButtons() {
+    const pairs = [
+      ['mobileViewBtn', 'mobile'],
+      ['tabletViewBtn', 'tablet'],
+      ['desktopViewBtn', 'desktop']
+    ];
+
+    pairs.forEach(([id, mode]) => {
+      const btn = document.getElementById(id);
+      if (!btn || btn.dataset.viewModeBound) return;
+      btn.dataset.viewModeBound = '1';
+      btn.addEventListener('click', () => setViewMode(mode));
+    });
   }
 
   function init() {
-    const mobileBtn = document.getElementById('mobileViewBtn');
-    const desktopBtn = document.getElementById('desktopViewBtn');
-
-    if (mobileBtn && !mobileBtn.dataset.viewModeBound) {
-      mobileBtn.dataset.viewModeBound = '1';
-      mobileBtn.addEventListener('click', () => setViewMode('mobile'));
-    }
-
-    if (desktopBtn && !desktopBtn.dataset.viewModeBound) {
-      desktopBtn.dataset.viewModeBound = '1';
-      desktopBtn.addEventListener('click', () => setViewMode('desktop'));
-    }
-
+    bindButtons();
     applyViewMode(currentMode());
   }
 
   window.addEventListener('load', () => setTimeout(init, 80));
-  document.addEventListener('click', () => setTimeout(() => applyViewMode(currentMode()), 100), true);
-  document.addEventListener('change', () => setTimeout(() => applyViewMode(currentMode()), 100), true);
   window.addEventListener('resize', () => setTimeout(() => applyViewMode(currentMode()), 80));
+  window.addEventListener('orientationchange', () => setTimeout(() => applyViewMode(currentMode()), 250));
+  document.addEventListener('click', () => setTimeout(() => applyViewMode(currentMode()), 120), true);
+  document.addEventListener('change', () => setTimeout(() => applyViewMode(currentMode()), 120), true);
+
+  try {
+    const langTabs = document.querySelector('.language-tabs');
+    if (langTabs) {
+      new MutationObserver(() => setTimeout(() => applyViewMode(currentMode()), 80))
+        .observe(langTabs, { attributes: true, childList: true, subtree: true });
+    }
+  } catch {}
 
   setTimeout(init, 100);
   setTimeout(init, 500);
