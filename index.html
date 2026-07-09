@@ -1,222 +1,206 @@
 <!doctype html>
-<html lang="en">
+<html lang="tr">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-  <title>Product Request Form</title>
-  <link rel="manifest" href="manifest.webmanifest?v=c147-stable-view-modes" />
-  <link rel="stylesheet" href="style.css?v=c147-stable-view-modes" />
-  <meta name="theme-color" content="#111827" />
-  <meta name="apple-mobile-web-app-capable" content="yes" />
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-
-  <link rel="icon" type="image/png" href="assets/app-icons/favicon.png?v=c147-stable-view-modes" />
-  <link rel="apple-touch-icon" href="assets/app-icons/apple-touch-icon.png?v=c147-stable-view-modes" />
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Pülümür Automation Studio</title>
+  <link rel="stylesheet" href="style.css?v=8.2.38" />
 </head>
 <body>
-  <header class="app-header no-print">
-    <div class="brand-block">
-      <div class="brand-headline">
-        <div class="view-mode-tabs" role="group" aria-label="View mode">
-          <button id="mobileViewBtn" class="view-mode-tab active" type="button">Mobil Görünüm</button>
-          <button id="tabletViewBtn" class="view-mode-tab" type="button">Tablet Görünüm</button>
-          <button id="desktopViewBtn" class="view-mode-tab" type="button">Masaüstü Görünüm</button>
-        </div>
-        <div class="title-action-row">
-        <h1 data-i18n="appTitle">Product Request Form</h1>
-                <div class="header-actions">
-              <button id="resetOrderTopBtn" class="danger" type="button" data-i18n="newRequest">New Request</button>
-<button id="installBtn" class="ghost hidden" type="button" data-i18n="install">Add to Home Screen</button>
-            </div>
-              </div>
-      <div class="language-tabs" aria-label="Language">
-          <button type="button" data-lang="tr">Türkçe</button>
-          <button type="button" data-lang="en">English</button>
-          <button type="button" data-lang="de">Deutsch</button>
-          <button type="button" data-lang="fr">Français</button>
-          <button type="button" data-lang="he">עברית</button>
-        </div>
+  <header class="app-header">
+    <div class="brand-row">
+      <div class="brand-mark">PLMR</div>
+      <div>
+        <h1>Pülümür Automation Studio</h1>
+        <p>Parametrik Çizim ve Proje Otomasyonu · Pergo Rise · Web DXF V8.2.38 · Excel Dropdown / Ray Rule Fix</p>
       </div>
-</div>
-</header>
+    </div>
+    <div class="top-actions">
+      <button id="helpBtn" class="soft-btn" type="button">Yardım</button>
+      <button id="calcBtn" class="accent-btn" type="button">Pülümür Hesaplayıcı</button>
+    </div>
+  </header>
 
-  <nav id="formQuickNav" class="mobile-quick-nav no-print form-quick-nav hidden" aria-label="Form sections"></nav>
-
-  <main class="app-shell">
-    <section id="companySection" class="panel no-print">
-      <div class="section-title">
-        <span class="step">1</span>
-        <div>
-          <h2 data-i18n="companyDetails">Company Details</h2>
-          <p data-i18n="companyHelp">Fill once. Saved on this device.</p>
-        </div>
-      </div>
-
-      <div class="grid two">
-        <label><span data-i18n="companyName">Company Name</span>
-          <input id="companyName" autocomplete="organization" placeholder="Company name" data-i18n-placeholder="companyNamePlaceholder" />
+  <main class="layout">
+    <section class="panel input-panel" aria-label="Parametreler">
+      <div class="selector-grid">
+        <label>
+          <span>Ürün</span>
+          <select id="product">
+            <option selected>Pergo Rise</option>
+          </select>
         </label>
-        <label><span data-i18n="contactPerson">Contact Person</span>
-          <input id="contactPerson" autocomplete="name" placeholder="Contact person" data-i18n-placeholder="contactPersonPlaceholder" />
+        <label>
+          <span>Module</span>
+          <select id="moduleName">
+            <option selected>Module 1</option>
+          </select>
         </label>
-        <label><span data-i18n="phone">Phone</span>
-          <input id="phone" autocomplete="tel" placeholder="Phone" data-i18n-placeholder="phonePlaceholder" />
-        </label>
-        <label><span data-i18n="email">E-mail</span>
-          <input id="email" autocomplete="email" placeholder="E-mail" data-i18n-placeholder="emailPlaceholder" />
+        <label>
+          <span>Çizim Motoru</span>
+          <select id="engine">
+            <option selected>Web DXF</option>
+          </select>
         </label>
       </div>
-      <div class="actions compact">
-        <button id="saveProfileBtn" type="button" data-i18n="saveCompany">Save Company Details</button>
-        <button id="clearProfileBtn" class="secondary" type="button" data-i18n="clear">Clear</button>
-      </div>
-    </section>
 
-    <section id="orderSection" class="panel no-print order-section">
-      <div class="section-title">
-        <span class="step">2</span>
-        <div>
-          <h2 data-i18n="orderDetails">Order Details</h2>
-          <p data-i18n="orderHelp">Set order name and date before selecting the product.</p>
-        </div>
-      </div>
-      <div class="grid two">
-        <label><span data-i18n="orderNoLabel">Order Name / No</span>
-          <input id="orderNo" placeholder="Auto / manual" data-i18n-placeholder="orderNoPlaceholder" />
-        </label>
-        <label><span data-i18n="orderDate">Order Date</span>
-          <input id="orderDate" type="date" />
-        </label>
-      </div>
-    </section>
+      <div class="form-grid">
+        <fieldset>
+          <legend>Proje Bilgileri</legend>
+          <label><span>Müşteri</span><input id="customer" autocomplete="organization" /></label>
+          <label><span>Proje</span><input id="project" /></label>
+          <label><span>Versiyon</span><input id="version" value="01" /></label>
+          <label><span>Çizen</span><input id="drawnBy" value="AYETULLAH KILINC" /></label>
+          <label><span>Tarih</span><input id="date" type="date" /></label>
+        </fieldset>
 
-    <section id="productSection" class="panel no-print">
-      <div class="section-title">
-        <span class="step">3</span>
-        <div>
-          <h2 data-i18n="selectProductMeasurements">Select Product & Measurements & Options</h2>
-          <p data-i18n="measurementsHelp">Related fields are grouped under the same heading.</p>
-        </div>
-      </div>
-      <div class="product-select-wrap">
-        <div class="product-select-grid">
-          <label><span data-i18n="productFamily">Ürün Ailesi</span>
-            <select id="productFamilySelect"></select>
-          </label>
-          <label><span data-i18n="productGroup">Ürün Grubu</span>
-            <select id="productGroupSelect"></select>
-          </label>
-          <label><span data-i18n="productSubGroup">Ürün Alt Grubu</span>
-            <select id="productSubGroupSelect"></select>
-          </label>
-        </div>
-        <p id="productGroupHint" class="product-hint"></p>
-        <div id="technicalSheetWrap" class="technical-sheet-wrap hidden">
-          <button id="technicalSheetBtn" class="secondary technical-sheet-btn" type="button" data-i18n="technicalSheet">Technical Sheet</button>
-        </div>
-      </div>
+        <fieldset>
+          <legend>Sistem Ölçüleri</legend>
+          <label><span>Sistem Adedi</span><input id="systemCount" type="text" inputmode="text" value="1" placeholder="Örn. 1" /></label>
+          <label><span>Genişlik <b>(mm)</b></span><input id="width" type="text" inputmode="text" placeholder="Örn. 4000 veya 3000;100;2500;NO" /></label>
+          <label><span>Açılım <b>(mm)</b></span><input id="opening" type="text" inputmode="text" placeholder="Örn. 6000 veya 4500;5200" /></label>
+          <label><span>Arka Yükseklik <b>(mm)</b></span><input id="rearHeight" type="text" inputmode="text" placeholder="Örn. 3200 veya 3200;3400" /></label>
+          <label><span>Ön Yükseklik <b>(mm)</b> <em>Oluk Altı</em></span><input id="frontHeight" type="text" inputmode="text" placeholder="Örn. 2600" /></label>
+          <label><span>Ray Sayısı <b>Bir Sistem</b></span><input id="rayCount" type="text" inputmode="text" placeholder="Örn. 2 veya 2;3;2" /></label>
+          <label><span>Dikme Sayısı <b>Tüm Sistem</b></span><input id="postCount" type="text" inputmode="text" placeholder="Örn. 2 veya boş: otomatik" /></label>
+        </fieldset>
 
-      <div id="formArea"></div>
+        <fieldset class="options-fieldset">
+          <legend>Opsiyonlar</legend>
+          <label><span>Parapet</span><input id="parapet" list="yesNoOptions" value="HAYIR" /></label>
+          <label><span>Parapet Yüksekliği <b>(mm)</b></span><input id="parapetHeight" type="text" inputmode="text" placeholder="-" /></label>
+          <label><span>Cam Kaydı</span><input id="glassTrack" list="yesNoOptions" value="HAYIR" /></label>
+          
+          <label><span>Structure Color</span><input id="structureColor" class="upper-table-field" list="structureColorOptions" placeholder="-" /></label>
+          <label><span>Fabric</span><input id="fabric" class="upper-table-field" list="fabricOptions" placeholder="-" /></label>
+          <label><span>Fabric Profiles</span><input id="fabricProfiles" class="upper-table-field" list="fabricProfileOptions" placeholder="-" /></label>
+          <label><span>Motor</span><input id="motor" class="upper-table-field" list="motorOptions" placeholder="-" /></label>
+          <label><span>Remote</span><input id="remote" class="upper-table-field" list="remoteOptions" placeholder="-" /></label>
+          <label><span>LED</span><input id="led" class="upper-table-field" list="yesNoOptions" placeholder="-" /></label>
+          <label><span>Dimmer</span><input id="dimmer" class="upper-table-field" list="yesNoOptions" placeholder="-" /></label>
+          <label class="span-two extras-field"><span>Extras / Notes</span><textarea id="extras" class="upper-table-field" rows="3" placeholder="-"></textarea></label>
+        </fieldset>
 
-      <label class="notes-input wide"><span data-i18n="notes">Notes</span>
-        <textarea id="notes" rows="5" maxlength="414" placeholder="Optional notes" data-i18n-placeholder="notesPlaceholder"></textarea><small class="field-hint">Max. 5 lines | 82 characters per line</small>
-      </label>
-    </section>
-
-    <section id="pdfSection" class="panel preview-panel">
-      <div class="section-title no-print">
-        <span class="step">4</span>
-        <div>
-          <h2 data-i18n="pdfPreview">PDF Preview</h2>
-          <p data-i18n="pdfPreviewHelp">Create a clean A4 PDF and download or share it.</p>
-        </div>
-      </div>
-
-      <div class="actions sticky-actions no-print">
-        <button id="downloadPdfBtn" type="button" data-i18n="downloadPdf">Create / Download PDF</button>
-        <button id="sharePdfBtn" class="secondary" type="button" data-i18n="sharePdf">Share PDF</button>
-      </div>
-
-      <article id="pdfPreview" class="a4-sheet">
-        <img class="pdf-template-bg" src="assets/pdf/antet-template.jpg" alt="" aria-hidden="true" />
-        <div class="pdf-template-meta">
-          <p><strong data-i18n="pdfDate">Date:</strong> <span data-preview="orderDate"></span></p>
-          <p><strong data-i18n="pdfOrder">Order:</strong> <span data-preview="orderNo"></span></p>
-        </div>
-        <div class="pdf-content-start"></div>
-
-        <div class="pdf-section two-col">
-          <div>
-            <h3 data-i18n="company">Company</h3>
-            <p><strong data-i18n="pdfCompany">Company:</strong> <span data-preview="companyName"></span></p>
-            <p><strong data-i18n="pdfContact">Contact:</strong> <span data-preview="contactPerson"></span></p>
-            <p><strong data-i18n="pdfPhone">Phone:</strong> <span data-preview="phone"></span></p>
-            <p><strong data-i18n="pdfEmail">E-mail:</strong> <span data-preview="email"></span></p>
+        <fieldset>
+          <legend>Ek Opsiyonlar</legend>
+          <label><span>Üçgen Doğrama</span><input id="triangleJoinery" list="yesNoOptions" value="HAYIR" /></label>
+          <label><span>Su Çıkışı Standart mı?</span><input id="waterStandard" list="yesNoOptions" value="EVET" /></label>
+          <div class="info-box">
+            Bu <strong>V8.2 PERI01 Sayfa1 sürümü</strong> ray/dikme otomatik hesabını ve çoklu ray sayısı girişini PERI01 makro mantığına göre işler. Genişlik, açılım, arka yükseklik ve ray sayısında ; kullanımı ve genişlikte NO ara boşluk modu desteklenir.
           </div>
-          <div>
-            <h3 data-i18n="product">Product</h3>
-            <p><strong data-i18n="pdfFamily">Family:</strong> <span data-preview="productFamily"></span></p>
-            <p><strong data-i18n="pdfGroup">Group:</strong> <span data-preview="productGroup"></span></p>
-            <p><strong data-i18n="pdfSubGroup">Sub Group:</strong> <span data-preview="productSubGroup"></span></p>
-            <p><strong data-i18n="pdfProduct">Product:</strong> <span data-preview="productName"></span></p>
-          </div>
-        </div>
+        </fieldset>
+      </div>
 
-        <div id="previewSections"></div>
-
-        <div class="pdf-section notes-box">
-          <h3 data-i18n="notes">Notes</h3>
-          <p data-preview="notes"></p>
-        </div>
-      </article>
+      <div class="action-row">
+        <button id="generateBtn" class="primary-btn" type="button">DXF Oluştur ve İndir</button>
+        <button id="pdfBtn" class="secondary-btn" type="button">PDF Oluştur ve İndir</button>
+        <button id="previewBtn" class="soft-btn" type="button">Önizlemeyi Yenile</button>
+        <button id="resetBtn" class="danger-btn" type="button">Değerleri Resetle</button>
+      </div>
     </section>
+
+    <aside class="panel preview-panel">
+      <div class="preview-head">
+        <div>
+          <h2>Çizim Önizleme</h2>
+          <p id="statusText">Ölçüleri girince önizleme otomatik güncellenir.</p>
+        </div>
+        <div class="preview-tools">
+          <button id="expandPreviewBtn" class="soft-btn preview-tool-btn" type="button">Önizlemeyi Büyüt</button>
+          <button id="fitPreviewBtn" class="secondary-btn preview-tool-btn" type="button">Çizimi Sığdır</button>
+          <span class="pill">mm · DXF / PDF · A0 · Premium</span>
+        </div>
+      </div>
+      <div id="preview" class="preview-canvas" role="img" aria-label="DXF çizim önizlemesi"></div>
+      <details class="notes" open>
+        <summary>Bu deneme sürümünde çizilenler</summary>
+        <p>Üst görünüş, ön görünüş, yan görünüş, raylar, dikmeler, oluk, duvar/parapet, temel ölçülendirme ve proje bilgi tablosu.</p>
+      </details>
+    </aside>
   </main>
 
-  <div id="colorChartModal" class="color-chart-modal no-print" hidden>
-    <div class="color-chart-panel" role="dialog" aria-modal="true" aria-labelledby="colorChartTitle">
-      <div class="color-chart-head">
-        <div>
-          <h2 id="colorChartTitle" data-i18n="Color Chart">Color Chart</h2>
-          <p id="colorChartHelp" data-i18n="Color Chart Help">Select a color from the list. If it is not listed, close this panel and write the color code manually.</p>
-        </div>
-        <button id="colorChartClose" class="ghost color-chart-close" type="button" data-color-chart-close data-i18n="Close">Close</button>
+  <datalist id="yesNoOptions">
+    <option value="EVET"></option>
+    <option value="HAYIR"></option>
+  </datalist>
+  <datalist id="motorOptions">
+    <option value="-"></option>
+    <option value="RISING MOTOR"></option>
+    <option value="SOMFY RTS"></option>
+    <option value="SOMFY IO"></option>
+  </datalist>
+  <datalist id="remoteOptions">
+    <option value="-"></option>
+    <option value="RISING 6 CHANNELS"></option>
+    <option value="SITUO 2 RTS"></option>
+    <option value="SITUO 5 RTS"></option>
+    <option value="TELIS 16 RTS"></option>
+    <option value="SITUO 2 IO"></option>
+    <option value="SITUO 5 IO"></option>
+  </datalist>
+  <datalist id="structureColorOptions">
+    <option value="-"></option>
+    <option value="RAL 7016 TEXT."></option>
+    <option value="RAL 7016"></option>
+    <option value="RAL 9005"></option>
+    <option value="RAL 9016"></option>
+    <option value="RAL 1013"></option>
+  </datalist>
+  <datalist id="fabricOptions">
+    <option value="-"></option>
+    <option value="C 1602 - M (8116-1622)"></option>
+    <option value="C 1013"></option>
+    <option value="C 1015"></option>
+    <option value="C 7016"></option>
+  </datalist>
+  <datalist id="fabricProfileOptions">
+    <option value="-"></option>
+    <option value="RAL 1013"></option>
+    <option value="RAL 7016 TEXT."></option>
+    <option value="RAL 9016"></option>
+  </datalist>
+
+  <dialog id="calculatorDialog" class="modal">
+    <form method="dialog" class="modal-card">
+      <div class="modal-head">
+        <h2>Pülümür Hesaplayıcı</h2>
+        <button value="cancel" class="icon-btn" aria-label="Kapat">×</button>
       </div>
-      <div class="color-chart-scroll">
-        <div class="catalog-search-wrap">
-          <input id="catalogSearchInput" type="search" class="catalog-search-input" placeholder="Search code or name" autocomplete="off" />
-        </div>
-        <div id="colorCatalogTabs" class="color-catalog-tabs" hidden></div>
-        <div id="colorOptionList" class="color-option-list" aria-label="Color options"></div>
+      <p class="modal-sub">4 satırdan herhangi 3 tanesini doldur. Boş olan değer hesaplanır.</p>
+      <div class="calc-grid">
+        <label><span>Sistem Açısı (°)</span><input id="calcAngle" type="text" placeholder="Örn. 4.16 veya boş" /></label>
+        <label><span>Açılım (mm)</span><input id="calcOpening" type="text" placeholder="Örn. 4500;5200 veya boş" /></label>
+        <label><span>Arka Yükseklik (mm)</span><input id="calcRear" type="text" placeholder="Örn. 3200;3400 veya boş" /></label>
+        <label><span>Ön Yükseklik (mm)</span><input id="calcFront" type="text" placeholder="Örn. 2600 veya boş" /></label>
       </div>
-    </div>
-  </div>
-
-  <div id="toast" class="toast no-print"></div>
-
-  <script src="products.js?v=c147-stable-view-modes"></script>
-  <script src="assets.js?v=c147-stable-view-modes"></script>
-  <script src="assets-1.js?v=c147-stable-view-modes"></script>
-  <script src="assets-2.js?v=c147-stable-view-modes"></script>
-  <script src="assets-3.js?v=c147-stable-view-modes"></script>
-  <script src="assets-4.js?v=c147-stable-view-modes"></script>
-  <script src="color-catalogs.js?v=c147-stable-view-modes"></script>
-  <script src="pergo-rise-fabrics.js?v=c147-stable-view-modes"></script>
-  <script src="pdf-template-assets.js?v=c147-stable-view-modes"></script>
-  <script src="app.js?v=c147-stable-view-modes"></script>
-
-  <div id="technicalSheetModal" class="technical-sheet-modal hidden no-print" role="dialog" aria-modal="true" aria-labelledby="technicalSheetTitle">
-    <div class="technical-sheet-panel">
-      <div class="technical-sheet-bar">
-        <strong id="technicalSheetTitle" data-i18n="technicalSheet">Technical Sheet</strong>
-        <div class="technical-sheet-actions">
-          <a id="technicalSheetOpenLink" class="ghost technical-sheet-open-link" href="#" target="_blank" rel="noopener" data-i18n="openPdf">Open PDF</a>
-          <button id="technicalSheetCloseBtn" type="button" class="danger" data-i18n="close">Close</button>
-        </div>
+      <div id="calcResult" class="calc-result">Sonuç bekleniyor.</div>
+      <div class="modal-actions">
+        <button id="calcComputeBtn" type="button" class="primary-btn">Hesapla</button>
+        <button id="calcTransferBtn" type="button" class="secondary-btn">Sonucu Hücrelere Aktar</button>
+        <button id="calcClearBtn" type="button" class="soft-btn">Sıfırla</button>
       </div>
-      <iframe id="technicalSheetFrame" class="technical-sheet-frame" title="Technical Sheet"></iframe>
-    </div>
-  </div>
+    </form>
+  </dialog>
 
-  <script src="technical-sheet-path-fix.js?v=c147-stable-view-modes"></script>
+
+  <dialog id="helpDialog" class="modal help-modal">
+    <form method="dialog" class="modal-card help-card">
+      <div class="modal-head">
+        <h2>Yardım / Kullanım Kılavuzu</h2>
+        <button value="cancel" class="icon-btn" aria-label="Kapat">×</button>
+      </div>
+      <pre id="helpContent" class="help-content">Yükleniyor...</pre>
+      <div class="modal-actions">
+        <button value="cancel" type="submit" class="primary-btn">Kapat</button>
+      </div>
+    </form>
+  </dialog>
+
+  <script src="blocks/filteredBlocks.js?v=8.2.38"></script>
+  <script src="peri01ExcelBridge.js?v=8.2.38"></script>
+  <script src="peri01Geometry.js?v=8.2.38"></script>
+  <script src="dxfEngine.js?v=8.2.38"></script>
+  <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
+  <script src="app.js?v=8.2.38"></script>
 </body>
 </html>
