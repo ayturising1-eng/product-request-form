@@ -1,7 +1,0 @@
-PÜLÜMÜR AUTOMATION STUDIO v8.9.29
-
-- Yan görünüş otomatik ürün genişliği ve yüksekliğine 5 mm montaj payı eklendi.
-- Otomatik değerler ürün detay ekranında manuel düzenlenebilir kalır.
-- Cam kayıt bulunmayan ara yan pozlarda parapet net yükseklik ölçüsü oluk altını referans alır.
-- Kenar pozlarda cam kayıt varsa profilin -Y dış kenarı referansı korunur.
-- Ön dikme silme sonrası görülen geçici magenta bozulma bu sürümde değiştirilmedi; olası neden raporda açıklanmıştır.
