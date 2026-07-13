@@ -1,8 +1,0 @@
-PÜLÜMÜR AUTOMATION STUDIO v8.9.28
-
-- Yan görünüşte parapet üstü net düşey ölçülerin üst referansı cam kayıt profilinin -Y dış kenarına bağlandı.
-- Yan kayıt profili En değeri değiştirildiğinde ilgili net yükseklik ölçüleri otomatik revize olur.
-- Yan görünüş ürünlerinin otomatik başlangıç yüksekliği ve “Ürünü Alana Uydur” hesabı aynı net cam kayıt alt kotunu kullanır.
-- Üç ve daha fazla pozda, tek parapet parçasına sahip ara pozların düşey zincir ölçüsü ön dikmenin yanına taşındı.
-- Bölünmüş parapetlerin segment bazlı düşey ölçü dağılımı korunmuştur.
-- Manuel ürün ölçüleri, zoom/pan, büyük önizleme ve Undo/Redo davranışları korunmuştur.
