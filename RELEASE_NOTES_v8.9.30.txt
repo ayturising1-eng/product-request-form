@@ -1,0 +1,22 @@
+PÜLÜMÜR AUTOMATION STUDIO v8.9.30
+13.07.2026
+
+ANA GELİŞTİRMELER
+- Sol, sağ ve etkinleştirilmiş ara poz yan görünüşleri bağımsız düzenleme alanlarına dönüştürüldü.
+- Sağ yan görünüşte destek dikmesi, parapet, ürün, ölçü ve üst görünüş kesit senkronizasyonu aktif edildi.
+- Cam Kaydı ve Üçgen Doğrama sol/sağ taraf bazlı hale getirildi. Ana formdaki EVET iki tarafı birlikte açar; toolbox üzerinden tek taraf kapatılabilir.
+- Cam kaydı profil düzenleme ekranına taraf bazlı Sil ve Uzat/Kısalt eklendi. Duvara Oturt butonu gelecekteki geliştirme için pasif tutuldu.
+- Ön dikmeye tıklama, destek dikmesine benzer profil düzenleme ekranına bağlandı. Dikme adedi ve yerleşim mantığı toolbox içindeki Dikme Ayarları butonuna taşındı.
+- Toolbox'a Çoklu Profil Uzat eklendi.
+- Poz sayısı 3 ve üzerindeyken ara yan görünüşler Düzenle komutuyla sol yan görünüşün bağımsız kopyası olarak etkinleştirilebilir.
+- Ara poz kopyalamasında ürün poz numaraları benzersiz olarak yeniden atanır.
+- Tüm yeni durumlar proje snapshot, Undo/Redo, DXF ve eski .plmr dosyalarıyla uyumludur.
+
+KORUNAN KURALLAR
+- Büyük önizleme işlem sırasında kapanmaz; zoom ve pan korunur.
+- Bir yan görünüşteki taraf bazlı silme/düzenleme diğer yan görünüşü değiştirmez.
+- Önizleme için kullanılan Düzenle etkileşimleri DXF/PDF dışa aktarım geometrisine girmez.
+
+BİLİNÇLİ OLARAK PASİF / KAPSAM DIŞI
+- Cam kaydı Duvara Oturt butonu bu sürümde pasiftir.
+- İki raylı sistemlerin NO kuralına bağlı aralık düzenlemesi değiştirilmemiştir.

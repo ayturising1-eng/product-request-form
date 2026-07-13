@@ -1,0 +1,11 @@
+PÜLÜMÜR AUTOMATION STUDIO v8.9.25 — SEGMENT BAZLI DÜŞEY PARAPET ÖLÇÜLERİ
+
+- Bölünmüş parapetlerde düşey ölçüler çizimin tek tarafında global olarak yığılmaz.
+- Her parapet segmenti kendi X alanında yerel bir zincir ölçü hattı taşır.
+- Her segment için parapet yüksekliği ve oluk altı-parapet üstü net mesafesi gösterilir.
+- İki ölçü aynı X hattını paylaşır; segment içinde nizami bir zincir oluşturur.
+- Aynı yüksekliğe sahip segmentler de ayrı ayrı ölçülür.
+- Ön ve yan görünüş aynı yerleşim mantığını kullanır.
+- Ön görünüşte mevcut ölçü kimlikleri korunur; manuel ölçü ofsetleri kaybolmaz.
+- Yan görünüş ölçüleri dikey, bilgi amaçlı ve poz filtresiyle uyumlu metadata taşır.
+- Ölçü sürükleme, Undo/Redo, .plmr, PDF, DXF, büyük önizleme ve zoom/pan kuralları korunur.

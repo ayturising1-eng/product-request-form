@@ -1,0 +1,9 @@
+PÜLÜMÜR AUTOMATION STUDIO v8.9.24 — CLICKABLE SELECTION MARKERS
+
+- Çoklu seçim kutuları artık doğrudan tıklanabilir.
+- Ölçü ve ürün seçim kutuları aynı kaynak seçim kaydını kullanır.
+- Kutular Tab ile odaklanabilir; Enter/Space ile seçilebilir.
+- Poz 1, Poz 2, Poz 3... filtreleri tek kolon halinde alt alta gösterilir.
+- Ölçü durumu ifadeleri sadeleştirildi: Düzenlenebilir / Bilgi amaçlı.
+- Filtre menüsü yazı boyutu yaklaşık 2 px küçültüldü.
+- Excel tipi üç durumlu Hepsi kutusu, eleman türü filtresi ve kalıcı hassas imleç korunur.

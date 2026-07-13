@@ -1,28 +1,24 @@
 {
-  "name": "Product Request Form",
-  "short_name": "Request Form",
+  "name": "Pülümür Automation Studio",
+  "short_name": "Pülümür Studio",
+  "description": "Web tabanlı DXF ve PDF üretim aracı.",
   "start_url": "./index.html",
+  "scope": "./",
   "display": "standalone",
-  "background_color": "#f3f4f6",
-  "theme_color": "#111827",
+  "background_color": "#eef3f8",
+  "theme_color": "#0d5d5f",
   "icons": [
     {
-      "src": "assets/app-icons/app-icon-192.png",
+      "src": "icons/icon-192.png",
       "sizes": "192x192",
       "type": "image/png",
-      "purpose": "any"
+      "purpose": "any maskable"
     },
     {
-      "src": "assets/app-icons/app-icon-512.png",
+      "src": "icons/icon-512.png",
       "sizes": "512x512",
       "type": "image/png",
-      "purpose": "any"
-    },
-    {
-      "src": "assets/app-icons/app-icon-512.png",
-      "sizes": "512x512",
-      "type": "image/png",
-      "purpose": "maskable"
+      "purpose": "any maskable"
     }
   ]
 }

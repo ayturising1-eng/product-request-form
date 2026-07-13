@@ -1,0 +1,8 @@
+PÜLÜMÜR AUTOMATION STUDIO v8.9.21
+
+- Toolbox komutlarında işleme göre otomatik eleman/ölçü filtresi eklendi.
+- Yatay ve dikey ölçü çizgileri önizlemede eksenine kilitli olarak sürüklenebilir hale getirildi.
+- Ölçü önizleme ofsetleri proje kaydı ve Undo/Redo geçmişine eklendi.
+- Ön ve sol yan görünüş segmentli parapet genişlik ölçüleri eklendi.
+- Parapet genişlikleri ölçüye tıklanarak düzenlenebilir hale getirildi; son parça ters yönde çalışır.
+- Büyük önizleme, zoom ve pan koruma kuralları devam eder.

@@ -1,8933 +1,6687 @@
-window.APP_VERSION = 'C132-AWNING-HEADER-FIX';
-const DATA = window.PRODUCT_DATA;
-const $ = (selector) => document.querySelector(selector);
-const $$ = (selector) => Array.from(document.querySelectorAll(selector));
-
-const state = {
-  selectedFamilyId: 'bioclimatic',
-  selectedGroupId: 'bcube',
-  selectedSubGroupId: 'galaxy',
-  selectedProductId: 'galaxy',
-  language: 'en',
-  projectPositionCounts: {}
-};
-
-const STORAGE_PROFILE = 'prf_profile_v2';
-const STORAGE_ORDER = 'prf_order_c129-technical-sheet-close-fix_no_preview_unifoliate_fixedglass';
-const STORAGE_LANGUAGE = 'prf_language_v1';
-
-const COLOR_FIELD_LABELS = new Set([
-  'structure',
-  'fabric profile',
-  'louver blade',
-  'panel'
-]);
-const FABRIC_FIELD_LABELS = new Set([
-  'fabric',
-  'pergola fabric',
-  'screen fabric'
-]);
-const FINISH_OPTIONS = window.PRODUCT_FINISH_OPTIONS || ['Glossy', 'Matt', 'Texture'];
-const COLOR_OPTIONS = [
-  { value: 'RAL 1013', code: 'RAL 1013', image: 'assets/color-options/ral-1013-oyster.jpg' },
-  { value: 'RAL 1035', code: 'RAL 1035', image: 'assets/color-options/ral-1035-pearl-beige.jpg' },
-  { value: 'RAL 1313', code: 'RAL 1313', image: 'assets/color-options/ral-1313-oyster-sand-paper.jpg' },
-  { value: 'RAL 7016', code: 'RAL 7016', image: 'assets/color-options/ral-7016-anthracite-grey.jpg' },
-  { value: 'RAL 7016', code: 'RAL 7016', image: 'assets/color-options/ral-7016-anthracite-sand-paper.jpg' },
-  { value: 'RAL 7039', code: 'RAL 7039', image: 'assets/color-options/ral-7039-quarzgrau.jpg' },
-  { value: 'RAL 7106', code: 'RAL 7106', image: 'assets/color-options/ral-7106-sepia-brown-sand-paper.jpg' },
-  { value: 'RAL 7421', code: 'RAL 7421', image: 'assets/color-options/ral-7421-grey-camouflage-sand-paper.jpg' },
-  { value: 'RAL 9003', code: 'RAL 9003', image: 'assets/color-options/ral-9003-traffic-white-sand-paper.jpg' },
-  { value: 'RAL 9005', code: 'RAL 9005', image: 'assets/color-options/ral-9005-jet-black.jpg' },
-  { value: 'RAL 9005', code: 'RAL 9005', image: 'assets/color-options/ral-9005-jet-black-sand-paper.jpg' },
-  { value: 'RAL 9006', code: 'RAL 9006', image: 'assets/color-options/ral-9006-weissaluminium.jpg' },
-  { value: 'RAL 9007', code: 'RAL 9007', image: 'assets/color-options/ral-9007-graualuminium.jpg' },
-  { value: 'RAL 9016', code: 'RAL 9016', image: 'assets/color-options/ral-9016-traffic-white.jpg' },
-  { value: 'Cappuccino', code: 'Cappuccino', name: 'Cappuccino', detail: 'Matt Finish', image: 'assets/color-options/cappuccino.jpg' },
-  { value: 'A-4252-V1-118', code: 'A-4252-V1-118', name: 'Wood Transfer', image: 'assets/color-options/a-4252-v1-118.jpg' },
-  { value: 'A-4395-V1-118', code: 'A-4395-V1-118', name: 'Wood Transfer', image: 'assets/color-options/a-4395-v1-118.jpg' },
-  { value: 'A-4513-V1-119', code: 'A-4513-V1-119', name: 'Wood Transfer', image: 'assets/color-options/a-4513-v1-119.jpg' }
-];
-const FABRIC_OPTIONS = [
-  { value: '8116 / 9002 | White Texture', code: '8116 / 9002', name: 'White Texture', image: 'assets/fabric-options/b-8116-9002.jpg' },
-  { value: '8116 / 1622 | Cream Texture', code: '8116 / 1622', name: 'Cream Texture', image: 'assets/fabric-options/b-8116-1622.jpg' },
-  { value: '8290 / 9002 | White Glossy', code: '8290 / 9002', name: 'White Glossy', image: 'assets/fabric-options/8290-9002.jpg' },
-  { value: '8290 / 1622 | Cream Matt', code: '8290 / 1622', name: 'Cream Matt', image: 'assets/fabric-options/8290-1622.jpg' },
-  { value: '8290 / 7024 | Dark Grey Matt', code: '8290 / 7024', name: 'Dark Grey Matt', image: 'assets/fabric-options/8290-7024.jpg' },
-  { value: '8118 / 9002 | White 3D Texture', code: '8118 / 9002', name: 'White 3D Texture', image: 'assets/fabric-options/8118-9002.jpg' },
-  { value: '8118 / 1622 | Cream 3D Texture', code: '8118 / 1622', name: 'Cream 3D Texture', image: 'assets/fabric-options/8118-1622.jpg' },
-  { value: '8118 / 7500 | Silver 3D Texture', code: '8118 / 7500', name: 'Silver 3D Texture', image: 'assets/fabric-options/8118-7500.jpg' },
-  { value: '8118 / 7024 | Dark Grey 3D Texture', code: '8118 / 7024', name: 'Dark Grey 3D Texture', image: 'assets/fabric-options/8118-7024.jpg' },
-  { value: '8118 / 7340 | Anthracite 3D Texture', code: '8118 / 7340', name: 'Anthracite 3D Texture', image: 'assets/fabric-options/8118-7340.jpg' },
-  { value: '8118 / 7999 | Black 3D Texture', code: '8118 / 7999', name: 'Black 3D Texture', image: 'assets/fabric-options/8118-7999.jpg' },
-  { value: '8118 / 5003 | Blue 3D Texture', code: '8118 / 5003', name: 'Blue 3D Texture', image: 'assets/fabric-options/8118-5003.jpg' },
-  { value: '666 1X1 | White Thermofoam', code: '666 1X1', name: 'White Thermofoam', image: 'assets/fabric-options/666-1x1.jpg' },
-  { value: '666 8X2 | Grey Thermofoam', code: '666 8X2', name: 'Grey Thermofoam', image: 'assets/fabric-options/666-8x2.jpg' }
-];
-
-const LANGUAGE_META = {
-  tr: { label: 'Türkçe', htmlLang: 'tr', dir: 'ltr' },
-  en: { label: 'English', htmlLang: 'en', dir: 'ltr' },
-  de: { label: 'Deutsch', htmlLang: 'de', dir: 'ltr' },
-  fr: { label: 'Français', htmlLang: 'fr', dir: 'ltr' },
-  he: { label: 'עברית', htmlLang: 'he', dir: 'rtl' }
-};
-
-const I18N = {
-  en: {
-    appTitle: 'Product Request Form',
-    mobileSubtitle: 'Mobile PDF request app',
-    newRequest: 'New Request',
-    install: 'Add to Home Screen',
-    navCompany: 'Company',
-    navProduct: 'Product',
-    navOrder: 'Order',
-    navPdf: 'PDF',
-    companyDetails: 'Company Details',
-    companyHelp: 'Fill once. Saved on this device.',
-    companyName: 'Company Name',
-    companyNamePlaceholder: 'Company name',
-    contactPerson: 'Contact Person',
-    contactPersonPlaceholder: 'Contact person',
-    phone: 'Phone',
-    phonePlaceholder: 'Phone',
-    email: 'E-mail',
-    emailPlaceholder: 'E-mail',
-    saveCompany: 'Save Company Details',
-    clear: 'Clear',
-    selectProduct: 'Select Product',
-    selectProductHelp: 'Fields change automatically by product.',
-    selectProductMeasurements: 'Select Product & Measurements & Options',
-    orderHelp: 'Set order name and date before selecting the product.',
-    productFamily: 'Product Family',
-    productGroup: 'Product Group',
-    productSubGroup: 'Product Sub Group',
-    measurementsOptions: 'Measurements & Options',
-    measurementsHelp: 'Related fields are grouped under the same heading.',
-    orderDetails: 'Order Details',
-    orderNoLabel: 'Order Name / No',
-    orderNoPlaceholder: 'Auto / manual',
-    orderDate: 'Order Date',
-    notes: 'Notes',
-    notesPlaceholder: 'Optional notes',
-    pdfPreview: 'PDF Preview',
-    pdfPreviewHelp: 'Create a clean A4 PDF and download or share it.',
-    downloadPdf: 'Create / Download PDF',
-    sharePdf: 'Share PDF',
-    pdfTitle: 'PRODUCT REQUEST FORM',
-    pdfDate: 'Date:',
-    pdfOrder: 'Order:',
-    company: 'Company',
-    product: 'Product',
-    pdfCompany: 'Company:',
-    pdfContact: 'Contact:',
-    pdfPhone: 'Phone:',
-    pdfEmail: 'E-mail:',
-    pdfFamily: 'Family:',
-    pdfGroup: 'Group:',
-    pdfSubGroup: 'Sub Group:',
-    pdfProduct: 'Product:',
-    select: 'Select',
-    none: 'None',
-    selectFamilyHint: 'Select a product family.',
-    formWillBeAdded: 'form details will be added in the next step.',
-    baseGalaxyFormActive: 'Galaxy base form active',
-    productForm: 'Product Form',
-    companySaved: 'Company details saved.',
-    companyCleared: 'Company details cleared.',
-    newRequestOpened: 'New request opened.',
-    pdfCreated: 'PDF created.',
-    shareOpened: 'Share sheet opened.',
-    shareUnsupported: 'This browser does not support file sharing. PDF downloaded.',
-    shareCancelled: 'Share cancelled or unsupported.'
-  },
-  tr: {
-    appTitle: 'Ürün Talep Formu',
-    mobileSubtitle: 'Mobil PDF talep uygulaması',
-    newRequest: 'Yeni Talep',
-    install: 'Ana Ekrana Ekle',
-    navCompany: 'Firma',
-    navProduct: 'Ürün',
-    navOrder: 'Sipariş',
-    navPdf: 'PDF',
-    companyDetails: 'Firma Bilgileri',
-    companyHelp: 'Bir kez doldurun. Bu cihazda saklanır.',
-    companyName: 'Firma Adı',
-    companyNamePlaceholder: 'Firma adı',
-    contactPerson: 'İlgili Kişi',
-    contactPersonPlaceholder: 'İlgili kişi',
-    phone: 'Telefon',
-    phonePlaceholder: 'Telefon',
-    email: 'E-posta',
-    emailPlaceholder: 'E-posta',
-    saveCompany: 'Firma Bilgilerini Kaydet',
-    clear: 'Temizle',
-    selectProduct: 'Ürün Seçimi',
-    selectProductHelp: 'Alanlar ürüne göre otomatik değişir.',
-    selectProductMeasurements: 'Ürün Seçimi, Ölçüler ve Seçenekler',
-    orderHelp: 'Ürün seçmeden önce sipariş adı ve tarihini belirleyin.',
-    productFamily: 'Ürün Ailesi',
-    productGroup: 'Ürün Grubu',
-    productSubGroup: 'Ürün Alt Grubu',
-    measurementsOptions: 'Ölçüler ve Seçenekler',
-    measurementsHelp: 'İlgili alanlar aynı başlık altında gruplanır.',
-    orderDetails: 'Sipariş Bilgileri',
-    orderNoLabel: 'Sipariş Adı / No',
-    orderNoPlaceholder: 'Otomatik / manuel',
-    orderDate: 'Sipariş Tarihi',
-    notes: 'Notlar',
-    notesPlaceholder: 'Opsiyonel notlar',
-    pdfPreview: 'PDF Ön İzleme',
-    pdfPreviewHelp: 'Temiz bir A4 PDF oluşturun, indirin veya paylaşın.',
-    downloadPdf: 'PDF Oluştur / İndir',
-    sharePdf: 'PDF Paylaş',
-    pdfTitle: 'ÜRÜN TALEP FORMU',
-    pdfDate: 'Tarih:',
-    pdfOrder: 'Sipariş:',
-    company: 'Firma',
-    product: 'Ürün',
-    pdfCompany: 'Firma:',
-    pdfContact: 'İlgili:',
-    pdfPhone: 'Telefon:',
-    pdfEmail: 'E-posta:',
-    pdfFamily: 'Aile:',
-    pdfGroup: 'Grup:',
-    pdfSubGroup: 'Alt Grup:',
-    pdfProduct: 'Ürün:',
-    select: 'Seçiniz',
-    none: 'Yok',
-    selectFamilyHint: 'Ürün ailesi seçiniz.',
-    formWillBeAdded: 'için ürün formu sonraki aşamada eklenecek.',
-    baseGalaxyFormActive: 'Galaxy taban formu aktif',
-    productForm: 'Ürün Formu',
-    companySaved: 'Firma bilgileri kaydedildi.',
-    companyCleared: 'Firma bilgileri temizlendi.',
-    newRequestOpened: 'Yeni talep açıldı.',
-    pdfCreated: 'PDF oluşturuldu.',
-    shareOpened: 'Paylaşım ekranı açıldı.',
-    shareUnsupported: 'Bu tarayıcı dosya paylaşımını desteklemiyor. PDF indirildi.',
-    shareCancelled: 'Paylaşım iptal edildi veya desteklenmiyor.'
-  },
-  de: {
-    appTitle: 'Produktanfrageformular',
-    mobileSubtitle: 'Mobile PDF-Anfrage-App',
-    newRequest: 'Neue Anfrage',
-    install: 'Zum Startbildschirm',
-    navCompany: 'Firma',
-    navProduct: 'Produkt',
-    navOrder: 'Auftrag',
-    navPdf: 'PDF',
-    companyDetails: 'Firmendaten',
-    companyHelp: 'Einmal ausfüllen. Auf diesem Gerät gespeichert.',
-    companyName: 'Firmenname',
-    companyNamePlaceholder: 'Firmenname',
-    contactPerson: 'Kontaktperson',
-    contactPersonPlaceholder: 'Kontaktperson',
-    phone: 'Telefon',
-    phonePlaceholder: 'Telefon',
-    email: 'E-Mail',
-    emailPlaceholder: 'E-Mail',
-    saveCompany: 'Firmendaten speichern',
-    clear: 'Löschen',
-    selectProduct: 'Produkt auswählen',
-    selectProductHelp: 'Felder ändern sich automatisch je nach Produkt.',
-    selectProductMeasurements: 'Produkt, Maße und Optionen auswählen',
-    orderHelp: 'Auftragsname und Datum vor der Produktauswahl festlegen.',
-    productFamily: 'Produktfamilie',
-    productGroup: 'Produktgruppe',
-    productSubGroup: 'Produktuntergruppe',
-    measurementsOptions: 'Maße und Optionen',
-    measurementsHelp: 'Zugehörige Felder sind unter derselben Überschrift gruppiert.',
-    orderDetails: 'Auftragsdaten',
-    orderNoLabel: 'Auftragsname / Nr.',
-    orderNoPlaceholder: 'Automatisch / manuell',
-    orderDate: 'Auftragsdatum',
-    notes: 'Notizen',
-    notesPlaceholder: 'Optionale Notizen',
-    pdfPreview: 'PDF-Vorschau',
-    pdfPreviewHelp: 'Sauberes A4-PDF erstellen, herunterladen oder teilen.',
-    downloadPdf: 'PDF erstellen / herunterladen',
-    sharePdf: 'PDF teilen',
-    pdfTitle: 'PRODUKTANFRAGEFORMULAR',
-    pdfDate: 'Datum:',
-    pdfOrder: 'Auftrag:',
-    company: 'Firma',
-    product: 'Produkt',
-    pdfCompany: 'Firma:',
-    pdfContact: 'Kontakt:',
-    pdfPhone: 'Telefon:',
-    pdfEmail: 'E-Mail:',
-    pdfFamily: 'Familie:',
-    pdfGroup: 'Gruppe:',
-    pdfSubGroup: 'Untergruppe:',
-    pdfProduct: 'Produkt:',
-    select: 'Auswählen',
-    none: 'Keine',
-    selectFamilyHint: 'Produktfamilie auswählen.',
-    formWillBeAdded: 'Formulardetails werden im nächsten Schritt hinzugefügt.',
-    baseGalaxyFormActive: 'Galaxy-Basisformular aktiv',
-    productForm: 'Produktformular',
-    companySaved: 'Firmendaten gespeichert.',
-    companyCleared: 'Firmendaten gelöscht.',
-    newRequestOpened: 'Neue Anfrage geöffnet.',
-    pdfCreated: 'PDF erstellt.',
-    shareOpened: 'Teilen-Fenster geöffnet.',
-    shareUnsupported: 'Dieser Browser unterstützt keine Dateifreigabe. PDF wurde heruntergeladen.',
-    shareCancelled: 'Teilen abgebrochen oder nicht unterstützt.'
-  },
-  fr: {
-    appTitle: 'Formulaire de demande produit',
-    mobileSubtitle: 'Application mobile de demande PDF',
-    newRequest: 'Nouvelle demande',
-    install: "Ajouter à l'écran d'accueil",
-    navCompany: 'Société',
-    navProduct: 'Produit',
-    navOrder: 'Commande',
-    navPdf: 'PDF',
-    companyDetails: 'Informations société',
-    companyHelp: 'À remplir une fois. Enregistré sur cet appareil.',
-    companyName: 'Nom de la société',
-    companyNamePlaceholder: 'Nom de la société',
-    contactPerson: 'Contact',
-    contactPersonPlaceholder: 'Contact',
-    phone: 'Téléphone',
-    phonePlaceholder: 'Téléphone',
-    email: 'E-mail',
-    emailPlaceholder: 'E-mail',
-    saveCompany: 'Enregistrer la société',
-    clear: 'Effacer',
-    selectProduct: 'Sélection du produit',
-    selectProductHelp: 'Les champs changent automatiquement selon le produit.',
-    selectProductMeasurements: 'Sélection produit, dimensions et options',
-    orderHelp: 'Définissez le nom de commande et la date avant le produit.',
-    productFamily: 'Famille de produit',
-    productGroup: 'Groupe de produit',
-    productSubGroup: 'Sous-groupe de produit',
-    measurementsOptions: 'Dimensions et options',
-    measurementsHelp: 'Les champs associés sont regroupés sous le même titre.',
-    orderDetails: 'Détails de commande',
-    orderNoLabel: 'Nom / N° commande',
-    orderNoPlaceholder: 'Automatique / manuel',
-    orderDate: 'Date de commande',
-    notes: 'Notes',
-    notesPlaceholder: 'Notes optionnelles',
-    pdfPreview: 'Aperçu PDF',
-    pdfPreviewHelp: 'Créer, télécharger ou partager un PDF A4 propre.',
-    downloadPdf: 'Créer / Télécharger PDF',
-    sharePdf: 'Partager PDF',
-    pdfTitle: 'FORMULAIRE DE DEMANDE PRODUIT',
-    pdfDate: 'Date :',
-    pdfOrder: 'Commande :',
-    company: 'Société',
-    product: 'Produit',
-    pdfCompany: 'Société :',
-    pdfContact: 'Contact :',
-    pdfPhone: 'Téléphone :',
-    pdfEmail: 'E-mail :',
-    pdfFamily: 'Famille :',
-    pdfGroup: 'Groupe :',
-    pdfSubGroup: 'Sous-groupe :',
-    pdfProduct: 'Produit :',
-    select: 'Sélectionner',
-    none: 'Aucun',
-    selectFamilyHint: 'Sélectionnez une famille de produit.',
-    formWillBeAdded: 'les détails du formulaire seront ajoutés à l’étape suivante.',
-    baseGalaxyFormActive: 'Formulaire de base Galaxy actif',
-    productForm: 'Formulaire produit',
-    companySaved: 'Informations société enregistrées.',
-    companyCleared: 'Informations société effacées.',
-    newRequestOpened: 'Nouvelle demande ouverte.',
-    pdfCreated: 'PDF créé.',
-    shareOpened: 'Fenêtre de partage ouverte.',
-    shareUnsupported: 'Ce navigateur ne prend pas en charge le partage de fichiers. PDF téléchargé.',
-    shareCancelled: 'Partage annulé ou non pris en charge.'
-  },
-  he: {
-    appTitle: 'טופס בקשת מוצר',
-    mobileSubtitle: 'אפליקציית PDF לנייד',
-    newRequest: 'בקשה חדשה',
-    install: 'הוסף למסך הבית',
-    navCompany: 'חברה',
-    navProduct: 'מוצר',
-    navOrder: 'הזמנה',
-    navPdf: 'PDF',
-    companyDetails: 'פרטי חברה',
-    companyHelp: 'מלאו פעם אחת. נשמר במכשיר זה.',
-    companyName: 'שם החברה',
-    companyNamePlaceholder: 'שם החברה',
-    contactPerson: 'איש קשר',
-    contactPersonPlaceholder: 'איש קשר',
-    phone: 'טלפון',
-    phonePlaceholder: 'טלפון',
-    email: 'דוא"ל',
-    emailPlaceholder: 'דוא"ל',
-    saveCompany: 'שמור פרטי חברה',
-    clear: 'נקה',
-    selectProduct: 'בחירת מוצר',
-    selectProductHelp: 'השדות משתנים אוטומטית לפי המוצר.',
-    selectProductMeasurements: 'בחירת מוצר, מידות ואפשרויות',
-    orderHelp: 'הגדר שם הזמנה ותאריך לפני בחירת המוצר.',
-    productFamily: 'משפחת מוצר',
-    productGroup: 'קבוצת מוצר',
-    productSubGroup: 'תת-קבוצת מוצר',
-    measurementsOptions: 'מידות ואפשרויות',
-    measurementsHelp: 'שדות קשורים מקובצים תחת אותה כותרת.',
-    orderDetails: 'פרטי הזמנה',
-    orderNoLabel: 'שם / מספר הזמנה',
-    orderNoPlaceholder: 'אוטומטי / ידני',
-    orderDate: 'תאריך הזמנה',
-    notes: 'הערות',
-    notesPlaceholder: 'הערות אופציונליות',
-    pdfPreview: 'תצוגה מקדימה PDF',
-    pdfPreviewHelp: 'צור, הורד או שתף PDF נקי בגודל A4.',
-    downloadPdf: 'צור / הורד PDF',
-    sharePdf: 'שתף PDF',
-    pdfTitle: 'טופס בקשת מוצר',
-    pdfDate: 'תאריך:',
-    pdfOrder: 'הזמנה:',
-    company: 'חברה',
-    product: 'מוצר',
-    pdfCompany: 'חברה:',
-    pdfContact: 'איש קשר:',
-    pdfPhone: 'טלפון:',
-    pdfEmail: 'דוא"ל:',
-    pdfFamily: 'משפחה:',
-    pdfGroup: 'קבוצה:',
-    pdfSubGroup: 'תת-קבוצה:',
-    pdfProduct: 'מוצר:',
-    select: 'בחר',
-    none: 'אין',
-    selectFamilyHint: 'בחר משפחת מוצר.',
-    formWillBeAdded: 'פרטי הטופס יתווספו בשלב הבא.',
-    baseGalaxyFormActive: 'טופס בסיס Galaxy פעיל',
-    productForm: 'טופס מוצר',
-    companySaved: 'פרטי החברה נשמרו.',
-    companyCleared: 'פרטי החברה נמחקו.',
-    newRequestOpened: 'בקשה חדשה נפתחה.',
-    pdfCreated: 'PDF נוצר.',
-    shareOpened: 'חלון השיתוף נפתח.',
-    shareUnsupported: 'דפדפן זה אינו תומך בשיתוף קבצים. ה-PDF הורד.',
-    shareCancelled: 'השיתוף בוטל או אינו נתמך.'
-  }
-};
-
-Object.assign(I18N.en, {
-  'Motorlu': 'Motorized',
-  'Manuel': 'Manual'
-});
-
-Object.assign(I18N.tr, {
-  'Motorlu': 'Motorlu',
-  'Manuel': 'Manuel',
-  'Project Details': 'Proje Bilgileri',
-  'Color Details': 'Renk Bilgileri',
-  'Motor & Remote Control': 'Motor ve Kumanda',
-  'Panel Options': 'Panel Seçenekleri',
-  'Lighting': 'Aydınlatma',
-  'Light Dimmers': 'Işık Dimmerleri',
-  'Lighting & Dimmers': 'Aydınlatma & Dimmerler',
-  'Lighting & Dimmer': 'Aydınlatma & Dimmer',
-  'Sensors': 'Sensörler',
-  'Heater & Packaging': 'Isıtıcı ve Ambalaj',
-  'Colours / System': 'Renkler / Sistem',
-  'Technical Selections': 'Teknik Seçimler',
-  'Additional Accessories': 'Ek Aksesuarlar',
-  'Selected': 'Seçilen',
-  'Width': 'Genişlik',
-  'Projection (mm)': 'Açılım',
-  'Projection': 'Projeksiyon',
-  'Height (Top of The Gutter)': 'Yükseklik (Oluk Üstü)',
-  'System Quantity': 'Sistem Adedi',
-  'System Color': 'Sistem Rengi',
-  'Panel Color': 'Panel Rengi',
-  'Motor': 'Motor',
-  'Remote Control': 'Kumanda',
-  'Panel Isolation': 'Panel İzolasyonu',
-  'Light Dimmer (For Linear LED)': 'Işık Dimmeri (Linear LED için)',
-  'Light Dimmer (For Spot LED)': 'Işık Dimmeri (Spot LED için)',
-  'Rain Sensor': 'Yağmur Sensörü',
-  'Vibration Sensor': 'Titreşim Sensörü',
-  'Wind Sensor': 'Rüzgar Sensörü',
-  'Wind & Sun Sensor': 'Rüzgar ve Güneş Sensörü',
-  'Heater 2000W 220V Quantity': 'Isıtıcı 2000W 220V Adedi',
-  'Heater 3000W 220V Quantity': 'Isıtıcı 3000W 220V Adedi',
-  'Packaging Type': 'Ambalaj Tipi',
-  'Quantity': 'Adet',
-  'Front H': 'Ön H',
-  'Back H': 'Arka H',
-  'Back Beam': 'Arka Kiriş',
-  'Side Beam': 'Yan Kiriş',
-  'Beam For': 'Kiriş İçin',
-  'Structure': 'Konstrüksiyon',
-  'Pergola Fabric': 'Pergola Kumaşı',
-  'Screen Fabric': 'Screen Kumaşı',
-  'Louver Blade': 'Panel Kanadı',
-  'Panel': 'Panel',
-  'Installation Type': 'Montaj Tipi',
-  'Glass Type': 'Cam Tipi',
-  'Electric Power': 'Elektrik Gücü',
-  'Manual Crank Operation': 'Manuel Kol Operasyonu',
-  'Wall': 'Duvar',
-  'Ceiling': 'Tavan',
-  'Freestanding': 'Serbest Durum',
-  'None': 'Yok',
-  'Tempered Laminated': 'Temperli Lamine',
-  'Clear Tempered': 'Şeffaf Temperli',
-  'Clear Tempered + Air Space': 'Şeffaf Temperli + Hava Boşluğu',
-  'Included': 'Dahil',
-  'Not Included': 'Dahil Değil',
-  'Manual': 'Manuel',
-  'No': 'Hayır',
-  'Yes': 'Evet',
-  '1 Channel': '1 Kanal',
-  '2 Channel': '2 Kanal',
-  '4 Channel': '4 Kanal',
-  '16 Channel': '16 Kanal',
-  'Wooden Box': 'Ahşap Kasa',
-  'Heavy-Duty Nylon': 'Havalı Kalın Naylon',
-  'Search code or name': 'Kod veya ad ara',
-  'No results found': 'Sonuç bulunamadı',
-  'Daylight': 'Gün Işığı',
-  'White': 'Beyaz',
-  'Spot': 'Spot',
-  'Linear': 'Lineer',
-  'RGB': 'RGB',
-  'Light on the Gutter (Linear LED)': 'Oluk Üzeri Aydınlatma (Linear LED)',
-  'Light on the Gutter (Linear RGB)': 'Oluk Üzeri Aydınlatma (Linear RGB)',
-  'Light on the Panel (Spot LED)': 'Panel Üzeri Aydınlatma (Spot LED)',
-  'Sound System': 'Ses Sistemi',
-  'Dimmer Light': 'Dimmerli Işık',
-  '2000W Heater': '2000W Isıtıcı',
-  '3000W Heater': '3000W Isıtıcı',
-  'Dimmer Heater': 'Dimmerli Isıtıcı',
-  'Louver Insulation': 'Panel İzolasyonu',
-  'Vibration Sensor': 'Titreşim Sensörü',
-  'Perde': 'Perde'
-});
-
-Object.assign(I18N.de, {
-  'Motorlu': 'Motorisiert',
-  'Manuel': 'Manuell',
-  'Project Details': 'Projektdaten',
-  'Color Details': 'Farbdaten',
-  'Motor & Remote Control': 'Motor und Fernbedienung',
-  'Panel Options': 'Panel-Optionen',
-  'Lighting': 'Beleuchtung',
-  'Light Dimmers': 'Lichtdimmer',
-  'Lighting & Dimmers': 'Beleuchtung & Dimmer',
-  'Lighting & Dimmer': 'Beleuchtung & Dimmer',
-  'Sensors': 'Sensoren',
-  'Heater & Packaging': 'Heizung und Verpackung',
-  'Colours / System': 'Farben / System',
-  'Technical Selections': 'Technische Auswahl',
-  'Additional Accessories': 'Zusätzliches Zubehör',
-  'Selected': 'Ausgewählt',
-  'Search code or name': 'Code oder Namen suchen',
-  'No results found': 'Keine Ergebnisse gefunden',
-  'Heavy-Duty Nylon': 'Luftpolster-Starknylon',
-  'Width': 'Breite',
-  'Projection': 'Ausladung',
-  'Height (Top of The Gutter)': 'Höhe (Oberkante Rinne)',
-  'System Quantity': 'Systemanzahl',
-  'System Color': 'Systemfarbe',
-  'Panel Color': 'Panelfarbe',
-  'Motor': 'Motor',
-  'Remote Control': 'Fernbedienung',
-  'Panel Isolation': 'Panelisolierung',
-  'Quantity': 'Menge',
-  'Structure': 'Struktur',
-  'Panel': 'Panel',
-  'Installation Type': 'Montageart',
-  'Glass Type': 'Glasart',
-  'Electric Power': 'Stromversorgung',
-  'Manual Crank Operation': 'Manuelle Kurbelbedienung',
-  'Wall': 'Wand',
-  'Ceiling': 'Decke',
-  'Freestanding': 'Freistehend',
-  'None': 'Keine',
-  'Included': 'Enthalten',
-  'Not Included': 'Nicht enthalten',
-  'Manual': 'Manuell',
-  'No': 'Nein',
-  'Yes': 'Ja',
-  'Wooden Box': 'Holzkiste',
-  'Heavy-Duty Nylon': 'Hochbelastbares Nylon',
-  'Daylight': 'Tageslicht',
-  'White': 'Weiß',
-  'Sound System': 'Soundsystem',
-  'Dimmer Light': 'Dimmerlicht',
-  'Wind Sensor': 'Windsensor',
-  'Vibration Sensor': 'Vibrationssensor',
-  'Perde': 'Vorhang'
-});
-
-Object.assign(I18N.fr, {
-  'Motorlu': 'Motorisé',
-  'Manuel': 'Manuel',
-  'Project Details': 'Détails du projet',
-  'Color Details': 'Détails des couleurs',
-  'Motor & Remote Control': 'Moteur et télécommande',
-  'Panel Options': 'Options de panneau',
-  'Lighting': 'Éclairage',
-  'Light Dimmers': 'Variateurs de lumière',
-  'Lighting & Dimmers': 'Éclairage & variateurs',
-  'Lighting & Dimmer': 'Éclairage & variateur',
-  'Sensors': 'Capteurs',
-  'Heater & Packaging': 'Chauffage et emballage',
-  'Colours / System': 'Couleurs / Système',
-  'Technical Selections': 'Sélections techniques',
-  'Additional Accessories': 'Accessoires supplémentaires',
-  'Selected': 'Sélectionné',
-  'Search code or name': 'Rechercher code ou nom',
-  'No results found': 'Aucun résultat trouvé',
-  'Heavy-Duty Nylon': 'Nylon épais à bulles',
-  'Width': 'Largeur',
-  'Projection': 'Projection',
-  'Height (Top of The Gutter)': 'Hauteur (haut de gouttière)',
-  'System Quantity': 'Quantité système',
-  'System Color': 'Couleur système',
-  'Panel Color': 'Couleur panneau',
-  'Motor': 'Moteur',
-  'Remote Control': 'Télécommande',
-  'Panel Isolation': 'Isolation panneau',
-  'Quantity': 'Quantité',
-  'Structure': 'Structure',
-  'Panel': 'Panneau',
-  'Installation Type': 'Type d’installation',
-  'Glass Type': 'Type de verre',
-  'Electric Power': 'Alimentation électrique',
-  'Manual Crank Operation': 'Manivelle manuelle',
-  'Wall': 'Mur',
-  'Ceiling': 'Plafond',
-  'Freestanding': 'Autoportant',
-  'None': 'Aucun',
-  'Included': 'Inclus',
-  'Not Included': 'Non inclus',
-  'Manual': 'Manuel',
-  'No': 'Non',
-  'Yes': 'Oui',
-  'Wooden Box': 'Caisse en bois',
-  'Heavy-Duty Nylon': 'Nylon renforcé',
-  'Daylight': 'Lumière du jour',
-  'White': 'Blanc',
-  'Sound System': 'Système audio',
-  'Dimmer Light': 'Lumière avec variateur',
-  'Wind Sensor': 'Capteur de vent',
-  'Vibration Sensor': 'Capteur de vibration',
-  'Perde': 'Rideau'
-});
-
-Object.assign(I18N.he, {
-  'Motorlu': 'ממונע',
-  'Manuel': 'ידני',
-  'Project Details': 'פרטי פרויקט',
-  'Color Details': 'פרטי צבע',
-  'Motor & Remote Control': 'מנוע ושלט',
-  'Panel Options': 'אפשרויות פנל',
-  'Lighting': 'תאורה',
-  'Light Dimmers': 'עמעמי תאורה',
-  'Lighting & Dimmers': 'תאורה ועמעמים',
-  'Lighting & Dimmer': 'תאורה ועמעם',
-  'Sensors': 'חיישנים',
-  'Heater & Packaging': 'חימום ואריזה',
-  'Colours / System': 'צבעים / מערכת',
-  'Technical Selections': 'בחירות טכניות',
-  'Additional Accessories': 'אביזרים נוספים',
-  'Selected': 'נבחר',
-  'Search code or name': 'חפש קוד או שם',
-  'No results found': 'לא נמצאו תוצאות',
-  'Heavy-Duty Nylon': 'ניילון עבה בועתי',
-  'Width': 'רוחב',
-  'Projection': 'עומק',
-  'Height (Top of The Gutter)': 'גובה (ראש המרזב)',
-  'System Quantity': 'כמות מערכות',
-  'System Color': 'צבע מערכת',
-  'Panel Color': 'צבע פנל',
-  'Motor': 'מנוע',
-  'Remote Control': 'שלט',
-  'Panel Isolation': 'בידוד פנל',
-  'Quantity': 'כמות',
-  'Structure': 'מבנה',
-  'Panel': 'פנל',
-  'Installation Type': 'סוג התקנה',
-  'Glass Type': 'סוג זכוכית',
-  'Electric Power': 'מתח חשמלי',
-  'Manual Crank Operation': 'הפעלה ידנית',
-  'Wall': 'קיר',
-  'Ceiling': 'תקרה',
-  'Freestanding': 'עצמאי',
-  'None': 'אין',
-  'Included': 'כלול',
-  'Not Included': 'לא כלול',
-  'Manual': 'ידני',
-  'No': 'לא',
-  'Yes': 'כן',
-  'Wooden Box': 'ארגז עץ',
-  'Heavy-Duty Nylon': 'ניילון מחוזק',
-  'Daylight': 'אור יום',
-  'White': 'לבן',
-  'Sound System': 'מערכת שמע',
-  'Dimmer Light': 'תאורה עם דימר',
-  'Wind Sensor': 'חיישן רוח',
-  'Vibration Sensor': 'חיישן רטט',
-  'Perde': 'וילון'
-});
-
-Object.assign(I18N.en, {
-  'Heater & Sound & Packing': 'Heater & Sound & Packing',
-  'Sound System Quantity': 'Sound System Quantity',
-  'Dimmer Heater Quantity': 'Dimmer Heater Quantity'
-});
-
-Object.assign(I18N.tr, {
-  'Heater & Sound & Packing': 'Is\u0131t\u0131c\u0131, Ses ve Ambalaj',
-  'Sound System Quantity': 'Ses Sistemi Adedi',
-  'Dimmer Heater Quantity': 'Dimmerli Is\u0131t\u0131c\u0131 Adedi'
-});
-
-Object.assign(I18N.de, {
-  'Heater & Sound & Packing': 'Heizung, Soundsystem und Verpackung',
-  'Sound System Quantity': 'Soundsystem-Anzahl',
-  'Dimmer Heater': 'Heizungsdimmer',
-  'Dimmer Heater Quantity': 'Heizungsdimmer-Anzahl'
-});
-
-Object.assign(I18N.fr, {
-  'Heater & Sound & Packing': 'Chauffage, son et emballage',
-  'Sound System Quantity': 'Quantit\u00e9 du syst\u00e8me audio',
-  'Dimmer Heater': 'Variateur de chauffage',
-  'Dimmer Heater Quantity': 'Quantit\u00e9 de variateurs de chauffage'
-});
-
-Object.assign(I18N.he, {
-  'Heater & Sound & Packing': '\u05d7\u05d9\u05de\u05d5\u05dd, \u05e9\u05de\u05e2 \u05d5\u05d0\u05e8\u05d9\u05d6\u05d4',
-  'Sound System Quantity': '\u05db\u05de\u05d5\u05ea \u05de\u05e2\u05e8\u05db\u05d5\u05ea \u05e9\u05de\u05e2',
-  'Dimmer Heater': '\u05d3\u05d9\u05de\u05e8 \u05dc\u05d7\u05d9\u05de\u05d5\u05dd',
-  'Dimmer Heater Quantity': '\u05db\u05de\u05d5\u05ea \u05d3\u05d9\u05de\u05e8\u05d9\u05dd \u05dc\u05d7\u05d9\u05de\u05d5\u05dd'
-});
-
-Object.assign(I18N.tr, {
-  '1 Channel': '1 Kanal',
-  '2 Channels': '2 Kanal',
-  '4 Channels': '4 Kanal',
-  '6 Channels': '6 Kanal',
-  '16 Channels': '16 Kanal'
-});
-
-Object.assign(I18N.de, {
-  '1 Channel': '1 Kanal',
-  '2 Channels': '2 Kan\u00e4le',
-  '4 Channels': '4 Kan\u00e4le',
-  '6 Channels': '6 Kan\u00e4le',
-  '16 Channels': '16 Kan\u00e4le'
-});
-
-Object.assign(I18N.fr, {
-  '1 Channel': '1 canal',
-  '2 Channels': '2 canaux',
-  '4 Channels': '4 canaux',
-  '6 Channels': '6 canaux',
-  '16 Channels': '16 canaux'
-});
-
-Object.assign(I18N.he, {
-  '1 Channel': '1 \u05e2\u05e8\u05d5\u05e5',
-  '2 Channels': '2 \u05e2\u05e8\u05d5\u05e6\u05d9\u05dd',
-  '4 Channels': '4 \u05e2\u05e8\u05d5\u05e6\u05d9\u05dd',
-  '6 Channels': '6 \u05e2\u05e8\u05d5\u05e6\u05d9\u05dd',
-  '16 Channels': '16 \u05e2\u05e8\u05d5\u05e6\u05d9\u05dd'
-});
-
-Object.assign(I18N.en, {
-  formActive: 'Form active',
-  'Colours': 'Colours',
-  'Finish': 'Finish',
-  'Glossy': 'Glossy',
-  'Matt': 'Matt',
-  'Texture': 'Texture',
-  'Product Quantity': 'Product Quantity',
-  'Motor Direction': 'Motor Direction',
-  'Parapet H': 'Parapet H',
-  'Side Beam': 'Side Beam',
-  'Connection': 'Connection',
-  'Left': 'Left',
-  'Right': 'Right',
-  'Both': 'Both',
-  'Fabric': 'Fabric',
-  'Fabric Profile': 'Fabric Profile',
-  'Other': 'Other',
-  'Other Lighting': 'Other Lighting',
-  'Dimmer': 'Dimmer'
-});
-
-Object.assign(I18N.tr, {
-  formActive: 'Form aktif',
-  'Colours': 'Renkler',
-  'Finish': 'Y\u00fczey',
-  'Glossy': 'Parlak',
-  'Matt': 'Mat',
-  'Texture': 'Texture',
-  'Product Quantity': '\u00dcr\u00fcn Adedi',
-  'Motor Direction': 'Motor Y\u00f6n\u00fc',
-  'Parapet H': 'Parapet Y\u00fcksekli\u011fi',
-  'Side Beam': 'Yan Kiri\u015f',
-  'Connection': 'Ba\u011flant\u0131',
-  'Left': 'Sol',
-  'Right': 'Sa\u011f',
-  'Both': 'Her \u0130kisi',
-  'Fabric': 'Kuma\u015f',
-  'Fabric Profile': 'Kuma\u015f Profili',
-  'Other': 'Di\u011fer',
-  'Other Lighting': 'Di\u011fer Ayd\u0131nlatma',
-  'Dimmer': 'Dimmer',
-  'Front H': '\u00d6n H',
-  'Back H': 'Arka H'
-});
-
-Object.assign(I18N.de, {
-  formActive: 'Formular aktiv',
-  'Colours': 'Farben',
-  'Finish': 'Oberfl\u00e4che',
-  'Glossy': 'Gl\u00e4nzend',
-  'Matt': 'Matt',
-  'Texture': 'Textur',
-  'Product Quantity': 'Produktmenge',
-  'Motor Direction': 'Motorseite',
-  'Parapet H': 'Br\u00fcstungsh\u00f6he',
-  'Side Beam': 'Seitentr\u00e4ger',
-  'Connection': 'Anschluss',
-  'Left': 'Links',
-  'Right': 'Rechts',
-  'Both': 'Beide',
-  'Fabric': 'Stoff',
-  'Fabric Profile': 'Stoffprofil',
-  'Other': 'Andere',
-  'Other Lighting': 'Andere Beleuchtung',
-  'Dimmer': 'Dimmer',
-  'Front H': 'H\u00f6he vorne',
-  'Back H': 'H\u00f6he hinten'
-});
-
-Object.assign(I18N.fr, {
-  formActive: 'Formulaire actif',
-  'Colours': 'Couleurs',
-  'Finish': 'Finition',
-  'Glossy': 'Brillant',
-  'Matt': 'Mat',
-  'Texture': 'Texture',
-  'Product Quantity': 'Quantit\u00e9 de produits',
-  'Motor Direction': 'C\u00f4t\u00e9 du moteur',
-  'Parapet H': 'Hauteur d\u2019all\u00e8ge',
-  'Side Beam': 'Poutre lat\u00e9rale',
-  'Connection': 'Raccordement',
-  'Left': 'Gauche',
-  'Right': 'Droite',
-  'Both': 'Les deux',
-  'Fabric': 'Toile',
-  'Fabric Profile': 'Profil de toile',
-  'Other': 'Autre',
-  'Other Lighting': 'Autre \u00e9clairage',
-  'Dimmer': 'Variateur',
-  'Front H': 'Hauteur avant',
-  'Back H': 'Hauteur arri\u00e8re'
-});
-
-Object.assign(I18N.he, {
-  formActive: '\u05d8\u05d5\u05e4\u05e1 \u05e4\u05e2\u05d9\u05dc',
-  'Colours': '\u05e6\u05d1\u05e2\u05d9\u05dd',
-  'Finish': '\u05d2\u05d9\u05de\u05d5\u05e8',
-  'Glossy': '\u05de\u05d1\u05e8\u05d9\u05e7',
-  'Matt': '\u05de\u05d8',
-  'Texture': '\u05d8\u05e7\u05e1\u05d8\u05d5\u05e8\u05d4',
-  'Product Quantity': '\u05db\u05de\u05d5\u05ea \u05de\u05d5\u05e6\u05e8\u05d9\u05dd',
-  'Motor Direction': '\u05e6\u05d3 \u05d4\u05de\u05e0\u05d5\u05e2',
-  'Parapet H': '\u05d2\u05d5\u05d1\u05d4 \u05de\u05e2\u05e7\u05d4',
-  'Side Beam': '\u05e7\u05d5\u05e8\u05ea \u05e6\u05d3',
-  'Connection': '\u05d7\u05d9\u05d1\u05d5\u05e8',
-  'Left': '\u05e9\u05de\u05d0\u05dc',
-  'Right': '\u05d9\u05de\u05d9\u05df',
-  'Both': '\u05e9\u05e0\u05d9\u05d4\u05dd',
-  'Fabric': '\u05d1\u05d3',
-  'Fabric Profile': '\u05e4\u05e8\u05d5\u05e4\u05d9\u05dc \u05d1\u05d3',
-  'Other': '\u05d0\u05d7\u05e8',
-  'Other Lighting': '\u05ea\u05d0\u05d5\u05e8\u05d4 \u05d0\u05d7\u05e8\u05ea',
-  'Dimmer': '\u05d3\u05d9\u05de\u05e8',
-  'Front H': '\u05d2\u05d5\u05d1\u05d4 \u05e7\u05d3\u05de\u05d9',
-  'Back H': '\u05d2\u05d5\u05d1\u05d4 \u05d0\u05d7\u05d5\u05e8\u05d9'
-});
-
-Object.assign(I18N.en, {
-  'Add New Position': 'Add New Position',
-  'Remove Last Position': 'Remove Last Position',
-  'Delete': 'Delete',
-  'Position': 'Position'
-});
-
-Object.assign(I18N.tr, {
-  'Add New Position': 'Yeni Poz Ekle',
-  'Remove Last Position': 'Son Pozu Sil',
-  'Delete': 'Sil',
-  'Position': 'Poz'
-});
-
-Object.assign(I18N.de, {
-  'Add New Position': 'Neue Position hinzuf\u00fcgen',
-  'Position': 'Position'
-});
-
-Object.assign(I18N.fr, {
-  'Add New Position': 'Ajouter une position',
-  'Remove Last Position': 'Supprimer la dernière position',
-  'Delete': 'Supprimer',
-  'Position': 'Position'
-});
-
-Object.assign(I18N.he, {
-  'Add New Position': '\u05d4\u05d5\u05e1\u05e3 \u05de\u05d9\u05e7\u05d5\u05dd',
-  'Position': '\u05de\u05d9\u05e7\u05d5\u05dd'
-});
-
-Object.assign(I18N.en, {
-  'Select Code': 'Select Code',
-  'Select Color': 'Select Color',
-  'Select Fabric': 'Select Fabric',
-  'Rising Standart': 'Rising Standart',
-  'All Rall Code': 'All Rall Code',
-  'Same as System Color': 'Same as System Color',
-  'Enter System Color First': 'Enter System Color First',
-  'Color Chart': 'Color Chart',
-  'Fabric Selection': 'Fabric Selection',
-  'Color Chart Help': 'Select a color from the list. If it is not listed, close this panel and write the color code manually.',
-  'Fabric Selection Help': 'Select a fabric from the list. If it is not listed, close this panel and write the fabric code manually.',
-  'Close': 'Close'
-});
-
-Object.assign(I18N.tr, {
-  'Select Code': 'Kod Se\u00e7',
-  'Select Color': 'Renk Se\u00e7',
-  'Select Fabric': 'Kuma\u015f Se\u00e7',
-  'Rising Standart': 'Rising Standart',
-  'All Rall Code': 'All Rall Code',
-  'Same as System Color': 'System rengiyle ayn\u0131',
-  'Enter System Color First': '\u00d6nce sistem rengini yaz\u0131n',
-  'Color Chart': 'Renk Kartelas\u0131',
-  'Fabric Selection': 'Kuma\u015f Se\u00e7imi',
-  'Color Chart Help': 'Listeden bir renk se\u00e7in. Renk yoksa bu paneli kapat\u0131p renk kodunu manuel yaz\u0131n.',
-  'Fabric Selection Help': 'Listeden bir kuma\u015f se\u00e7in. Kuma\u015f yoksa bu paneli kapat\u0131p kuma\u015f kodunu manuel yaz\u0131n.',
-  'Close': 'Kapat'
-});
-
-Object.assign(I18N.de, {
-  'Select Code': 'Code waehlen',
-  'Select Color': 'Farbe waehlen',
-  'Select Fabric': 'Stoff waehlen',
-  'Rising Standart': 'Rising Standart',
-  'All Rall Code': 'All Rall Code',
-  'Same as System Color': 'Wie Systemfarbe',
-  'Enter System Color First': 'Zuerst Systemfarbe eingeben',
-  'Color Chart': 'Farbkarte',
-  'Fabric Selection': 'Stoffauswahl',
-  'Color Chart Help': 'Waehlen Sie eine Farbe aus der Liste. Wenn sie nicht vorhanden ist, schliessen Sie dieses Fenster und schreiben Sie den Farbcode manuell.',
-  'Fabric Selection Help': 'Waehlen Sie einen Stoff aus der Liste. Wenn er nicht vorhanden ist, schliessen Sie dieses Fenster und schreiben Sie den Stoffcode manuell.',
-  'Close': 'Schliessen'
-});
-
-Object.assign(I18N.fr, {
-  'Select Code': 'Choisir code',
-  'Select Color': 'Choisir couleur',
-  'Select Fabric': 'Choisir toile',
-  'Rising Standart': 'Rising Standart',
-  'All Rall Code': 'All Rall Code',
-  'Same as System Color': 'Comme couleur systeme',
-  'Enter System Color First': 'Saisir d abord la couleur systeme',
-  'Color Chart': 'Nuancier',
-  'Fabric Selection': 'Selection de toile',
-  'Color Chart Help': 'Choisissez une couleur dans la liste. Si elle manque, fermez cette fenetre et saisissez le code couleur manuellement.',
-  'Fabric Selection Help': 'Choisissez une toile dans la liste. Si elle manque, fermez cette fenetre et saisissez le code toile manuellement.',
-  'Close': 'Fermer'
-});
-
-Object.assign(I18N.he, {
-  'Select Code': '\u05d1\u05d7\u05e8 \u05e7\u05d5\u05d3',
-  'Select Color': '\u05d1\u05d7\u05e8 \u05e6\u05d1\u05e2',
-  'Select Fabric': '\u05d1\u05d7\u05e8 \u05d1\u05d3',
-  'Rising Standart': 'Rising Standart',
-  'All Rall Code': 'All Rall Code',
-  'Same as System Color': '\u05d6\u05d4\u05d4 \u05dc\u05e6\u05d1\u05e2 \u05d4\u05de\u05e2\u05e8\u05db\u05ea',
-  'Enter System Color First': '\u05d4\u05d6\u05df \u05ea\u05d7\u05d9\u05dc\u05d4 \u05e6\u05d1\u05e2 \u05de\u05e2\u05e8\u05db\u05ea',
-  'Color Chart': '\u05de\u05e0\u05d9\u05e4\u05ea \u05e6\u05d1\u05e2\u05d9\u05dd',
-  'Fabric Selection': '\u05d1\u05d7\u05d9\u05e8\u05ea \u05d1\u05d3',
-  'Color Chart Help': '\u05d1\u05d7\u05e8 \u05e6\u05d1\u05e2 \u05de\u05d4\u05e8\u05e9\u05d9\u05de\u05d4. \u05d0\u05dd \u05d4\u05e6\u05d1\u05e2 \u05dc\u05d0 \u05de\u05d5\u05e4\u05d9\u05e2, \u05e1\u05d2\u05d5\u05e8 \u05d0\u05ea \u05d4\u05d7\u05dc\u05d5\u05df \u05d5\u05d4\u05d6\u05df \u05e7\u05d5\u05d3 \u05e6\u05d1\u05e2 \u05d9\u05d3\u05e0\u05d9\u05ea.',
-  'Fabric Selection Help': '\u05d1\u05d7\u05e8 \u05d1\u05d3 \u05de\u05d4\u05e8\u05e9\u05d9\u05de\u05d4. \u05d0\u05dd \u05d4\u05d1\u05d3 \u05dc\u05d0 \u05de\u05d5\u05e4\u05d9\u05e2, \u05e1\u05d2\u05d5\u05e8 \u05d0\u05ea \u05d4\u05d7\u05dc\u05d5\u05df \u05d5\u05d4\u05d6\u05df \u05e7\u05d5\u05d3 \u05d1\u05d3 \u05d9\u05d3\u05e0\u05d9\u05ea.',
-  'Close': '\u05e1\u05d2\u05d5\u05e8'
-});
-
-
-Object.assign(I18N.en, {
-  '40 Channels': '40 Channels',
-  'Heater & Sound & Packing': 'Heater, Sound, Packing & Loading',
-  'Loading': 'Loading',
-  'Truck': 'Truck',
-  'Container': 'Container',
-  'Water Outlet Detail': 'Water Outlet Detail',
-  'Water Outlet Direction': 'Water Outlet Direction',
-  'Pipe Length': 'Pipe Length',
-  'Pipe Length Other': 'Pipe Length Other',
-  'From Post': 'From Post',
-  'From Gutter': 'From Gutter',
-  'Front': 'Front',
-  'Side': 'Side',
-  'Standard': 'Standard',
-  'Rising Standart': 'Rising Standard',
-  'All Rall Code': 'All RAL Codes',
-  'White Texture': 'White Texture',
-  'Cream Texture': 'Cream Texture',
-  'White Glossy': 'White Glossy',
-  'Cream Matt': 'Cream Matt',
-  'Dark Grey Matt': 'Dark Grey Matt',
-  'White 3D Texture': 'White 3D Texture',
-  'Cream 3D Texture': 'Cream 3D Texture',
-  'Silver 3D Texture': 'Silver 3D Texture',
-  'Dark Grey 3D Texture': 'Dark Grey 3D Texture',
-  'Anthracite 3D Texture': 'Anthracite 3D Texture',
-  'Black 3D Texture': 'Black 3D Texture',
-  'Blue 3D Texture': 'Blue 3D Texture',
-  'White Thermofoam': 'White Thermofoam',
-  'Grey Thermofoam': 'Grey Thermofoam',
-  'Matt Finish': 'Matt Finish',
-  'Wood Transfer': 'Wood Transfer'
-});
-
-Object.assign(I18N.tr, {
-  '40 Channels': '40 Kanal',
-  'Heater & Sound & Packing': 'Isıtıcı, Ses, Ambalaj ve Yükleme',
-  'Loading': 'Yükleme',
-  'Truck': 'Tır',
-  'Container': 'Konteyner',
-  'Water Outlet Detail': 'Su Çıkış Detayı',
-  'Water Outlet Direction': 'Su Çıkış Yönü',
-  'Pipe Length': 'Boru Uzunluğu',
-  'Pipe Length Other': 'Diğer Boru Uzunluğu',
-  'From Post': 'Dikmeden',
-  'From Gutter': 'Oluktan',
-  'Front': 'Önden',
-  'Side': 'Yandan',
-  'Standard': 'Standart',
-  'Rising Standart': 'Rising Standart',
-  'All Rall Code': 'Tüm RAL Kodları',
-  'White Texture': 'Beyaz Texture',
-  'Cream Texture': 'Krem Texture',
-  'White Glossy': 'Beyaz Parlak',
-  'Cream Matt': 'Krem Mat',
-  'Dark Grey Matt': 'Koyu Gri Mat',
-  'White 3D Texture': 'Beyaz 3D Texture',
-  'Cream 3D Texture': 'Krem 3D Texture',
-  'Silver 3D Texture': 'Gümüş 3D Texture',
-  'Dark Grey 3D Texture': 'Koyu Gri 3D Texture',
-  'Anthracite 3D Texture': 'Antrasit 3D Texture',
-  'Black 3D Texture': 'Siyah 3D Texture',
-  'Blue 3D Texture': 'Mavi 3D Texture',
-  'White Thermofoam': 'Beyaz Thermofoam',
-  'Grey Thermofoam': 'Gri Thermofoam',
-  'Matt Finish': 'Mat Yüzey',
-  'Wood Transfer': 'Ahşap Transfer'
-});
-
-Object.assign(I18N.de, {
-  '40 Channels': '40 Kanäle',
-  'Heater & Sound & Packing': 'Heizung, Sound, Verpackung und Verladung',
-  'Loading': 'Verladung',
-  'Truck': 'Lkw',
-  'Container': 'Container',
-  'Water Outlet Detail': 'Wasserablaufdetail',
-  'Water Outlet Direction': 'Wasserablaufrichtung',
-  'Pipe Length': 'Rohrlänge',
-  'Pipe Length Other': 'Andere Rohrlänge',
-  'From Post': 'Durch Pfosten',
-  'From Gutter': 'Durch Rinne',
-  'Front': 'Vorne',
-  'Side': 'Seitlich',
-  'Standard': 'Standard',
-  'Rising Standart': 'Rising Standard',
-  'All Rall Code': 'Alle RAL-Codes',
-  'White Texture': 'Weiße Textur',
-  'Cream Texture': 'Creme Textur',
-  'White Glossy': 'Weiß glänzend',
-  'Cream Matt': 'Creme matt',
-  'Dark Grey Matt': 'Dunkelgrau matt',
-  'White 3D Texture': 'Weiße 3D-Textur',
-  'Cream 3D Texture': 'Creme 3D-Textur',
-  'Silver 3D Texture': 'Silberne 3D-Textur',
-  'Dark Grey 3D Texture': 'Dunkelgraue 3D-Textur',
-  'Anthracite 3D Texture': 'Anthrazit 3D-Textur',
-  'Black 3D Texture': 'Schwarze 3D-Textur',
-  'Blue 3D Texture': 'Blaue 3D-Textur',
-  'White Thermofoam': 'Weißer Thermofoam',
-  'Grey Thermofoam': 'Grauer Thermofoam',
-  'Matt Finish': 'Matte Oberfläche',
-  'Wood Transfer': 'Holztransfer'
-});
-
-Object.assign(I18N.fr, {
-  '40 Channels': '40 canaux',
-  'Heater & Sound & Packing': 'Chauffage, son, emballage et chargement',
-  'Loading': 'Chargement',
-  'Truck': 'Camion',
-  'Container': 'Conteneur',
-  'Water Outlet Detail': 'Détail de sortie d’eau',
-  'Water Outlet Direction': 'Direction de sortie d’eau',
-  'Pipe Length': 'Longueur de tuyau',
-  'Pipe Length Other': 'Autre longueur de tuyau',
-  'From Post': 'Par poteau',
-  'From Gutter': 'Par gouttière',
-  'Front': 'Avant',
-  'Side': 'Côté',
-  'Standard': 'Standard',
-  'Rising Standart': 'Standard Rising',
-  'All Rall Code': 'Tous les codes RAL',
-  'White Texture': 'Texture blanche',
-  'Cream Texture': 'Texture crème',
-  'White Glossy': 'Blanc brillant',
-  'Cream Matt': 'Crème mat',
-  'Dark Grey Matt': 'Gris foncé mat',
-  'White 3D Texture': 'Texture 3D blanche',
-  'Cream 3D Texture': 'Texture 3D crème',
-  'Silver 3D Texture': 'Texture 3D argent',
-  'Dark Grey 3D Texture': 'Texture 3D gris foncé',
-  'Anthracite 3D Texture': 'Texture 3D anthracite',
-  'Black 3D Texture': 'Texture 3D noire',
-  'Blue 3D Texture': 'Texture 3D bleue',
-  'White Thermofoam': 'Thermofoam blanc',
-  'Grey Thermofoam': 'Thermofoam gris',
-  'Matt Finish': 'Finition mate',
-  'Wood Transfer': 'Transfert bois'
-});
-
-Object.assign(I18N.he, {
-  '40 Channels': '40 ערוצים',
-  'Heater & Sound & Packing': 'חימום, שמע, אריזה וטעינה',
-  'Loading': 'טעינה',
-  'Truck': 'משאית',
-  'Container': 'מכולה',
-  'Water Outlet Detail': 'פרטי יציאת מים',
-  'Water Outlet Direction': 'כיוון יציאת מים',
-  'Pipe Length': 'אורך צינור',
-  'Pipe Length Other': 'אורך צינור אחר',
-  'From Post': 'דרך עמוד',
-  'From Gutter': 'דרך מרזב',
-  'Front': 'חזית',
-  'Side': 'צד',
-  'Standard': 'סטנדרטי',
-  'Rising Standart': 'Rising Standard',
-  'All Rall Code': 'כל קודי RAL',
-  'White Texture': 'טקסטורה לבנה',
-  'Cream Texture': 'טקסטורה קרם',
-  'White Glossy': 'לבן מבריק',
-  'Cream Matt': 'קרם מט',
-  'Dark Grey Matt': 'אפור כהה מט',
-  'White 3D Texture': 'טקסטורת 3D לבנה',
-  'Cream 3D Texture': 'טקסטורת 3D קרם',
-  'Silver 3D Texture': 'טקסטורת 3D כסופה',
-  'Dark Grey 3D Texture': 'טקסטורת 3D אפור כהה',
-  'Anthracite 3D Texture': 'טקסטורת 3D אנתרציט',
-  'Black 3D Texture': 'טקסטורת 3D שחורה',
-  'Blue 3D Texture': 'טקסטורת 3D כחולה',
-  'White Thermofoam': 'תרמופום לבן',
-  'Grey Thermofoam': 'תרמופום אפור',
-  'Matt Finish': 'גימור מט',
-  'Wood Transfer': 'העברת עץ'
-});
-
-// C43 language cleanup: placeholders, common options and product form terms.
-Object.assign(I18N.en, {
-  'Enter value': 'Enter value',
-  '2 Channels': '2 Channels',
-  '4 Channels': '4 Channels',
-  '6 Channels': '6 Channels',
-  '16 Channels': '16 Channels',
-  '40 Channels': '40 Channels',
-  'Back Beam': 'Back Beam',
-  'Beam For': 'Beam For',
-  'Pergola Fabric': 'Pergola Fabric',
-  'Screen Fabric': 'Screen Fabric',
-  'Louver Blade': 'Louver Blade',
-  'Dimmer Heater': 'Dimmer Heater',
-  'Light on the Gutter (Linear LED)': 'Light on the Gutter (Linear LED)',
-  'Light on the Gutter (Linear RGB)': 'Light on the Gutter (Linear RGB)',
-  'Light on the Panel (Spot LED)': 'Light on the Panel (Spot LED)',
-  'Panel Isolation': 'Panel Isolation',
-  'Wind & Sun Sensor': 'Wind & Sun Sensor',
-  'Rising Standart': 'Rising Standard',
-  'All Rall Code': 'All RAL Codes'
-});
-
-Object.assign(I18N.tr, {
-  'Enter value': 'Değer girin',
-  '2 Channels': '2 Kanal',
-  '4 Channels': '4 Kanal',
-  '6 Channels': '6 Kanal',
-  '16 Channels': '16 Kanal',
-  '40 Channels': '40 Kanal',
-  'Back Beam': 'Arka Kiriş',
-  'Beam For': 'Kiriş İçin',
-  'Pergola Fabric': 'Pergola Kumaşı',
-  'Screen Fabric': 'Screen Kumaşı',
-  'Louver Blade': 'Panel Kanadı',
-  'Dimmer Heater': 'Dimmerli Isıtıcı',
-  'Light on the Gutter (Linear LED)': 'Oluk Üzeri Aydınlatma (Linear LED)',
-  'Light on the Gutter (Linear RGB)': 'Oluk Üzeri Aydınlatma (Linear RGB)',
-  'Light on the Panel (Spot LED)': 'Panel Üzeri Aydınlatma (Spot LED)',
-  'Panel Isolation': 'Panel İzolasyonu',
-  'Wind & Sun Sensor': 'Rüzgar ve Güneş Sensörü',
-  'Rising Standart': 'Rising Standart',
-  'All Rall Code': 'Tüm RAL Kodları',
-  'T-Motion 350 (Somfy Rts) (120°)': 'T-Motion 350 (Somfy Rts) (120°)',
-  'T-Motion 300 (Somfy Rts) (90°)': 'T-Motion 300 (Somfy Rts) (90°)'
-});
-
-Object.assign(I18N.de, {
-  'Enter value': 'Wert eingeben',
-  '2 Channels': '2 Kanäle',
-  '4 Channels': '4 Kanäle',
-  '6 Channels': '6 Kanäle',
-  '16 Channels': '16 Kanäle',
-  '40 Channels': '40 Kanäle',
-  'Back Beam': 'Hinterer Träger',
-  'Beam For': 'Träger für',
-  'Pergola Fabric': 'Pergolastoff',
-  'Screen Fabric': 'Screen-Stoff',
-  'Louver Blade': 'Lamelle',
-  'Dimmer Heater': 'Heizungsdimmer',
-  'Light on the Gutter (Linear LED)': 'Licht an der Rinne (Linear LED)',
-  'Light on the Gutter (Linear RGB)': 'Licht an der Rinne (Linear RGB)',
-  'Light on the Panel (Spot LED)': 'Licht am Panel (Spot LED)',
-  'Panel Isolation': 'Panelisolierung',
-  'Wind & Sun Sensor': 'Wind- und Sonnensensor',
-  'Remove Last Position': 'Letzte Position löschen',
-  'Delete': 'Löschen',
-  'Rising Standart': 'Rising Standard',
-  'All Rall Code': 'Alle RAL-Codes'
-});
-
-Object.assign(I18N.fr, {
-  'Enter value': 'Saisir une valeur',
-  '2 Channels': '2 canaux',
-  '4 Channels': '4 canaux',
-  '6 Channels': '6 canaux',
-  '16 Channels': '16 canaux',
-  '40 Channels': '40 canaux',
-  'Back Beam': 'Poutre arrière',
-  'Beam For': 'Poutre pour',
-  'Pergola Fabric': 'Toile de pergola',
-  'Screen Fabric': 'Toile screen',
-  'Louver Blade': 'Lame orientable',
-  'Dimmer Heater': 'Variateur chauffage',
-  'Light on the Gutter (Linear LED)': 'Éclairage sur gouttière (LED linéaire)',
-  'Light on the Gutter (Linear RGB)': 'Éclairage sur gouttière (RGB linéaire)',
-  'Light on the Panel (Spot LED)': 'Éclairage sur panneau (spot LED)',
-  'Panel Isolation': 'Isolation panneau',
-  'Wind & Sun Sensor': 'Capteur vent et soleil',
-  'Rising Standart': 'Standard Rising',
-  'All Rall Code': 'Tous les codes RAL'
-});
-
-Object.assign(I18N.he, {
-  'Enter value': 'הזן ערך',
-  '2 Channels': '2 ערוצים',
-  '4 Channels': '4 ערוצים',
-  '6 Channels': '6 ערוצים',
-  '16 Channels': '16 ערוצים',
-  '40 Channels': '40 ערוצים',
-  'Back Beam': 'קורה אחורית',
-  'Beam For': 'קורה עבור',
-  'Pergola Fabric': 'בד פרגולה',
-  'Screen Fabric': 'בד מסך',
-  'Louver Blade': 'להב רפפה',
-  'Dimmer Heater': 'דימר לחימום',
-  'Light on the Gutter (Linear LED)': 'תאורה על המרזב (LED ליניארי)',
-  'Light on the Gutter (Linear RGB)': 'תאורה על המרזב (RGB ליניארי)',
-  'Light on the Panel (Spot LED)': 'תאורה על הפנל (Spot LED)',
-  'Panel Isolation': 'בידוד פנל',
-  'Wind & Sun Sensor': 'חיישן רוח ושמש',
-  'Remove Last Position': 'מחק מיקום אחרון',
-  'Delete': 'מחק',
-  'Rising Standart': 'Rising Standard',
-  'All Rall Code': 'כל קודי RAL'
-});
-
-
-
-// C47 final language and lighting cleanup.
-Object.assign(I18N.en, {
-  enterValue: 'Enter value',
-  'Linear LED': 'Linear LED',
-  'Linear RGB': 'Linear RGB',
-  'Spot LED': 'Spot LED',
-  'Linear Rgb+White': 'Linear Rgb+White',
-  'Other': 'Other',
-  'Other Lighting': 'Other Lighting'
-});
-Object.assign(I18N.tr, {
-  enterValue: 'Değer girin',
-  'Linear LED': 'Linear LED',
-  'Linear RGB': 'Linear RGB',
-  'Spot LED': 'Spot LED',
-  'Linear Rgb+White': 'Linear Rgb+White',
-  'Other': 'Diğer',
-  'Other Lighting': 'Diğer Aydınlatma'
-});
-Object.assign(I18N.de, {
-  enterValue: 'Wert eingeben',
-  'Linear LED': 'Linear LED',
-  'Linear RGB': 'Linear RGB',
-  'Spot LED': 'Spot LED',
-  'Linear Rgb+White': 'Linear Rgb+White',
-  'Other': 'Andere',
-  'Other Lighting': 'Andere Beleuchtung'
-});
-Object.assign(I18N.fr, {
-  enterValue: 'Saisir une valeur',
-  'Linear LED': 'LED linéaire',
-  'Linear RGB': 'RGB linéaire',
-  'Spot LED': 'Spot LED',
-  'Linear Rgb+White': 'Linear Rgb+White',
-  'Other': 'Autre',
-  'Other Lighting': 'Autre éclairage'
-});
-Object.assign(I18N.he, {
-  enterValue: 'הזן ערך',
-  'Linear LED': 'LED ליניארי',
-  'Linear RGB': 'RGB ליניארי',
-  'Spot LED': 'Spot LED',
-  'Linear Rgb+White': 'Linear Rgb+White',
-  'Other': 'אחר',
-  'Other Lighting': 'תאורה אחרת'
-});
-
-
-// C47 final override: make generated placeholders and simplified lighting labels language-safe.
-Object.assign(I18N.en, {
-  enterValue: 'Enter value',
-  'Enter value': 'Enter value',
-  'Select Code': 'Select Code',
-  'Select Fabric': 'Select Fabric',
-  'Linear LED': 'Linear LED',
-  'Linear RGB': 'Linear RGB',
-  'Linear Rgb+White': 'Linear Rgb+White',
-  'Spot LED': 'Spot LED',
-  'Other': 'Other',
-  'Other Lighting': 'Other Lighting'
-});
-Object.assign(I18N.tr, {
-  enterValue: 'Değer girin',
-  'Enter value': 'Değer girin',
-  'Select Code': 'Kod Seç',
-  'Select Fabric': 'Kumaş Seç',
-  'Linear LED': 'Linear LED',
-  'Linear RGB': 'Linear RGB',
-  'Linear Rgb+White': 'Linear Rgb+White',
-  'Spot LED': 'Spot LED',
-  'Other': 'Diğer',
-  'Other Lighting': 'Diğer Aydınlatma'
-});
-Object.assign(I18N.de, {
-  enterValue: 'Wert eingeben',
-  'Enter value': 'Wert eingeben',
-  'Select Code': 'Code auswählen',
-  'Select Fabric': 'Stoff auswählen',
-  'Linear LED': 'Linear LED',
-  'Linear RGB': 'Linear RGB',
-  'Linear Rgb+White': 'Linear Rgb+White',
-  'Spot LED': 'Spot LED',
-  'Other': 'Andere',
-  'Other Lighting': 'Andere Beleuchtung'
-});
-Object.assign(I18N.fr, {
-  enterValue: 'Saisir une valeur',
-  'Enter value': 'Saisir une valeur',
-  'Select Code': 'Sélectionner le code',
-  'Select Fabric': 'Sélectionner le tissu',
-  'Linear LED': 'LED linéaire',
-  'Linear RGB': 'RGB linéaire',
-  'Linear Rgb+White': 'Linear Rgb+White',
-  'Spot LED': 'Spot LED',
-  'Other': 'Autre',
-  'Other Lighting': 'Autre éclairage'
-});
-Object.assign(I18N.he, {
-  enterValue: 'הזן ערך',
-  'Enter value': 'הזן ערך',
-  'Select Code': 'בחר קוד',
-  'Select Fabric': 'בחר בד',
-  'Linear LED': 'LED ליניארי',
-  'Linear RGB': 'RGB ליניארי',
-  'Linear Rgb+White': 'Linear Rgb+White',
-  'Spot LED': 'Spot LED',
-  'Other': 'אחר',
-  'Other Lighting': 'תאורה אחרת'
-});
-
-const fields = {
-  companyName: $('#companyName'),
-  contactPerson: $('#contactPerson'),
-  phone: $('#phone'),
-  email: $('#email'),
-  orderNo: $('#orderNo'),
-  orderDate: $('#orderDate'),
-  notes: $('#notes')
-};
-
-const NOTES_MAX_LINES = 5;
-const NOTES_MAX_CHARS_PER_LINE = 82;
-const NOTES_MAX_CHARS = NOTES_MAX_LINES * NOTES_MAX_CHARS_PER_LINE;
-
-function normalizeNotesValue(value) {
-  const output = [];
-  const source = String(value ?? '').replace(/\r\n?/g, '\n').slice(0, NOTES_MAX_CHARS * 2);
-  source.split('\n').forEach((rawLine) => {
-    if (output.length >= NOTES_MAX_LINES) return;
-    let line = rawLine;
-    while (line.length > NOTES_MAX_CHARS_PER_LINE && output.length < NOTES_MAX_LINES) {
-      output.push(line.slice(0, NOTES_MAX_CHARS_PER_LINE));
-      line = line.slice(NOTES_MAX_CHARS_PER_LINE);
-    }
-    if (output.length < NOTES_MAX_LINES) output.push(line);
-  });
-  return output.slice(0, NOTES_MAX_LINES).join('\n').slice(0, NOTES_MAX_CHARS + NOTES_MAX_LINES - 1);
-}
-
-function enforceNotesLimit(event) {
-  const el = event?.currentTarget || fields.notes;
-  if (!el) return;
-  const normalized = normalizeNotesValue(el.value);
-  if (el.value !== normalized) {
-    const end = normalized.length;
-    el.value = normalized;
-    try { el.setSelectionRange(end, end); } catch {}
-  }
-}
-
-function handleNotesKeydown(event) {
-  if (event.key !== 'Enter') return;
-  const el = event.currentTarget;
-  const lines = String(el.value || '').replace(/\r\n?/g, '\n').split('\n');
-  if (lines.length >= NOTES_MAX_LINES) event.preventDefault();
-}
-
-function todayISO() {
-  return new Date().toISOString().slice(0, 10);
-}
-
-function autoOrderNo() {
-  const d = new Date();
-  const pad = (n) => String(n).padStart(2, '0');
-  return `REQ-${d.getFullYear()}${pad(d.getMonth() + 1)}${pad(d.getDate())}-${pad(d.getHours())}${pad(d.getMinutes())}`;
-}
-
-function toast(message) {
-  const el = $('#toast');
-  el.textContent = message;
-  el.classList.add('show');
-  clearTimeout(toast._timer);
-  toast._timer = setTimeout(() => el.classList.remove('show'), 2300);
-}
-
-let autoAdvanceTimer = null;
-
-function mobileAutoAdvanceEnabled() {
-  return window.matchMedia('(max-width: 860px)').matches;
-}
-
-function elementIsVisible(el) {
-  if (!el || el.hidden || el.disabled) return false;
-  if (el.closest('[hidden]')) return false;
-  const style = window.getComputedStyle(el);
-  return style.display !== 'none' && style.visibility !== 'hidden' && el.getClientRects().length > 0;
-}
-
-function autoAdvanceContainerFor(el) {
-  if (!el) return null;
-  return el.closest('.choice-field, .checkbox-grid, .product-select-grid > label, #companySection .grid > label, #orderSection .grid > label, #formArea .grid > label, .notes-input, label');
-}
-
-function autoAdvanceContainers() {
-  const selectors = [
-    '#companySection .grid > label',
-    '#orderSection .grid > label',
-    '#productSection .product-select-grid > label',
-    '#formArea .grid > label',
-    '#formArea .choice-field',
-    '#formArea .checkbox-grid',
-    '.notes-input'
-  ].join(', ');
-  return $$(selectors).filter(elementIsVisible);
-}
-
-function scheduleAutoAdvance(source) {
-  if (!mobileAutoAdvanceEnabled()) return;
-  if (document.body.classList.contains('modal-open')) return;
-  const current = autoAdvanceContainerFor(source);
-  if (!current) return;
-  clearTimeout(autoAdvanceTimer);
-  autoAdvanceTimer = setTimeout(() => {
-    const items = autoAdvanceContainers();
-    const index = items.indexOf(current);
-    const target = index >= 0 ? items[index + 1] : null;
-    if (!target) return;
-    target.scrollIntoView({ behavior: 'smooth', block: 'center' });
-  }, 180);
-}
-
-function shouldAutoAdvanceForControl(control) {
-  if (!control) return false;
-  const tag = String(control.tagName || '').toLowerCase();
-  const type = String(control.type || '').toLowerCase();
-  if (tag === 'textarea') return true;
-  if (tag === 'select') return true;
-  if (type === 'radio') return !control.closest('.checkbox-grid');
-  if (type === 'checkbox') return !control.closest('.checkbox-grid');
-  if (['text', 'number', 'date', 'email', 'tel', 'search'].includes(type)) return true;
-  return false;
-}
-
-function autoAdvanceOnChange(event) {
-  const control = event.currentTarget || event.target;
-  if (!shouldAutoAdvanceForControl(control)) return;
-  scheduleAutoAdvance(control.customSelectButton || control);
-}
-
-function autoAdvanceOnEnter(event) {
-  const control = event.currentTarget || event.target;
-  if (event.key !== 'Enter') return;
-  if (String(control.tagName || '').toLowerCase() === 'textarea') return;
-  if (!shouldAutoAdvanceForControl(control)) return;
-  event.preventDefault();
-  control.blur();
-  scheduleAutoAdvance(control.customSelectButton || control);
-}
-
-function safeId(text) {
-  return String(text).toLowerCase().replace(/[^a-z0-9]+/g, '_').replace(/^_|_$/g, '');
-}
-
-function t(key, lang = state.language) {
-  return I18N[lang]?.[key] ?? I18N.en[key] ?? key;
-}
-
-function translatedText(text, lang = state.language) {
-  return I18N[lang]?.[text] ?? I18N.en[text] ?? text;
-}
-
-function translatedOption(option, lang = state.language) {
-  return option === '' ? t('select', lang) : translatedText(option, lang);
-}
-
-function translatedList(values, lang = state.language) {
-  return values.length ? values.map((value) => translatedText(value, lang)).join(', ') : '-';
-}
-
-function translatedCompositeText(value, lang = state.language) {
-  const clean = String(value ?? '').trim();
-  if (!clean.includes('|')) return translatedText(clean, lang);
-  const parts = clean.split('|');
-  const code = parts.shift().trim();
-  const description = parts.join('|').trim();
-  return `${code} | ${translatedText(description, lang)}`;
-}
-
-
-// C52 Janela Cassette Awning translations and picker labels.
-Object.assign(I18N.en, {
-  'Awning Details': 'Awning Details',
-  'Arm Plastic Color': 'Arm Plastic Color',
-  'Fabric Color': 'Fabric Color',
-  'Control Type': 'Control Type',
-  'Button Control': 'Button Control',
-  'Remote Control': 'Remote Control',
-  'Valance & Printing': 'Valance & Printing',
-  'Valance Type': 'Valance Type',
-  'Straight': 'Straight',
-  'Wavy': 'Wavy',
-  'Valance Height': 'Valance Height',
-  'Valance Fabric': 'Valance Fabric',
-  'Print Placement': 'Print Placement',
-  'Valance': 'Valance',
-  'Body': 'Body',
-  'Valance and Body': 'Valance and Body',
-  'Print Color': 'Print Color',
-  'Print Color Selection': 'Print Color Selection',
-  'Print Color Selection Help': 'Select a print color from the list or type a custom color manually.',
-  'One Sided Roof': 'One Sided Roof',
-  'Roof Color': 'Roof Color',
-  'Roof Finish': 'Roof Finish',
-  'Additional Options': 'Additional Options',
-  'Motor & Reducer': 'Motor & Reducer',
-  'Dimmer For Light': 'Dimmer For Light',
-  'Crank Handle Length': 'Crank Handle Length',
-  'Gearbox Direction': 'Gearbox Direction',
-  'Compatible Sensor': 'Compatible Sensor',
-  'Compatible Sensor & Remote Control': 'Compatible Sensor & Remote Control',
-  'Projection 1 (mm)': 'Projection 1',
-  'Projection 2 (mm)': 'Projection 2',
-  'Motor Direction 1': 'Motor Direction 1',
-  'Motor Direction 2': 'Motor Direction 2',
-  'Gearbox Direction 1': 'Gearbox Direction 1',
-  'Gearbox Direction 2': 'Gearbox Direction 2',
-  'Same side as Direction 1': 'Same side as Direction 1',
-  'Opposite side of Direction 1': 'Opposite side of Direction 1',
-  'Şanzımanlı': 'Gearbox',
-  'Packing': 'Packing',
-  'Kraft': 'Kraft',
-  'Air Bubble Wrap': 'Air Bubble Wrap',
-  'Yok': 'No',
-  'Var': 'Yes',
-  'Black': 'Black',
-  'Brown': 'Brown',
-  '0001 White': '0001 White',
-  '0020 Black': '0020 Black',
-  '1987 Cream': '1987 Cream',
-  '2040 Turquoise': '2040 Turquoise',
-  '056 Pistachio Green': '056 Pistachio Green',
-  '1003 Red': '1003 Red',
-  'Gold Gilding': 'Gold Gilding',
-  'Silver Gilding': 'Silver Gilding'
-});
-Object.assign(I18N.tr, {
-  'Awning Details': 'Tente Bilgileri',
-  'Arm Plastic Color': 'Kollardaki Plastik Rengi',
-  'Fabric Color': 'Kumaş Rengi',
-  'Control Type': 'Kontrol Şekli',
-  'Button Control': 'Düğmeli',
-  'Remote Control': 'Kumandalı',
-  'Valance & Printing': 'Saçak ve Yazı',
-  'Valance Type': 'Saçak Çeşidi',
-  'Straight': 'Düz',
-  'Wavy': 'Dalgalı',
-  'Valance Height': 'Saçak Yüksekliği',
-  'Valance Fabric': 'Saçak Kumaş Rengi',
-  'Print Placement': 'Yazı Çeşidi',
-  'Valance': 'Saçak',
-  'Body': 'Gövde',
-  'Valance and Body': 'Saçak ve Gövde',
-  'Print Color': 'Yazı Rengi',
-  'Print Color Selection': 'Yazı Rengi Seçimi',
-  'Print Color Selection Help': 'Listeden yazı rengini seçin veya listede yoksa manuel yazın.',
-  'One Sided Roof': 'Tek Taraflı Çatı',
-  'Roof Color': 'Çatı Rengi',
-  'Roof Finish': 'Çatı Yüzeyi',
-  'Additional Options': 'Ek Seçenekler',
-  'Motor & Reducer': 'Motor & Redüktör',
-  'Dimmer For Light': 'Dimmer For Light',
-  'Crank Handle Length': 'Çevirme Kolu Uzunluğu',
-  'Gearbox Direction': 'Şanzıman Yönü',
-  'Compatible Sensor': 'Uyumlu Algılayıcı',
-  'Compatible Sensor & Remote Control': 'Uyumlu Algılayıcı & Kumanda',
-  'Projection 1 (mm)': 'Açılım 1',
-  'Projection 2 (mm)': 'Açılım 2',
-  'Motor Direction 1': 'Motor Yönü 1',
-  'Motor Direction 2': 'Motor Yönü 2',
-  'Gearbox Direction 1': 'Şanzıman Yönü 1',
-  'Gearbox Direction 2': 'Şanzıman Yönü 2',
-  'Same side as Direction 1': '1. yön ile aynı tarafta',
-  'Opposite side of Direction 1': '1. yön ile ters tarafta',
-  'Şanzımanlı': 'Şanzımanlı',
-  'Packing': 'Paketleme',
-  'Kraft': 'Kraft',
-  'Air Bubble Wrap': 'Havalı Naylon',
-  'Yok': 'Yok',
-  'Var': 'Var',
-  'Black': 'Siyah',
-  'Brown': 'Kahve',
-  '0001 White': '0001 Beyaz',
-  '0020 Black': '0020 Siyah',
-  '1987 Cream': '1987 Krem',
-  '2040 Turquoise': '2040 Turkuaz',
-  '056 Pistachio Green': '056 Fıstık Yeşili',
-  '1003 Red': '1003 Kırmızı',
-  'Gold Gilding': 'Sarı Yaldız',
-  'Silver Gilding': 'Gümüş Yaldız'
-});
-
-
-// C109: final Turkish wording cleanup requested for all form labels/options.
-Object.assign(I18N.tr, {
-  'Projection': 'Açılım',
-  'Projection (mm)': 'Açılım',
-  'Projection 1 (mm)': 'Açılım 1',
-  'Projection 2 (mm)': 'Açılım 2',
-  'Remote Control': 'Kumanda',
-  'Light Dimmer (For Linear LED)': 'Dimmer (Linear LED için)',
-  'Light Dimmer (For Spot LED)': 'Dimmer (Spot LED için)',
-  'Dimmer Heater': 'Dimmer (Isıtıcı için)',
-  'Side Beam': 'Cam Kayıt Profili',
-  'Structure': 'Sistem',
-  'System Color': 'Sistem',
-  'Panel Color': 'Panel',
-  'Colours': 'Renkler',
-  'Color Details': 'Renk Bilgileri',
-  'Motor & Remote Control': 'Motor ve Kumanda',
-  'Lighting & Dimmer': 'Aydınlatma & Dimmer',
-  'Lighting & Dimmers': 'Aydınlatma & Dimmer',
-  'Lighting & Dimmer & Remote': 'Aydınlatma & Dimmer & Kumanda',
-  'Heater & Sound & Packing': 'Isıtıcı, Ses, Ambalaj',
-  'Heater & Sound & Packing & Loading': 'Isıtıcı, Ses, Ambalaj & Yükleme',
-  'System Quantity': 'Sistem Adedi',
-  'Product Quantity': 'Ürün Adedi',
-  'Quantity': 'Adet'
-});
-
-let activePickerInput = null;
-let activePickerKind = 'color';
-let activeColorCatalogId = 'rising-standart';
-let activeFabricCatalogId = 'sauleda';
-let activePickerSearch = '';
-
-const JANELA_AWNING_PRODUCT_IDS = new Set([
-  'janela_cassette_awning',
-  'pars_cassette_awning',
-  'pars_plus_cassette_awning',
-  'pars_plus_luxe_cassette_awning',
-  'moonlight_classic_awning_motorlu',
-  'moonlight_classic_awning_sanzimanli',
-  'sunshine_classic_awning_motorlu',
-  'sunshine_classic_awning_sanzimanli',
-  'twins_classic_awning_motorlu',
-  'twins_classic_awning_sanzimanli',
-  'zip_screen_sun_store',
-  'zip_screen_sky_screen',
-  'zip_screen_manuel_store'
-]);
-
-const ZIP_SCREEN_FABRIC_PRODUCT_IDS = new Set([
-  'zip_screen_sun_store',
-  'zip_screen_manuel_store',
-  'zip_screen_sky_screen'
-]);
-
-const GLASS_FOLDING_A_SERIES_PRODUCT_IDS = new Set([
-  'glass_folding_a_series_premium',
-  'glass_folding_k_series_smart'
-]);
-
-const GLASS_SLIDING_SERIES_PRODUCT_IDS = new Set([
-  'glass_sliding_a_series_premium',
-  'glass_sliding_k_series_smart'
-]);
-
-const GLASS_GUILLOTINE_SERIES_PRODUCT_IDS = new Set([
-  'glass_guillotine_a_series_premium',
-  'glass_guillotine_k_series_smart'
-]);
-
-const JANELA_AWNING_LIMITS = {
-  janela_cassette_awning: { maxWidth: 4000, projectionLtWidth: false },
-  pars_cassette_awning: { maxWidth: 5000, projectionLtWidth: true },
-  pars_plus_cassette_awning: { maxWidth: 7000, projectionLtWidth: true },
-  pars_plus_luxe_cassette_awning: { maxWidth: 7000, projectionLtWidth: true },
-  moonlight_classic_awning_motorlu: { maxWidth: 7000, projectionLtWidth: true },
-  moonlight_classic_awning_sanzimanli: { maxWidth: 7000, projectionLtWidth: true },
-  sunshine_classic_awning_motorlu: { maxWidth: 7000, projectionLtWidth: true },
-  sunshine_classic_awning_sanzimanli: { maxWidth: 7000, projectionLtWidth: true },
-  twins_classic_awning_motorlu: { maxWidth: 7000, projectionLtWidth: true, projectionFields: ['projection1', 'projection2'] },
-  twins_classic_awning_sanzimanli: { maxWidth: 7000, projectionLtWidth: true, projectionFields: ['projection1', 'projection2'] },
-  zip_screen_sun_store: { maxWidth: 7000, projectionLtWidth: false },
-  zip_screen_sky_screen: { maxWidth: 7000, projectionLtWidth: false },
-  zip_screen_manuel_store: { maxWidth: 4000, projectionLtWidth: false }
-};
-
-function isJanelaAwningProduct(product = getProduct()) {
-  return JANELA_AWNING_PRODUCT_IDS.has(product?.id);
-}
-
-function isSunStoreAwningProduct(product = getProduct()) {
-  return ZIP_SCREEN_FABRIC_PRODUCT_IDS.has(product?.id);
-}
-
-function isGlassFoldingASeriesProduct(product = getProduct()) {
-  return GLASS_FOLDING_A_SERIES_PRODUCT_IDS.has(product?.id);
-}
-
-function isGlassSlidingSeriesProduct(product = getProduct()) {
-  return GLASS_SLIDING_SERIES_PRODUCT_IDS.has(product?.id);
-}
-
-function isGlassGuillotineSeriesProduct(product = getProduct()) {
-  return GLASS_GUILLOTINE_SERIES_PRODUCT_IDS.has(product?.id);
-}
-
-function isGlassGuillotineKSeriesProduct(product = getProduct()) {
-  return product?.id === 'glass_guillotine_k_series_smart';
-}
-
-function colorCatalogs() {
-  return Array.isArray(window.PRODUCT_COLOR_CATALOGS) && window.PRODUCT_COLOR_CATALOGS.length
-    ? window.PRODUCT_COLOR_CATALOGS
-    : [{ id: 'rising-standart', label: 'Rising Standart', options: COLOR_OPTIONS }];
-}
-
-function activeColorCatalog() {
-  const catalogs = colorCatalogs();
-  return catalogs.find((catalog) => catalog.id === activeColorCatalogId) || catalogs[0];
-}
-
-function pickerKindForField(field, control) {
-  if (field.palette === false) return '';
-  const label = String(field.label || '').trim().toLowerCase();
-  if (!control || control.tagName !== 'INPUT' || control.type !== 'text') return '';
-  if (field.picker) return field.picker;
-  if (field.palette === 'fabric' || FABRIC_FIELD_LABELS.has(label)) return 'fabric';
-  if (field.palette === true || label.includes('color') || label.includes('colour') || COLOR_FIELD_LABELS.has(label)) return 'color';
-  return '';
-}
-
-function pickerButtonLabel(kind) {
-  return translatedText(kind === 'fabric' ? 'Select Fabric' : 'Select Code');
-}
-
-function setInputValueAndNotify(input, value) {
-  if (!input) return;
-  input.value = value;
-  input.dispatchEvent(new Event('input', { bubbles: true }));
-  input.dispatchEvent(new Event('change', { bubbles: true }));
-}
-
-function setRadioValueAndNotify(fieldId, value) {
-  const radio = $$(`input[type="radio"][name="dyn_${fieldId}"]`).find((item) => item.value === value);
-  if (!radio) return;
-  radio.checked = true;
-  radio.dispatchEvent(new Event('change', { bubbles: true }));
-}
-
-function currentFabricOptions() {
-  const pergoRiseOptions = window.PERGO_RISE_FABRIC_OPTIONS || [];
-  if (state.selectedProductId === 'pergo_rise' && pergoRiseOptions.length) {
-    return pergoRiseOptions;
-  }
-  return FABRIC_OPTIONS;
-}
-
-function pickerOptions(kind) {
-  if (kind === 'fabric') return currentFabricOptions();
-  if (kind === 'textColor') return window.JANELA_PRINT_COLOR_OPTIONS || [];
-  return activeColorCatalog()?.options || [];
-}
-
-const SAULEDA_PAGE_ASSET = (name) => `assets/fabric-pages/sauleda/${name}`;
-const SAULEDA_SECTIONS = [
-  {
-    key: 'plains',
-    title: 'Plains',
-    layout: 'grid',
-    panels: [
-      { image: SAULEDA_PAGE_ASSET('plains1_left.jpg'), rows: 4, items: [ ['Plains','Blanco','2042'],['Plains','Natural','2926'],['Plains','Vainilla','2687'],['Plains','Seda','2596'],['Plains','Avena','2296'],['Plains','Siroco','2226'],['Plains','Integral','2838'],['Plains','Coco','3601'] ] },
-      { image: SAULEDA_PAGE_ASSET('plains1_right.jpg'), rows: 4, items: [ ['Plains','Marfil','2143'],['Plains','Marmol','1070'],['Plains','Albastro','8157'],['Plains','Beige','2038'],['Plains','Ocre','2180'],['Plains','Teja','2065'],['Plains','Marron','2146'],['Plains','Cafe','2316'] ] },
-      { image: SAULEDA_PAGE_ASSET('plains2_left.jpg'), rows: 4, items: [ ['Plains','Amarillo','2013'],['Plains','Naranja','2050'],['Plains','Rioja','2210'],['Plains','Granate','2101'],['Plains','Turkis','2129'],['Plains','Celeste','2066'],['Plains','Marino','2145'],['Plains','Admiral','2051'] ] },
-      { image: SAULEDA_PAGE_ASSET('plains2_right.jpg'), rows: 4, items: [ ['Plains','Rojo','2211'],['Plains','Logo Red','1066'],['Plains','Pink','2835'],['Plains','Malva','2119'],['Plains','Indigo','2828'],['Plains','Azul Real','2235'],['Plains','Verde Claro','2246'],['Plains','Eucaliptus','3000'] ] },
-      { image: SAULEDA_PAGE_ASSET('plains3_left.jpg'), rows: 3, items: [ ['Plains','Verde','2242'],['Plains','Musgo','2247'],['Plains','Silver','2821'],['Plains','Perla','2979'],['Plains','Mineral','2831'],['Plains','Antracita','8488'] ] },
-      { image: SAULEDA_PAGE_ASSET('plains3_right.jpg'), rows: 3, items: [ ['Plains','Tirol','2928'],['Plains','Botella','2245'],['Plains','Piedra','3605'],['Plains','Gris','2102'],['Plains','Grafito','3602'],['Plains','Negro','2170'] ] }
-    ]
-  },
-  {
-    key: 'classics',
-    title: 'The Classics',
-    layout: 'rows',
-    panels: [
-      { image: SAULEDA_PAGE_ASSET('classics1.jpg'), rows: 5, items: [ ['The Classics','Amarillo N','2015'], ['The Classics','Naranja N','2052'], ['The Classics','Rojo N','2212'], ['The Classics','Azul Real N','2359'], ['The Classics','Botella N','2680'] ] },
-      { image: SAULEDA_PAGE_ASSET('classics2.jpg'), rows: 5, items: [ ['The Classics','Ocre X','2641'], ['The Classics','Integral X','2681'], ['The Classics','Piedra X','2682'], ['The Classics','Gris N','2103'], ['The Classics','Negro N','2171'] ] }
-    ]
-  },
-  {
-    key: 'fantasy',
-    title: 'Fantasy',
-    layout: 'rows',
-    panels: [
-      { image: SAULEDA_PAGE_ASSET('fantasy1.jpg'), rows: 4, items: [ ['Fantasy','Vesubio','2636'], ['Fantasy','Anapurna','2640'], ['Fantasy','St. Andrews','2924'], ['Fantasy','Manchester','2823'] ] },
-      { image: SAULEDA_PAGE_ASSET('fantasy2.jpg'), rows: 4, items: [ ['Fantasy','Pirineos','2790'], ['Fantasy','Oslo','2818'], ['Fantasy','Marte','2121'], ['Fantasy','Jamaica','2701'] ] },
-      { image: SAULEDA_PAGE_ASSET('fantasy3.jpg'), rows: 4, items: [ ['Fantasy','Balmoral','2921'], ['Fantasy','Miami','2702'], ['Fantasy','Estocolmo','2816'], ['Fantasy','Pluton','2179'] ] },
-      { image: SAULEDA_PAGE_ASSET('fantasy4.jpg'), rows: 4, items: [ ['Fantasy','Windsor','2929'], ['Fantasy','Aries','2576'], ['Fantasy','Jalisco','1484'], ['Fantasy','Urban','3608'] ] }
-    ]
-  },
-  {
-    key: 'marine',
-    title: 'Marine Plus',
-    layout: 'grid',
-    panels: [
-      { image: SAULEDA_PAGE_ASSET('marine1_left.jpg'), rows: 4, items: [ ['Marine Plus','Blanco','2405'], ['Marine Plus','Marfil','2411'], ['Marine Plus','Avena','2451'], ['Marine Plus','Toast','1495'], ['Marine Plus','Vison','2452'], ['Marine Plus','Amarillo','8634'], ['Marine Plus','Indigo','2746'], ['Marine Plus','Arctic','20507'] ] },
-      { image: SAULEDA_PAGE_ASSET('marine1_right.jpg'), rows: 4, items: [ ['Marine Plus','Sand','20501'], ['Marine Plus','Integral','2443'], ['Marine Plus','Pergamino','2049B'], ['Marine Plus','Beige','2403'], ['Marine Plus','Rioja','2729'], ['Marine Plus','Granate','2407'], ['Marine Plus','Electric Blue','20664'], ['Marine Plus','Azul Real','2423'] ] },
-      { image: SAULEDA_PAGE_ASSET('marine2_left.jpg'), rows: 4, items: [ ['Marine Plus','Azul','2401'], ['Marine Plus','Marino','2413'], ['Marine Plus','Quartz','1613'], ['Marine Plus','Silver','2409'], ['Marine Plus','Piedra','3599'], ['Marine Plus','Gris','2421'], ['Marine Plus','Grafito','2466'], ['Marine Plus','Antracita','2461'] ] },
-      { image: SAULEDA_PAGE_ASSET('marine2_right.jpg'), rows: 4, items: [ ['Marine Plus','Armada','2448'], ['Marine Plus','Botella','2488'], ['Marine Plus','Steel','20492'], ['Marine Plus','Perla','2417'], ['Marine Plus','Mineral','2750'], ['Marine Plus','Basalto','20108'], ['Marine Plus','Coal','8660'], ['Marine Plus','Negro','2881'] ] }
-    ]
-  }
-];
-
-function isSauledaFabricMode(kind = activePickerKind) {
-  return kind === 'fabric' && isJanelaAwningProduct();
-}
-
-function isSunStoreFabricMode(kind = activePickerKind) {
-  return kind === 'fabric' && isSunStoreAwningProduct();
-}
-
-function isJanelaFabricMode(kind = activePickerKind) {
-  return kind === 'fabric' && isJanelaAwningProduct() && !isSunStoreAwningProduct();
-}
-
-function isSattlerFabricMode(kind = activePickerKind) {
-  return isJanelaFabricMode(kind) && activeFabricCatalogId === 'sattler';
-}
-
-function isAcrillaFabricMode(kind = activePickerKind) {
-  return isJanelaFabricMode(kind) && activeFabricCatalogId === 'acrilla';
-}
-
-function isSauledaCatalogActive(kind = activePickerKind) {
-  return isJanelaFabricMode(kind) && activeFabricCatalogId === 'sauleda';
-}
-
-function sauledaValue(parts) {
-  return parts.filter(Boolean).join(' - ');
-}
-
-function hotspotLabelParts(value) {
-  const parts = String(value || '').split(' - ').map((part) => part.trim()).filter(Boolean);
-  if (parts.length >= 3) {
-    return { name: parts[parts.length - 2], code: parts[parts.length - 1] };
-  }
-  if (parts.length === 2) {
-    return { name: parts[0], code: parts[1] };
-  }
-  return { name: '', code: String(value || '') };
-}
-
-function createSauledaHotspot(value, left, top, width, height) {
-  const btn = document.createElement('button');
-  btn.type = 'button';
-  btn.className = 'sauleda-hotspot fabric-page-hotspot';
-  btn.style.left = left;
-  btn.style.top = top;
-  btn.style.width = width;
-  btn.style.height = height;
-  btn.setAttribute('aria-label', value);
-  btn.title = value;
-  btn.dataset.value = value;
-
-  // Invisible responsive hotspot: percentages follow the catalog image size.
-  if ((activePickerInput?.value || '').trim() === value) btn.classList.add('selected-hotspot');
-  btn.addEventListener('click', () => selectPickerOption(value));
-  return btn;
-}
-
-
-const SUN_STORE_PAGE_SECTIONS = [
-  {
-    title: 'Serge Ferrari',
-    pages: [
-      {
-        image: 'assets/fabric-pages/sun-store/sun-store-page-1.jpg',
-        items: [
-          { value: '7635-52101', left: '52.0362%', top: '2.2805%', width: '39.7059%', height: '14.1961%' },
-          { value: '7635-52102', left: '8.2579%', top: '16.5336%', width: '39.5928%', height: '13.9681%' },
-          { value: '7635-52103', left: '52.4887%', top: '16.5336%', width: '39.5928%', height: '14.1391%' },
-          { value: '7635-52105', left: '8.2579%', top: '30.7868%', width: '39.5928%', height: '14.1961%' },
-          { value: '7635-52106', left: '52.2624%', top: '30.7868%', width: '39.5928%', height: '14.1961%' },
-          { value: '7635-52107', left: '8.1448%', top: '45.2680%', width: '39.5928%', height: '14.1391%' },
-          { value: '7635-52173', left: '52.0362%', top: '45.2109%', width: '39.5928%', height: '14.0251%' },
-          { value: '7635-52174', left: '8.3710%', top: '60.0342%', width: '39.5928%', height: '14.0251%' },
-          { value: '7635-52176', left: '51.6968%', top: '60.0342%', width: '39.7059%', height: '14.0251%' },
-          { value: '7635-52142', left: '8.3710%', top: '76.6819%', width: '38.6878%', height: '14.8233%' },
-          { value: '7635-52144', left: '51.6968%', top: '76.6819%', width: '39.5928%', height: '14.1391%' }
-        ]
-      },
-      {
-        image: 'assets/fabric-pages/sun-store/sun-store-page-2.jpg',
-        items: [
-          { value: '92-2044', left: '53.6830%', top: '0.7412%', width: '39.2857%', height: '12.5428%' },
-          { value: '92-2135', left: '7.2545%', top: '13.0559%', width: '39.0625%', height: '12.8848%' },
-          { value: '92-2171', left: '53.7946%', top: '13.0559%', width: '39.0625%', height: '12.8278%' },
-          { value: '92-2043', left: '7.0312%', top: '25.7127%', width: '38.9509%', height: '12.8848%' },
-          { value: '92-2047', left: '53.3482%', top: '25.6556%', width: '38.9509%', height: '12.8848%' },
-          { value: '86-2044', left: '53.5714%', top: '38.3694%', width: '39.0625%', height: '12.9418%' },
-          { value: '86-2135', left: '7.1429%', top: '51.0832%', width: '39.0625%', height: '12.8278%' },
-          { value: '86-2171', left: '53.5714%', top: '51.0262%', width: '38.9509%', height: '12.8848%' },
-          { value: '86-2043', left: '7.1429%', top: '64.2531%', width: '39.0625%', height: '12.8848%' },
-          { value: '86-2047', left: '53.3482%', top: '64.2531%', width: '39.0625%', height: '12.8848%' },
-          { value: 'W88-8102', left: '7.1429%', top: '78.1072%', width: '39.0625%', height: '16.1345%' },
-          { value: 'W88-2047', left: '53.3482%', top: '78.1072%', width: '39.0625%', height: '16.2486%' }
-        ]
-      }
-    ]
-  }
-];
-
-function buildSunStorePicker() {
-  const list = $('#colorOptionList');
-  if (!list) return;
-  list.classList.add('sauleda-picker-mode');
-  list.innerHTML = '';
-  SUN_STORE_PAGE_SECTIONS.forEach((section) => {
-    const sectionEl = document.createElement('section');
-    sectionEl.className = 'sauleda-section';
-    const body = document.createElement('div');
-    body.className = 'sattler-page-stack';
-    section.pages.forEach((page) => {
-      const card = document.createElement('div');
-      card.className = 'sattler-page-card';
-      const overlay = document.createElement('div');
-      overlay.className = 'sauleda-page-overlay';
-      const img = document.createElement('img');
-      img.src = page.image;
-      img.alt = `${section.title} fabric page`;
-      img.loading = 'lazy';
-      overlay.appendChild(img);
-      page.items.forEach((item) => {
-        overlay.appendChild(createSauledaHotspot(item.value, item.left, item.top, item.width, item.height));
-      });
-      card.appendChild(overlay);
-      body.appendChild(card);
-    });
-    sectionEl.appendChild(body);
-    list.appendChild(sectionEl);
-  });
-}
-
-const SATTLER_PAGES = [
-  {
-    "image": "assets/fabric-pages/sattler-layout/sattler-page-01.jpg",
-    "items": [
-      {
-        "value": "Sattler - China Red - 314 001",
-        "left": "3.0909%",
-        "top": "1.9619%",
-        "width": "45.1818%",
-        "height": "12.6370%"
-      },
-      {
-        "value": "Sattler - Orange - 314 002",
-        "left": "51.7273%",
-        "top": "1.9619%",
-        "width": "45.1818%",
-        "height": "12.6370%"
-      },
-      {
-        "value": "Sattler - Dandelion - 314 003",
-        "left": "3.0909%",
-        "top": "15.8684%",
-        "width": "45.1818%",
-        "height": "12.6370%"
-      },
-      {
-        "value": "Sattler - Jungle - 314 004",
-        "left": "51.7273%",
-        "top": "15.8684%",
-        "width": "45.1818%",
-        "height": "12.6370%"
-      },
-      {
-        "value": "Sattler - Classic Royal Blue - 314 006",
-        "left": "3.0909%",
-        "top": "29.7750%",
-        "width": "45.1818%",
-        "height": "12.6370%"
-      },
-      {
-        "value": "Sattler - Lily - 314 007",
-        "left": "51.7273%",
-        "top": "29.7750%",
-        "width": "45.1818%",
-        "height": "12.6370%"
-      },
-      {
-        "value": "Sattler - Cloud - 314 010",
-        "left": "3.0909%",
-        "top": "43.6815%",
-        "width": "45.1818%",
-        "height": "12.6370%"
-      },
-      {
-        "value": "Sattler - Nautical - 314 011",
-        "left": "51.7273%",
-        "top": "43.6815%",
-        "width": "45.1818%",
-        "height": "12.6370%"
-      },
-      {
-        "value": "Sattler - Mahogany - 314 016",
-        "left": "3.0909%",
-        "top": "57.5880%",
-        "width": "45.1818%",
-        "height": "12.6370%"
-      },
-      {
-        "value": "Sattler - Shell - 314 020",
-        "left": "51.7273%",
-        "top": "57.5880%",
-        "width": "45.1818%",
-        "height": "12.6370%"
-      },
-      {
-        "value": "Sattler - Copper - 314 022",
-        "left": "3.0909%",
-        "top": "71.4945%",
-        "width": "45.1818%",
-        "height": "12.6370%"
-      },
-      {
-        "value": "Sattler - Graphite - 314 028",
-        "left": "51.7273%",
-        "top": "71.4945%",
-        "width": "45.1818%",
-        "height": "12.6370%"
-      },
-      {
-        "value": "Sattler - Fog - 314 030",
-        "left": "3.0909%",
-        "top": "85.4010%",
-        "width": "45.1818%",
-        "height": "12.6370%"
-      },
-      {
-        "value": "Sattler - Camel - 314 040",
-        "left": "51.7273%",
-        "top": "85.4010%",
-        "width": "45.1818%",
-        "height": "12.6370%"
-      }
-    ]
-  },
-  {
-    "image": "assets/fabric-pages/sattler-layout/sattler-page-02.jpg",
-    "items": [
-      {
-        "value": "Sattler - Pigeon - 314 082",
-        "left": "3.0909%",
-        "top": "1.9619%",
-        "width": "45.1818%",
-        "height": "12.6370%"
-      },
-      {
-        "value": "Sattler - Plum - 314 143",
-        "left": "51.7273%",
-        "top": "1.9619%",
-        "width": "45.1818%",
-        "height": "12.6370%"
-      },
-      {
-        "value": "Sattler - Sky - 314 153",
-        "left": "3.0909%",
-        "top": "15.8684%",
-        "width": "45.1818%",
-        "height": "12.6370%"
-      },
-      {
-        "value": "Sattler - Black - 314 154",
-        "left": "51.7273%",
-        "top": "15.8684%",
-        "width": "45.1818%",
-        "height": "12.6370%"
-      },
-      {
-        "value": "Sattler - Forest Green - 314 362",
-        "left": "3.0909%",
-        "top": "29.7750%",
-        "width": "45.1818%",
-        "height": "12.6370%"
-      },
-      {
-        "value": "Sattler - Leaf - 314 396",
-        "left": "51.7273%",
-        "top": "29.7750%",
-        "width": "45.1818%",
-        "height": "12.6370%"
-      },
-      {
-        "value": "Sattler - Magenta - 314 397",
-        "left": "3.0909%",
-        "top": "43.6815%",
-        "width": "45.1818%",
-        "height": "12.6370%"
-      },
-      {
-        "value": "Sattler - Storm Grey - 314 398",
-        "left": "51.7273%",
-        "top": "43.6815%",
-        "width": "45.1818%",
-        "height": "12.6370%"
-      },
-      {
-        "value": "Sattler - Marine - 314 414",
-        "left": "3.0909%",
-        "top": "57.5880%",
-        "width": "45.1818%",
-        "height": "12.6370%"
-      },
-      {
-        "value": "Sattler - Saffron - 314 610",
-        "left": "51.7273%",
-        "top": "57.5880%",
-        "width": "45.1818%",
-        "height": "12.6370%"
-      },
-      {
-        "value": "Sattler - Seagrass - 314 621",
-        "left": "3.0909%",
-        "top": "71.4945%",
-        "width": "45.1818%",
-        "height": "12.6370%"
-      },
-      {
-        "value": "Sattler - Ecru - 314 718",
-        "left": "51.7273%",
-        "top": "71.4945%",
-        "width": "45.1818%",
-        "height": "12.6370%"
-      },
-      {
-        "value": "Sattler - Linen - 314 721",
-        "left": "3.0909%",
-        "top": "85.4010%",
-        "width": "45.1818%",
-        "height": "12.6370%"
-      },
-      {
-        "value": "Sattler - Nutmeg - 314 729",
-        "left": "51.7273%",
-        "top": "85.4010%",
-        "width": "45.1818%",
-        "height": "12.6370%"
-      }
-    ]
-  },
-  {
-    "image": "assets/fabric-pages/sattler-layout/sattler-page-03.jpg",
-    "items": [
-      {
-        "value": "Sattler - Burgundy - 314 763",
-        "left": "13.4000%",
-        "top": "1.1943%",
-        "width": "27.2000%",
-        "height": "10.9076%"
-      },
-      {
-        "value": "Sattler - Cave - 314 819",
-        "left": "59.3000%",
-        "top": "1.1943%",
-        "width": "27.3000%",
-        "height": "10.9076%"
-      },
-      {
-        "value": "Sattler - Asphalt - 314 840",
-        "left": "13.5000%",
-        "top": "14.3312%",
-        "width": "27.0000%",
-        "height": "10.9076%"
-      },
-      {
-        "value": "Sattler - Milky - 314 851",
-        "left": "59.4000%",
-        "top": "14.3312%",
-        "width": "27.2000%",
-        "height": "10.9076%"
-      },
-      {
-        "value": "Sattler - Earth - 314 917",
-        "left": "13.4000%",
-        "top": "27.4682%",
-        "width": "27.2000%",
-        "height": "10.9873%"
-      },
-      {
-        "value": "Sattler - Scree - 314 941",
-        "left": "59.4000%",
-        "top": "27.4682%",
-        "width": "27.2000%",
-        "height": "10.9873%"
-      },
-      {
-        "value": "Sattler - Ivory - 314 E67",
-        "left": "14.1000%",
-        "top": "40.6847%",
-        "width": "26.4000%",
-        "height": "10.9076%"
-      },
-      {
-        "value": "Sattler - Sunny - 315 052",
-        "left": "13.4000%",
-        "top": "57.7229%",
-        "width": "27.2000%",
-        "height": "10.9076%"
-      },
-      {
-        "value": "Sattler - Checker Board - 315 105",
-        "left": "58.7000%",
-        "top": "57.7229%",
-        "width": "32.0000%",
-        "height": "10.9076%"
-      },
-      {
-        "value": "Sattler - Dahlia - 315 167",
-        "left": "12.6000%",
-        "top": "70.8599%",
-        "width": "32.1000%",
-        "height": "10.9076%"
-      },
-      {
-        "value": "Sattler - Downtown Grey - 315 352",
-        "left": "59.6000%",
-        "top": "70.8599%",
-        "width": "26.9000%",
-        "height": "10.9076%"
-      }
-    ]
-  },
-  {
-    "image": "assets/fabric-pages/sattler-layout/sattler-page-04.jpg",
-    "items": [
-      {
-        "value": "Sattler - Forever Green - 315 420",
-        "left": "3.0909%",
-        "top": "2.2107%",
-        "width": "45.1818%",
-        "height": "14.2393%"
-      },
-      {
-        "value": "Sattler - Boathouse - 315 422",
-        "left": "51.7273%",
-        "top": "2.2107%",
-        "width": "45.1818%",
-        "height": "14.2393%"
-      },
-      {
-        "value": "Sattler - Rosewood - 315 550",
-        "left": "3.0909%",
-        "top": "17.8804%",
-        "width": "45.1818%",
-        "height": "14.2393%"
-      },
-      {
-        "value": "Sattler - Grove - 320 054",
-        "left": "3.0909%",
-        "top": "36.5410%",
-        "width": "45.1818%",
-        "height": "14.2393%"
-      },
-      {
-        "value": "Sattler - Magnolia - 320 099",
-        "left": "51.7273%",
-        "top": "36.5410%",
-        "width": "45.1818%",
-        "height": "14.2393%"
-      },
-      {
-        "value": "Sattler - Conch - 320 128",
-        "left": "3.0909%",
-        "top": "52.2107%",
-        "width": "45.1818%",
-        "height": "14.2393%"
-      },
-      {
-        "value": "Sattler - Saltwater - 320 234",
-        "left": "51.7273%",
-        "top": "52.2107%",
-        "width": "45.1818%",
-        "height": "14.2393%"
-      },
-      {
-        "value": "Sattler - Wooden - 320 253",
-        "left": "3.0909%",
-        "top": "67.8804%",
-        "width": "45.1818%",
-        "height": "14.2393%"
-      },
-      {
-        "value": "Sattler - Athena - 320 254",
-        "left": "51.7273%",
-        "top": "67.8804%",
-        "width": "45.1818%",
-        "height": "14.2393%"
-      },
-      {
-        "value": "Sattler - Municipal - 320 408",
-        "left": "3.0909%",
-        "top": "83.5501%",
-        "width": "45.1818%",
-        "height": "14.2393%"
-      },
-      {
-        "value": "Sattler - Walk - 320 441",
-        "left": "51.7273%",
-        "top": "83.5501%",
-        "width": "45.1818%",
-        "height": "14.2393%"
-      }
-    ]
-  },
-  {
-    "image": "assets/fabric-pages/sattler-layout/sattler-page-05.jpg",
-    "items": [
-      {
-        "value": "Sattler - Sequence - 320 493",
-        "left": "3.0909%",
-        "top": "1.9619%",
-        "width": "45.1818%",
-        "height": "12.6370%"
-      },
-      {
-        "value": "Sattler - Gravity - 320 530",
-        "left": "51.7273%",
-        "top": "1.9619%",
-        "width": "45.1818%",
-        "height": "12.6370%"
-      },
-      {
-        "value": "Sattler - Cruise - 320 555",
-        "left": "3.0909%",
-        "top": "15.8684%",
-        "width": "45.1818%",
-        "height": "12.6370%"
-      },
-      {
-        "value": "Sattler - Echo - 320 614",
-        "left": "51.7273%",
-        "top": "15.8684%",
-        "width": "45.1818%",
-        "height": "12.6370%"
-      },
-      {
-        "value": "Sattler - Ramble - 320 715",
-        "left": "3.0909%",
-        "top": "29.7750%",
-        "width": "45.1818%",
-        "height": "12.6370%"
-      },
-      {
-        "value": "Sattler - Civic - 320 716",
-        "left": "51.7273%",
-        "top": "29.7750%",
-        "width": "45.1818%",
-        "height": "12.6370%"
-      },
-      {
-        "value": "Sattler - Roof Tile - 320 758",
-        "left": "3.0909%",
-        "top": "43.6815%",
-        "width": "45.1818%",
-        "height": "12.6370%"
-      },
-      {
-        "value": "Sattler - Drift - 320 819",
-        "left": "51.7273%",
-        "top": "43.6815%",
-        "width": "45.1818%",
-        "height": "12.6370%"
-      },
-      {
-        "value": "Sattler - Continuum - 320 826",
-        "left": "3.0909%",
-        "top": "57.5880%",
-        "width": "45.1818%",
-        "height": "12.6370%"
-      },
-      {
-        "value": "Sattler - Edge - 320 886",
-        "left": "51.7273%",
-        "top": "57.5880%",
-        "width": "45.1818%",
-        "height": "12.6370%"
-      },
-      {
-        "value": "Sattler - Compass - 320 892",
-        "left": "3.0909%",
-        "top": "71.4945%",
-        "width": "45.1818%",
-        "height": "12.6370%"
-      },
-      {
-        "value": "Sattler - Steel - 320 923",
-        "left": "51.7273%",
-        "top": "71.4945%",
-        "width": "45.1818%",
-        "height": "12.6370%"
-      },
-      {
-        "value": "Sattler - Alloy - 320 954",
-        "left": "3.0909%",
-        "top": "85.4010%",
-        "width": "45.1818%",
-        "height": "12.6370%"
-      },
-      {
-        "value": "Sattler - Zephyr - 320 975",
-        "left": "51.7273%",
-        "top": "85.4010%",
-        "width": "45.1818%",
-        "height": "12.6370%"
-      }
-    ]
-  },
-  {
-    "image": "assets/fabric-pages/sattler-layout/sattler-page-06.jpg",
-    "items": [
-      {
-        "value": "Sattler - Hideaway - 320 976",
-        "left": "3.0909%",
-        "top": "2.4478%",
-        "width": "45.1818%",
-        "height": "15.7667%"
-      },
-      {
-        "value": "Sattler - Clarion - 320 990",
-        "left": "51.7273%",
-        "top": "2.4478%",
-        "width": "45.1818%",
-        "height": "15.7667%"
-      },
-      {
-        "value": "Sattler - Timber - 320 992",
-        "left": "3.0909%",
-        "top": "19.7984%",
-        "width": "45.1818%",
-        "height": "15.7667%"
-      },
-      {
-        "value": "Sattler - Hayfield - 364 203",
-        "left": "3.0909%",
-        "top": "40.4608%",
-        "width": "45.1818%",
-        "height": "15.7667%"
-      },
-      {
-        "value": "Sattler - Landskip - 364 598",
-        "left": "51.7273%",
-        "top": "40.4608%",
-        "width": "45.1818%",
-        "height": "15.7667%"
-      },
-      {
-        "value": "Sattler - Bliss - 30A 774",
-        "left": "3.0909%",
-        "top": "61.1231%",
-        "width": "45.1818%",
-        "height": "15.7667%"
-      },
-      {
-        "value": "Sattler - Blaze - 30A 778",
-        "left": "51.7273%",
-        "top": "61.1231%",
-        "width": "45.1818%",
-        "height": "15.7667%"
-      },
-      {
-        "value": "Sattler - Sand - 338 620",
-        "left": "3.0909%",
-        "top": "81.7855%",
-        "width": "45.1818%",
-        "height": "15.7667%"
-      },
-      {
-        "value": "Sattler - Gravel - 338 621",
-        "left": "51.7273%",
-        "top": "81.7855%",
-        "width": "45.1818%",
-        "height": "15.7667%"
-      }
-    ]
-  },
-  {
-    "image": "assets/fabric-pages/sattler-layout/sattler-page-07.jpg",
-    "items": [
-      {
-        "value": "Sattler - Sahara - 338 639",
-        "left": "3.0909%",
-        "top": "1.9619%",
-        "width": "45.1818%",
-        "height": "12.6370%"
-      },
-      {
-        "value": "Sattler - Arctic - 338 641",
-        "left": "51.7273%",
-        "top": "1.9619%",
-        "width": "45.1818%",
-        "height": "12.6370%"
-      },
-      {
-        "value": "Sattler - Fjord - 338 644",
-        "left": "3.0909%",
-        "top": "15.8684%",
-        "width": "45.1818%",
-        "height": "12.6370%"
-      },
-      {
-        "value": "Sattler - Ladakh - 338 655",
-        "left": "51.7273%",
-        "top": "15.8684%",
-        "width": "45.1818%",
-        "height": "12.6370%"
-      },
-      {
-        "value": "Sattler - Gobi - 338 658",
-        "left": "3.0909%",
-        "top": "29.7750%",
-        "width": "45.1818%",
-        "height": "12.6370%"
-      },
-      {
-        "value": "Sattler - Pacific - 338 659",
-        "left": "51.7273%",
-        "top": "29.7750%",
-        "width": "45.1818%",
-        "height": "12.6370%"
-      },
-      {
-        "value": "Sattler - Taiga - 338 660",
-        "left": "3.0909%",
-        "top": "43.6815%",
-        "width": "45.1818%",
-        "height": "12.6370%"
-      },
-      {
-        "value": "Sattler - Beach - 338 662",
-        "left": "51.7273%",
-        "top": "43.6815%",
-        "width": "45.1818%",
-        "height": "12.6370%"
-      },
-      {
-        "value": "Sattler - Vulcano - 338 665",
-        "left": "3.0909%",
-        "top": "57.5880%",
-        "width": "45.1818%",
-        "height": "12.6370%"
-      },
-      {
-        "value": "Sattler - Golden Crops - 338 667",
-        "left": "51.7273%",
-        "top": "57.5880%",
-        "width": "45.1818%",
-        "height": "12.6370%"
-      },
-      {
-        "value": "Sattler - Willow - 338 770",
-        "left": "3.0909%",
-        "top": "71.4945%",
-        "width": "45.1818%",
-        "height": "12.6370%"
-      },
-      {
-        "value": "Sattler - Juniper - 338 772",
-        "left": "51.7273%",
-        "top": "71.4945%",
-        "width": "45.1818%",
-        "height": "12.6370%"
-      },
-      {
-        "value": "Sattler - Poplar - 338 773",
-        "left": "3.0909%",
-        "top": "85.4010%",
-        "width": "45.1818%",
-        "height": "12.6370%"
-      }
-    ]
-  }
-];
-
-const ACRILLA_PAGES = [
-  {
-    "image": "assets/fabric-pages/acrilla/acrilla-page-01.jpg",
-    "items": [
-      {
-        "value": "Acrilla - 100",
-        "left": "3.0909%",
-        "top": "3.6403%",
-        "width": "45.5455%",
-        "height": "28.9079%"
-      },
-      {
-        "value": "Acrilla - 149",
-        "left": "51.3636%",
-        "top": "3.6403%",
-        "width": "45.5455%",
-        "height": "28.9079%"
-      },
-      {
-        "value": "Acrilla - 113",
-        "left": "3.0909%",
-        "top": "35.5460%",
-        "width": "45.5455%",
-        "height": "28.9079%"
-      },
-      {
-        "value": "Acrilla - 147",
-        "left": "51.3636%",
-        "top": "35.5460%",
-        "width": "45.5455%",
-        "height": "28.9079%"
-      },
-      {
-        "value": "Acrilla - 143",
-        "left": "3.0909%",
-        "top": "67.4518%",
-        "width": "45.5455%",
-        "height": "28.9079%"
-      },
-      {
-        "value": "Acrilla - 117",
-        "left": "51.3636%",
-        "top": "67.4518%",
-        "width": "45.5455%",
-        "height": "28.9079%"
-      }
-    ]
-  },
-  {
-    "image": "assets/fabric-pages/acrilla/acrilla-page-02.jpg",
-    "items": [
-      {
-        "value": "Acrilla - 101",
-        "left": "3.0909%",
-        "top": "3.6403%",
-        "width": "45.5455%",
-        "height": "28.9079%"
-      },
-      {
-        "value": "Acrilla - 107",
-        "left": "51.3636%",
-        "top": "3.6403%",
-        "width": "45.5455%",
-        "height": "28.9079%"
-      },
-      {
-        "value": "Acrilla - 102",
-        "left": "3.0909%",
-        "top": "35.5460%",
-        "width": "45.5455%",
-        "height": "28.9079%"
-      },
-      {
-        "value": "Acrilla - 128",
-        "left": "51.3636%",
-        "top": "35.5460%",
-        "width": "45.5455%",
-        "height": "28.9079%"
-      },
-      {
-        "value": "Acrilla - 136",
-        "left": "3.0909%",
-        "top": "67.4518%",
-        "width": "45.5455%",
-        "height": "28.9079%"
-      },
-      {
-        "value": "Acrilla - 111",
-        "left": "51.3636%",
-        "top": "67.4518%",
-        "width": "45.5455%",
-        "height": "28.9079%"
-      }
-    ]
-  },
-  {
-    "image": "assets/fabric-pages/acrilla/acrilla-page-03.jpg",
-    "items": [
-      {
-        "value": "Acrilla - 1203",
-        "left": "3.0909%",
-        "top": "3.6403%",
-        "width": "45.5455%",
-        "height": "28.9079%"
-      },
-      {
-        "value": "Acrilla - 142",
-        "left": "51.3636%",
-        "top": "3.6403%",
-        "width": "45.5455%",
-        "height": "28.9079%"
-      },
-      {
-        "value": "Acrilla - 103",
-        "left": "3.0909%",
-        "top": "35.5460%",
-        "width": "45.5455%",
-        "height": "28.9079%"
-      },
-      {
-        "value": "Acrilla - 308",
-        "left": "51.3636%",
-        "top": "35.5460%",
-        "width": "45.5455%",
-        "height": "28.9079%"
-      },
-      {
-        "value": "Acrilla - 144",
-        "left": "3.0909%",
-        "top": "67.4518%",
-        "width": "45.5455%",
-        "height": "28.9079%"
-      },
-      {
-        "value": "Acrilla - 112",
-        "left": "51.3636%",
-        "top": "67.4518%",
-        "width": "45.5455%",
-        "height": "28.9079%"
-      }
-    ]
-  },
-  {
-    "image": "assets/fabric-pages/acrilla/acrilla-page-04.jpg",
-    "items": [
-      {
-        "value": "Acrilla - 001",
-        "left": "3.0909%",
-        "top": "3.6403%",
-        "width": "45.5455%",
-        "height": "28.9079%"
-      },
-      {
-        "value": "Acrilla - 002",
-        "left": "51.3636%",
-        "top": "3.6403%",
-        "width": "45.5455%",
-        "height": "28.9079%"
-      },
-      {
-        "value": "Acrilla - 110",
-        "left": "3.0909%",
-        "top": "35.5460%",
-        "width": "45.5455%",
-        "height": "28.9079%"
-      },
-      {
-        "value": "Acrilla - 012",
-        "left": "51.3636%",
-        "top": "35.5460%",
-        "width": "45.5455%",
-        "height": "28.9079%"
-      },
-      {
-        "value": "Acrilla - 004",
-        "left": "3.0909%",
-        "top": "67.4518%",
-        "width": "45.5455%",
-        "height": "28.9079%"
-      },
-      {
-        "value": "Acrilla - 011",
-        "left": "51.3636%",
-        "top": "67.4518%",
-        "width": "45.5455%",
-        "height": "28.9079%"
-      }
-    ]
-  },
-  {
-    "image": "assets/fabric-pages/acrilla/acrilla-page-05.jpg",
-    "items": [
-      {
-        "value": "Acrilla - 296",
-        "left": "3.0909%",
-        "top": "3.6403%",
-        "width": "45.5455%",
-        "height": "28.9079%"
-      },
-      {
-        "value": "Acrilla - 557",
-        "left": "51.3636%",
-        "top": "3.6403%",
-        "width": "45.5455%",
-        "height": "28.9079%"
-      },
-      {
-        "value": "Acrilla - 562",
-        "left": "3.0909%",
-        "top": "35.5460%",
-        "width": "45.5455%",
-        "height": "28.9079%"
-      },
-      {
-        "value": "Acrilla - 205",
-        "left": "51.3636%",
-        "top": "35.5460%",
-        "width": "45.5455%",
-        "height": "28.9079%"
-      },
-      {
-        "value": "Acrilla - 214",
-        "left": "3.0909%",
-        "top": "67.4518%",
-        "width": "45.5455%",
-        "height": "28.9079%"
-      },
-      {
-        "value": "Acrilla - 897",
-        "left": "51.3636%",
-        "top": "67.4518%",
-        "width": "45.5455%",
-        "height": "28.9079%"
-      }
-    ]
-  },
-  {
-    "image": "assets/fabric-pages/acrilla/acrilla-page-06.jpg",
-    "items": [
-      {
-        "value": "Acrilla - 563",
-        "left": "3.0909%",
-        "top": "3.6403%",
-        "width": "45.5455%",
-        "height": "28.9079%"
-      },
-      {
-        "value": "Acrilla - 380",
-        "left": "51.3636%",
-        "top": "3.6403%",
-        "width": "45.5455%",
-        "height": "28.9079%"
-      },
-      {
-        "value": "Acrilla - 207",
-        "left": "3.0909%",
-        "top": "35.5460%",
-        "width": "45.5455%",
-        "height": "28.9079%"
-      },
-      {
-        "value": "Acrilla - 532",
-        "left": "51.3636%",
-        "top": "35.5460%",
-        "width": "45.5455%",
-        "height": "28.9079%"
-      },
-      {
-        "value": "Acrilla - 843",
-        "left": "3.0909%",
-        "top": "67.4518%",
-        "width": "45.5455%",
-        "height": "28.9079%"
-      },
-      {
-        "value": "Acrilla - 367",
-        "left": "51.3636%",
-        "top": "67.4518%",
-        "width": "45.5455%",
-        "height": "28.9079%"
-      }
-    ]
-  },
-  {
-    "image": "assets/fabric-pages/acrilla/acrilla-page-07.jpg",
-    "items": [
-      {
-        "value": "Acrilla - 208",
-        "left": "3.0909%",
-        "top": "3.6403%",
-        "width": "45.5455%",
-        "height": "28.9079%"
-      },
-      {
-        "value": "Acrilla - 332",
-        "left": "51.3636%",
-        "top": "3.6403%",
-        "width": "45.5455%",
-        "height": "28.9079%"
-      },
-      {
-        "value": "Acrilla - 898",
-        "left": "3.0909%",
-        "top": "35.5460%",
-        "width": "45.5455%",
-        "height": "28.9079%"
-      },
-      {
-        "value": "Acrilla - 973",
-        "left": "51.3636%",
-        "top": "35.5460%",
-        "width": "45.5455%",
-        "height": "28.9079%"
-      },
-      {
-        "value": "Acrilla - 971",
-        "left": "3.0909%",
-        "top": "67.4518%",
-        "width": "45.5455%",
-        "height": "28.9079%"
-      },
-      {
-        "value": "Acrilla - 264",
-        "left": "51.3636%",
-        "top": "67.4518%",
-        "width": "45.5455%",
-        "height": "28.9079%"
-      }
-    ]
-  },
-  {
-    "image": "assets/fabric-pages/acrilla/acrilla-page-08.jpg",
-    "items": [
-      {
-        "value": "Acrilla - 121",
-        "left": "3.0909%",
-        "top": "3.6403%",
-        "width": "45.5455%",
-        "height": "28.9079%"
-      },
-      {
-        "value": "Acrilla - 135",
-        "left": "51.3636%",
-        "top": "3.6403%",
-        "width": "45.5455%",
-        "height": "28.9079%"
-      },
-      {
-        "value": "Acrilla - 134",
-        "left": "3.0909%",
-        "top": "35.5460%",
-        "width": "45.5455%",
-        "height": "28.9079%"
-      },
-      {
-        "value": "Acrilla - 116",
-        "left": "51.3636%",
-        "top": "35.5460%",
-        "width": "45.5455%",
-        "height": "28.9079%"
-      },
-      {
-        "value": "Acrilla - 118",
-        "left": "3.0909%",
-        "top": "67.4518%",
-        "width": "45.5455%",
-        "height": "28.9079%"
-      },
-      {
-        "value": "Acrilla - 146",
-        "left": "51.3636%",
-        "top": "67.4518%",
-        "width": "45.5455%",
-        "height": "28.9079%"
-      }
-    ]
-  },
-  {
-    "image": "assets/fabric-pages/acrilla/acrilla-page-09.jpg",
-    "items": [
-      {
-        "value": "Acrilla - 1053",
-        "left": "3.0909%",
-        "top": "3.6403%",
-        "width": "45.5455%",
-        "height": "28.9079%"
-      },
-      {
-        "value": "Acrilla - 1083",
-        "left": "51.3636%",
-        "top": "3.6403%",
-        "width": "45.5455%",
-        "height": "28.9079%"
-      },
-      {
-        "value": "Acrilla - 119",
-        "left": "3.0909%",
-        "top": "35.5460%",
-        "width": "45.5455%",
-        "height": "28.9079%"
-      },
-      {
-        "value": "Acrilla - 122",
-        "left": "51.3636%",
-        "top": "35.5460%",
-        "width": "45.5455%",
-        "height": "28.9079%"
-      },
-      {
-        "value": "Acrilla - 148",
-        "left": "3.0909%",
-        "top": "67.4518%",
-        "width": "45.5455%",
-        "height": "28.9079%"
-      },
-      {
-        "value": "Acrilla - 115",
-        "left": "51.3636%",
-        "top": "67.4518%",
-        "width": "45.5455%",
-        "height": "28.9079%"
-      }
-    ]
-  },
-  {
-    "image": "assets/fabric-pages/acrilla/acrilla-page-10.jpg",
-    "items": [
-      {
-        "value": "Acrilla - 109",
-        "left": "3.0909%",
-        "top": "3.6403%",
-        "width": "45.5455%",
-        "height": "28.9079%"
-      },
-      {
-        "value": "Acrilla - 438",
-        "left": "51.3636%",
-        "top": "3.6403%",
-        "width": "45.5455%",
-        "height": "28.9079%"
-      },
-      {
-        "value": "Acrilla - 145",
-        "left": "3.0909%",
-        "top": "35.5460%",
-        "width": "45.5455%",
-        "height": "28.9079%"
-      },
-      {
-        "value": "Acrilla - 114",
-        "left": "51.3636%",
-        "top": "35.5460%",
-        "width": "45.5455%",
-        "height": "28.9079%"
-      },
-      {
-        "value": "Acrilla - 104",
-        "left": "3.0909%",
-        "top": "67.4518%",
-        "width": "45.5455%",
-        "height": "28.9079%"
-      },
-      {
-        "value": "Acrilla - 1063",
-        "left": "51.3636%",
-        "top": "67.4518%",
-        "width": "45.5455%",
-        "height": "28.9079%"
-      }
-    ]
-  },
-  {
-    "image": "assets/fabric-pages/acrilla/acrilla-page-11.jpg",
-    "items": [
-      {
-        "value": "Acrilla - 005",
-        "left": "3.0909%",
-        "top": "3.6403%",
-        "width": "45.5455%",
-        "height": "28.9079%"
-      },
-      {
-        "value": "Acrilla - 010",
-        "left": "51.3636%",
-        "top": "3.6403%",
-        "width": "45.5455%",
-        "height": "28.9079%"
-      },
-      {
-        "value": "Acrilla - 221",
-        "left": "3.0909%",
-        "top": "35.5460%",
-        "width": "45.5455%",
-        "height": "28.9079%"
-      },
-      {
-        "value": "Acrilla - 211",
-        "left": "51.3636%",
-        "top": "35.5460%",
-        "width": "45.5455%",
-        "height": "28.9079%"
-      },
-      {
-        "value": "Acrilla - 206",
-        "left": "3.0909%",
-        "top": "67.4518%",
-        "width": "45.5455%",
-        "height": "28.9079%"
-      },
-      {
-        "value": "Acrilla - 213",
-        "left": "51.3636%",
-        "top": "67.4518%",
-        "width": "45.5455%",
-        "height": "28.9079%"
-      }
-    ]
-  },
-  {
-    "image": "assets/fabric-pages/acrilla/acrilla-page-12.jpg",
-    "items": [
-      {
-        "value": "Acrilla - 224",
-        "left": "3.0909%",
-        "top": "3.6403%",
-        "width": "45.5455%",
-        "height": "28.9079%"
-      },
-      {
-        "value": "Acrilla - 746",
-        "left": "51.3636%",
-        "top": "3.6403%",
-        "width": "45.5455%",
-        "height": "28.9079%"
-      },
-      {
-        "value": "Acrilla - 375",
-        "left": "3.0909%",
-        "top": "35.5460%",
-        "width": "45.5455%",
-        "height": "28.9079%"
-      },
-      {
-        "value": "Acrilla - 225",
-        "left": "51.3636%",
-        "top": "35.5460%",
-        "width": "45.5455%",
-        "height": "28.9079%"
-      },
-      {
-        "value": "Acrilla - 531",
-        "left": "3.0909%",
-        "top": "67.4518%",
-        "width": "45.5455%",
-        "height": "28.9079%"
-      },
-      {
-        "value": "Acrilla - 212",
-        "left": "51.3636%",
-        "top": "67.4518%",
-        "width": "45.5455%",
-        "height": "28.9079%"
-      }
-    ]
-  },
-  {
-    "image": "assets/fabric-pages/acrilla/acrilla-page-13.jpg",
-    "items": [
-      {
-        "value": "Acrilla - 566",
-        "left": "3.0909%",
-        "top": "3.6403%",
-        "width": "45.5455%",
-        "height": "28.9079%"
-      },
-      {
-        "value": "Acrilla - 560",
-        "left": "51.3636%",
-        "top": "3.6403%",
-        "width": "45.5455%",
-        "height": "28.9079%"
-      },
-      {
-        "value": "Acrilla - 210",
-        "left": "3.0909%",
-        "top": "35.5460%",
-        "width": "45.5455%",
-        "height": "28.9079%"
-      },
-      {
-        "value": "Acrilla - 209",
-        "left": "51.3636%",
-        "top": "35.5460%",
-        "width": "45.5455%",
-        "height": "28.9079%"
-      },
-      {
-        "value": "Acrilla - 379",
-        "left": "3.0909%",
-        "top": "67.4518%",
-        "width": "45.5455%",
-        "height": "28.9079%"
-      },
-      {
-        "value": "Acrilla - 561",
-        "left": "51.3636%",
-        "top": "67.4518%",
-        "width": "45.5455%",
-        "height": "28.9079%"
-      }
-    ]
-  }
-];
-
-function buildSattlerPicker() {
-  const list = $('#colorOptionList');
-  if (!list) return;
-  list.classList.add('sattler-picker-mode');
-  list.innerHTML = '';
-  const sectionEl = document.createElement('section');
-  sectionEl.className = 'sattler-section';
-  const head = document.createElement('div');
-  head.className = 'sauleda-section-head';
-  head.textContent = 'Sattler';
-  sectionEl.appendChild(head);
-
-  const body = document.createElement('div');
-  body.className = 'sattler-page-stack';
-  SATTLER_PAGES.forEach((page) => {
-    const card = document.createElement('div');
-    card.className = 'sattler-page-card';
-    const overlay = document.createElement('div');
-    overlay.className = 'sauleda-page-overlay';
-    const img = document.createElement('img');
-    img.src = page.image;
-    img.alt = 'Sattler fabric page';
-    img.loading = 'lazy';
-    overlay.appendChild(img);
-    page.items.forEach((item) => {
-      overlay.appendChild(createSauledaHotspot(item.value, item.left, item.top, item.width, item.height));
-    });
-    card.appendChild(overlay);
-    body.appendChild(card);
-  });
-
-  sectionEl.appendChild(body);
-  list.appendChild(sectionEl);
-}
-
-
-function buildAcrillaPicker() {
-  const list = $('#colorOptionList');
-  if (!list) return;
-  list.classList.add('sattler-picker-mode');
-  list.innerHTML = '';
-  const sectionEl = document.createElement('section');
-  sectionEl.className = 'sattler-section';
-  const head = document.createElement('div');
-  head.className = 'sauleda-section-head';
-  head.textContent = 'Acrilla';
-  sectionEl.appendChild(head);
-
-  const body = document.createElement('div');
-  body.className = 'sattler-page-stack';
-  ACRILLA_PAGES.forEach((page) => {
-    const card = document.createElement('div');
-    card.className = 'sattler-page-card';
-    const overlay = document.createElement('div');
-    overlay.className = 'sauleda-page-overlay';
-    const img = document.createElement('img');
-    img.src = page.image;
-    img.alt = 'Acrilla fabric page';
-    img.loading = 'lazy';
-    overlay.appendChild(img);
-    page.items.forEach((item) => {
-      overlay.appendChild(createSauledaHotspot(item.value, item.left, item.top, item.width, item.height));
-    });
-    card.appendChild(overlay);
-    body.appendChild(card);
-  });
-
-  sectionEl.appendChild(body);
-  list.appendChild(sectionEl);
-}
-
-const SAULEDA_PAGE_SECTIONS = [
-  {
-    "title": "Plains",
-    "pages": [
-      {
-        "image": "assets/fabric-pages/sauleda/plains1_left.jpg",
-        "items": [
-          {
-            "value": "Plains - Blanco - 2042",
-            "left": "0.0000%",
-            "top": "0.0000%",
-            "width": "50.0000%",
-            "height": "25.0000%"
-          },
-          {
-            "value": "Plains - Natural - 2926",
-            "left": "50.0000%",
-            "top": "0.0000%",
-            "width": "50.0000%",
-            "height": "25.0000%"
-          },
-          {
-            "value": "Plains - Vainilla - 2687",
-            "left": "0.0000%",
-            "top": "25.0000%",
-            "width": "50.0000%",
-            "height": "25.0000%"
-          },
-          {
-            "value": "Plains - Seda - 2596",
-            "left": "50.0000%",
-            "top": "25.0000%",
-            "width": "50.0000%",
-            "height": "25.0000%"
-          },
-          {
-            "value": "Plains - Avena - 2296",
-            "left": "0.0000%",
-            "top": "50.0000%",
-            "width": "50.0000%",
-            "height": "25.0000%"
-          },
-          {
-            "value": "Plains - Siroco - 2226",
-            "left": "50.0000%",
-            "top": "50.0000%",
-            "width": "50.0000%",
-            "height": "25.0000%"
-          },
-          {
-            "value": "Plains - Integral - 2838",
-            "left": "0.0000%",
-            "top": "75.0000%",
-            "width": "50.0000%",
-            "height": "25.0000%"
-          },
-          {
-            "value": "Plains - Coco - 3601",
-            "left": "50.0000%",
-            "top": "75.0000%",
-            "width": "50.0000%",
-            "height": "25.0000%"
-          }
-        ]
-      },
-      {
-        "image": "assets/fabric-pages/sauleda/plains1_right.jpg",
-        "items": [
-          {
-            "value": "Plains - Marfil - 2143",
-            "left": "0.0000%",
-            "top": "0.0000%",
-            "width": "50.0000%",
-            "height": "25.0000%"
-          },
-          {
-            "value": "Plains - Marmol - 1070",
-            "left": "50.0000%",
-            "top": "0.0000%",
-            "width": "50.0000%",
-            "height": "25.0000%"
-          },
-          {
-            "value": "Plains - Albastro - 8157",
-            "left": "0.0000%",
-            "top": "25.0000%",
-            "width": "50.0000%",
-            "height": "25.0000%"
-          },
-          {
-            "value": "Plains - Beige - 2038",
-            "left": "50.0000%",
-            "top": "25.0000%",
-            "width": "50.0000%",
-            "height": "25.0000%"
-          },
-          {
-            "value": "Plains - Ocre - 2180",
-            "left": "0.0000%",
-            "top": "50.0000%",
-            "width": "50.0000%",
-            "height": "25.0000%"
-          },
-          {
-            "value": "Plains - Teja - 2065",
-            "left": "50.0000%",
-            "top": "50.0000%",
-            "width": "50.0000%",
-            "height": "25.0000%"
-          },
-          {
-            "value": "Plains - Marron - 2146",
-            "left": "0.0000%",
-            "top": "75.0000%",
-            "width": "50.0000%",
-            "height": "25.0000%"
-          },
-          {
-            "value": "Plains - Cafe - 2316",
-            "left": "50.0000%",
-            "top": "75.0000%",
-            "width": "50.0000%",
-            "height": "25.0000%"
-          }
-        ]
-      },
-      {
-        "image": "assets/fabric-pages/sauleda/plains2_left.jpg",
-        "items": [
-          {
-            "value": "Plains - Amarillo - 2013",
-            "left": "0.0000%",
-            "top": "0.0000%",
-            "width": "50.0000%",
-            "height": "25.0000%"
-          },
-          {
-            "value": "Plains - Naranja - 2050",
-            "left": "50.0000%",
-            "top": "0.0000%",
-            "width": "50.0000%",
-            "height": "25.0000%"
-          },
-          {
-            "value": "Plains - Rioja - 2210",
-            "left": "0.0000%",
-            "top": "25.0000%",
-            "width": "50.0000%",
-            "height": "25.0000%"
-          },
-          {
-            "value": "Plains - Granate - 2101",
-            "left": "50.0000%",
-            "top": "25.0000%",
-            "width": "50.0000%",
-            "height": "25.0000%"
-          },
-          {
-            "value": "Plains - Turkis - 2129",
-            "left": "0.0000%",
-            "top": "50.0000%",
-            "width": "50.0000%",
-            "height": "25.0000%"
-          },
-          {
-            "value": "Plains - Celeste - 2066",
-            "left": "50.0000%",
-            "top": "50.0000%",
-            "width": "50.0000%",
-            "height": "25.0000%"
-          },
-          {
-            "value": "Plains - Marino - 2145",
-            "left": "0.0000%",
-            "top": "75.0000%",
-            "width": "50.0000%",
-            "height": "25.0000%"
-          },
-          {
-            "value": "Plains - Admiral - 2051",
-            "left": "50.0000%",
-            "top": "75.0000%",
-            "width": "50.0000%",
-            "height": "25.0000%"
-          }
-        ]
-      },
-      {
-        "image": "assets/fabric-pages/sauleda/plains2_right.jpg",
-        "items": [
-          {
-            "value": "Plains - Rojo - 2211",
-            "left": "0.0000%",
-            "top": "0.0000%",
-            "width": "50.0000%",
-            "height": "25.0000%"
-          },
-          {
-            "value": "Plains - Logo Red - 1066",
-            "left": "50.0000%",
-            "top": "0.0000%",
-            "width": "50.0000%",
-            "height": "25.0000%"
-          },
-          {
-            "value": "Plains - Pink - 2835",
-            "left": "0.0000%",
-            "top": "25.0000%",
-            "width": "50.0000%",
-            "height": "25.0000%"
-          },
-          {
-            "value": "Plains - Malva - 2119",
-            "left": "50.0000%",
-            "top": "25.0000%",
-            "width": "50.0000%",
-            "height": "25.0000%"
-          },
-          {
-            "value": "Plains - Indigo - 2828",
-            "left": "0.0000%",
-            "top": "50.0000%",
-            "width": "50.0000%",
-            "height": "25.0000%"
-          },
-          {
-            "value": "Plains - Azul Real - 2235",
-            "left": "50.0000%",
-            "top": "50.0000%",
-            "width": "50.0000%",
-            "height": "25.0000%"
-          },
-          {
-            "value": "Plains - Verde Claro - 2246",
-            "left": "0.0000%",
-            "top": "75.0000%",
-            "width": "50.0000%",
-            "height": "25.0000%"
-          },
-          {
-            "value": "Plains - Eucaliptus - 3000",
-            "left": "50.0000%",
-            "top": "75.0000%",
-            "width": "50.0000%",
-            "height": "25.0000%"
-          }
-        ]
-      },
-      {
-        "image": "assets/fabric-pages/sauleda/plains3_left.jpg",
-        "items": [
-          {
-            "value": "Plains - Verde - 2242",
-            "left": "0.0000%",
-            "top": "0.0000%",
-            "width": "50.0000%",
-            "height": "33.3333%"
-          },
-          {
-            "value": "Plains - Musgo - 2247",
-            "left": "50.0000%",
-            "top": "0.0000%",
-            "width": "50.0000%",
-            "height": "33.3333%"
-          },
-          {
-            "value": "Plains - Silver - 2821",
-            "left": "0.0000%",
-            "top": "33.3333%",
-            "width": "50.0000%",
-            "height": "33.3333%"
-          },
-          {
-            "value": "Plains - Perla - 2979",
-            "left": "50.0000%",
-            "top": "33.3333%",
-            "width": "50.0000%",
-            "height": "33.3333%"
-          },
-          {
-            "value": "Plains - Mineral - 2831",
-            "left": "0.0000%",
-            "top": "66.6667%",
-            "width": "50.0000%",
-            "height": "33.3333%"
-          },
-          {
-            "value": "Plains - Antracita - 8488",
-            "left": "50.0000%",
-            "top": "66.6667%",
-            "width": "50.0000%",
-            "height": "33.3333%"
-          }
-        ]
-      },
-      {
-        "image": "assets/fabric-pages/sauleda/plains3_right.jpg",
-        "items": [
-          {
-            "value": "Plains - Tirol - 2928",
-            "left": "0.0000%",
-            "top": "0.0000%",
-            "width": "50.0000%",
-            "height": "33.3333%"
-          },
-          {
-            "value": "Plains - Botella - 2245",
-            "left": "50.0000%",
-            "top": "0.0000%",
-            "width": "50.0000%",
-            "height": "33.3333%"
-          },
-          {
-            "value": "Plains - Piedra - 3605",
-            "left": "0.0000%",
-            "top": "33.3333%",
-            "width": "50.0000%",
-            "height": "33.3333%"
-          },
-          {
-            "value": "Plains - Gris - 2102",
-            "left": "50.0000%",
-            "top": "33.3333%",
-            "width": "50.0000%",
-            "height": "33.3333%"
-          },
-          {
-            "value": "Plains - Grafito - 3602",
-            "left": "0.0000%",
-            "top": "66.6667%",
-            "width": "50.0000%",
-            "height": "33.3333%"
-          },
-          {
-            "value": "Plains - Negro - 2170",
-            "left": "50.0000%",
-            "top": "66.6667%",
-            "width": "50.0000%",
-            "height": "33.3333%"
-          }
-        ]
-      }
-    ]
-  },
-  {
-    "title": "The Classics",
-    "pages": [
-      {
-        "image": "assets/fabric-pages/sauleda/classics1.jpg",
-        "items": [
-          {
-            "value": "The Classics - Amarillo N - 2015",
-            "left": "0.0000%",
-            "top": "0.0000%",
-            "width": "100.0000%",
-            "height": "20.0000%"
-          },
-          {
-            "value": "The Classics - Naranja N - 2052",
-            "left": "0.0000%",
-            "top": "20.0000%",
-            "width": "100.0000%",
-            "height": "20.0000%"
-          },
-          {
-            "value": "The Classics - Rojo N - 2212",
-            "left": "0.0000%",
-            "top": "40.0000%",
-            "width": "100.0000%",
-            "height": "20.0000%"
-          },
-          {
-            "value": "The Classics - Azul Real N - 2359",
-            "left": "0.0000%",
-            "top": "60.0000%",
-            "width": "100.0000%",
-            "height": "20.0000%"
-          },
-          {
-            "value": "The Classics - Botella N - 2680",
-            "left": "0.0000%",
-            "top": "80.0000%",
-            "width": "100.0000%",
-            "height": "20.0000%"
-          }
-        ]
-      },
-      {
-        "image": "assets/fabric-pages/sauleda/classics2.jpg",
-        "items": [
-          {
-            "value": "The Classics - Ocre X - 2641",
-            "left": "0.0000%",
-            "top": "0.0000%",
-            "width": "100.0000%",
-            "height": "20.0000%"
-          },
-          {
-            "value": "The Classics - Integral X - 2681",
-            "left": "0.0000%",
-            "top": "20.0000%",
-            "width": "100.0000%",
-            "height": "20.0000%"
-          },
-          {
-            "value": "The Classics - Piedra X - 2682",
-            "left": "0.0000%",
-            "top": "40.0000%",
-            "width": "100.0000%",
-            "height": "20.0000%"
-          },
-          {
-            "value": "The Classics - Gris N - 2103",
-            "left": "0.0000%",
-            "top": "60.0000%",
-            "width": "100.0000%",
-            "height": "20.0000%"
-          },
-          {
-            "value": "The Classics - Negro N - 2171",
-            "left": "0.0000%",
-            "top": "80.0000%",
-            "width": "100.0000%",
-            "height": "20.0000%"
-          }
-        ]
-      }
-    ]
-  },
-  {
-    "title": "Fantasy",
-    "pages": [
-      {
-        "image": "assets/fabric-pages/sauleda/fantasy1.jpg",
-        "items": [
-          {
-            "value": "Fantasy - Vesubio - 2636",
-            "left": "0.0000%",
-            "top": "0.0000%",
-            "width": "100.0000%",
-            "height": "25.0000%"
-          },
-          {
-            "value": "Fantasy - Anapurna - 2640",
-            "left": "0.0000%",
-            "top": "25.0000%",
-            "width": "100.0000%",
-            "height": "25.0000%"
-          },
-          {
-            "value": "Fantasy - St. Andrews - 2924",
-            "left": "0.0000%",
-            "top": "50.0000%",
-            "width": "100.0000%",
-            "height": "25.0000%"
-          },
-          {
-            "value": "Fantasy - Manchester - 2823",
-            "left": "0.0000%",
-            "top": "75.0000%",
-            "width": "100.0000%",
-            "height": "25.0000%"
-          }
-        ]
-      },
-      {
-        "image": "assets/fabric-pages/sauleda/fantasy2.jpg",
-        "items": [
-          {
-            "value": "Fantasy - Pirineos - 2790",
-            "left": "0.0000%",
-            "top": "0.0000%",
-            "width": "100.0000%",
-            "height": "25.0000%"
-          },
-          {
-            "value": "Fantasy - Oslo - 2818",
-            "left": "0.0000%",
-            "top": "25.0000%",
-            "width": "100.0000%",
-            "height": "25.0000%"
-          },
-          {
-            "value": "Fantasy - Marte - 2121",
-            "left": "0.0000%",
-            "top": "50.0000%",
-            "width": "100.0000%",
-            "height": "25.0000%"
-          },
-          {
-            "value": "Fantasy - Jamaica - 2701",
-            "left": "0.0000%",
-            "top": "75.0000%",
-            "width": "100.0000%",
-            "height": "25.0000%"
-          }
-        ]
-      },
-      {
-        "image": "assets/fabric-pages/sauleda/fantasy3.jpg",
-        "items": [
-          {
-            "value": "Fantasy - Balmoral - 2921",
-            "left": "0.0000%",
-            "top": "0.0000%",
-            "width": "100.0000%",
-            "height": "25.0000%"
-          },
-          {
-            "value": "Fantasy - Miami - 2702",
-            "left": "0.0000%",
-            "top": "25.0000%",
-            "width": "100.0000%",
-            "height": "25.0000%"
-          },
-          {
-            "value": "Fantasy - Estocolmo - 2816",
-            "left": "0.0000%",
-            "top": "50.0000%",
-            "width": "100.0000%",
-            "height": "25.0000%"
-          },
-          {
-            "value": "Fantasy - Pluton - 2179",
-            "left": "0.0000%",
-            "top": "75.0000%",
-            "width": "100.0000%",
-            "height": "25.0000%"
-          }
-        ]
-      },
-      {
-        "image": "assets/fabric-pages/sauleda/fantasy4.jpg",
-        "items": [
-          {
-            "value": "Fantasy - Windsor - 2929",
-            "left": "0.0000%",
-            "top": "0.0000%",
-            "width": "100.0000%",
-            "height": "25.0000%"
-          },
-          {
-            "value": "Fantasy - Aries - 2576",
-            "left": "0.0000%",
-            "top": "25.0000%",
-            "width": "100.0000%",
-            "height": "25.0000%"
-          },
-          {
-            "value": "Fantasy - Jalisco - 1484",
-            "left": "0.0000%",
-            "top": "50.0000%",
-            "width": "100.0000%",
-            "height": "25.0000%"
-          },
-          {
-            "value": "Fantasy - Urban - 3608",
-            "left": "0.0000%",
-            "top": "75.0000%",
-            "width": "100.0000%",
-            "height": "25.0000%"
-          }
-        ]
-      }
-    ]
-  },
-  {
-    "title": "Marine Plus",
-    "pages": [
-      {
-        "image": "assets/fabric-pages/sauleda/marine1_left.jpg",
-        "items": [
-          {
-            "value": "Marine Plus - Blanco - 2405",
-            "left": "0.0000%",
-            "top": "0.0000%",
-            "width": "50.0000%",
-            "height": "25.0000%"
-          },
-          {
-            "value": "Marine Plus - Marfil - 2411",
-            "left": "50.0000%",
-            "top": "0.0000%",
-            "width": "50.0000%",
-            "height": "25.0000%"
-          },
-          {
-            "value": "Marine Plus - Avena - 2451",
-            "left": "0.0000%",
-            "top": "25.0000%",
-            "width": "50.0000%",
-            "height": "25.0000%"
-          },
-          {
-            "value": "Marine Plus - Toast - 1495",
-            "left": "50.0000%",
-            "top": "25.0000%",
-            "width": "50.0000%",
-            "height": "25.0000%"
-          },
-          {
-            "value": "Marine Plus - Vison - 2452",
-            "left": "0.0000%",
-            "top": "50.0000%",
-            "width": "50.0000%",
-            "height": "25.0000%"
-          },
-          {
-            "value": "Marine Plus - Amarillo - 8634",
-            "left": "50.0000%",
-            "top": "50.0000%",
-            "width": "50.0000%",
-            "height": "25.0000%"
-          },
-          {
-            "value": "Marine Plus - Indigo - 2746",
-            "left": "0.0000%",
-            "top": "75.0000%",
-            "width": "50.0000%",
-            "height": "25.0000%"
-          },
-          {
-            "value": "Marine Plus - Arctic - 20507",
-            "left": "50.0000%",
-            "top": "75.0000%",
-            "width": "50.0000%",
-            "height": "25.0000%"
-          }
-        ]
-      },
-      {
-        "image": "assets/fabric-pages/sauleda/marine1_right.jpg",
-        "items": [
-          {
-            "value": "Marine Plus - Sand - 20501",
-            "left": "0.0000%",
-            "top": "0.0000%",
-            "width": "50.0000%",
-            "height": "25.0000%"
-          },
-          {
-            "value": "Marine Plus - Integral - 2443",
-            "left": "50.0000%",
-            "top": "0.0000%",
-            "width": "50.0000%",
-            "height": "25.0000%"
-          },
-          {
-            "value": "Marine Plus - Pergamino - 2049B",
-            "left": "0.0000%",
-            "top": "25.0000%",
-            "width": "50.0000%",
-            "height": "25.0000%"
-          },
-          {
-            "value": "Marine Plus - Beige - 2403",
-            "left": "50.0000%",
-            "top": "25.0000%",
-            "width": "50.0000%",
-            "height": "25.0000%"
-          },
-          {
-            "value": "Marine Plus - Rioja - 2729",
-            "left": "0.0000%",
-            "top": "50.0000%",
-            "width": "50.0000%",
-            "height": "25.0000%"
-          },
-          {
-            "value": "Marine Plus - Granate - 2407",
-            "left": "50.0000%",
-            "top": "50.0000%",
-            "width": "50.0000%",
-            "height": "25.0000%"
-          },
-          {
-            "value": "Marine Plus - Electric Blue - 20664",
-            "left": "0.0000%",
-            "top": "75.0000%",
-            "width": "50.0000%",
-            "height": "25.0000%"
-          },
-          {
-            "value": "Marine Plus - Azul Real - 2423",
-            "left": "50.0000%",
-            "top": "75.0000%",
-            "width": "50.0000%",
-            "height": "25.0000%"
-          }
-        ]
-      },
-      {
-        "image": "assets/fabric-pages/sauleda/marine2_left.jpg",
-        "items": [
-          {
-            "value": "Marine Plus - Azul - 2401",
-            "left": "0.0000%",
-            "top": "0.0000%",
-            "width": "50.0000%",
-            "height": "25.0000%"
-          },
-          {
-            "value": "Marine Plus - Marino - 2413",
-            "left": "50.0000%",
-            "top": "0.0000%",
-            "width": "50.0000%",
-            "height": "25.0000%"
-          },
-          {
-            "value": "Marine Plus - Quartz - 1613",
-            "left": "0.0000%",
-            "top": "25.0000%",
-            "width": "50.0000%",
-            "height": "25.0000%"
-          },
-          {
-            "value": "Marine Plus - Silver - 2409",
-            "left": "50.0000%",
-            "top": "25.0000%",
-            "width": "50.0000%",
-            "height": "25.0000%"
-          },
-          {
-            "value": "Marine Plus - Piedra - 3599",
-            "left": "0.0000%",
-            "top": "50.0000%",
-            "width": "50.0000%",
-            "height": "25.0000%"
-          },
-          {
-            "value": "Marine Plus - Gris - 2421",
-            "left": "50.0000%",
-            "top": "50.0000%",
-            "width": "50.0000%",
-            "height": "25.0000%"
-          },
-          {
-            "value": "Marine Plus - Grafito - 2466",
-            "left": "0.0000%",
-            "top": "75.0000%",
-            "width": "50.0000%",
-            "height": "25.0000%"
-          },
-          {
-            "value": "Marine Plus - Antracita - 2461",
-            "left": "50.0000%",
-            "top": "75.0000%",
-            "width": "50.0000%",
-            "height": "25.0000%"
-          }
-        ]
-      },
-      {
-        "image": "assets/fabric-pages/sauleda/marine2_right.jpg",
-        "items": [
-          {
-            "value": "Marine Plus - Armada - 2448",
-            "left": "0.0000%",
-            "top": "0.0000%",
-            "width": "50.0000%",
-            "height": "25.0000%"
-          },
-          {
-            "value": "Marine Plus - Botella - 2488",
-            "left": "50.0000%",
-            "top": "0.0000%",
-            "width": "50.0000%",
-            "height": "25.0000%"
-          },
-          {
-            "value": "Marine Plus - Steel - 20492",
-            "left": "0.0000%",
-            "top": "25.0000%",
-            "width": "50.0000%",
-            "height": "25.0000%"
-          },
-          {
-            "value": "Marine Plus - Perla - 2417",
-            "left": "50.0000%",
-            "top": "25.0000%",
-            "width": "50.0000%",
-            "height": "25.0000%"
-          },
-          {
-            "value": "Marine Plus - Mineral - 2750",
-            "left": "0.0000%",
-            "top": "50.0000%",
-            "width": "50.0000%",
-            "height": "25.0000%"
-          },
-          {
-            "value": "Marine Plus - Basalto - 20108",
-            "left": "50.0000%",
-            "top": "50.0000%",
-            "width": "50.0000%",
-            "height": "25.0000%"
-          },
-          {
-            "value": "Marine Plus - Coal - 8660",
-            "left": "0.0000%",
-            "top": "75.0000%",
-            "width": "50.0000%",
-            "height": "25.0000%"
-          },
-          {
-            "value": "Marine Plus - Negro - 2881",
-            "left": "50.0000%",
-            "top": "75.0000%",
-            "width": "50.0000%",
-            "height": "25.0000%"
-          }
-        ]
-      }
-    ]
-  }
-];
-
-function buildSauledaPicker() {
-  const list = $('#colorOptionList');
-  if (!list) return;
-  list.classList.add('sauleda-picker-mode');
-  list.innerHTML = '';
-  SAULEDA_PAGE_SECTIONS.forEach((section) => {
-    const sectionEl = document.createElement('section');
-    sectionEl.className = 'sauleda-section';
-    const head = document.createElement('div');
-    head.className = 'sauleda-section-head';
-    head.textContent = section.title;
-    sectionEl.appendChild(head);
-    const body = document.createElement('div');
-    body.className = 'sattler-page-stack';
-    section.pages.forEach((page) => {
-      const card = document.createElement('div');
-      card.className = 'sattler-page-card';
-      const overlay = document.createElement('div');
-      overlay.className = 'sauleda-page-overlay';
-      const img = document.createElement('img');
-      img.src = page.image;
-      img.alt = `${section.title} fabric page`;
-      img.loading = 'lazy';
-      overlay.appendChild(img);
-      page.items.forEach((item) => {
-        overlay.appendChild(createSauledaHotspot(item.value, item.left, item.top, item.width, item.height));
-      });
-      card.appendChild(overlay);
-      body.appendChild(card);
-    });
-    sectionEl.appendChild(body);
-    list.appendChild(sectionEl);
-  });
-}
-
-function renderColorCatalogTabs(kind) {
-  const tabs = $('#colorCatalogTabs');
-  if (!tabs) return;
-  tabs.innerHTML = '';
-  if (kind === 'color') {
-    tabs.hidden = false;
-    colorCatalogs().forEach((catalog) => {
-      const button = document.createElement('button');
-      button.type = 'button';
-      button.className = 'color-catalog-tab';
-      button.textContent = translatedText(catalog.label);
-      button.setAttribute('aria-pressed', String(catalog.id === activeColorCatalogId));
-      button.addEventListener('click', () => {
-        activeColorCatalogId = catalog.id;
-        renderColorCatalogTabs('color');
-        buildPickerList('color');
-      });
-      tabs.appendChild(button);
-    });
-    return;
-  }
-  if (isSunStoreFabricMode(kind)) {
-    tabs.hidden = true;
-    return;
-  }
-  if (isJanelaFabricMode(kind)) {
-    tabs.hidden = false;
-    [
-      { id: 'sauleda', label: 'Sauleda' },
-      { id: 'sattler', label: 'Sattler' },
-      { id: 'acrilla', label: 'Acrilla' },
-    ].forEach((catalog) => {
-      const button = document.createElement('button');
-      button.type = 'button';
-      button.className = 'color-catalog-tab';
-      button.textContent = catalog.label;
-      button.setAttribute('aria-pressed', String(catalog.id === activeFabricCatalogId));
-      button.addEventListener('click', () => {
-        activeFabricCatalogId = catalog.id;
-        const searchWrap = document.querySelector('.catalog-search-wrap');
-        if (searchWrap) searchWrap.hidden = true;
-        renderColorCatalogTabs('fabric');
-        buildPickerList('fabric');
-      });
-      tabs.appendChild(button);
-    });
-    return;
-  }
-  tabs.hidden = true;
-}
-
-function optionSearchText(option) {
-  return [option.value, option.code, option.name, option.detail]
-    .filter(Boolean)
-    .map((part) => String(translatedText(part)).toLowerCase())
-    .join(' ');
-}
-
-function buildPickerList(kind) {
-  const list = $('#colorOptionList');
-  if (!list) return;
-  list.classList.remove('sauleda-picker-mode', 'sattler-picker-mode', 'acrilla-picker-mode');
-  list.innerHTML = '';
-  if (isSunStoreFabricMode(kind)) {
-    buildSunStorePicker();
-    return;
-  }
-  if (isSauledaCatalogActive(kind)) {
-    buildSauledaPicker();
-    return;
-  }
-  if (isSattlerFabricMode(kind)) {
-    buildSattlerPicker();
-    return;
-  }
-  if (isAcrillaFabricMode(kind)) {
-    buildAcrillaPicker();
-    return;
-  }
-  const query = String(activePickerSearch || '').trim().toLowerCase();
-  const options = pickerOptions(kind).filter((option) => {
-    if (!query) return true;
-    return optionSearchText(option).includes(query);
-  });
-
-  if (!options.length) {
-    const empty = document.createElement('div');
-    empty.className = 'catalog-empty-state';
-    empty.textContent = translatedText('No results found');
-    list.appendChild(empty);
-    return;
-  }
-
-  options.forEach((option) => {
-    const button = document.createElement('button');
-    button.type = 'button';
-    button.className = 'color-option-card';
-    button.setAttribute('aria-label', option.value);
-
-    const swatch = document.createElement('span');
-    swatch.className = `color-option-swatch ${kind === 'fabric' ? 'fabric-swatch' : ''}`;
-    if (option.image) {
-      const img = document.createElement('img');
-      img.src = window.PRODUCT_IMAGE_ASSETS?.[option.image] || option.image;
-      img.alt = option.value;
-      img.loading = 'lazy';
-      swatch.appendChild(img);
-    } else {
-      swatch.style.background = option.swatch;
-    }
-
-    const textWrap = document.createElement('span');
-    textWrap.className = 'color-option-text';
-
-    const code = document.createElement('strong');
-    code.textContent = option.code;
-
-    textWrap.appendChild(code);
-    if (option.name) {
-      const name = document.createElement('span');
-      name.textContent = translatedText(option.name);
-      textWrap.appendChild(name);
-    }
-    if (option.detail) {
-      const detail = document.createElement('small');
-      detail.textContent = translatedText(option.detail);
-      textWrap.appendChild(detail);
-    }
-    button.appendChild(swatch);
-    button.appendChild(textWrap);
-    button.addEventListener('click', () => selectPickerOption(option.value));
-    list.appendChild(button);
-  });
-}
-
-function openPicker(input, kind = 'color') {
-  const modal = $('#colorChartModal');
-  if (!modal) return;
-  const panel = modal.querySelector('.color-chart-panel');
-  activePickerInput = input;
-  activePickerKind = kind;
-  if (kind === 'color') {
-    activeColorCatalogId = colorCatalogs()[0]?.id || 'rising-standart';
-  }
-  if (panel) panel.classList.toggle('janela-fabric-picker', isJanelaFabricMode(kind));
-  const titleKey = kind === 'fabric' ? 'Fabric Selection' : (kind === 'textColor' ? 'Print Color Selection' : 'Color Chart');
-  const helpKey = kind === 'fabric' ? 'Fabric Selection Help' : (kind === 'textColor' ? 'Print Color Selection Help' : 'Color Chart Help');
-  $('#colorChartTitle').textContent = translatedText(titleKey);
-  $('#colorChartHelp').textContent = translatedText(helpKey);
-  const searchInput = $('#catalogSearchInput');
-  const searchWrap = document.querySelector('.catalog-search-wrap');
-  activePickerSearch = '';
-  if (searchInput) {
-    searchInput.value = '';
-    searchInput.placeholder = translatedText('Search code or name');
-  }
-  if (searchWrap) searchWrap.hidden = (isJanelaFabricMode(kind) || isSunStoreFabricMode(kind));
-  renderColorCatalogTabs(kind);
-  buildPickerList(kind);
-  modal.hidden = false;
-  document.body.classList.add('modal-open');
-  $('#colorChartClose')?.focus();
-}
-
-function closeColorChart() {
-  const modal = $('#colorChartModal');
-  if (!modal) return;
-  modal.hidden = true;
-  document.body.classList.remove('modal-open');
-  modal.querySelector('.color-chart-panel')?.classList.remove('janela-fabric-picker');
-  const searchWrap = document.querySelector('.catalog-search-wrap');
-  if (searchWrap) searchWrap.hidden = false;
-  activePickerInput = null;
-  activePickerKind = 'color';
-  activePickerSearch = '';
-}
-
-function markJanelaLinkedManualOverride(control) {
-  const fieldId = control?.dataset?.fieldId || '';
-  if (['valanceFabric', 'roofColor'].includes(fieldId)) {
-    control.dataset.userOverridden = '1';
-  }
-}
-
-function selectPickerOption(value) {
-  const targetInput = activePickerInput;
-  markJanelaLinkedManualOverride(targetInput);
-  setInputValueAndNotify(targetInput, value);
-  toast(`${translatedText('Selected')}: ${value}`);
-  closeColorChart();
-  scheduleAutoAdvance(targetInput);
-}
-
-function copySystemColorToPanel(panelInput) {
-  const systemColor = $('#dyn_systemColor')?.value?.trim() || '';
-  if (!systemColor) {
-    toast(translatedText('Enter System Color First'));
-    return;
-  }
-  setInputValueAndNotify(panelInput, systemColor);
-  const systemFinish = getFieldValue({ id: 'systemColorFinish' });
-  if (systemFinish) setRadioValueAndNotify('panelColorFinish', systemFinish);
-  toast(`${translatedText('Panel Color')}: ${systemColor}`);
-  scheduleAutoAdvance(panelInput);
-}
-
-function initColorChartModal() {
-  const modal = $('#colorChartModal');
-  if (!modal) return;
-  $$('[data-color-chart-close]').forEach((button) => {
-    button.addEventListener('click', closeColorChart);
-  });
-  $('#catalogSearchInput')?.addEventListener('input', (event) => {
-    activePickerSearch = event.target.value || '';
-    buildPickerList(activePickerKind);
-  });
-  modal.addEventListener('click', (event) => {
-    if (event.target === modal) closeColorChart();
-  });
-  document.addEventListener('keydown', (event) => {
-    if (event.key === 'Escape' && !modal.hidden) closeColorChart();
-  });
-}
-
-function loadLanguage() {
-  const saved = localStorage.getItem(STORAGE_LANGUAGE);
-  if (LANGUAGE_META[saved]) state.language = saved;
-}
-
-function refreshDynamicLanguage() {
-  $$('[data-placeholder-i18n]').forEach((el) => {
-    el.placeholder = t(el.dataset.placeholderI18n);
-  });
-  $$('[data-placeholder-key]').forEach((el) => {
-    el.placeholder = translatedText(el.dataset.placeholderKey);
-  });
-  $$('#formArea input, #formArea textarea').forEach((el) => {
-    if (el.dataset.placeholderKey === 'Enter value' || el.dataset.placeholderI18n === 'enterValue' || el.placeholder === 'Enter value') {
-      el.placeholder = t('enterValue');
-      el.dataset.placeholderI18n = 'enterValue';
-      delete el.dataset.placeholderKey;
-    }
-  });
-  $$('[data-dynamic-label-key]').forEach((el) => {
-    const value = translatedText(el.dataset.dynamicLabelKey);
-    if (el.classList.contains('field-label-text') || !el.querySelector('.input-unit-wrap')) {
-      el.textContent = value;
-      return;
-    }
-    const textNode = Array.from(el.childNodes).find((node) => node.nodeType === Node.TEXT_NODE && node.textContent.trim());
-    if (textNode) {
-      textNode.textContent = value;
-    } else {
-      el.insertBefore(document.createTextNode(value), el.firstChild);
-    }
-  });
-  $$('.color-picker-btn').forEach((button) => {
-    if (button.dataset.pickerKind) {
-      const label = pickerButtonLabel(button.dataset.pickerKind);
-      button.textContent = label;
-      button.setAttribute('aria-label', label);
-    }
-  });
-  $$('.same-as-system-btn').forEach((button) => {
-    button.textContent = translatedText('Same as System Color');
-    button.setAttribute('aria-label', translatedText('Same as System Color'));
-  });
-  const searchInput = $('#catalogSearchInput');
-  if (searchInput) searchInput.placeholder = translatedText('Search code or name');
-  refreshCustomSelects();
-}
-
-function applyLanguage() {
-  const meta = LANGUAGE_META[state.language] || LANGUAGE_META.en;
-  document.documentElement.lang = meta.htmlLang;
-  document.documentElement.dir = meta.dir;
-  document.title = t('appTitle');
-  $$('[data-i18n]').forEach((el) => {
-    el.textContent = t(el.dataset.i18n);
-  });
-  $$('[data-i18n-placeholder]').forEach((el) => {
-    el.placeholder = t(el.dataset.i18nPlaceholder);
-  });
-  $$('.language-tabs button').forEach((button) => {
-    const isActive = button.dataset.lang === state.language;
-    button.classList.toggle('active', isActive);
-    button.setAttribute('aria-pressed', String(isActive));
-  });
-  $('#customSelectClose') && ($('#customSelectClose').textContent = translatedText('Close'));
-  refreshDynamicLanguage();
-  updateGlassFoldingDynamicHints();
-}
-
-function projectPositionKey(product = getProduct()) {
-  return product?.id || 'default';
-}
-
-function getProjectPositionCount(product = getProduct()) {
-  const count = Number(state.projectPositionCounts[projectPositionKey(product)] || 1);
-  return Number.isFinite(count) ? Math.max(1, Math.floor(count)) : 1;
-}
-
-function setProjectPositionCount(count, product = getProduct()) {
-  state.projectPositionCounts[projectPositionKey(product)] = Math.max(1, Math.floor(Number(count) || 1));
-}
-
-function positionFieldId(fieldId, positionIndex) {
-  return positionIndex === 1 ? fieldId : `${fieldId}__pos${positionIndex}`;
-}
-
-function positionedFields(fieldList, positionIndex) {
-  return fieldList.map((field) => {
-    const positioned = { ...field, id: positionFieldId(field.id, positionIndex) };
-    if (field.showWhen) {
-      positioned.showWhen = {
-        ...field.showWhen,
-        field: positionFieldId(field.showWhen.field, positionIndex)
-      };
-    }
-    return positioned;
-  });
-}
-
-function snapshotDynamicState() {
-  return {
-    values: getDynamicValues(),
-    lighting: getChecked('lighting'),
-    accessories: getChecked('accessories')
+(function () {
+  'use strict';
+
+  const APP_VERSION = '8.9.33';
+  const PROJECT_FORMAT = 'PULUMUR_PROJECT';
+  const PROJECT_SCHEMA_VERSION = 1;
+
+  const ids = [
+    'product', 'moduleName', 'engine', 'customer', 'project', 'version', 'drawnBy', 'date',
+    'systemCount', 'width', 'opening', 'rearHeight', 'frontHeight', 'rayCount', 'postCount',
+    'parapet', 'parapetHeight', 'glassTrack', 'sideTrack', 'structureColor', 'fabric', 'fabricProfiles',
+    'motor', 'remote', 'led', 'dimmer', 'extras', 'triangleJoinery', 'waterStandard'
+  ];
+
+  const $ = id => document.getElementById(id);
+  const statusText = $('statusText');
+  const preview = $('preview');
+  const previewPanel = document.querySelector('.preview-panel');
+  let lastDrawing = null;
+  let lastCalc = null;
+  const upperTableFieldIds = ['structureColor', 'fabric', 'fabricProfiles', 'motor', 'remote', 'led', 'dimmer', 'extras'];
+
+  const BOOLEAN_FIELD_IDS = ['parapet', 'glassTrack', 'triangleJoinery', 'waterStandard'];
+  const BOOLEAN_CANONICAL = {
+    EVET: { tr: 'EVET', en: 'YES' },
+    HAYIR: { tr: 'HAYIR', en: 'NO' }
   };
-}
-
-function restoreDynamicState(snapshot) {
-  Object.entries(snapshot?.values || {}).forEach(([id, value]) => {
-    const radio = $$(`input[type="radio"][name="dyn_${id}"]`).find((x) => x.value === value);
-    if (radio) radio.checked = true;
-    $$(`input[type="checkbox"][name="dyn_${id}"]`).forEach((x) => { x.checked = x.value === value; });
-    const el = $(`#dyn_${id}`);
-    if (el) el.value = value;
-  });
-  setChecked('lighting', snapshot?.lighting || []);
-  setChecked('accessories', snapshot?.accessories || []);
-  updateAutoUnits();
-  updateConditionalFields();
-  updateLightingOtherVisibility();
-}
-
-function setLanguage(lang) {
-  if (!LANGUAGE_META[lang]) return;
-  const snapshot = snapshotDynamicState();
-  const sameLanguage = lang === state.language;
-  state.language = lang;
-  localStorage.setItem(STORAGE_LANGUAGE, lang);
-  applyLanguage();
-  renderProducts();
-  renderForm();
-  restoreDynamicState(snapshot);
-  updatePreview();
-}
-
-function getProduct() {
-  return DATA.products.find((p) => p.id === state.selectedProductId) || null;
-}
-
-function getGroup(product = getProduct()) {
-  return product ? DATA.groups[product.group] : null;
-}
-
-function cloneData(value) {
-  return JSON.parse(JSON.stringify(value));
-}
-
-function mergeProductForm(baseForm, override = {}) {
-  const merged = cloneData(baseForm);
-  Object.entries(override).forEach(([key, value]) => {
-    if (key === 'hiddenItems' || key === 'projectDetailsAppend') return;
-    merged[key] = cloneData(value);
-  });
-  if (Array.isArray(merged.projectDetails) && Array.isArray(override.projectDetailsAppend)) {
-    merged.projectDetails.push(...cloneData(override.projectDetailsAppend));
-  }
-  Object.entries(override.hiddenItems || {}).forEach(([key, hiddenIds]) => {
-    if (!Array.isArray(merged[key])) return;
-    merged[key] = merged[key].filter((item) => {
-      const id = typeof item === 'string' ? item : item.id;
-      return !hiddenIds.includes(id);
-    });
-  });
-  return merged;
-}
-
-function getProductForm(product = getProduct()) {
-  if (!product?.formTemplate) return null;
-  const baseForm = DATA[product.formTemplate];
-  if (!baseForm) return null;
-  const variantOverride = DATA.productFormOverrides?.[product.formVariant] || {};
-  const productOverride = DATA.productFormOverrides?.[product.id] || {};
-  return mergeProductForm(mergeProductForm(baseForm, variantOverride), productOverride);
-}
-
-function hasProductForm(product = getProduct()) {
-  return Boolean(getProductForm(product));
-}
-
-function usesPergolaForm(product = getProduct()) {
-  return product?.formTemplate === 'pergolaForm';
-}
-
-function optionMarkup(items, selectedId) {
-  if (!items.length) return `<option value="" selected>${t('none')}</option>`;
-  return [
-    `<option value="">${t('select')}</option>`,
-    ...items.map((item) => `<option value="${item.id}"${item.id === selectedId ? ' selected' : ''}>${translatedText(item.label)}</option>`)
-  ].join('');
-}
-
-function treeGroups(familyId = state.selectedFamilyId) {
-  return DATA.productTree.groups[familyId] || [];
-}
-
-function treeSubGroups(groupId = state.selectedGroupId) {
-  return DATA.productTree.subGroups[groupId] || [];
-}
-
-function treeLabel(collection, id, lang = state.language) {
-  const label = (collection || []).find((item) => item.id === id)?.label || '';
-  return translatedText(label, lang);
-}
-
-function syncSelectionFromProduct(product = getProduct()) {
-  if (!product) return;
-  state.selectedFamilyId = product.family || '';
-  state.selectedGroupId = product.productGroup || '';
-  state.selectedSubGroupId = product.subGroup || '';
-}
-
-function updateSelectedProductFromTree() {
-  const groups = treeGroups();
-  const group = groups.find((item) => item.id === state.selectedGroupId);
-  const subGroups = treeSubGroups();
-  const subGroup = subGroups.find((item) => item.id === state.selectedSubGroupId);
-  const directProductId = subGroup?.productId || (!subGroups.length ? group?.productId : '');
-  const product = DATA.products.find((item) => item.id === directProductId)
-    || DATA.products.find((item) => (
-      item.family === state.selectedFamilyId &&
-      item.productGroup === state.selectedGroupId &&
-      item.subGroup === state.selectedSubGroupId
-    ));
-  state.selectedProductId = product?.id || '';
-}
-
-function firstId(items) {
-  return items[0]?.id || '';
-}
-
-function selectFirstAvailableForFamily() {
-  const groups = treeGroups();
-  state.selectedGroupId = firstId(groups);
-  state.selectedSubGroupId = firstId(treeSubGroups(state.selectedGroupId));
-  updateSelectedProductFromTree();
-}
-
-function selectFirstAvailableForGroup() {
-  state.selectedSubGroupId = firstId(treeSubGroups());
-  updateSelectedProductFromTree();
-}
-
-function normalizeTreeSelection() {
-  if (!DATA.productTree.families.some((item) => item.id === state.selectedFamilyId)) {
-    state.selectedFamilyId = firstId(DATA.productTree.families);
-  }
-  const groups = treeGroups();
-  if (!groups.length) {
-    state.selectedGroupId = '';
-    state.selectedSubGroupId = '';
-    updateSelectedProductFromTree();
-    return;
-  }
-  if (!groups.some((item) => item.id === state.selectedGroupId)) {
-    state.selectedGroupId = firstId(groups);
-  }
-  const subGroups = treeSubGroups();
-  if (!subGroups.length) {
-    state.selectedSubGroupId = '';
-  } else if (!subGroups.some((item) => item.id === state.selectedSubGroupId)) {
-    state.selectedSubGroupId = firstId(subGroups);
-  }
-  updateSelectedProductFromTree();
-}
-
-function currentProductSelectionLabels(lang = state.language) {
-  const groups = treeGroups();
-  const subGroups = treeSubGroups();
-  const family = treeLabel(DATA.productTree.families, state.selectedFamilyId, lang);
-  const group = groups.length ? treeLabel(groups, state.selectedGroupId, lang) : t('none', lang);
-  const subGroup = subGroups.length ? treeLabel(subGroups, state.selectedSubGroupId, lang) : t('none', lang);
-  return { family, group, subGroup };
-}
-
-function renderProducts() {
-  syncSelectionFromProduct();
-  normalizeTreeSelection();
-
-  const familySelect = $('#productFamilySelect');
-  const groupSelect = $('#productGroupSelect');
-  const subGroupSelect = $('#productSubGroupSelect');
-  const groups = treeGroups();
-  const subGroups = treeSubGroups();
-
-  familySelect.innerHTML = optionMarkup(DATA.productTree.families, state.selectedFamilyId);
-  familySelect.value = state.selectedFamilyId;
-
-  groupSelect.innerHTML = optionMarkup(groups, state.selectedGroupId);
-  groupSelect.value = state.selectedGroupId;
-  groupSelect.disabled = groups.length === 0;
-
-  subGroupSelect.innerHTML = optionMarkup(subGroups, state.selectedSubGroupId);
-  subGroupSelect.value = state.selectedSubGroupId;
-  subGroupSelect.disabled = subGroups.length === 0;
-
-  updateProductHint();
-  refreshCustomSelects();
-}
-
-function updateProductHint() {
-  const product = getProduct();
-  const selection = currentProductSelectionLabels();
-  if (!state.selectedFamilyId) {
-    $('#productGroupHint').textContent = t('selectFamilyHint');
-    return;
-  }
-  if (!product) {
-    const path = [selection.family, selection.group, selection.subGroup].filter(Boolean).join(' / ');
-    $('#productGroupHint').textContent = `${path || t('selectFamilyHint')} ${t('formWillBeAdded')}`;
-    return;
-  }
-  const formNote = hasProductForm(product)
-    ? ` | ${usesPergolaForm(product) ? t('formActive') : t('baseGalaxyFormActive')}`
-    : '';
-  $('#productGroupHint').textContent = `${selection.family} / ${selection.group} / ${selection.subGroup}${formNote}`;
-}
-
-function applyProductSelection() {
-  renderForm();
-  saveOrderDraft();
-  updatePreview();
-}
-
-function onProductFamilyChange() {
-  const source = $('#productFamilySelect');
-  state.selectedFamilyId = source.value;
-  selectFirstAvailableForFamily();
-  renderProducts();
-  applyProductSelection();
-  scheduleAutoAdvance(source.customSelectButton || source);
-}
-
-function onProductGroupChange() {
-  const source = $('#productGroupSelect');
-  state.selectedGroupId = source.value;
-  selectFirstAvailableForGroup();
-  renderProducts();
-  applyProductSelection();
-  scheduleAutoAdvance(source.customSelectButton || source);
-}
-
-function onProductSubGroupChange() {
-  const source = $('#productSubGroupSelect');
-  state.selectedSubGroupId = source.value;
-  updateSelectedProductFromTree();
-  renderProducts();
-  applyProductSelection();
-  scheduleAutoAdvance(source.customSelectButton || source);
-}
-
-
-let activeCustomSelect = null;
-
-function customSelectLabel(select) {
-  const selected = select.options[select.selectedIndex];
-  return selected?.textContent?.trim() || t('select');
-}
-
-function customSelectTitle(select) {
-  const dynamicLabel = select.dataset.fieldLabel;
-  if (dynamicLabel) return translatedText(dynamicLabel);
-  const label = select.closest('label');
-  const span = label?.querySelector('span');
-  return span?.textContent?.trim() || t('select');
-}
-
-function ensureCustomSelectModal() {
-  let modal = $('#customSelectModal');
-  if (modal) return modal;
-  modal = document.createElement('div');
-  modal.id = 'customSelectModal';
-  modal.className = 'custom-select-modal no-print';
-  modal.hidden = true;
-  modal.innerHTML = `
-    <div class="custom-select-panel" role="dialog" aria-modal="true">
-      <div class="custom-select-head">
-        <h2 id="customSelectTitle"></h2>
-        <button type="button" id="customSelectClose" class="ghost custom-select-close">${translatedText('Close')}</button>
-      </div>
-      <div id="customSelectOptions" class="custom-select-options"></div>
-    </div>
-  `;
-  document.body.appendChild(modal);
-  $('#customSelectClose')?.addEventListener('click', closeCustomSelect);
-  modal.addEventListener('click', (event) => {
-    if (event.target === modal) closeCustomSelect();
-  });
-  document.addEventListener('keydown', (event) => {
-    if (event.key === 'Escape' && !modal.hidden) closeCustomSelect();
-  });
-  return modal;
-}
-
-function updateCustomSelectButton(select) {
-  if (!select?.customSelectButton) return;
-  select.customSelectButton.textContent = customSelectLabel(select);
-  select.customSelectButton.disabled = select.disabled;
-  select.customSelectButton.classList.toggle('is-empty', !select.value);
-}
-
-function openCustomSelect(select) {
-  if (!select || select.disabled) return;
-  const modal = ensureCustomSelectModal();
-  activeCustomSelect = select;
-  $('#customSelectTitle').textContent = customSelectTitle(select);
-  $('#customSelectClose').textContent = translatedText('Close');
-  const list = $('#customSelectOptions');
-  list.innerHTML = '';
-  Array.from(select.options).forEach((option) => {
-    const button = document.createElement('button');
-    button.type = 'button';
-    button.className = 'custom-select-option';
-    button.textContent = option.textContent || t('select');
-    button.dataset.value = option.value;
-    button.setAttribute('aria-selected', String(option.value === select.value));
-    button.addEventListener('click', () => {
-      select.value = option.value;
-      updateCustomSelectButton(select);
-      select.dispatchEvent(new Event('input', { bubbles: true }));
-      select.dispatchEvent(new Event('change', { bubbles: true }));
-      const trigger = select.customSelectButton || select;
-      closeCustomSelect();
-      scheduleAutoAdvance(trigger);
-    });
-    list.appendChild(button);
-  });
-  modal.hidden = false;
-  document.body.classList.add('modal-open');
-}
-
-function closeCustomSelect() {
-  const modal = $('#customSelectModal');
-  if (!modal) return;
-  modal.hidden = true;
-  activeCustomSelect = null;
-  document.body.classList.remove('modal-open');
-}
-
-function enhanceCustomSelect(select) {
-  if (!select || select.dataset.customSelectReady === '1') {
-    updateCustomSelectButton(select);
-    return;
-  }
-  select.dataset.customSelectReady = '1';
-  select.classList.add('native-select-hidden');
-  const button = document.createElement('button');
-  button.type = 'button';
-  button.className = 'custom-select-btn';
-  button.addEventListener('click', () => openCustomSelect(select));
-  select.insertAdjacentElement('afterend', button);
-  select.customSelectButton = button;
-  select.addEventListener('change', () => updateCustomSelectButton(select));
-  select.addEventListener('keydown', autoAdvanceOnEnter);
-  updateCustomSelectButton(select);
-}
-
-function refreshCustomSelects() {
-  $$('select').forEach(enhanceCustomSelect);
-}
-
-function applyFieldCondition(element, field) {
-  if (!field.showWhen) return element;
-  element.dataset.showWhenField = field.showWhen.field;
-  element.dataset.showWhenValues = (field.showWhen.values || []).join('|');
-  return element;
-}
-
-function createInputField(field) {
-  if (field.type === 'choice') return createChoiceField(field);
-  if (field.type === 'singlecheck') return createSingleCheckField(field);
-
-  const label = document.createElement('label');
-  label.className = field.unit || field.unitAuto ? 'unit-label' : '';
-  if (field.fullWidth) label.classList.add('grid-span-full');
-
-  const labelText = document.createElement('span');
-  labelText.className = 'field-label-text';
-  labelText.dataset.dynamicLabelKey = field.label;
-  labelText.textContent = translatedText(field.label);
-  label.appendChild(labelText);
-
-  const wrap = document.createElement('div');
-  wrap.className = 'input-unit-wrap';
-
-  let control;
-  if (field.type === 'select') {
-    control = document.createElement('select');
-    const selectOptions = Array.isArray(field.options) ? [...field.options] : [];
-    if (!selectOptions.includes('')) selectOptions.unshift('');
-    control.innerHTML = selectOptions.map((option) => {
-      const text = translatedOption(option);
-      return `<option value="${option}">${text}</option>`;
-    }).join('');
-  } else {
-    control = document.createElement('input');
-    control.type = field.type === 'number' ? 'number' : 'text';
-    if (field.type === 'number') control.inputMode = 'decimal';
-    control.dataset.placeholderI18n = 'enterValue';
-    control.placeholder = t('enterValue');
-  }
-  control.id = `dyn_${field.id}`;
-  if (field.type !== 'select' && Array.isArray(field.options) && field.options.length) {
-    const listId = `list_${safeId(field.id)}`;
-    control.setAttribute('list', listId);
-    const datalist = document.createElement('datalist');
-    datalist.id = listId;
-    field.options.forEach((option) => {
-      const optionNode = document.createElement('option');
-      optionNode.value = String(option);
-      optionNode.label = translatedOption(option);
-      datalist.appendChild(optionNode);
-    });
-    control.pendingDatalist = datalist;
-  }
-  control.dataset.fieldId = field.id;
-  control.dataset.fieldLabel = field.label;
-  control.dataset.unit = field.unit || '';
-  control.dataset.unitAuto = field.unitAuto || '';
-  if (field.min !== undefined) control.min = field.min;
-  if (field.max !== undefined) control.max = field.max;
-  if (field.step !== undefined) control.step = field.step;
-  if (/^panelCount(__pos\d+)?$/.test(field.id)) {
-    control.addEventListener('input', (event) => { if (event.isTrusted) control.dataset.userOverridden = '1'; });
-    control.addEventListener('change', (event) => { if (event.isTrusted) control.dataset.userOverridden = '1'; });
-  }
-  control.addEventListener('input', onAnyInput);
-  control.addEventListener('change', onAnyInput);
-  control.addEventListener('change', autoAdvanceOnChange);
-  control.addEventListener('keydown', autoAdvanceOnEnter);
-  if (['valanceFabric', 'roofColor'].includes(field.id)) {
-    control.addEventListener('input', (event) => { if (event.isTrusted) markJanelaLinkedManualOverride(control); });
-    control.addEventListener('change', (event) => { if (event.isTrusted) markJanelaLinkedManualOverride(control); });
-  }
-
-  wrap.appendChild(control);
-  if (control.pendingDatalist) {
-    wrap.appendChild(control.pendingDatalist);
-    delete control.pendingDatalist;
-  }
-  if (field.type === 'select') enhanceCustomSelect(control);
-  const pickerKind = pickerKindForField(field, control);
-  if (pickerKind) {
-    wrap.classList.add('color-picker-wrap');
-    control.dataset.placeholderKey = pickerKind === 'fabric' ? 'Select Fabric' : 'Select Code';
-    control.placeholder = pickerButtonLabel(pickerKind);
-    const pickerButton = document.createElement('button');
-    pickerButton.type = 'button';
-    pickerButton.className = 'color-picker-btn';
-    pickerButton.dataset.pickerKind = pickerKind;
-    pickerButton.textContent = pickerButtonLabel(pickerKind);
-    pickerButton.setAttribute('aria-label', pickerButtonLabel(pickerKind));
-    pickerButton.addEventListener('click', () => openPicker(control, pickerKind));
-    wrap.appendChild(pickerButton);
-  }
-  if (field.id === 'panelColor') {
-    wrap.classList.add('color-picker-wrap');
-    const sameButton = document.createElement('button');
-    sameButton.type = 'button';
-    sameButton.className = 'same-as-system-btn';
-    sameButton.textContent = translatedText('Same as System Color');
-    sameButton.setAttribute('aria-label', translatedText('Same as System Color'));
-    sameButton.addEventListener('click', () => copySystemColorToPanel(control));
-    wrap.appendChild(sameButton);
-  }
-  if (field.unit) {
-    const unit = document.createElement('span');
-    unit.className = 'unit-suffix';
-    unit.textContent = field.unit;
-    wrap.appendChild(unit);
-  }
-  if (field.unitAuto === 'pcpcs') {
-    const unit = document.createElement('span');
-    unit.className = 'unit-suffix auto-unit';
-    unit.dataset.autoFor = field.id;
-    unit.textContent = 'pcs';
-    wrap.appendChild(unit);
-  }
-
-  label.appendChild(wrap);
-  if (field.hint) {
-    const hint = document.createElement('small');
-    hint.className = 'field-hint';
-    hint.textContent = translatedText(field.hint);
-    label.appendChild(hint);
-  }
-  return applyFieldCondition(label, field);
-}
-
-function createChoiceField(field) {
-  const wrapper = document.createElement('div');
-  wrapper.className = 'choice-field';
-  if (field.fullWidth) wrapper.classList.add('grid-span-full');
-
-  const heading = document.createElement('div');
-  heading.className = 'field-heading';
-  heading.textContent = translatedText(field.label);
-
-  const row = document.createElement('div');
-  row.className = 'choice-row';
-
-  field.options.forEach((option) => {
-    const id = `dyn_${field.id}_${safeId(option)}`;
-    const label = document.createElement('label');
-    const input = document.createElement('input');
-    const span = document.createElement('span');
-    input.id = id;
-    input.type = 'radio';
-    input.name = `dyn_${field.id}`;
-    input.value = option;
-    input.dataset.fieldId = field.id;
-    input.dataset.fieldLabel = field.label;
-    input.addEventListener('change', (event) => {
-      onAnyInput();
-      scheduleAutoAdvance(event.currentTarget);
-    });
-    span.textContent = translatedText(option);
-    label.appendChild(input);
-    label.appendChild(span);
-    row.appendChild(label);
-  });
-
-  wrapper.appendChild(heading);
-  wrapper.appendChild(row);
-  return applyFieldCondition(wrapper, field);
-}
-
-
-function createSingleCheckField(field) {
-  const wrapper = document.createElement('div');
-  wrapper.className = 'choice-field singlecheck-field';
-  if (field.fullWidth) wrapper.classList.add('grid-span-full');
-
-  const heading = document.createElement('div');
-  heading.className = 'field-heading';
-  heading.textContent = translatedText(field.label);
-
-  const row = document.createElement('div');
-  row.className = 'choice-row';
-
-  field.options.forEach((option) => {
-    const id = `dyn_${field.id}_${safeId(option)}`;
-    const label = document.createElement('label');
-    const input = document.createElement('input');
-    const span = document.createElement('span');
-    input.id = id;
-    input.type = 'radio';
-    input.name = `dyn_${field.id}`;
-    input.value = option;
-    input.dataset.fieldId = field.id;
-    input.dataset.fieldLabel = field.label;
-    input.addEventListener('change', (event) => {
-      onAnyInput();
-      scheduleAutoAdvance(event.currentTarget);
-    });
-    span.textContent = translatedText(option);
-    label.appendChild(input);
-    label.appendChild(span);
-    row.appendChild(label);
-  });
-
-  wrapper.appendChild(heading);
-  wrapper.appendChild(row);
-  return applyFieldCondition(wrapper, field);
-}
-
-function updateConditionalFields() {
-  $$('[data-show-when-field]').forEach((element) => {
-    const sourceValue = getFieldValue({ id: element.dataset.showWhenField });
-    const expectedValues = (element.dataset.showWhenValues || '').split('|');
-    element.hidden = !expectedValues.includes(sourceValue);
-  });
-}
-
-function createFormSection(title, items, className = 'grid two') {
-  const section = document.createElement('div');
-  section.className = 'dynamic-section';
-  section.id = `section_${safeId(title)}`;
-  const h3 = document.createElement('h3');
-  h3.textContent = translatedText(title);
-  const grid = document.createElement('div');
-  grid.className = className;
-  items.forEach((item) => grid.appendChild(createInputField(item)));
-  section.appendChild(h3);
-  section.appendChild(grid);
-  return section;
-}
-
-function addProjectPosition() {
-  const snapshot = snapshotDynamicState();
-  setProjectPositionCount(getProjectPositionCount() + 1);
-  renderForm();
-  restoreDynamicState(snapshot);
-  saveOrderDraft();
-  updatePreview();
-}
-
-
-function renumberSnapshotAfterRemovingPosition(snapshot, removeIndex, currentCount) {
-  const nextSnapshot = {};
-  Object.entries(snapshot).forEach(([key, value]) => {
-    const match = key.match(/^(.*)__pos(\d+)$/);
-    if (!match) {
-      if (removeIndex !== 1) nextSnapshot[key] = value;
-      return;
-    }
-    const base = match[1];
-    const pos = Number(match[2]);
-    if (pos === removeIndex) return;
-    if (pos < removeIndex) {
-      nextSnapshot[key] = value;
-      return;
-    }
-    const newPos = pos - 1;
-    const newKey = newPos === 1 ? base : `${base}__pos${newPos}`;
-    nextSnapshot[newKey] = value;
-  });
-
-  if (removeIndex === 1 && currentCount > 1) {
-    Object.entries(snapshot).forEach(([key, value]) => {
-      const match = key.match(/^(.*)__pos2$/);
-      if (match) nextSnapshot[match[1]] = value;
-    });
-  }
-
-  return nextSnapshot;
-}
-
-function removeProjectPosition(positionIndex) {
-  const current = getProjectPositionCount();
-  if (current <= 1) return;
-  const removeIndex = Math.min(current, Math.max(1, Number(positionIndex) || current));
-  const snapshot = snapshotDynamicState();
-  const nextSnapshot = renumberSnapshotAfterRemovingPosition(snapshot, removeIndex, current);
-  setProjectPositionCount(current - 1);
-  renderForm();
-  restoreDynamicState(nextSnapshot);
-  saveOrderDraft();
-  updatePreview();
-}
-
-function createProjectDetailsSection(items) {
-  const section = document.createElement('div');
-  section.className = 'dynamic-section project-details-section';
-  section.id = 'section_project_details';
-
-  const h3 = document.createElement('h3');
-  h3.textContent = translatedText('Project Details');
-  section.appendChild(h3);
-
-  const positionCount = getProjectPositionCount();
-  for (let positionIndex = 1; positionIndex <= positionCount; positionIndex += 1) {
-    const block = document.createElement('div');
-    block.className = 'project-position';
-    block.dataset.position = String(positionIndex);
-
-    if (positionCount > 1) {
-      const divider = document.createElement('div');
-      divider.className = 'project-position-divider';
-      divider.setAttribute('role', 'separator');
-      const label = document.createElement('span');
-      label.textContent = `Poz ${positionIndex}`;
-      divider.appendChild(label);
-      const removeButton = document.createElement('button');
-      removeButton.type = 'button';
-      removeButton.className = 'ghost remove-position-btn inline-remove-position-btn';
-      removeButton.textContent = translatedText('Delete');
-      removeButton.addEventListener('click', () => removeProjectPosition(positionIndex));
-      divider.appendChild(removeButton);
-      block.appendChild(divider);
-    }
-
-    const grid = document.createElement('div');
-    grid.className = 'grid two';
-    positionedFields(items, positionIndex).forEach((item) => grid.appendChild(createInputField(item)));
-    block.appendChild(grid);
-    section.appendChild(block);
-  }
-
-  const actions = document.createElement('div');
-  actions.className = 'position-actions';
-
-  const addButton = document.createElement('button');
-  addButton.id = 'addProjectPositionBtn';
-  addButton.type = 'button';
-  addButton.className = 'secondary add-position-btn';
-  addButton.textContent = `+ ${translatedText('Add New Position')}`;
-  addButton.addEventListener('click', addProjectPosition);
-  actions.appendChild(addButton);
-
-  section.appendChild(actions);
-
-  return section;
-}
-
-function createCheckboxSection(title, fieldName, items) {
-  const section = document.createElement('div');
-  section.className = 'dynamic-section';
-  section.id = `section_${safeId(title)}`;
-  const h3 = document.createElement('h3');
-  h3.textContent = translatedText(title);
-  const grid = document.createElement('div');
-  grid.className = 'checkbox-grid';
-  items.forEach((option) => {
-    const id = `${fieldName}_${safeId(option)}`;
-    const label = document.createElement('label');
-    const input = document.createElement('input');
-    const span = document.createElement('span');
-    input.id = id;
-    input.type = 'checkbox';
-    input.name = fieldName;
-    input.value = option;
-    input.addEventListener('change', onAnyInput);
-    span.textContent = translatedText(option);
-    label.appendChild(input);
-    label.appendChild(span);
-    grid.appendChild(label);
-  });
-  section.appendChild(h3);
-  section.appendChild(grid);
-
-  if (fieldName === 'lighting' && items.includes('Other')) {
-    const otherLabel = document.createElement('label');
-    otherLabel.id = 'lightingOtherWrap';
-    otherLabel.className = 'unit-label lighting-other-input';
-    otherLabel.hidden = true;
-    otherLabel.textContent = translatedText('Other Lighting');
-    otherLabel.dataset.dynamicLabelKey = 'Other Lighting';
-
-    const wrap = document.createElement('div');
-    wrap.className = 'input-unit-wrap';
-    const input = document.createElement('input');
-    input.id = 'dyn_lightingOther';
-    input.type = 'text';
-    input.dataset.fieldId = 'lightingOther';
-    input.dataset.fieldLabel = 'Other Lighting';
-    input.dataset.placeholderKey = 'Enter value';
-    input.placeholder = translatedText('Enter value');
-    input.addEventListener('input', onAnyInput);
-    input.addEventListener('change', onAnyInput);
-    input.addEventListener('change', autoAdvanceOnChange);
-    input.addEventListener('keydown', autoAdvanceOnEnter);
-    wrap.appendChild(input);
-    otherLabel.appendChild(wrap);
-    section.appendChild(otherLabel);
-  }
-
-  return section;
-}
-
-
-function createLightingDimmersSection(form) {
-  const section = document.createElement('div');
-  section.className = 'dynamic-section lighting-dimmers-section';
-  section.id = 'section_lighting_dimmers';
-
-  const h3 = document.createElement('h3');
-  const sectionTitle = form.lightingDimmersTitle || 'Lighting & Dimmers';
-  h3.textContent = translatedText(sectionTitle);
-  section.appendChild(h3);
-
-  if (form.lighting?.length) {
-    if (typeof form.lighting[0] === 'string') {
-      const grid = document.createElement('div');
-      grid.className = 'checkbox-grid';
-      form.lighting.forEach((option) => {
-        const id = `lighting_${safeId(option)}`;
-        const label = document.createElement('label');
-        const input = document.createElement('input');
-        const span = document.createElement('span');
-        input.id = id;
-        input.type = 'checkbox';
-        input.name = 'lighting';
-        input.value = option;
-        input.addEventListener('change', onAnyInput);
-        span.textContent = translatedText(option);
-        label.appendChild(input);
-        label.appendChild(span);
-        grid.appendChild(label);
-      });
-      section.appendChild(grid);
-
-      if (form.lighting.includes('Other')) {
-        const otherLabel = document.createElement('label');
-        otherLabel.id = 'lightingOtherWrap';
-        otherLabel.className = 'unit-label lighting-other-input';
-        otherLabel.hidden = true;
-        otherLabel.textContent = translatedText('Other Lighting');
-        otherLabel.dataset.dynamicLabelKey = 'Other Lighting';
-
-        const wrap = document.createElement('div');
-        wrap.className = 'input-unit-wrap';
-        const input = document.createElement('input');
-        input.id = 'dyn_lightingOther';
-        input.type = 'text';
-        input.dataset.fieldId = 'lightingOther';
-        input.dataset.fieldLabel = 'Other Lighting';
-        input.dataset.placeholderKey = 'Enter value';
-        input.placeholder = translatedText('Enter value');
-        input.addEventListener('input', onAnyInput);
-        input.addEventListener('change', onAnyInput);
-        input.addEventListener('change', autoAdvanceOnChange);
-        input.addEventListener('keydown', autoAdvanceOnEnter);
-        wrap.appendChild(input);
-        otherLabel.appendChild(wrap);
-        section.appendChild(otherLabel);
-      }
-    } else {
-      const lightingGrid = document.createElement('div');
-      lightingGrid.className = 'grid two';
-      form.lighting.forEach((item) => lightingGrid.appendChild(createInputField(item)));
-      section.appendChild(lightingGrid);
-    }
-  }
-
-  const dimmerItems = form.dimmers?.length ? form.dimmers : (form.dimmer?.length ? form.dimmer : []);
-  if (dimmerItems.length) {
-    const dimmerGrid = document.createElement('div');
-    dimmerGrid.className = 'grid two';
-    dimmerItems.forEach((item) => dimmerGrid.appendChild(createInputField(item)));
-    section.appendChild(dimmerGrid);
-  }
-
-  if (form.lightingRemote?.length) {
-    const remoteGrid = document.createElement('div');
-    remoteGrid.className = 'grid two';
-    form.lightingRemote.forEach((item) => remoteGrid.appendChild(createInputField(item)));
-    section.appendChild(remoteGrid);
-  }
-
-  return section;
-}
-
-
-function isJanelaCassetteAwning(product = getProduct()) {
-  return isJanelaAwningProduct(product);
-}
-
-function isBcubeProduct(product = getProduct()) {
-  return product?.productGroup === 'bcube';
-}
-
-function janelaAdditionalSections(form) {
-  const titledSections = (form.sectionsAfterDimmers || []).filter((section) => ['One Sided Roof', 'Packing'].includes(section?.title));
-  const fields = titledSections.flatMap((section) => Array.isArray(section.fields) ? section.fields : []);
-  if (Array.isArray(form.sensors)) fields.push(...form.sensors);
-  return fields;
-}
-
-function renderJanelaAdditionalSection(form, wrap) {
-  const additionalFields = janelaAdditionalSections(form);
-  if (additionalFields.length) {
-    wrap.appendChild(createFormSection('Additional Options', additionalFields, 'grid two'));
-  }
-}
-
-function appendJanelaPreviewSections(form, sections, lang = state.language) {
-  (form.sectionsAfterDimmers || []).forEach((section) => {
-    if (section.title === 'Valance & Printing' && section.fields?.length) {
-      sections.push({ title: translatedText(section.title, lang), rows: fieldRows(section.fields, lang) });
-    }
-  });
-  const additionalFields = janelaAdditionalSections(form);
-  if (additionalFields.length) {
-    sections.push({ title: translatedText('Additional Options', lang), rows: fieldRows(additionalFields, lang) });
-  }
-}
-
-function renderGalaxyForm() {
-  const wrap = $('#formArea');
-  const form = getProductForm();
-  if (!form) {
-    renderGenericForm();
-    return;
-  }
-  const isJanela = isJanelaCassetteAwning();
-  wrap.innerHTML = '';
-  if (form.projectDetails?.length) wrap.appendChild(createProjectDetailsSection(form.projectDetails));
-  if (form.colorDetails?.length) wrap.appendChild(createFormSection('Color Details', form.colorDetails, 'grid two'));
-  if (form.operation?.length) {
-    wrap.appendChild(createFormSection(form.operationTitle || 'Motor & Remote Control', form.operation, 'grid two'));
-  }
-  if (form.panelOptions?.length) wrap.appendChild(createFormSection('Panel Options', form.panelOptions, 'grid two'));
-  if (form.lighting?.length || form.dimmers?.length) {
-    wrap.appendChild(createLightingDimmersSection(form));
-  }
-  if (isJanela) {
-    (form.sectionsAfterDimmers || []).forEach((section) => {
-      if (section.title === 'Valance & Printing' && section.fields?.length) {
-        wrap.appendChild(createFormSection(section.title, section.fields, 'grid two'));
-      }
-    });
-    renderJanelaAdditionalSection(form, wrap);
-  } else {
-    (form.sectionsAfterDimmers || []).forEach((section) => {
-      if (section.fields?.length) {
-        wrap.appendChild(createFormSection(section.title, section.fields, 'grid two'));
-      }
-    });
-    const swapHeaterSensors = isBcubeProduct();
-    if (swapHeaterSensors && form.heaterPackaging?.length) {
-      wrap.appendChild(createFormSection('Heater & Sound & Packing', form.heaterPackaging, 'grid two'));
-    }
-    if (form.sensors?.length) {
-      wrap.appendChild(createFormSection('Sensors', form.sensors, 'grid two'));
-    }
-    if (!swapHeaterSensors && form.heaterPackaging?.length) {
-      wrap.appendChild(createFormSection('Heater & Sound & Packing', form.heaterPackaging, 'grid two'));
-    }
-  }
-  if (isJanela && form.heaterPackaging?.length) wrap.appendChild(createFormSection('Heater & Sound & Packing', form.heaterPackaging, 'grid two'));
-  updateAutoUnits();
-  updateConditionalFields();
-  syncJanelaLinkedFields();
-  syncGlassFoldingPanelCount();
-  syncGlassSlidingPanelCount();
-  updateGlassGuillotineDynamicRules();
-  refreshDynamicLanguage();
-  updateGlassFoldingDynamicHints();
-  validateJanelaAwningRules();
-  validateGlassFoldingRules();
-  validateGlassGuillotineRules();
-}
-
-function renderPergolaForm() {
-  const wrap = $('#formArea');
-  const form = getProductForm();
-  if (!form) {
-    renderGenericForm();
-    return;
-  }
-  wrap.innerHTML = '';
-  wrap.appendChild(createProjectDetailsSection(form.projectDetails));
-  wrap.appendChild(createFormSection('Colours', form.colorDetails, 'grid two'));
-  if (form.operation?.length) wrap.appendChild(createFormSection('Motor & Remote Control', form.operation, 'grid two'));
-  wrap.appendChild(createLightingDimmersSection(form));
-  if (form.heaterPackaging?.length) wrap.appendChild(createFormSection('Heater & Sound & Packing', form.heaterPackaging, 'grid two'));
-  if (form.sensors?.length) wrap.appendChild(createFormSection('Sensors', form.sensors, 'grid two'));
-  updateAutoUnits();
-  updateConditionalFields();
-  refreshDynamicLanguage();
-}
-
-function renderGenericForm() {
-  const product = getProduct();
-  const group = getGroup(product);
-  const wrap = $('#formArea');
-  wrap.innerHTML = '';
-
-  if (!product || !group) {
-    const selection = currentProductSelectionLabels();
-    const path = [selection.family, selection.group, selection.subGroup].filter(Boolean).join(' / ');
-    wrap.innerHTML = `
-      <div class="dynamic-section empty-product-state">
-        <h3>${t('productForm')}</h3>
-        <p>${path || t('selectProduct')} ${t('formWillBeAdded')}</p>
-      </div>
-    `;
-    return;
-  }
-
-  const projectItems = [
-    { id: 'quantity', label: 'Quantity', type: 'number' },
-    ...DATA.common.dimensionFields.map((f) => ({ id: f.id, label: f.label, type: 'number', unit: f.unit }))
+  let currentLanguage = 'tr';
+  let deferredInstallPrompt = null;
+  let pendingDimensionEdit = null;
+  let suppressFormPreviewUpdate = false;
+
+  let wrappingFields = false;
+  const previewState = { zoom: 1, baseScale: 1, minZoom: 0.20, maxZoom: 18, dragActive: false, dragStartX: 0, dragStartY: 0, dragScrollLeft: 0, dragScrollTop: 0, pointerId: null };
+  const previewDimensionFilter = { main: true, all: false, preset: 'main', horizontal: true, vertical: true, editable: true, readonly: true, positions: null };
+  let manualPostPlacementMode = 'standard';
+  let glassTrackProfileState = { mode: 'standard', en: 100, boy: 100, et: 2 };
+  let glassSupportProfileState = { left: null, right: null };
+  let customFrontPostCenters = null;
+  let customSideSupportCenters = {};
+  let customSidePosts = {};
+  let frontPostProfiles = [];
+  let slidingPlacements = [];
+  let sideSlidingPlacements = [];
+  let pendingSlidingPlacementMeta = null;
+  let guillotinePlacements = [];
+  let sideGuillotinePlacements = [];
+  let pendingGuillotinePlacementMeta = null;
+  let toolboxSelectionMode = null;
+  let toolboxSelectionItems = new Map();
+  let toolboxContextMenu = null;
+  let toolboxSelectionBanner = null;
+  let drawingCheckHighlightTimer = null;
+  let customRayPositions = null;
+  let frontPostExtensions = [];
+  let parapetSegments = { front: [], side: {} };
+  let sideFeatureState = {
+    glassTrack: { left: null, right: null, middle: {} },
+    triangle: { left: null, right: null, middle: {} },
+    middleEnabled: {}
+  };
+  let glassTrackLengthOffsets = { left: 0, right: 0, middle: {} };
+  let triangleDivisionState = { left: null, right: null, middle: {} };
+  let backWallState = { left: { xOffset: 0, depth: 600, height: 0 }, right: { xOffset: 0, depth: 600, height: 0 }, middle: {} };
+  let backWallSegments = { side: {} };
+  let syncingSideFeatureForm = false;
+  let previewDimensionOffsets = {};
+  let dimensionDragState = null;
+  let dimensionFilterMenuBound = false;
+  const projectHistory = { entries: [], index: -1, restoring: false, suspendDepth: 0, dirtyWhileSuspended: false };
+  let currentProjectRecord = { projectId: null, projectCode: null, revisionNo: 1 };
+  const EXCEL_COMBO_OPTIONS = {
+    motor: ['-', 'RISING MOTOR', 'SOMFY RTS', 'SOMFY IO'],
+    fabric: [
+      '-',
+      'C 1602 - 3D (8118-1622)',
+      'C 3017 - 3D',
+      'C 3105 - 3D',
+      'C 6001 - 3D',
+      'C 7019 - 3D (8118-7024)',
+      'C 7075 - 3D (8118-7340)',
+      'C 7995 - 3D (8118-7999)',
+      'C 9012 - 3D (8118-9002)',
+      'C 1602 - M (8116-1622)',
+      'C 1638 - M',
+      'C 7009 - M',
+      'C 9012 - M (8116-9002)',
+      'C 1602 - K (8290-1622)',
+      'C 9012 - D (8290-9002)'
+    ]
+  };
+  const REMOTE_OPTIONS_BY_MOTOR = {
+    'RISING MOTOR': ['-', 'RISING 6 CHANNELS'],
+    'SOMFY RTS': ['-', 'SITUO 2 RTS', 'SITUO 5 RTS', 'TELIS 16 RTS'],
+    'SOMFY IO': ['-', 'SITUO 2 IO', 'SITUO 5 IO'],
+    '-': ['-'],
+    '': ['-']
+  };
+  const EXCEL_DEFAULT_INPUT = {
+    product: 'Pergo Rise', moduleName: 'Module 1', engine: 'Web DXF',
+    customer: '', project: '', version: '01', drawnBy: 'AYETULLAH KILINC', date: '',
+    systemCount: '', width: '', opening: '', rearHeight: '', frontHeight: '', rayCount: '', postCount: '',
+    parapet: 'HAYIR', parapetHeight: '-', glassTrack: 'HAYIR', sideTrack: 'HAYIR',
+    structureColor: '-', fabric: '-', fabricProfiles: '-', motor: '-', remote: '-', led: '-', dimmer: '-', extras: '-',
+    triangleJoinery: 'HAYIR', waterStandard: 'EVET'
+  };
+
+  // V8.2.66: Ölçü -> Zone -> Profil / Ürün -> görünüş ilişkisi için UI altyapısı
+  const SMART_ACTION_LABELS = {
+    tr: { resize: 'Sadece ölçüyü değiştir', addSameProfile: 'Bu aralığa aynı profilden ekle', addDifferentProfile: 'Bu aralığa farklı profil ekle', placeProduct: 'Bu alana ürün yerleştir', editProfile: 'Mevcut ürünü düzenle', removeElement: 'Mevcut elemanı kaldır' },
+    en: { resize: 'Resize this dimension only', addSameProfile: 'Add same profile to this gap', addDifferentProfile: 'Add different profile to this gap', placeProduct: 'Place product in this zone', editProfile: 'Edit existing product', removeElement: 'Remove current element' }
+  };
+  const SMART_PRODUCT_OPTIONS = [
+    { id: 'sliding_glass', tr: 'Sürme Cam', en: 'Sliding Glass' },
+    { id: 'guillotine_glass', tr: 'Giyotin Cam', en: 'Guillotine' }
   ];
-  const colorItems = group.colorFields.flatMap((label) => {
-    const id = safeId(label);
-    const isFabric = FABRIC_FIELD_LABELS.has(String(label).trim().toLowerCase());
-    const field = {
-      id,
-      label,
-      type: 'text',
-      picker: isFabric ? 'fabric' : 'color',
-      fullWidth: isFabric
+  const SMART_PROFILE_OPTIONS = [
+    { id: 'same_post', tr: 'Aynı dikme profili', en: 'Same post profile', side: 100, top: 100 },
+    { id: 'side_register_100', tr: 'Yan Kayıt 100', en: 'Side register 100', side: 100, top: 100 },
+    { id: 'side_register_40x130', tr: 'Yan Kayıt 40x130', en: 'Side register 40x130', side: 40, top: 130 }
+  ];
+
+
+  function sanitizeGlassTrackProfile(profile) {
+    const raw = profile || {};
+    let mode = String(raw.mode || 'standard').trim().toLowerCase();
+    let en = Number(raw.en);
+    let boy = Number(raw.boy);
+    let et = Number(raw.et);
+    if (mode === '40x130x2' || mode === '40x130') {
+      en = 40; boy = 130; et = 2; mode = '40x130x2';
+    } else if (mode !== 'other') {
+      en = 100; boy = 100; et = 2; mode = 'standard';
+    }
+    en = Math.max(5, Number.isFinite(en) ? en : 100);
+    boy = Math.max(5, Number.isFinite(boy) ? boy : 100);
+    et = Math.max(0, Number.isFinite(et) ? et : 2);
+    et = Math.min(et, Math.max(0, Math.min(en, boy) / 2 - 0.1));
+    return { mode, en, boy, et };
+  }
+
+  function sanitizeOptionalGlassTrackProfile(profile) {
+    if (!profile) return null;
+    return sanitizeGlassTrackProfile(profile);
+  }
+
+
+  function normalizeSideViewKey(rawKey, sideIndex = 0) {
+    const key = String(rawKey == null ? '' : rawKey).trim().toLowerCase();
+    if (key === 'right') return 'right';
+    const n = Number(key === '' ? sideIndex : key.replace(/^middle[_:-]?/, ''));
+    return String(Math.max(0, Number.isFinite(n) ? Math.round(n) : Number(sideIndex) || 0));
+  }
+
+  function sideViewKeyFromMeta(meta) {
+    if (!meta) return '0';
+    if (String(meta.sideViewKey || '').trim()) return normalizeSideViewKey(meta.sideViewKey, meta.sideIndex ?? meta.index);
+    if (meta.placementView === 'side-right' || meta.view === 'Right') return 'right';
+    return normalizeSideViewKey('', meta.sideIndex ?? meta.index ?? 0);
+  }
+
+  function normalizeSideFeatureStateForApp(raw = null) {
+    const source = raw && typeof raw === 'object' ? raw : {};
+    const defaultGlass = normalizeYesNo($('glassTrack') && $('glassTrack').value) === 'EVET';
+    const defaultTriangle = normalizeYesNo($('triangleJoinery') && $('triangleJoinery').value) === 'EVET';
+    const bool = (value, fallback) => value === null || value === undefined ? !!fallback : !!value;
+    const middle = value => {
+      const out = {};
+      if (value && typeof value === 'object') Object.entries(value).forEach(([key, enabled]) => { out[normalizeSideViewKey(key, Number(key) || 0)] = !!enabled; });
+      return out;
     };
-    if (isFabric) return [field];
-    return [
-      field,
-      { id: `${id}Finish`, label: 'Finish', type: 'choice', options: FINISH_OPTIONS }
-    ];
-  });
-  let installItems = [
-    { id: 'installationType', label: 'Installation Type', type: 'select', options: DATA.common.installationTypes },
-    { id: 'glassType', label: 'Glass Type', type: 'select', options: DATA.common.glassTypes },
-    { id: 'electricPower', label: 'Electric Power', type: 'select', options: DATA.common.electricPower },
-    { id: 'motor', label: 'Motor', type: 'select', options: DATA.common.motor },
-    { id: 'remoteControl', label: 'Remote Control', type: 'select', options: DATA.common.remoteControl },
-    { id: 'manualCrank', label: 'Manual Crank Operation', type: 'select', options: DATA.common.manualCrank }
-  ];
-  if (product.hideOperation) {
-    installItems = installItems.filter((item) => !['motor', 'remoteControl', 'manualCrank'].includes(item.id));
-  }
-  const lighting = product.id === 'galaxy'
-    ? [...group.lighting, 'Louver LED']
-    : group.lighting;
-
-  wrap.appendChild(createProjectDetailsSection(projectItems));
-  wrap.appendChild(createFormSection('Colours / System', colorItems, 'grid two'));
-  if (installItems.length) {
-    wrap.appendChild(createFormSection('Technical Selections', installItems, 'grid two'));
-  }
-  wrap.appendChild(createCheckboxSection('Lighting', 'lighting', lighting));
-  wrap.appendChild(createCheckboxSection('Additional Accessories', 'accessories', group.accessories));
-  refreshDynamicLanguage();
-}
-
-function renderForm() {
-  if (usesPergolaForm()) renderPergolaForm();
-  else if (hasProductForm()) renderGalaxyForm();
-  else renderGenericForm();
-}
-
-function getDynamicValues() {
-  return $$('[data-field-id]').reduce((acc, el) => {
-    const id = el.dataset.fieldId;
-    if (el.type === 'radio' || el.type === 'checkbox') {
-      if (!(id in acc)) acc[id] = '';
-      if (el.checked) acc[id] = el.value;
-    } else {
-      acc[id] = el.value;
-    }
-    return acc;
-  }, {});
-}
-
-function getChecked(name) {
-  return $$(`input[name="${name}"]:checked`).map((x) => x.value);
-}
-
-function updateLightingOtherVisibility() {
-  const wrap = $('#lightingOtherWrap');
-  if (!wrap) return;
-  wrap.hidden = !getChecked('lighting').includes('Other');
-}
-
-function lightingDisplayValue(lang = state.language) {
-  const selected = getChecked('lighting');
-  const parts = selected
-    .filter((value) => value !== 'Other')
-    .map((value) => translatedText(value, lang));
-  if (selected.includes('Other')) {
-    const otherValue = String($('#dyn_lightingOther')?.value || '').trim();
-    parts.push(`${translatedText('Other', lang)}${otherValue ? `: ${otherValue}` : ''}`);
-  }
-  return parts.length ? parts.join(', ') : '-';
-}
-
-function formatValue(value, unit, unitAuto, lang = state.language) {
-  const clean = String(value ?? '').trim();
-  if (!clean) return '-';
-  if (unit) return `${clean} ${unit}`;
-  if (unitAuto === 'pcpcs') {
-    const n = Number(clean.replace(',', '.'));
-    const suffix = n === 1 ? 'pc' : 'pcs';
-    return `${clean} ${suffix}`;
-  }
-  return translatedCompositeText(clean, lang);
-}
-
-function codePart(text, fallback = 'XX') {
-  const cleaned = ascii(text || '').replace(/[^A-Za-z0-9]/g, '').toUpperCase();
-  return (cleaned.slice(0, 2) || fallback).padEnd(2, 'X');
-}
-
-function uniqueProductCode(productName) {
-  const name = ascii(productName || '').toUpperCase();
-  const keys = ['GALAXY', 'FREEDOM', 'URBAN', 'MINIMA', 'TECTONA'];
-  const hit = keys.find((key) => name.includes(key));
-  return codePart(hit || name, 'PR');
-}
-
-function cleanDimensionForOrderNo(value) {
-  const raw = String(value || '').replace(',', '.').trim();
-  if (!raw) return '0';
-  const n = Number(raw);
-  if (Number.isFinite(n)) return String(raw).replace(/[^0-9.]/g, '').replace(/\.0+$/, '');
-  return ascii(raw).replace(/[^A-Za-z0-9]/g, '') || '0';
-}
-
-function generatedOrderNo(profile, productName, values) {
-  const customer = codePart(profile.companyName || profile.contactPerson, 'CU');
-  const product = uniqueProductCode(productName);
-  const width = cleanDimensionForOrderNo(values.width || values.frontH || values.quantity);
-  const projection = cleanDimensionForOrderNo(values.projection);
-  return `${customer}-${product}-${width}x${projection}`;
-}
-
-function getFieldValue(field) {
-  const radios = $$(`input[type="radio"][name="dyn_${field.id}"]`);
-  if (radios.length) {
-    return radios.find((radio) => radio.checked)?.value || '';
-  }
-  const checks = $$(`input[type="checkbox"][name="dyn_${field.id}"]`);
-  if (checks.length) {
-    return checks.find((check) => check.checked)?.value || '';
-  }
-  const el = $(`#dyn_${field.id}`);
-  return el?.value || '';
-}
-
-function fieldIsActive(field) {
-  if (!field.showWhen) return true;
-  return (field.showWhen.values || []).includes(getFieldValue({ id: field.showWhen.field }));
-}
-
-function baseFieldId(fieldId = '') {
-  return String(fieldId || '').replace(/__pos\d+$/, '');
-}
-
-function fieldPositionSuffix(fieldId = '') {
-  const match = String(fieldId || '').match(/(__pos\d+)$/);
-  return match ? match[1] : '';
-}
-
-function isRealPergolaProduct(product = getProduct()) {
-  return product?.family === 'pergola';
-}
-
-function fieldRows(fieldList, lang = state.language) {
-  const isPergola = isRealPergolaProduct();
-  const rows = [];
-  fieldList.filter(fieldIsActive).forEach((field) => {
-    const id = field.id || '';
-    const baseId = baseFieldId(id);
-    if (isPergola && (baseId === 'pipeLengthOther' || baseId === 'lightingOther')) return;
-
-    let value = getFieldValue(field);
-    let unit = field.unit || '';
-    let unitAuto = field.unitAuto || '';
-
-    if (isPergola && baseId === 'pipeLengthType' && value === 'Other') {
-      const suffix = fieldPositionSuffix(id);
-      const otherValue = getFieldValue({ id: `pipeLengthOther${suffix}` });
-      if (String(otherValue || '').trim()) {
-        value = otherValue;
-        unit = 'mm';
-        unitAuto = '';
-      }
-    }
-
-    if (isPergola && baseId === 'lightingType' && value === 'Other') {
-      const otherValue = getFieldValue({ id: 'lightingOther' });
-      if (String(otherValue || '').trim()) {
-        value = otherValue;
-        unit = '';
-        unitAuto = '';
-      }
-    }
-
-    rows.push([
-      translatedText(field.label, lang),
-      formatValue(value, unit, unitAuto, lang),
-      id
-    ]);
-  });
-  return rows;
-}
-
-function projectDetailSections(fieldList, lang = state.language) {
-  const positionCount = getProjectPositionCount();
-  const projectTitle = translatedText('Project Details', lang);
-  return Array.from({ length: positionCount }, (_, index) => {
-    const positionIndex = index + 1;
     return {
-      kind: 'projectDetails',
-      role: 'project',
-      baseTitle: projectTitle,
-      title: positionCount > 1 ? `Poz ${positionIndex}` : projectTitle,
-      rows: fieldRows(positionedFields(fieldList, positionIndex), lang)
+      glassTrack: { left: bool(source.glassTrack && source.glassTrack.left, defaultGlass), right: bool(source.glassTrack && source.glassTrack.right, defaultGlass), middle: middle(source.glassTrack && source.glassTrack.middle) },
+      triangle: { left: bool(source.triangle && source.triangle.left, defaultTriangle), right: bool(source.triangle && source.triangle.right, defaultTriangle), middle: middle(source.triangle && source.triangle.middle) },
+      middleEnabled: middle(source.middleEnabled)
     };
-  });
-}
-
-function genericRows(lang = state.language) {
-  const product = getProduct();
-  const group = getGroup(product);
-  if (!product || !group) return { systemQuantity: '-', sections: [] };
-  const projectFields = [
-    { id: 'quantity', label: 'Quantity' },
-    ...DATA.common.dimensionFields.map((f) => ({ id: f.id, label: f.label, unit: f.unit }))
-  ];
-  const colorFields = group.colorFields.flatMap((label) => {
-    const id = safeId(label);
-    const isFabric = FABRIC_FIELD_LABELS.has(String(label).trim().toLowerCase());
-    const field = { id, label };
-    if (isFabric) return [field];
-    return [
-      field,
-      { id: `${id}Finish`, label: 'Finish' }
-    ];
-  });
-  let techIds = ['installationType', 'glassType', 'electricPower', 'motor', 'remoteControl', 'manualCrank'];
-  if (product.hideOperation) {
-    techIds = techIds.filter((id) => !['motor', 'remoteControl', 'manualCrank'].includes(id));
   }
-  const techFields = techIds.map((id) => {
-    const el = $(`#dyn_${id}`);
-    return [translatedText(el?.dataset.fieldLabel || id, lang), formatValue(el?.value || '', '', '', lang)];
-  });
-  const sections = [
-    ...projectDetailSections(projectFields, lang),
-    { role: 'colors', title: translatedText('Colours / System', lang), rows: fieldRows(colorFields, lang) }
-  ];
-  if (techFields.length) {
-    sections.push({ role: 'operation', title: translatedText('Technical Selections', lang), rows: techFields });
+
+  function normalizeGlassTrackLengthOffsetsForApp(raw = null) {
+    const source = raw && typeof raw === 'object' ? raw : {};
+    const num = value => Number.isFinite(Number(value)) ? Number(value) : 0;
+    const middle = {};
+    if (source.middle && typeof source.middle === 'object') Object.entries(source.middle).forEach(([key, value]) => { middle[normalizeSideViewKey(key, Number(key) || 0)] = num(value); });
+    return { left: num(source.left), right: num(source.right), middle };
   }
-  sections.push(
-    { role: 'lighting', title: translatedText('Lighting', lang), rows: [[translatedText('Selected', lang), lightingDisplayValue(lang)]] },
-    { title: translatedText('Additional Accessories', lang), rows: [[translatedText('Selected', lang), translatedList(getChecked('accessories'), lang)]] }
-  );
-  return {
-    systemQuantity: formatValue($('#dyn_quantity')?.value || '', '', '', lang),
-    sections
-  };
-}
 
-function galaxyRows(lang = state.language) {
-  const product = getProduct();
-  const form = getProductForm();
-  if (!form) return { systemQuantity: '-', sections: [] };
-  const sections = [];
-  const isJanela = isJanelaCassetteAwning();
-  if (form.projectDetails?.length) sections.push(...projectDetailSections(form.projectDetails, lang));
-  if (form.colorDetails?.length) sections.push({ role: 'colors', title: translatedText('Color Details', lang), rows: fieldRows(form.colorDetails, lang) });
-  if (form.operation?.length) {
-    sections.push({ role: 'operation', title: translatedText(form.operationTitle || 'Motor & Remote Control', lang), rows: fieldRows(form.operation, lang) });
+
+  function normalizeTriangleDivisionStateForApp(raw = null) {
+    const source = raw && typeof raw === 'object' ? raw : {};
+    const norm = value => Number.isFinite(Number(value)) ? Math.max(1, Math.round(Number(value))) : null;
+    const middle = {};
+    if (source.middle && typeof source.middle === 'object') Object.entries(source.middle).forEach(([key, value]) => { middle[normalizeSideViewKey(key, Number(key) || 0)] = norm(value); });
+    return { left: norm(source.left), right: norm(source.right), middle };
   }
-  if (form.panelOptions?.length) sections.push({ role: 'panelOptions', title: translatedText('Panel Options', lang), rows: fieldRows(form.panelOptions, lang) });
-  if (form.lighting?.length || form.dimmers?.length) {
-    const lightingDimmerRows = [];
-    const lightingDimmerTitle = form.lightingDimmersTitle || 'Lighting & Dimmers';
-    if (form.lighting?.length) lightingDimmerRows.push([translatedText('Lighting', lang), lightingDisplayValue(lang)]);
-    if (form.dimmers?.length) lightingDimmerRows.push(...fieldRows(form.dimmers, lang));
-    sections.push({ role: 'lighting', title: translatedText(lightingDimmerTitle, lang), rows: lightingDimmerRows });
+
+  function normalizeBackWallStateForApp(raw = null) {
+    const source = raw && typeof raw === 'object' ? raw : {};
+    const wall = value => {
+      const item = value && typeof value === 'object' ? value : {};
+      return {
+        xOffset: Number.isFinite(Number(item.xOffset)) ? Number(item.xOffset) : 0,
+        depth: Math.max(1, Number(item.depth) || 600),
+        height: Math.max(0, Number(item.height) || 0)
+      };
+    };
+    const middle = {};
+    if (source.middle && typeof source.middle === 'object') Object.entries(source.middle).forEach(([key, value]) => { middle[normalizeSideViewKey(key, Number(key) || 0)] = wall(value); });
+    return { left: wall(source.left), right: wall(source.right), middle };
   }
-  if (isJanela) {
-    appendJanelaPreviewSections(form, sections, lang);
-  } else {
-    (form.sectionsAfterDimmers || []).forEach((section) => {
-      if (section.fields?.length) {
-        sections.push({ title: translatedText(section.title, lang), rows: fieldRows(section.fields, lang) });
-      }
-    });
-    const swapHeaterSensors = isBcubeProduct(product);
-    if (swapHeaterSensors && form.heaterPackaging?.length) {
-      sections.push({ role: 'heater', title: translatedText('Heater & Sound & Packing', lang), rows: fieldRows(form.heaterPackaging, lang) });
-    }
-    if (form.sensors?.length) {
-      sections.push({ role: 'sensors', title: translatedText('Sensors', lang), rows: fieldRows(form.sensors, lang) });
-    }
-    if (!swapHeaterSensors && form.heaterPackaging?.length) {
-      sections.push({ role: 'heater', title: translatedText('Heater & Sound & Packing', lang), rows: fieldRows(form.heaterPackaging, lang) });
-    }
-  }
-  if (isJanela && form.heaterPackaging?.length) sections.push({ role: 'heater', title: translatedText('Heater & Sound & Packing', lang), rows: fieldRows(form.heaterPackaging, lang) });
-  return {
-    systemQuantity: formatValue($('#dyn_systemQuantity')?.value || '', '', '', lang),
-    sections
-  };
-}
 
-function pergolaRows(lang = state.language) {
-  const form = getProductForm();
-  if (!form) return { systemQuantity: '-', sections: [] };
-  const sections = [
-    ...projectDetailSections(form.projectDetails, lang),
-    { role: 'colors', title: translatedText('Colours', lang), rows: fieldRows(form.colorDetails, lang) }
-  ];
-  if (form.operation?.length) sections.push({ role: 'operation', title: translatedText('Motor & Remote Control', lang), rows: fieldRows(form.operation, lang) });
-  if (form.lighting?.length || form.dimmer?.length) {
-    sections.push({ role: 'lighting', title: translatedText(form.lightingDimmersTitle || 'Lighting & Dimmers', lang), rows: [...fieldRows(form.lighting, lang), ...fieldRows(form.dimmer, lang)] });
-  }
-  if (form.heaterPackaging?.length) sections.push({ role: 'heater', title: translatedText('Heater & Sound & Packing', lang), rows: fieldRows(form.heaterPackaging, lang) });
-  if (form.sensors?.length) sections.push({ role: 'sensors', title: translatedText('Sensors', lang), rows: fieldRows(form.sensors, lang) });
-  return { systemQuantity: '-', sections };
-}
-
-function getOrderData(lang = state.language) {
-  const product = getProduct();
-  const group = getGroup(product);
-  const dynamic = usesPergolaForm(product)
-    ? pergolaRows(lang)
-    : (hasProductForm(product) ? galaxyRows(lang) : genericRows(lang));
-  const selection = currentProductSelectionLabels(lang);
-  const profile = {
-    companyName: fields.companyName.value.trim(),
-    contactPerson: fields.contactPerson.value.trim(),
-    phone: fields.phone.value.trim(),
-    email: fields.email.value.trim()
-  };
-  const values = getDynamicValues();
-  const manualOrderNo = fields.orderNo.value.trim();
-
-  return {
-    profile,
-    orderNo: manualOrderNo || generatedOrderNo(profile, product?.name || selection.subGroup || selection.group, values),
-    manualOrderNo,
-    orderDate: fields.orderDate.value,
-    productId: product?.id || '',
-    productFamilyId: product?.family || '',
-    productGroupId: product?.productGroup || '',
-    productName: product?.name || '-',
-    productFamily: selection.family || '-',
-    productGroup: selection.group || translatedText(group?.label || '', lang) || '-',
-    productSubGroup: selection.subGroup || '-',
-    sections: dynamic.sections,
-    values,
-    notes: normalizeNotesValue(fields.notes.value).trim()
-  };
-}
-
-function setText(key, value) {
-  $$(`[data-preview="${key}"]`).forEach((el) => {
-    el.textContent = value || '-';
-  });
-}
-
-function normalizeSectionBaseTitle(title) {
-  const raw = String(title || '').trim();
-  if (/^(Position|Poz|מיקום)\s+\d+$/i.test(raw)) return translatedText('Project Details');
-  return raw.replace(/\s*-\s*(Position|Poz|מיקום)\s+\d+$/i, '').trim();
-}
-
-function sectionGroupKey(section) {
-  if (section?.kind === 'projectDetails') return 'projectDetails';
-  return `title:${normalizeSectionBaseTitle(section?.title)}`;
-}
-
-function sectionBaseTitle(section) {
-  if (section?.kind === 'projectDetails') return section.baseTitle || translatedText('Project Details');
-  return normalizeSectionBaseTitle(section?.title);
-}
-
-function buildSectionMap(rows) {
-  const map = new Map();
-  (rows || []).forEach(([label, value]) => map.set(label, value || '-'));
-  return map;
-}
-
-function isProjectDetailsGroup(group) {
-  return group.some((section) => section?.kind === 'projectDetails');
-}
-
-function renderPositionMatrixSection(baseTitle, sections) {
-  const titles = sections.map((section) => section.title);
-  const rowLabels = sections[0]?.rows.map(([label]) => label) || [];
-  const maps = sections.map((section) => buildSectionMap(section.rows));
-  return `
-    <div class="pdf-section">
-      <h3>${baseTitle}</h3>
-      <table class="position-matrix-table"><thead><tr><th></th>${titles.map((title) => `<th>${title}</th>`).join('')}</tr></thead><tbody>
-      ${rowLabels.map((label) => `<tr><td>${label}</td>${maps.map((m) => `<td>${m.get(label) || '-'}</td>`).join('')}</tr>`).join('')}
-      </tbody></table>
-    </div>
-  `;
-}
-
-function isFinishLabel(label) {
-  const raw = String(label || '').trim();
-  const normalized = ascii(raw).toLowerCase();
-  return ['finish', 'yuzey', 'oberflache', 'finition'].includes(normalized) || raw === 'גימור';
-}
-
-function compactColorRows(rows) {
-  const compact = [];
-  const source = rows || [];
-  for (let i = 0; i < source.length; i += 1) {
-    const [label, value] = source[i] || [];
-    if (isFinishLabel(label)) {
-      compact.push([label || '-', value || '-', '', '']);
-      continue;
-    }
-    const next = source[i + 1] || [];
-    if (isFinishLabel(next[0])) {
-      compact.push([label || '-', value || '-', next[0] || 'Finish', next[1] || '-']);
-      i += 1;
-    } else {
-      compact.push([label || '-', value || '-', '', '']);
-    }
-  }
-  return compact;
-}
-
-function renderColorSectionTable(section) {
-  const rows = compactColorRows(section?.rows || []);
-  return `
-    <div class="pdf-section pdf-section-tight">
-      <h3>${section.title}</h3>
-      <table class="pdf-color-table"><tbody>
-        ${rows.map(([label, value, finishLabel, finishValue]) => `<tr><td>${label}</td><td>${value || '-'}</td><td>${finishLabel || ''}</td><td>${finishLabel ? (finishValue || '-') : ''}</td></tr>`).join('')}
-      </tbody></table>
-    </div>
-  `;
-}
-
-
-function isCompactHeaterLayoutProduct(product = getProduct()) {
-  return product?.family === 'pergola' || product?.id === 'glass_fixed_ceiling';
-}
-
-function heaterRowById(rows, id, fallbackText = '') {
-  const cleanId = String(id || '').toLowerCase();
-  const direct = (rows || []).find((row) => String(row?.[2] || '').toLowerCase() === cleanId);
-  if (direct) return direct;
-  const needle = ascii(fallbackText || id).toLowerCase();
-  return (rows || []).find((row) => ascii(row?.[0] || '').toLowerCase().includes(needle)) || [fallbackText || id, '-', id];
-}
-
-function compactHeaterMatrixRows(rows) {
-  return [
-    [
-      heaterRowById(rows, 'heater2000Quantity', 'Heater 2000W 220V Quantity'),
-      heaterRowById(rows, 'soundSystemQuantity', 'Sound System Quantity'),
-      heaterRowById(rows, 'packagingType', 'Packaging Type')
-    ],
-    [
-      heaterRowById(rows, 'heater3000Quantity', 'Heater 3000W 220V Quantity'),
-      heaterRowById(rows, 'dimmerHeater', 'Dimmer Heater'),
-      heaterRowById(rows, 'loadingType', 'Loading')
-    ]
-  ];
-}
-
-function renderHeaterCompactSectionTable(section) {
-  const matrix = compactHeaterMatrixRows(section?.rows || []);
-  return `
-    <div class="pdf-section pdf-section-tight">
-      <h3>${section.title}</h3>
-      <table class="pdf-heater-matrix-table"><tbody>
-        ${matrix.map((row) => `<tr>${row.map(([label, value]) => `<td>${label}</td><td>${value || '-'}</td>`).join('')}</tr>`).join('')}
-      </tbody></table>
-    </div>
-  `;
-}
-
-function sensorRowById(rows, id, fallbackText = '') {
-  const cleanId = String(id || '').toLowerCase();
-  const direct = (rows || []).find((row) => String(row?.[2] || '').toLowerCase() === cleanId);
-  if (direct) return direct;
-  const needle = ascii(fallbackText || id).toLowerCase();
-  return (rows || []).find((row) => ascii(row?.[0] || '').toLowerCase().includes(needle)) || [fallbackText || id, '-', id];
-}
-
-function compactSensorMatrixRows(rows) {
-  return [
-    [
-      sensorRowById(rows, 'rainSensor', 'Rain Sensor'),
-      sensorRowById(rows, 'windSensor', 'Wind Sensor')
-    ],
-    [
-      sensorRowById(rows, 'vibrationSensor', 'Vibration Sensor'),
-      sensorRowById(rows, 'windSunSensor', 'Wind & Sun Sensor')
-    ]
-  ];
-}
-
-function renderSensorsCompactSectionTable(section) {
-  const matrix = compactSensorMatrixRows(section?.rows || []);
-  return `
-    <div class="pdf-section pdf-section-tight">
-      <h3>${section.title}</h3>
-      <table class="pdf-sensors-matrix-table"><tbody>
-        ${matrix.map((row) => `<tr>${row.map(([label, value]) => `<td>${label}</td><td>${value || '-'}</td>`).join('')}</tr>`).join('')}
-      </tbody></table>
-    </div>
-  `;
-}
-
-function renderSectionTable(section) {
-  const rows = section?.rows || [];
-  if (section?.role === 'colors') return renderColorSectionTable(section);
-  if (section?.role === 'heater' && isCompactHeaterLayoutProduct()) return renderHeaterCompactSectionTable(section);
-  if (section?.role === 'sensors' && isCompactHeaterLayoutProduct()) return renderSensorsCompactSectionTable(section);
-  return `
-    <div class="pdf-section pdf-section-tight">
-      <h3>${section.title}</h3>
-      <table><tbody>
-        ${rows.map(([label, value]) => `<tr><td>${label}</td><td>${value || '-'}</td></tr>`).join('')}
-      </tbody></table>
-    </div>
-  `;
-}
-
-function renderPreviewSectionGroup(sections) {
-  return sections.map(renderSectionTable).join('');
-}
-
-function renderPreviewPair(leftSections, rightSections) {
-  return `
-    <div class="pdf-section-pair">
-      <div>${renderPreviewSectionGroup(leftSections)}</div>
-      <div>${renderPreviewSectionGroup(rightSections)}</div>
-    </div>
-  `;
-}
-
-function renderSinglePreviewSection(current) {
-  return renderSectionTable(current);
-}
-
-function renderPreviewSections(sections) {
-  const html = [];
-  for (let i = 0; i < sections.length; i += 1) {
-    const current = sections[i];
-
-    if (current?.role === 'project') {
-      const group = [current];
-      let j = i + 1;
-      while (j < sections.length && sections[j]?.role === 'project') {
-        group.push(sections[j]);
-        j += 1;
-      }
-      if (group.length === 1 && sections[j]?.role === 'colors') {
-        html.push(renderPreviewSectionGroup(group));
-        i = j - 1;
-        continue;
-      }
-      if (group.length > 1 && isProjectDetailsGroup(group)) {
-        html.push(renderPositionMatrixSection(sectionBaseTitle(group[0]), group));
-        i = j - 1;
-        continue;
-      }
-      html.push(renderPreviewSectionGroup(group));
-      i = j - 1;
-      continue;
-    }
-
-    if (current?.role === 'operation') {
-      const leftSections = [current];
-      let j = i + 1;
-      if (sections[j]?.role === 'panelOptions') {
-        leftSections.push(sections[j]);
-        j += 1;
-      }
-      if (sections[j]?.role === 'lighting') {
-        html.push(renderPreviewPair(leftSections, [sections[j]]));
-        i = j;
-        continue;
-      }
-      html.push(renderPreviewSectionGroup(leftSections));
-      i = j - 1;
-      continue;
-    }
-
-    if ((current?.role === 'heater' && sections[i + 1]?.role === 'sensors') || (current?.role === 'sensors' && sections[i + 1]?.role === 'heater')) {
-      html.push(renderPreviewPair([current], [sections[i + 1]]));
-      i += 1;
-      continue;
-    }
-
-    html.push(renderSinglePreviewSection(current));
-  }
-  $('#previewSections').innerHTML = html.join('');
-}
-
-function updateAutoUnits() {
-  $$('[data-unit-auto="pcpcs"]').forEach((el) => {
-    const target = $(`[data-auto-for="${el.dataset.fieldId}"]`);
-    if (!target) return;
-    const n = Number(String(el.value || '').replace(',', '.'));
-    target.textContent = n === 1 ? 'pc' : 'pcs';
-  });
-}
-
-function updatePreview() {
-  updateAutoUnits();
-  const data = getOrderData(state.language);
-  setText('companyName', data.profile.companyName);
-  setText('contactPerson', data.profile.contactPerson);
-  setText('phone', data.profile.phone);
-  setText('email', data.profile.email);
-  setText('orderDate', data.orderDate);
-  setText('orderNo', data.orderNo);
-  setText('productName', data.productName);
-  setText('productFamily', data.productFamily);
-  setText('productGroup', data.productGroup);
-  setText('productSubGroup', data.productSubGroup);
-  setText('notes', data.notes || '-');
-  renderPreviewSections(data.sections);
-}
-
-function saveProfile() {
-  const profile = {
-    companyName: fields.companyName.value.trim(),
-    contactPerson: fields.contactPerson.value.trim(),
-    phone: fields.phone.value.trim(),
-    email: fields.email.value.trim()
-  };
-  localStorage.setItem(STORAGE_PROFILE, JSON.stringify(profile));
-  toast(t('companySaved'));
-}
-
-function loadProfile() {
-  try {
-    const profile = JSON.parse(localStorage.getItem(STORAGE_PROFILE) || '{}');
-    Object.keys(profile).forEach((key) => {
-      if (fields[key]) fields[key].value = profile[key] || '';
-    });
-  } catch {}
-}
-
-function clearProfile() {
-  localStorage.removeItem(STORAGE_PROFILE);
-  ['companyName', 'contactPerson', 'phone', 'email'].forEach((key) => fields[key].value = '');
-  onAnyInput();
-  toast(t('companyCleared'));
-}
-
-function saveOrderDraft() {
-  const data = getOrderData();
-  localStorage.setItem(STORAGE_ORDER, JSON.stringify({
-    selectedFamilyId: state.selectedFamilyId,
-    selectedGroupId: state.selectedGroupId,
-    selectedSubGroupId: state.selectedSubGroupId,
-    selectedProductId: state.selectedProductId,
-    projectPositionCounts: state.projectPositionCounts,
-    orderNo: data.manualOrderNo,
-    orderDate: data.orderDate,
-    notes: data.notes,
-    values: data.values,
-    lighting: getChecked('lighting'),
-    accessories: getChecked('accessories')
-  }));
-}
-
-function loadOrderDraft() {
-  try {
-    const saved = JSON.parse(localStorage.getItem(STORAGE_ORDER) || '{}');
-    state.projectPositionCounts = saved.projectPositionCounts && typeof saved.projectPositionCounts === 'object'
-      ? saved.projectPositionCounts
-      : {};
-    if (saved.selectedProductId && DATA.products.some((p) => p.id === saved.selectedProductId)) {
-      state.selectedProductId = saved.selectedProductId;
-      syncSelectionFromProduct();
-    } else {
-      state.selectedFamilyId = saved.selectedFamilyId || state.selectedFamilyId;
-      state.selectedGroupId = saved.selectedGroupId || state.selectedGroupId;
-      state.selectedSubGroupId = saved.selectedSubGroupId || state.selectedSubGroupId;
-      updateSelectedProductFromTree();
-    }
-    renderProducts();
-    renderForm();
-    fields.orderNo.value = saved.orderNo || '';
-    fields.orderDate.value = saved.orderDate || todayISO();
-    fields.notes.value = normalizeNotesValue(saved.notes || '');
-    Object.entries(saved.values || {}).forEach(([id, value]) => {
-      const radio = $$(`input[type="radio"][name="dyn_${id}"]`).find((x) => x.value === value);
-      if (radio) radio.checked = true;
-      $$(`input[type="checkbox"][name="dyn_${id}"]`).forEach((x) => { x.checked = x.value === value; });
-      const el = $(`#dyn_${id}`);
-      if (el) el.value = value;
-    });
-    setChecked('lighting', saved.lighting || []);
-    setChecked('accessories', saved.accessories || []);
-    updateConditionalFields();
-    updateLightingOtherVisibility();
-  } catch {}
-}
-
-function setChecked(name, values) {
-  $$(`input[name="${name}"]`).forEach((x) => x.checked = values.includes(x.value));
-}
-
-function resetOrder() {
-  localStorage.removeItem(STORAGE_ORDER);
-  state.projectPositionCounts = {};
-  fields.orderNo.value = '';
-  fields.orderDate.value = todayISO();
-  fields.notes.value = '';
-  renderForm();
-  updatePreview();
-  toast(t('newRequestOpened'));
-}
-
-
-function janelaRuleMessage(type, value) {
-  const tr = state.language === 'tr';
-  if (type === 'maxWidth') return tr ? `Genişlik max. ${value} mm olmalı.` : `Width max. ${value} mm.`;
-  if (type === 'projectionLtWidth') return tr ? 'Açılım genişlikten küçük olmalı.' : 'Projection must be smaller than width.';
-  return '';
-}
-
-function setFieldValidity(input, messages) {
-  if (!input) return;
-  const message = messages.filter(Boolean).join(' ');
-  input.setCustomValidity(message);
-  input.title = message;
-  input.classList.toggle('field-invalid', Boolean(message));
-  const customButton = input.customSelectButton;
-  if (customButton) {
-    customButton.classList.toggle('field-invalid', Boolean(message));
-    customButton.title = message;
-  }
-}
-
-function validateJanelaAwningRules({ showToast = false } = {}) {
-  if (!isJanelaAwningProduct()) return true;
-  const productId = state.selectedProductId;
-  const limits = JANELA_AWNING_LIMITS[productId] || {};
-  const widthInput = $('#dyn_width');
-  const projectionFieldIds = Array.isArray(limits.projectionFields) && limits.projectionFields.length ? limits.projectionFields : ['projection'];
-  const projectionInputs = projectionFieldIds.map((fieldId) => $(`#dyn_${fieldId}`)).filter(Boolean);
-  const width = Number(String(widthInput?.value || '').replace(',', '.'));
-  const widthMessages = [];
-  const projectionMessages = [];
-  let firstInvalidProjectionInput = null;
-
-  if (limits.maxWidth && Number.isFinite(width) && width > limits.maxWidth) {
-    widthMessages.push(janelaRuleMessage('maxWidth', limits.maxWidth));
-  }
-  projectionInputs.forEach((projectionInput) => {
-    const projection = Number(String(projectionInput?.value || '').replace(',', '.'));
-    const messages = [];
-    if (limits.projectionLtWidth && Number.isFinite(width) && width > 0 && Number.isFinite(projection) && projection > 0 && projection >= width) {
-      messages.push(janelaRuleMessage('projectionLtWidth'));
-      if (!firstInvalidProjectionInput) firstInvalidProjectionInput = projectionInput;
-    }
-    setFieldValidity(projectionInput, messages);
-    projectionMessages.push(...messages);
-  });
-
-  setFieldValidity(widthInput, widthMessages);
-  const messages = [...widthMessages, ...Array.from(new Set(projectionMessages))];
-  if (messages.length && showToast) {
-    toast(messages.join(' '));
-    const targetInput = widthMessages.length ? widthInput : firstInvalidProjectionInput;
-    const target = targetInput?.customSelectButton || targetInput;
-    target?.focus?.();
-  }
-  return messages.length === 0;
-}
-
-
-function glassFoldingHeightLimit(glassThickness) {
-  if (glassThickness === '8 mm') return 2400;
-  if (glassThickness === '10 mm' || glassThickness === '12 mm') return 2600;
-  return 2800;
-}
-
-function glassFoldingHeightHintText(glassThickness) {
-  if (!glassThickness) return state.language === 'tr' ? 'Cam kalınlığına göre Max. değer' : 'Max. depends on glass thickness';
-  return `Max. ${glassFoldingHeightLimit(glassThickness)} mm`;
-}
-
-function updateGlassFoldingDynamicHints() {
-  if (!isGlassFoldingASeriesProduct()) return;
-  $$('[data-field-id]').filter((el) => /^height(__pos\d+)?$/.test(el.dataset.fieldId || '')).forEach((heightInput) => {
-    const suffix = String(heightInput.dataset.fieldId || '').replace(/^height/, '');
-    const glassThickness = getFieldValue({ id: `glassThickness${suffix}` });
-    const hint = heightInput.closest('label')?.querySelector('.field-hint');
-    if (hint) hint.textContent = glassFoldingHeightHintText(glassThickness);
-  });
-}
-
-function glassRuleMessage(type, value) {
-  const tr = state.language === 'tr';
-  if (type === 'maxWidth') return tr ? `Genişlik max. ${value} mm olmalı.` : `Width max. ${value} mm.`;
-  if (type === 'maxHeight') return tr ? `Yükseklik max. ${value} mm olmalı.` : `Height max. ${value} mm.`;
-  if (type === 'maxPanels') return tr ? 'Panel sayısı en fazla 8 olabilir.' : 'Panel count can be max. 8.';
-  if (type === 'panelWidth') return tr ? 'Tek panel maksimum 800 mm olmalı.' : 'Each panel must be max. 800 mm.';
-  return '';
-}
-
-function glassPositionSuffixFromWidthField(fieldId) {
-  return String(fieldId || '').replace(/^width/, '');
-}
-
-function glassFieldInput(baseId, suffix = '') {
-  return document.querySelector(`[data-field-id="${baseId}${suffix}"]`);
-}
-
-function syncGlassFoldingPanelCount() {
-  if (!isGlassFoldingASeriesProduct()) return;
-  $$('[data-field-id]').filter((el) => /^width(__pos\d+)?$/.test(el.dataset.fieldId || '')).forEach((widthInput) => {
-    const suffix = glassPositionSuffixFromWidthField(widthInput.dataset.fieldId);
-    const panelInput = glassFieldInput('panelCount', suffix);
-    if (!panelInput || panelInput.dataset.userOverridden === '1') return;
-    const width = Number(String(widthInput.value || '').replace(',', '.'));
-    if (Number.isFinite(width) && width > 0) {
-      panelInput.value = String(Math.min(8, Math.max(1, Math.ceil(width / 800))));
-    } else {
-      panelInput.value = '';
-    }
-  });
-}
-
-
-function roundUpToEven(value) {
-  const rounded = Math.ceil(value);
-  if (!Number.isFinite(rounded) || rounded <= 0) return '';
-  return rounded % 2 === 0 ? rounded : rounded + 1;
-}
-
-function syncGlassSlidingPanelCount() {
-  if (!isGlassSlidingSeriesProduct()) return;
-  $$('[data-field-id]').filter((el) => /^width(__pos\d+)?$/.test(el.dataset.fieldId || '')).forEach((widthInput) => {
-    const suffix = glassPositionSuffixFromWidthField(widthInput.dataset.fieldId);
-    const panelInput = glassFieldInput('panelCount', suffix);
-    if (!panelInput || panelInput.dataset.userOverridden === '1') return;
-    const width = Number(String(widthInput.value || '').replace(',', '.'));
-    const openingType = getFieldValue({ id: `openingType${suffix}` });
-    if (!Number.isFinite(width) || width <= 0) {
-      panelInput.value = '';
-      return;
-    }
-    if (openingType === 'Center Opening') {
-      panelInput.value = String(Math.max(2, roundUpToEven(width / 1200)));
-    } else {
-      panelInput.value = String(Math.max(1, Math.ceil(width / 1000)));
-    }
-  });
-}
-
-function validateGlassFoldingRules({ showToast = false } = {}) {
-  if (!isGlassFoldingASeriesProduct()) return true;
-  const messages = [];
-  let focusTarget = null;
-
-  $$('[data-field-id]').filter((el) => /^width(__pos\d+)?$/.test(el.dataset.fieldId || '')).forEach((widthInput) => {
-    const suffix = glassPositionSuffixFromWidthField(widthInput.dataset.fieldId);
-    const heightInput = glassFieldInput('height', suffix);
-    const panelInput = glassFieldInput('panelCount', suffix);
-    const width = Number(String(widthInput.value || '').replace(',', '.'));
-    const height = Number(String(heightInput?.value || '').replace(',', '.'));
-    const panelCount = Number(String(panelInput?.value || '').replace(',', '.'));
-    const glassThickness = getFieldValue({ id: `glassThickness${suffix}` });
-    const heightLimit = glassFoldingHeightLimit(glassThickness);
-
-    const widthMessages = [];
-    const heightMessages = [];
-    const panelMessages = [];
-
-    if (Number.isFinite(width) && width > 6400) widthMessages.push(glassRuleMessage('maxWidth', 6400));
-    if (Number.isFinite(height) && height > heightLimit) heightMessages.push(glassRuleMessage('maxHeight', heightLimit));
-    if (Number.isFinite(panelCount) && panelCount > 8) panelMessages.push(glassRuleMessage('maxPanels'));
-    if (Number.isFinite(width) && width > 0 && Number.isFinite(panelCount) && panelCount > 0 && width / panelCount > 800) {
-      panelMessages.push(glassRuleMessage('panelWidth'));
-    }
-
-    setFieldValidity(widthInput, widthMessages);
-    setFieldValidity(heightInput, heightMessages);
-    setFieldValidity(panelInput, panelMessages);
-    [...widthMessages, ...heightMessages, ...panelMessages].forEach((message) => {
-      if (!messages.includes(message)) messages.push(message);
-    });
-    if (!focusTarget) {
-      if (widthMessages.length) focusTarget = widthInput;
-      else if (heightMessages.length) focusTarget = heightInput;
-      else if (panelMessages.length) focusTarget = panelInput;
-    }
-  });
-
-  if (messages.length && showToast) {
-    toast(messages.join(' '));
-    focusTarget?.focus?.();
-  }
-  return messages.length === 0;
-}
-
-
-function glassGuillotineWidthLimit(glassThickness, guillotineType) {
-  if (glassThickness === '8 mm') return 3500;
-  if (guillotineType === 'Upward Collecting') return 3500;
-  return 4000;
-}
-
-function glassGuillotineHeightLimit(guillotineType) {
-  return guillotineType === 'Upward Collecting' ? 4500 : 4000;
-}
-
-function glassGuillotineWidthHintText(glassThickness, guillotineType) {
-  if (!glassThickness && !guillotineType) return state.language === 'tr' ? 'Seçime göre Max. değer' : 'Max. depends on selection';
-  return `Max. ${glassGuillotineWidthLimit(glassThickness, guillotineType)} mm`;
-}
-
-function glassGuillotineHeightHintText(guillotineType) {
-  return `Max. ${glassGuillotineHeightLimit(guillotineType)} mm`;
-}
-
-function setChoiceOptionState(fieldId, option, enabled) {
-  $$(`input[type="radio"][name="dyn_${fieldId}"]`).forEach((radio) => {
-    if (radio.value !== option) return;
-    radio.disabled = !enabled;
-    const label = radio.closest('label');
-    if (label) {
-      label.hidden = !enabled;
-      label.style.display = enabled ? '' : 'none';
-      label.classList.toggle('hidden', !enabled);
-      label.setAttribute('aria-hidden', enabled ? 'false' : 'true');
-    }
-    if (!enabled && radio.checked) radio.checked = false;
-  });
-}
-
-function ensureChoiceHasAllowedValue(fieldId, allowedValues) {
-  const radios = $$(`input[type="radio"][name="dyn_${fieldId}"]`);
-  if (!radios.length) return;
-  radios.forEach((radio) => {
-    if (radio.checked && (radio.disabled || !allowedValues.includes(radio.value))) {
-      radio.checked = false;
-    }
-  });
-  const visibleAllowed = radios.filter((radio) => {
-    const label = radio.closest('label');
-    return allowedValues.includes(radio.value) && !radio.disabled && !label?.hidden && label?.style.display !== 'none';
-  });
-  if (visibleAllowed.length === 1 && !visibleAllowed.some((radio) => radio.checked)) {
-    visibleAllowed[0].checked = true;
-  }
-}
-
-function updateGlassGuillotineChoicesForSuffix(suffix = '') {
-  const glassField = `glassThickness${suffix}`;
-  const glassAllowed = isGlassGuillotineKSeriesProduct() ? ['Insulated Glass'] : ['8 mm', 'Insulated Glass'];
-  ensureChoiceHasAllowedValue(glassField, glassAllowed);
-  const glassThickness = getFieldValue({ id: glassField });
-  const typeField = `guillotineType${suffix}`;
-  const mechanismField = `mechanism${suffix}`;
-  const panelField = `panelLayout${suffix}`;
-
-  const typeAllowed = isGlassGuillotineKSeriesProduct()
-    ? ['Standard', 'Cleanable']
-    : (glassThickness === '8 mm' ? ['Standard'] : ['Standard', 'Cleanable', 'Upward Collecting']);
-  ['Standard', 'Cleanable', 'Upward Collecting'].forEach((option) => setChoiceOptionState(typeField, option, typeAllowed.includes(option)));
-  ensureChoiceHasAllowedValue(typeField, typeAllowed);
-
-  const guillotineType = getFieldValue({ id: typeField });
-  const mechanismAllowed = isGlassGuillotineKSeriesProduct()
-    ? ['Belt']
-    : ((glassThickness === '8 mm' || guillotineType === 'Upward Collecting') ? ['Chain'] : ['Chain', 'Belt']);
-  ['Chain', 'Belt'].forEach((option) => setChoiceOptionState(mechanismField, option, mechanismAllowed.includes(option)));
-  ensureChoiceHasAllowedValue(mechanismField, mechanismAllowed);
-
-  const panelAllowed = guillotineType === 'Upward Collecting' ? ['1+2'] : ['1+1', '1+2'];
-  ['1+1', '1+2'].forEach((option) => setChoiceOptionState(panelField, option, panelAllowed.includes(option)));
-  ensureChoiceHasAllowedValue(panelField, panelAllowed);
-}
-
-function updateGlassGuillotineDynamicHints() {
-  if (!isGlassGuillotineSeriesProduct()) return;
-  $$('[data-field-id]').filter((el) => /^width(__pos\d+)?$/.test(el.dataset.fieldId || '')).forEach((widthInput) => {
-    const suffix = glassPositionSuffixFromWidthField(widthInput.dataset.fieldId);
-    const glassThickness = getFieldValue({ id: `glassThickness${suffix}` });
-    const guillotineType = getFieldValue({ id: `guillotineType${suffix}` });
-    const widthHint = widthInput.closest('label')?.querySelector('.field-hint');
-    if (widthHint) widthHint.textContent = glassGuillotineWidthHintText(glassThickness, guillotineType);
-    const heightInput = glassFieldInput('height', suffix);
-    const heightHint = heightInput?.closest('label')?.querySelector('.field-hint');
-    if (heightHint) heightHint.textContent = glassGuillotineHeightHintText(guillotineType);
-  });
-}
-
-function updateGlassGuillotineDynamicRules() {
-  if (!isGlassGuillotineSeriesProduct()) return;
-  $$('[data-field-id]').filter((el) => /^width(__pos\d+)?$/.test(el.dataset.fieldId || '')).forEach((widthInput) => {
-    const suffix = glassPositionSuffixFromWidthField(widthInput.dataset.fieldId);
-    updateGlassGuillotineChoicesForSuffix(suffix);
-  });
-  updateGlassGuillotineDynamicHints();
-  updateConditionalFields();
-}
-
-function validateGlassGuillotineRules({ showToast = false } = {}) {
-  if (!isGlassGuillotineSeriesProduct()) return true;
-  const messages = [];
-  let focusTarget = null;
-
-  $$('[data-field-id]').filter((el) => /^width(__pos\d+)?$/.test(el.dataset.fieldId || '')).forEach((widthInput) => {
-    const suffix = glassPositionSuffixFromWidthField(widthInput.dataset.fieldId);
-    const heightInput = glassFieldInput('height', suffix);
-    const glassThickness = getFieldValue({ id: `glassThickness${suffix}` });
-    const guillotineType = getFieldValue({ id: `guillotineType${suffix}` });
-    const width = Number(String(widthInput.value || '').replace(',', '.'));
-    const height = Number(String(heightInput?.value || '').replace(',', '.'));
-    const widthLimit = glassGuillotineWidthLimit(glassThickness, guillotineType);
-    const heightLimit = glassGuillotineHeightLimit(guillotineType);
-    const widthMessages = [];
-    const heightMessages = [];
-    if (Number.isFinite(width) && width > widthLimit) widthMessages.push(glassRuleMessage('maxWidth', widthLimit));
-    if (Number.isFinite(height) && height > heightLimit) heightMessages.push(glassRuleMessage('maxHeight', heightLimit));
-    setFieldValidity(widthInput, widthMessages);
-    setFieldValidity(heightInput, heightMessages);
-    [...widthMessages, ...heightMessages].forEach((message) => {
-      if (!messages.includes(message)) messages.push(message);
-    });
-    if (!focusTarget) {
-      if (widthMessages.length) focusTarget = widthInput;
-      else if (heightMessages.length) focusTarget = heightInput;
-    }
-  });
-
-  if (messages.length && showToast) {
-    toast(messages.join(' '));
-    focusTarget?.focus?.();
-  }
-  return messages.length === 0;
-}
-
-function syncJanelaLinkedFields() {
-  if (!isJanelaAwningProduct()) return;
-  const fabric = $('#dyn_fabric');
-  const valanceFabric = $('#dyn_valanceFabric');
-  if (fabric && valanceFabric && valanceFabric.dataset.userOverridden !== '1') {
-    valanceFabric.value = fabric.value || '';
-  }
-  const roofEnabled = getFieldValue({ id: 'oneSidedRoof' }) === 'Var';
-  const systemColor = $('#dyn_systemColor');
-  const roofColor = $('#dyn_roofColor');
-  if (roofEnabled && systemColor && roofColor && roofColor.dataset.userOverridden !== '1') {
-    roofColor.value = systemColor.value || '';
-  }
-}
-
-function onAnyInput() {
-  syncJanelaLinkedFields();
-  syncGlassFoldingPanelCount();
-  syncGlassSlidingPanelCount();
-  updateGlassGuillotineDynamicRules();
-  updateGlassFoldingDynamicHints();
-  updateConditionalFields();
-  updateLightingOtherVisibility();
-  updateAutoUnits();
-  validateJanelaAwningRules();
-  validateGlassFoldingRules();
-  validateGlassGuillotineRules();
-  saveOrderDraft();
-  updatePreview();
-}
-
-function ascii(text) {
-  return String(text ?? '')
-    .replace(/ğ/g, 'g').replace(/Ğ/g, 'G')
-    .replace(/ü/g, 'u').replace(/Ü/g, 'U')
-    .replace(/ş/g, 's').replace(/Ş/g, 'S')
-    .replace(/ı/g, 'i').replace(/İ/g, 'I')
-    .replace(/ö/g, 'o').replace(/Ö/g, 'O')
-    .replace(/ç/g, 'c').replace(/Ç/g, 'C')
-    .replace(/[’‘`]/g, "'")
-    .replace(/[“”]/g, '"')
-    .replace(/[–—−]/g, '-')
-    .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
-    .replace(/[^\x20-\x7E]/g, '?');
-}
-
-function pdfSafeText(text) {
-  return String(text ?? '')
-    .replace(/\u00A0/g, ' ')
-    .replace(/ğ/g, 'g').replace(/Ğ/g, 'G')
-    .replace(/ü/g, 'u').replace(/Ü/g, 'U')
-    .replace(/ş/g, 's').replace(/Ş/g, 'S')
-    .replace(/ı/g, 'i').replace(/İ/g, 'I')
-    .replace(/ö/g, 'o').replace(/Ö/g, 'O')
-    .replace(/ç/g, 'c').replace(/Ç/g, 'C')
-    .replace(/[’‘`]/g, "'")
-    .replace(/[“”]/g, '"')
-    .replace(/[–—−]/g, '-')
-    .replace(/×/g, 'x')
-    .replace(/≤/g, '<=')
-    .replace(/≥/g, '>=')
-    .replace(/±/g, '+/-')
-    .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
-    .replace(/[^\x20-\x7E°]/g, '?');
-}
-
-function pdfEscape(text) {
-  const source = pdfSafeText(text);
-  let output = '';
-  for (const ch of source) {
-    if (ch === '\\') output += '\\\\';
-    else if (ch === '(') output += '\\(';
-    else if (ch === ')') output += '\\)';
-    else if (ch === '°') output += '\\260';
-    else output += ch;
-  }
-  return output;
-}
-
-function wrapText(text, maxChars) {
-  const source = pdfSafeText(text || '-').replace(/\r\n?/g, '\n');
-  const lines = [];
-  source.split('\n').forEach((paragraph) => {
-    const words = paragraph.trim() ? paragraph.trim().split(/\s+/) : [''];
-    let current = '';
-    words.forEach((rawWord) => {
-      let word = rawWord;
-      while (word.length > maxChars) {
-        if (current) {
-          lines.push(current);
-          current = '';
-        }
-        lines.push(word.slice(0, maxChars));
-        word = word.slice(maxChars);
-      }
-      if ((current + ' ' + word).trim().length > maxChars) {
-        if (current) lines.push(current);
-        current = word;
-      } else {
-        current = `${current} ${word}`.trim();
-      }
-    });
-    if (current || !paragraph.trim()) lines.push(current);
-  });
-  return lines.length ? lines : ['-'];
-}
-
-
-function base64ToUint8Array(base64) {
-  const binary = atob(base64);
-  const bytes = new Uint8Array(binary.length);
-  for (let i = 0; i < binary.length; i += 1) bytes[i] = binary.charCodeAt(i);
-  return bytes;
-}
-
-function dataUriToBytes(dataUri) {
-  const raw = String(dataUri || '');
-  const comma = raw.indexOf(',');
-  if (comma < 0) return new Uint8Array();
-  return base64ToUint8Array(raw.slice(comma + 1));
-}
-
-function pdfTemplateCommand(width, height) {
-  return 'q ' + width.toFixed(2) + ' 0 0 ' + height.toFixed(2) + ' 0 0 cm /BG Do Q\n';
-}
-
-
-function buildOrderPdf(data) {
-  const W = 595.28;
-  const H = 841.89;
-  const margin = 42;
-  const contentBottom = 735;
-  let y = 145;
-  const commands = [];
-
-  const cmd = (value) => commands.push(value);
-  const topY = (v) => H - v;
-  const text = (x, yTop, value, size = 9, bold = false) => {
-    cmd(`BT /${bold ? 'F2' : 'F1'} ${size} Tf ${x.toFixed(2)} ${topY(yTop).toFixed(2)} Td (${pdfEscape(value)}) Tj ET`);
-  };
-  const rect = (x, yTop, w, h) => {
-    cmd(`${x.toFixed(2)} ${topY(yTop + h).toFixed(2)} ${w.toFixed(2)} ${h.toFixed(2)} re S`);
-  };
-  const fillRect = (x, yTop, w, h, gray = 0.94) => {
-    cmd(`${gray} g ${x.toFixed(2)} ${topY(yTop + h).toFixed(2)} ${w.toFixed(2)} ${h.toFixed(2)} re f 0 g`);
-  };
-  const ensureSpace = (needed = 30) => {
-    if (y + needed > contentBottom) y = 145;
-  };
-
-  const rowHeight = 13;
-  const sectionGap = 7;
-  const colGap = 10;
-  const tableWidth = W - margin * 2;
-  const halfWidth = (tableWidth - colGap) / 2;
-
-  const sectionTitle = (title, x, yTop, width) => {
-    fillRect(x, yTop, width, 17, 0.92);
-    rect(x, yTop, width, 17);
-    text(x + 6, yTop + 11.5, title.toUpperCase(), 8.1, true);
-    return yTop + 19;
-  };
-
-  const labelTextWidthApprox = (value, size = 6.6) => pdfSafeText(value || '').length * size * 0.54;
-  const calcLabelWidthFromRows = (rows, width) => {
-    const maxLabel = Math.max(0, ...(rows || []).map(([label]) => labelTextWidthApprox(label)));
-    const estimated = Math.ceil(Math.max(68, maxLabel + 14));
-    const maxAllowed = Math.max(78, width * 0.64);
-    return Math.min(maxAllowed, estimated);
-  };
-  const calcSectionLabelWidth = (section, width) => calcLabelWidthFromRows(section?.rows || [], width);
-  const calcStackLabelWidth = (items, width) => {
-    const rows = (items || []).flatMap((section) => section?.rows || []);
-    return calcLabelWidthFromRows(rows, width);
-  };
-
-  const isLightingSummaryLabel = (label) => ascii(label || '').trim().toLowerCase() === 'lighting';
-
-  const tableRowsCompact = (rows, x, startY, width, labelWidth = null) => {
-    let yy = startY;
-    const effectiveLabelWidth = Number.isFinite(labelWidth) ? labelWidth : calcLabelWidthFromRows(rows, width);
-    (rows || []).forEach(([a, b]) => {
-      const valueMaxChars = Math.max(8, Math.floor((width - effectiveLabelWidth) / 4.6));
-      const valueLines = wrapText(b || '-', valueMaxChars);
-      const forceTwoLineRow = isLightingSummaryLabel(a) && data?.productGroupId === 'bcube';
-      const lineCount = forceTwoLineRow ? 2 : 1;
-      const currentRowHeight = rowHeight * lineCount;
-      if (yy + currentRowHeight > contentBottom) return;
-      fillRect(x, yy, effectiveLabelWidth, currentRowHeight, 0.97);
-      rect(x, yy, effectiveLabelWidth, currentRowHeight);
-      rect(x + effectiveLabelWidth, yy, width - effectiveLabelWidth, currentRowHeight);
-      const labelMaxChars = Math.max(8, Math.floor((effectiveLabelWidth - 7) / 3.55));
-      text(x + 4, yy + 9, wrapText(a || '-', labelMaxChars)[0], 6.35, true);
-      const printableLines = valueLines.slice(0, lineCount);
-      printableLines.forEach((line, lineIndex) => {
-        text(x + effectiveLabelWidth + 4, yy + 9 + lineIndex * 9, line, 6.6);
+  function normalizeBackWallSegmentsForApp(raw = null) {
+    const source = raw && typeof raw === 'object' ? raw : {};
+    const side = {};
+    if (source.side && typeof source.side === 'object') {
+      Object.entries(source.side).forEach(([rawKey, items]) => {
+        const key = normalizeSideViewKey(rawKey, Number(rawKey) || 0);
+        const cleaned = Array.isArray(items) ? items.map((item, index) => ({
+          id: String(item && item.id || `back_wall_${key}_${index + 1}`),
+          start: Math.max(0, Number(item && item.start) || 0),
+          end: Math.max(0, Number(item && item.end) || 0),
+          height: Math.max(0, Number(item && item.height) || 0)
+        })).filter(item => item.end > item.start).sort((a, b) => a.start - b.start) : [];
+        if (cleaned.length) side[key] = cleaned;
       });
-      yy += currentRowHeight;
-    });
-    return yy;
-  };
-
-  const drawColorRowsCompact = (rows, x, startY, width) => {
-    let yy = startY;
-    const compactRows = compactColorRows(rows);
-    const firstLabels = compactRows.map((row) => [row[0], '']);
-    const finishLabels = compactRows.filter((row) => row[2]).map((row) => [row[2], '']);
-    const label1Width = Math.min(width * 0.34, Math.max(56, calcLabelWidthFromRows(firstLabels, width) - 6));
-    const label2Width = finishLabels.length ? Math.min(width * 0.22, Math.max(40, calcLabelWidthFromRows(finishLabels, width) - 8)) : 0;
-    const valueSpace = width - label1Width - label2Width;
-    const value1Width = label2Width ? valueSpace * 0.5 : valueSpace;
-    const value2Width = label2Width ? valueSpace - value1Width : 0;
-    compactRows.forEach(([label, value, finishLabel, finishValue]) => {
-      if (yy + rowHeight > contentBottom) return;
-      fillRect(x, yy, label1Width, rowHeight, 0.97);
-      rect(x, yy, label1Width, rowHeight);
-      rect(x + label1Width, yy, value1Width, rowHeight);
-      text(x + 4, yy + 9, wrapText(label || '-', Math.max(8, Math.floor((label1Width - 7) / 3.55)))[0], 6.35, true);
-      text(x + label1Width + 4, yy + 9, wrapText(value || '-', Math.max(8, Math.floor((value1Width - 7) / 4.6)))[0], 6.45);
-      if (label2Width) {
-        const x2 = x + label1Width + value1Width;
-        fillRect(x2, yy, label2Width, rowHeight, 0.97);
-        rect(x2, yy, label2Width, rowHeight);
-        rect(x2 + label2Width, yy, value2Width, rowHeight);
-        text(x2 + 4, yy + 9, finishLabel ? wrapText(finishLabel, Math.max(8, Math.floor((label2Width - 7) / 3.55)))[0] : '', 6.35, true);
-        text(x2 + label2Width + 4, yy + 9, finishLabel ? wrapText(finishValue || '-', Math.max(8, Math.floor((value2Width - 7) / 4.6)))[0] : '', 6.45);
-      }
-      yy += rowHeight;
-    });
-    return yy;
-  };
-
-  const isCompactHeaterPdf = data?.productFamilyId === 'pergola' || data?.productId === 'glass_fixed_ceiling';
-
-  const drawHeaterRowsMatrix = (rows, x, startY, width) => {
-    let yy = startY;
-    const matrix = compactHeaterMatrixRows(rows);
-    // C114: keep total width fixed as 15x, but use column ratios 3/2/3/2/2/3.
-    // Columns 1-3-6 are 3x, columns 2-4-5 are 2x as requested.
-    const unit = width / 15;
-    const colWidths = [3, 2, 3, 2, 2, 3].map((ratio) => unit * ratio);
-    const heaterRowHeight = rowHeight * 1.55;
-    matrix.forEach((row) => {
-      if (yy + heaterRowHeight > contentBottom) return;
-      let colX = x;
-      row.forEach(([label, value], idx) => {
-        const labelWidth = colWidths[idx * 2] || unit * 3;
-        const valueWidth = colWidths[idx * 2 + 1] || unit * 2;
-        fillRect(colX, yy, labelWidth, heaterRowHeight, 0.97);
-        rect(colX, yy, labelWidth, heaterRowHeight);
-        rect(colX + labelWidth, yy, valueWidth, heaterRowHeight);
-        const labelLines = wrapText(label || '-', Math.max(10, Math.floor((labelWidth - 7) / 3.1))).slice(0, 2);
-        labelLines.forEach((line, lineIndex) => text(colX + 4, yy + 8 + lineIndex * 8, line, 5.9, true));
-        const valueLines = wrapText(value || '-', Math.max(8, Math.floor((valueWidth - 7) / 4.4))).slice(0, 2);
-        valueLines.forEach((line, lineIndex) => text(colX + labelWidth + 4, yy + 8 + lineIndex * 8, line, 6.2));
-        colX += labelWidth + valueWidth;
-      });
-      yy += heaterRowHeight;
-    });
-    return yy;
-  };
-
-  const drawSensorsRowsMatrix = (rows, x, startY, width) => {
-    let yy = startY;
-    const matrix = compactSensorMatrixRows(rows);
-    const pairWidth = width / 2;
-    const labelWidth = Math.min(74, Math.max(58, pairWidth * 0.58));
-    const valueWidth = pairWidth - labelWidth;
-    const sensorRowHeight = rowHeight * 1.55;
-    matrix.forEach((row) => {
-      if (yy + sensorRowHeight > contentBottom) return;
-      row.forEach(([label, value], idx) => {
-        const pairX = x + idx * pairWidth;
-        fillRect(pairX, yy, labelWidth, sensorRowHeight, 0.97);
-        rect(pairX, yy, labelWidth, sensorRowHeight);
-        rect(pairX + labelWidth, yy, valueWidth, sensorRowHeight);
-        const labelLines = wrapText(label || '-', Math.max(8, Math.floor((labelWidth - 7) / 3.1))).slice(0, 2);
-        labelLines.forEach((line, lineIndex) => text(pairX + 4, yy + 8 + lineIndex * 8, line, 5.9, true));
-        const valueLines = wrapText(value || '-', Math.max(5, Math.floor((valueWidth - 7) / 4.4))).slice(0, 2);
-        valueLines.forEach((line, lineIndex) => text(pairX + labelWidth + 4, yy + 8 + lineIndex * 8, line, 6.2));
-      });
-      yy += sensorRowHeight;
-    });
-    return yy;
-  };
-
-  const drawHeaterSectionBox = (section, x, startY, width) => {
-    let yy = sectionTitle(section.title, x, startY, width);
-    yy = drawHeaterRowsMatrix(section.rows, x, yy, width);
-    return yy;
-  };
-
-  const drawSensorsSectionBox = (section, x, startY, width) => {
-    let yy = sectionTitle(section.title, x, startY, width);
-    yy = drawSensorsRowsMatrix(section.rows, x, yy, width);
-    return yy;
-  };
-
-  const drawColorSectionBox = (section, x, startY, width) => {
-    let yy = sectionTitle(section.title, x, startY, width);
-    yy = drawColorRowsCompact(section.rows, x, yy, width);
-    return yy;
-  };
-
-  const drawSectionBox = (section, x, startY, width, labelWidth = null) => {
-    if (section?.role === 'colors') return drawColorSectionBox(section, x, startY, width);
-    if (section?.role === 'heater' && isCompactHeaterPdf) return drawHeaterSectionBox(section, x, startY, width);
-    if (section?.role === 'sensors' && isCompactHeaterPdf) return drawSensorsSectionBox(section, x, startY, width);
-    const effectiveLabelWidth = Number.isFinite(labelWidth) ? labelWidth : calcSectionLabelWidth(section, width);
-    let yy = sectionTitle(section.title, x, startY, width);
-    yy = tableRowsCompact(section.rows, x, yy, width, effectiveLabelWidth);
-    return yy;
-  };
-
-  const drawSectionStack = (items, x, startY, width, labelWidth = null) => {
-    const effectiveLabelWidth = Number.isFinite(labelWidth) ? labelWidth : calcStackLabelWidth(items, width);
-    let yy = startY;
-    items.forEach((section, idx) => {
-      if (idx) yy += sectionGap;
-      yy = drawSectionBox(section, x, yy, width, effectiveLabelWidth);
-    });
-    return yy;
-  };
-
-  const drawSectionPair = (leftSections, rightSections) => {
-    ensureSpace(54);
-    const leftLabelWidth = calcStackLabelWidth(leftSections, halfWidth);
-    const rightLabelWidth = calcStackLabelWidth(rightSections, halfWidth);
-    const leftY = drawSectionStack(leftSections, margin, y, halfWidth, leftLabelWidth);
-    const rightY = drawSectionStack(rightSections, margin + halfWidth + colGap, y, halfWidth, rightLabelWidth);
-    y = Math.max(leftY, rightY) + 9;
-  };
-
-  const drawFullSection = (section) => {
-    ensureSpace(35);
-    y = drawSectionBox(section, margin, y, tableWidth, calcSectionLabelWidth(section, tableWidth)) + 9;
-  };
-
-  const drawProjectMatrix = (sections) => {
-    ensureSpace(35);
-    const titles = sections.map((item) => item.title);
-    const rowLabels = sections[0]?.rows.map(([label]) => label) || [];
-    const maps = sections.map((item) => buildSectionMap(item.rows));
-    const labelWidth = 120;
-    const colWidth = (tableWidth - labelWidth) / Math.max(1, titles.length);
-    y = sectionTitle(sectionBaseTitle(sections[0]), margin, y, tableWidth);
-
-    fillRect(margin, y, labelWidth, rowHeight, 0.93);
-    rect(margin, y, labelWidth, rowHeight);
-    for (let i = 0; i < titles.length; i += 1) {
-      const x = margin + labelWidth + i * colWidth;
-      fillRect(x, y, colWidth, rowHeight, 0.93);
-      rect(x, y, colWidth, rowHeight);
-      text(x + 4, y + 9, titles[i], 6.5, true);
     }
-    y += rowHeight;
-
-    rowLabels.forEach((label) => {
-      if (y + rowHeight > contentBottom) return;
-      fillRect(margin, y, labelWidth, rowHeight, 0.97);
-      rect(margin, y, labelWidth, rowHeight);
-      text(margin + 5, y + 9, label, 6.7, true);
-      maps.forEach((m, idx) => {
-        const x = margin + labelWidth + idx * colWidth;
-        rect(x, y, colWidth, rowHeight);
-        const val = String(m.get(label) || '-');
-        text(x + 4, y + 9, wrapText(val, Math.max(8, Math.floor(colWidth / 4.8)))[0], 6.4);
-      });
-      y += rowHeight;
-    });
-    y += 9;
-  };
-
-  cmd('0.1 w');
-  // Date / Order: placed on the right side of the red slash. Long order names wrap under the value column.
-  const metaLine = (label, value, yTop) => {
-    const metaX = 480;
-    const labelWidth = 31;
-    const lines = wrapText(value || '-', 13).slice(0, 4);
-    text(metaX, yTop, label, 7.4, true);
-    lines.forEach((line, index) => text(metaX + labelWidth, yTop + index * 9, line, 7.4, true));
-    return yTop + Math.max(1, lines.length) * 9 + 2;
-  };
-  let metaY = 64;
-  metaY = metaLine('Date:', data.orderDate || '-', metaY);
-  metaLine('Order:', data.orderNo || '-', metaY);
-
-  drawSectionPair([
-    {
-      title: 'Company',
-      rows: [
-        ['Company', data.profile.companyName || '-'],
-        ['Contact', data.profile.contactPerson || '-'],
-        ['Phone', data.profile.phone || '-'],
-        ['E-mail', data.profile.email || '-']
-      ]
-    }
-  ], [
-    {
-      title: 'Product',
-      rows: [
-        ['Family', data.productFamily || '-'],
-        ['Group', data.productGroup || '-'],
-        ['Sub Group', data.productSubGroup || '-'],
-        ['Product', data.productName || '-']
-      ]
-    }
-  ]);
-
-  for (let i = 0; i < data.sections.length; i += 1) {
-    const current = data.sections[i];
-
-    if (current?.role === 'project') {
-      const group = [current];
-      let j = i + 1;
-      while (j < data.sections.length && data.sections[j]?.role === 'project') {
-        group.push(data.sections[j]);
-        j += 1;
-      }
-      if (group.length === 1 && data.sections[j]?.role === 'colors') {
-        group.forEach(drawFullSection);
-        i = j - 1;
-        continue;
-      }
-      if (group.length > 1 && isProjectDetailsGroup(group)) {
-        drawProjectMatrix(group);
-        i = j - 1;
-        continue;
-      }
-      group.forEach(drawFullSection);
-      i = j - 1;
-      continue;
-    }
-
-    if (current?.role === 'operation') {
-      const leftSections = [current];
-      let j = i + 1;
-      if (data.sections[j]?.role === 'panelOptions') {
-        leftSections.push(data.sections[j]);
-        j += 1;
-      }
-      if (data.sections[j]?.role === 'lighting') {
-        drawSectionPair(leftSections, [data.sections[j]]);
-        i = j;
-        continue;
-      }
-      leftSections.forEach(drawFullSection);
-      i = j - 1;
-      continue;
-    }
-
-    if ((current?.role === 'heater' && data.sections[i + 1]?.role === 'sensors') || (current?.role === 'sensors' && data.sections[i + 1]?.role === 'heater')) {
-      drawSectionPair([current], [data.sections[i + 1]]);
-      i += 1;
-      continue;
-    }
-
-    drawFullSection(current);
+    return { side };
   }
 
-  ensureSpace(65);
-  y += 2;
-  y = sectionTitle('Notes', margin, y, tableWidth);
-  const noteLines = wrapText(data.notes || '-', 82).slice(0, 5);
-  rect(margin, y, tableWidth, 56);
-  noteLines.forEach((ln, idx) => text(margin + 8, y + 14 + idx * 10, ln, 8));
+  function backWallSegmentsForKey(sideKey, rearHeight = 0) {
+    const key = normalizeSideViewKey(sideKey, 0);
+    const stored = backWallSegments && backWallSegments.side && Array.isArray(backWallSegments.side[key]) ? backWallSegments.side[key] : null;
+    if (stored && stored.length) return stored.map(item => ({ ...item }));
+    const wall = wallStateForKey(key, rearHeight);
+    return [{ id: `back_wall_${key}_1`, start: 0, end: wall.depth, height: wall.height }];
+  }
 
-  return createPdf(commands.join('\n'), W, H, {
-    backgroundJpegDataUri: window.PDF_TEMPLATE_ASSET?.dataUri || '',
-    backgroundWidth: window.PDF_TEMPLATE_ASSET?.width || 1241,
-    backgroundHeight: window.PDF_TEMPLATE_ASSET?.height || 1754
-  });
-}
+  function storeBackWallSegmentsForKey(sideKey, list) {
+    const key = normalizeSideViewKey(sideKey, 0);
+    if (!backWallSegments || typeof backWallSegments !== 'object') backWallSegments = { side: {} };
+    if (!backWallSegments.side || typeof backWallSegments.side !== 'object') backWallSegments.side = {};
+    const cleaned = (Array.isArray(list) ? list : []).map((item, index) => ({
+      id: String(item && item.id || `back_wall_${key}_${index + 1}`),
+      start: Math.max(0, Number(item && item.start) || 0),
+      end: Math.max(0, Number(item && item.end) || 0),
+      height: Math.max(0, Number(item && item.height) || 0)
+    })).filter(item => item.end > item.start).sort((a, b) => a.start - b.start);
+    if (cleaned.length) backWallSegments.side[key] = cleaned;
+    else delete backWallSegments.side[key];
+  }
 
-function createPdf(content, width, height, options = {}) {
-  const encoder = new TextEncoder();
-  const encode = (value) => encoder.encode(value);
-  const bgBytes = options.backgroundJpegDataUri ? dataUriToBytes(options.backgroundJpegDataUri) : null;
-  const contentPrefix = bgBytes?.length ? pdfTemplateCommand(width, height) : '';
-  const contentBytes = encode(contentPrefix + content);
-  const hasBg = Boolean(bgBytes?.length);
-  const pageResources = `<< /Font << /F1 4 0 R /F2 5 0 R >>${hasBg ? ' /XObject << /BG 6 0 R >>' : ''} >>`;
-  const contentObjectNumber = hasBg ? 7 : 6;
+  function sideScopedStateValue(state, sideKey, fallback = null) {
+    const key = normalizeSideViewKey(sideKey, 0);
+    if (!state) return fallback;
+    if (key === 'right') return state.right == null ? fallback : state.right;
+    if (key === '0') return state.left == null ? fallback : state.left;
+    return state.middle && state.middle[key] != null ? state.middle[key] : fallback;
+  }
 
-  const objects = [
-    [encode('<< /Type /Catalog /Pages 2 0 R >>')],
-    [encode('<< /Type /Pages /Kids [3 0 R] /Count 1 >>')],
-    [encode(`<< /Type /Page /Parent 2 0 R /MediaBox [0 0 ${width} ${height}] /Resources ${pageResources} /Contents ${contentObjectNumber} 0 R >>`)],
-    [encode('<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica /Encoding /WinAnsiEncoding >>')],
-    [encode('<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica-Bold /Encoding /WinAnsiEncoding >>')]
+  function setSideScopedStateValue(state, sideKey, value) {
+    const key = normalizeSideViewKey(sideKey, 0);
+    if (key === 'right') state.right = value;
+    else if (key === '0') state.left = value;
+    else { if (!state.middle) state.middle = {}; state.middle[key] = value; }
+  }
+
+  function triangleDivisionForKey(sideKey, fallback = null) {
+    return sideScopedStateValue(triangleDivisionState, sideKey, fallback);
+  }
+
+  function wallStateForKey(sideKey, rearHeight = 0) {
+    const raw = sideScopedStateValue(backWallState, sideKey, null) || {};
+    return {
+      xOffset: Number.isFinite(Number(raw.xOffset)) ? Number(raw.xOffset) : 0,
+      depth: Math.max(1, Number(raw.depth) || 600),
+      height: Math.max(1, Number(raw.height) || Number(rearHeight) || 1)
+    };
+  }
+
+  function ensureSideFeatureStateInitialized() {
+    if (sideFeatureState.glassTrack.left === null || sideFeatureState.glassTrack.right === null || sideFeatureState.triangle.left === null || sideFeatureState.triangle.right === null) {
+      sideFeatureState = normalizeSideFeatureStateForApp(sideFeatureState);
+    }
+  }
+
+  function sideFeatureValue(feature, sideKey) {
+    ensureSideFeatureStateInitialized();
+    const key = normalizeSideViewKey(sideKey, 0);
+    const state = sideFeatureState[feature];
+    if (!state) return false;
+    if (key === 'right') return !!state.right;
+    if (key === '0') return !!state.left;
+    return !!(state.middle && state.middle[key]);
+  }
+
+  function setSideFeatureValue(feature, sideKey, enabled) {
+    ensureSideFeatureStateInitialized();
+    const key = normalizeSideViewKey(sideKey, 0);
+    const state = sideFeatureState[feature];
+    if (!state) return;
+    if (key === 'right') state.right = !!enabled;
+    else if (key === '0') state.left = !!enabled;
+    else { if (!state.middle) state.middle = {}; state.middle[key] = !!enabled; }
+  }
+
+  function setMainSideFeatureValue(field, enabled) {
+    const feature = field === 'triangleJoinery' ? 'triangle' : 'glassTrack';
+    ensureSideFeatureStateInitialized();
+    sideFeatureState[feature].left = !!enabled;
+    sideFeatureState[feature].right = !!enabled;
+    Object.keys(sideFeatureState[feature].middle || {}).forEach(key => { sideFeatureState[feature].middle[key] = !!enabled && !!sideFeatureState.middleEnabled[key]; });
+  }
+
+  function syncMainFormFromSideFeature(feature) {
+    const field = feature === 'triangle' ? 'triangleJoinery' : 'glassTrack';
+    const select = $(field);
+    if (!select) return;
+    ensureSideFeatureStateInitialized();
+    const state = sideFeatureState[feature];
+    const any = !!state.left || !!state.right || Object.values(state.middle || {}).some(Boolean);
+    syncingSideFeatureForm = true;
+    try { select.value = any ? 'EVET' : 'HAYIR'; }
+    finally { syncingSideFeatureForm = false; }
+  }
+
+  function glassTrackLengthOffsetForKey(sideKey) {
+    const key = normalizeSideViewKey(sideKey, 0);
+    if (key === 'right') return Number(glassTrackLengthOffsets.right) || 0;
+    if (key === '0') return Number(glassTrackLengthOffsets.left) || 0;
+    return Number(glassTrackLengthOffsets.middle && glassTrackLengthOffsets.middle[key]) || 0;
+  }
+
+  function setGlassTrackLengthOffsetForKey(sideKey, value) {
+    const key = normalizeSideViewKey(sideKey, 0), numeric = Number(value) || 0;
+    if (key === 'right') glassTrackLengthOffsets.right = numeric;
+    else if (key === '0') glassTrackLengthOffsets.left = numeric;
+    else { if (!glassTrackLengthOffsets.middle) glassTrackLengthOffsets.middle = {}; glassTrackLengthOffsets.middle[key] = numeric; }
+  }
+
+  function supportProfileScopeLabel(scope, isEn) {
+    if (scope === 'left') return isEn ? 'left-side support post' : 'sol yan destek dikmesi';
+    if (scope === 'right') return isEn ? 'right-side support post' : 'sağ yan destek dikmesi';
+    if (String(scope || '').startsWith('middle_')) {
+      const n = Number(String(scope).replace('middle_', '')) + 1;
+      return isEn ? `intermediate position ${n} support post` : `${n}. ara poz destek dikmesi`;
+    }
+    return isEn ? 'support post' : 'destek dikmesi';
+  }
+
+  const UI_TEXT = {
+    tr: {
+      langLabel: 'Dil', helpBtn: 'Yardım', installBtn: 'Ana Ekrana Ekle',
+      appTitleMain: 'Pülümür Automation Studio', appTitleSub: '| Parametrik Çizim ve Proje Otomasyonu | Hazırlayan / Geliştiren : Ayetullah KILINÇ',
+      labelProduct: 'Ürün', labelModule: 'Modül', labelEngine: 'Çizim Motoru',
+      legendProject: 'Proje Bilgileri', legendSystem: 'Sistem Ölçüleri <b>*(mm)</b>', legendOptions: 'Opsiyonlar', legendExtra: 'Ek Opsiyonlar',
+      labelSystemCount: 'Sistem Adedi', labelWidth: 'Genişlik', labelOpening: 'Açılım',
+      labelRearHeight: 'Arka H', labelFrontHeight: 'Ön H <em>Oluk Altı</em>',
+      labelRayCount: 'Ray Sayısı <b>Bir Sistem</b>', labelPostCount: 'Dikme Sayısı <b>Tüm Sistem</b>',
+      project_customer: 'Müşteri', project_project: 'Proje', project_version: 'Versiyon', project_drawnBy: 'Çizen', project_date: 'Tarih',
+      options_parapet: 'Parapet', options_parapetHeight: 'Parapet H <b>*(mm)</b>', options_glassTrack: 'Cam Kaydı',
+      options_structureColor: 'Taşıyıcı Rengi', options_fabric: 'Kumaş', options_fabricProfiles: 'Kumaş Profilleri',
+      options_motor: 'Motor', options_remote: 'Kumanda', options_led: 'LED', options_dimmer: 'Dimmer', options_extras: 'Ekstralar / Notlar',
+      extra_triangleJoinery: 'Üçgen Doğrama', extra_waterStandard: 'Su Çıkışı Standart mı?', quickTestsHead: 'Hızlı Testler',
+      previewTitle: 'Çizim Ön İzleme', previewBtn: 'Önizlemeyi Yenile', expandPreviewBtn: 'Önizlemeyi Büyüt', undoPreviewBtn: 'Geri Al', redoPreviewBtn: 'İleri Al', historyGroupLabel: 'Çizim geçmişi', shrinkPreviewBtn: 'Önizlemeyi Küçült', showMainDimsLabel: 'Ana ölçüleri göster', showAllDimsLabel: 'Tüm ölçüleri göster',
+      pdfBtn: 'PDF İndir', generateBtn: 'DXF İndir', resetBtn: 'Değerleri Resetle', calcBtn: 'Pülümür Hesaplayıcı', projectExportBtn: 'Proje Dosyası İndir', previewProjectExportBtn: 'Proje Dosyası İndir', projectImportBtn: 'Proje Dosyası Aç', checkDrawingBtn: 'Çizimi Kontrol Et', multiProductBtn: 'Çoklu Ürün Ekleme', multiDimensionBtn: 'Çoklu Ölçü Düzenleme', equalizeGapsBtn: 'Aralıkları Eşitle', postSettingsBtn: 'Dikme Ayarları', bulkExtendBtn: 'Çoklu Profil Uzat', bulkPostProfileBtn: 'Dikme Profilini Toplu Değiştir', convertProductBtn: 'Ürün Tipini Değiştir', fitProductsBtn: 'Ürünü Alana Uydur', multiDeleteBtn: 'Çoklu Ürün Silme', deleteAllProductsBtn: 'Tüm Ürünleri Sil',
+      calcTitle: 'Pülümür Hesaplayıcı', calcSub: '4 satırdan herhangi 3 tanesini doldur. Boş olan değer hesaplanır.',
+      calcGuide: '<strong>TR</strong><ul><li>4 alandan 3 tanesini doldur.</li><li>Hesaplanacak alanı boş bırak.</li><li>Hesapla’ya bas.</li><li>Sonucu ana forma aktar.</li></ul>',
+      calcWaiting: 'Sonuç bekleniyor.', calcReady: 'Sonuç', calcPoz: 'poz', calcOpenNote: 'Ana formdaki açılım / arka / ön değerleri aktarıldı. Açıyı hesaplamak için Hesapla’ya bas.',
+      calcAngleLabel: 'Sistem Açısı (°)', calcOpeningLabel: 'Açılım *(mm)', calcRearLabel: 'Arka H *(mm)', calcFrontLabel: 'Ön H *(mm)',
+      calcComputeBtn: 'Hesapla', calcTransferBtn: 'Sonucu Hücrelere Aktar', calcClearBtn: 'Sıfırla', helpTitle: 'Yardım / Kullanım Kılavuzu', helpCloseBtn: 'Kapat', emptyPreview: 'Önizleme için zorunlu ölçüleri doldur.',
+      placeholders: {
+        systemCount: 'Örn. 1', width: 'Örn. 4000 veya 3000;100;2500;NO', opening: 'Örn. 6000 veya 4500;5200', rearHeight: 'Örn. 3200 veya 3200;3400', frontHeight: 'Örn. 2600',
+        rayCount: 'Örn. 2 veya 2;3;2', postCount: 'Örn. 2 veya boş: otomatik', calcAngle: 'Örn. 4.16 veya boş', calcOpening: 'Örn. 4500;5200 veya boş', calcRear: 'Örn. 3200;3400 veya boş', calcFront: 'Örn. 2600 veya boş'
+      }
+    },
+    en: {
+      langLabel: 'Language', helpBtn: 'Help', installBtn: 'Add to Home Screen',
+      appTitleMain: 'Pülümür Automation Studio', appTitleSub: '| Parametric Drawing and Project Automation | Prepared / Developed by: Ayetullah KILINÇ',
+      labelProduct: 'Product', labelModule: 'Module', labelEngine: 'Drawing Engine',
+      legendProject: 'Project Info', legendSystem: 'System Dimensions <b>*(mm)</b>', legendOptions: 'Options', legendExtra: 'Extra Options',
+      labelSystemCount: 'System Count', labelWidth: 'Width', labelOpening: 'Projection',
+      labelRearHeight: 'Rear H', labelFrontHeight: 'Front H <em>Gutter Bottom</em>',
+      labelRayCount: 'Rail Count <b>Per System</b>', labelPostCount: 'Post Count <b>All Systems</b>',
+      project_customer: 'Customer', project_project: 'Project', project_version: 'Version', project_drawnBy: 'Drawn By', project_date: 'Date',
+      options_parapet: 'Parapet', options_parapetHeight: 'Parapet H <b>*(mm)</b>', options_glassTrack: 'Glass Track',
+      options_structureColor: 'Structure Color', options_fabric: 'Fabric', options_fabricProfiles: 'Fabric Profiles',
+      options_motor: 'Motor', options_remote: 'Remote', options_led: 'LED', options_dimmer: 'Dimmer', options_extras: 'Extras / Notes',
+      extra_triangleJoinery: 'Triangle Joinery', extra_waterStandard: 'Standard Water Outlet?', quickTestsHead: 'Quick Tests',
+      previewTitle: 'Drawing Preview', previewBtn: 'Refresh Preview', expandPreviewBtn: 'Expand Preview', undoPreviewBtn: 'Undo', redoPreviewBtn: 'Redo', historyGroupLabel: 'Drawing history', shrinkPreviewBtn: 'Collapse Preview', showMainDimsLabel: 'Show main dimensions', showAllDimsLabel: 'Show all dimensions',
+      pdfBtn: 'Download PDF', generateBtn: 'Download DXF', resetBtn: 'Reset Values', calcBtn: 'Pulumur Calculator', projectExportBtn: 'Download Project File', previewProjectExportBtn: 'Download Project File', projectImportBtn: 'Open Project File', checkDrawingBtn: 'Check Drawing', multiProductBtn: 'Multiple Product Placement', multiDimensionBtn: 'Multiple Dimension Editing', equalizeGapsBtn: 'Equalize Gaps', postSettingsBtn: 'Post Settings', bulkExtendBtn: 'Extend Multiple Profiles', bulkPostProfileBtn: 'Change Post Profiles in Bulk', convertProductBtn: 'Change Product Type', fitProductsBtn: 'Fit Product to Opening', multiDeleteBtn: 'Delete Multiple Products', deleteAllProductsBtn: 'Delete All Products',
+      calcTitle: 'Pulumur Calculator', calcSub: 'Fill any 3 of the 4 rows. The empty value will be calculated.',
+      calcGuide: '<strong>EN</strong><ul><li>Fill 3 of the 4 fields.</li><li>Leave one field empty.</li><li>Click Calculate.</li><li>Transfer the result to the main form.</li></ul>',
+      calcWaiting: 'Waiting for result.', calcReady: 'Result', calcPoz: 'position', calcOpenNote: 'Projection / rear H / front H values were copied from the main form. Click Calculate to calculate the angle.',
+      calcAngleLabel: 'System Angle (°)', calcOpeningLabel: 'Projection *(mm)', calcRearLabel: 'Rear H *(mm)', calcFrontLabel: 'Front H *(mm)',
+      calcComputeBtn: 'Calculate', calcTransferBtn: 'Transfer Result', calcClearBtn: 'Clear', helpTitle: 'Help / User Guide', helpCloseBtn: 'Close', emptyPreview: 'Fill the required dimensions for preview.',
+      placeholders: {
+        systemCount: 'Ex. 1', width: 'Ex. 4000 or 3000;100;2500;NO', opening: 'Ex. 6000 or 4500;5200', rearHeight: 'Ex. 3200 or 3200;3400', frontHeight: 'Ex. 2600',
+        rayCount: 'Ex. 2 or 2;3;2', postCount: 'Ex. 2 or blank: auto', calcAngle: 'Ex. 4.16 or blank', calcOpening: 'Ex. 4500;5200 or blank', calcRear: 'Ex. 3200;3400 or blank', calcFront: 'Ex. 2600 or blank'
+      }
+    }
+  };
+
+
+  const SLIDING_UI_TEXT = {
+    tr: {
+      title: 'Sürme Detayları', productSeries: 'Ürün Serisi', type: 'Tip', openingType: 'Açılım Tipi',
+      glassThickness: 'Cam Kalınlığı', glassColor: 'Cam Rengi', aSeries: 'A Serisi', kSeries: 'K Serisi',
+      withThreshold: 'Eşikli', withoutThreshold: 'Eşiksiz', sideOpening: 'Yana Açılım', centerOpening: 'Ortadan Açılım',
+      mm8: '8 mm', mm10: '10 mm', insulatedGlass: 'Yalıtımlı Cam', transparent: 'Şeffaf', grey: 'Gri',
+      bronze: 'Bronz', lowEGlass: 'Low-e Cam', other: 'Diğer', otherPlaceholder: 'Özel cam rengini yazın',
+      pozNo: 'Poz No', width: 'Genişlik *', height: 'Yükseklik *', panelCount: 'Panel Sayısı',
+      cancel: 'İptal', confirm: 'Tamam', close: 'Kapat',
+      otherRequired: 'Diğer seçildiğinde cam rengini yazmalısın.',
+      placed: (poz, left, right) => `${poz} sürme cam, Dikme ${left} ile Dikme ${right} arasına yerleştirildi.`
+    },
+    en: {
+      title: 'Sliding Details', productSeries: 'Product Series', type: 'Type', openingType: 'Opening Type',
+      glassThickness: 'Glass Thickness', glassColor: 'Glass Color', aSeries: 'A Series', kSeries: 'K Series',
+      withThreshold: 'With Threshold', withoutThreshold: 'Without Threshold', sideOpening: 'Side Opening', centerOpening: 'Center Opening',
+      mm8: '8 mm', mm10: '10 mm', insulatedGlass: 'Insulated Glass', transparent: 'Transparent', grey: 'Grey',
+      bronze: 'Bronze', lowEGlass: 'Low-e Glass', other: 'Other', otherPlaceholder: 'Enter custom glass color',
+      pozNo: 'Position No.', width: 'Width *', height: 'Height *', panelCount: 'Panel Count',
+      cancel: 'Cancel', confirm: 'Confirm', close: 'Close',
+      otherRequired: 'Enter a glass color when Other is selected.',
+      placed: (poz, left, right) => `${poz} sliding glass was placed between Post ${left} and Post ${right}.`
+    }
+  };
+
+
+  const GUILLOTINE_UI_TEXT = {
+    tr: {
+      title: 'Giyotin Detayları', productSeries: 'Ürün Serisi', type: 'Tip', mechanism: 'Mekanizma',
+      glassThickness: 'Cam Kalınlığı', glassColor: 'Cam Rengi', panelCount: 'Panel Tipi',
+      motorDirection: 'Motor Yönü', view: 'Görünüş', motorType: 'Motor Tipi', remoteControl: 'Kumanda',
+      aSeries: 'A Serisi', kSeries: 'K Serisi', standard: 'Standart', cleanable: 'Temizlenebilir',
+      upwardCollecting: 'Yukarı Toplanan', chain: 'Zincir', belt: 'Kayış', mm8: '8 mm',
+      insulatedGlass: 'Yalıtımlı Cam', transparent: 'Şeffaf', grey: 'Gri', bronze: 'Bronz',
+      lowEGlass: 'Low-e Cam', other: 'Diğer', otherPlaceholder: 'Özel cam rengini yazın',
+      panel11: '1+1', panel12: '1+2', right: 'Sağ', left: 'Sol', insideView: 'İç Görünüş',
+      outsideView: 'Dış Görünüş', somfyRts: 'Somfy RTS', somfyIo: 'Somfy IO', rising: 'Rising',
+      ch1: '1 Kanal', ch2: '2 Kanal', ch4: '4 Kanal', ch6: '6 Kanal', ch16: '16 Kanal', ch40: '40 Kanal',
+      pozNo: 'Poz No', width: 'Genişlik *', height: 'Yükseklik *', cancel: 'İptal', confirm: 'Tamam', close: 'Kapat',
+      otherRequired: 'Diğer seçildiğinde cam rengini yazmalısın.',
+      placed: (poz, leftPost, rightPost) => `${poz} giyotin cam, Dikme ${leftPost} ile Dikme ${rightPost} arasına yerleştirildi.`
+    },
+    en: {
+      title: 'Guillotine Details', productSeries: 'Product Series', type: 'Type', mechanism: 'Mechanism',
+      glassThickness: 'Glass Thickness', glassColor: 'Glass Color', panelCount: 'Panel Type',
+      motorDirection: 'Motor Direction', view: 'View', motorType: 'Motor Type', remoteControl: 'Remote Control',
+      aSeries: 'A Series', kSeries: 'K Series', standard: 'Standard', cleanable: 'Cleanable',
+      upwardCollecting: 'Upward Collecting', chain: 'Chain', belt: 'Belt', mm8: '8 mm',
+      insulatedGlass: 'Insulated Glass', transparent: 'Transparent', grey: 'Grey', bronze: 'Bronze',
+      lowEGlass: 'Low-e Glass', other: 'Other', otherPlaceholder: 'Enter custom glass color',
+      panel11: '1+1', panel12: '1+2', right: 'Right', left: 'Left', insideView: 'Inside View',
+      outsideView: 'Outside View', somfyRts: 'Somfy RTS', somfyIo: 'Somfy IO', rising: 'Rising',
+      ch1: '1 Channel', ch2: '2 Channels', ch4: '4 Channels', ch6: '6 Channels', ch16: '16 Channels', ch40: '40 Channels',
+      pozNo: 'Position No.', width: 'Width *', height: 'Height *', cancel: 'Cancel', confirm: 'Confirm', close: 'Close',
+      otherRequired: 'Enter a glass color when Other is selected.',
+      placed: (poz, leftPost, rightPost) => `${poz} guillotine was placed between Post ${leftPost} and Post ${rightPost}.`
+    }
+  };
+
+  function translateGuillotineDetailsOverlay(overlay = $('guillotineDetailsOverlay')) {
+    if (!overlay) return;
+    const txt = GUILLOTINE_UI_TEXT[currentLanguage] || GUILLOTINE_UI_TEXT.tr;
+    overlay.querySelectorAll('[data-guillotine-text]').forEach(el => {
+      const key = el.dataset.guillotineText;
+      if (Object.prototype.hasOwnProperty.call(txt, key) && typeof txt[key] === 'string') el.textContent = txt[key];
+    });
+    const otherInput = overlay.querySelector('#guillotineOtherColor');
+    if (otherInput) otherInput.placeholder = txt.otherPlaceholder;
+    const closeButton = overlay.querySelector('#guillotineDetailsClose');
+    if (closeButton) closeButton.setAttribute('aria-label', txt.close);
+    const form = overlay.querySelector('#guillotineDetailsForm');
+    if (form) form.setAttribute('aria-label', txt.title);
+  }
+
+  function translateSlidingDetailsOverlay(overlay = $('slidingDetailsOverlay')) {
+    if (!overlay) return;
+    const txt = SLIDING_UI_TEXT[currentLanguage] || SLIDING_UI_TEXT.tr;
+    overlay.querySelectorAll('[data-sliding-text]').forEach(el => {
+      const key = el.dataset.slidingText;
+      if (Object.prototype.hasOwnProperty.call(txt, key) && typeof txt[key] === 'string') el.textContent = txt[key];
+    });
+    const otherInput = overlay.querySelector('#slidingOtherColor');
+    if (otherInput) otherInput.placeholder = txt.otherPlaceholder;
+    const closeButton = overlay.querySelector('#slidingDetailsClose');
+    if (closeButton) closeButton.setAttribute('aria-label', txt.close);
+    const form = overlay.querySelector('#slidingDetailsForm');
+    if (form) form.setAttribute('aria-label', txt.title);
+  }
+
+  const QUICK_TEST_PRESETS = [
+    { name: 'Test 1', title: '1 adet · 2 ray · aynı ölçüler · otomatik dikme', values: { customer: 'TEST', project: 'TEST 1', systemCount: '1', width: '4000', opening: '4500', rearHeight: '3200', frontHeight: '2600' } },
+    { name: 'Test 2', title: '1 adet · Cam kaydı EVET · 8060 => 3 ray', values: { customer: 'TEST', project: 'TEST 2', systemCount: '1', width: '8060', opening: '4500', rearHeight: '3200', frontHeight: '2600', glassTrack: 'EVET' } },
+    { name: 'Test 3', title: '2 adet · aynı genişlik · 2;2 ray', values: { customer: 'TEST', project: 'TEST 3', systemCount: '2', width: '3000;3000', opening: '4500;4500', rearHeight: '3200;3200', frontHeight: '2600' } },
+    { name: 'Test 4', title: '2 adet · farklı genişlik/açılım · Cam kaydı EVET', values: { customer: 'TEST', project: 'TEST 4', systemCount: '2', width: '4000;4500', opening: '4500;5200', rearHeight: '3200;3400', frontHeight: '2600', glassTrack: 'EVET' } },
+    { name: 'Test 5', title: '2 adet · NO boşluk modu', values: { customer: 'TEST', project: 'TEST 5', systemCount: '2', width: '3000;100;3000;NO', opening: '4500;4500', rearHeight: '3200;3200', frontHeight: '2600' } },
+    { name: 'Test 6', title: '3 adet · aynı açılım · otomatik', values: { customer: 'TEST', project: 'TEST 6', systemCount: '3', width: '3200;3200;3200', opening: '4500;4500;4500', rearHeight: '3200;3200;3200', frontHeight: '2600' } },
+    { name: 'Test 7', title: '3 adet · farklı genişlik/açılım/arka yükseklik', values: { customer: 'TEST', project: 'TEST 7', systemCount: '3', width: '4000;4500;5000', opening: '4500;5200;6000', rearHeight: '3200;3400;3600', frontHeight: '2600' } },
+    { name: 'Test 8', title: '3 adet · dikme sayısı otomatikten 2 eksik', values: { customer: 'TEST', project: 'TEST 8', systemCount: '3', width: '4000;4500;5000', opening: '4500;5200;6000', rearHeight: '3200;3400;3600', frontHeight: '2600', postCount: '4' } },
+    { name: 'Test 9', title: '5 adet · aynı genişlik/açılım', values: { customer: 'TEST', project: 'TEST 9', systemCount: '5', width: '4000;4000;4000;4000;4000', opening: '4500;4500;4500;4500;4500', rearHeight: '3200;3200;3200;3200;3200', frontHeight: '2600' } },
+    { name: 'Test 10', title: '5 adet · farklı genişlik/açılım · 3 raylar', values: { customer: 'TEST', project: 'TEST 10', systemCount: '5', width: '6000;6200;6400;6600;6800', opening: '4500;4600;4700;4800;4900', rearHeight: '3200;3300;3400;3500;3600', frontHeight: '2600' } },
+    { name: 'Test 11', title: '7 adet · aynı genişlik · 2 raylar', values: { customer: 'TEST', project: 'TEST 11', systemCount: '7', width: '3000;3000;3000;3000;3000;3000;3000', opening: '4500;4500;4500;4500;4500;4500;4500', rearHeight: '3200;3200;3200;3200;3200;3200;3200', frontHeight: '2600' } },
+    { name: 'Test 12', title: '7 adet · farklı genişlik · karışık 2/3 ray', values: { customer: 'TEST', project: 'TEST 12', systemCount: '7', width: '4000;4200;4400;4600;4800;5000;5200', opening: '4500;4550;4600;4650;4700;4750;4800', rearHeight: '3200;3250;3300;3350;3400;3450;3500', frontHeight: '2600' } },
+    { name: 'Test 13', title: 'Parapet EVET · 600 mm', values: { customer: 'TEST', project: 'TEST 13', systemCount: '2', width: '4000;4500', opening: '4500;5200', rearHeight: '3200;3400', frontHeight: '2600', parapet: 'EVET', parapetHeight: '600' } },
+    { name: 'Test 14', title: 'Üçgen doğrama EVET', values: { customer: 'TEST', project: 'TEST 14', systemCount: '2', width: '4000;4500', opening: '4500;5200', rearHeight: '3200;3400', frontHeight: '2600', triangleJoinery: 'EVET' } },
+    { name: 'Test 15', title: 'Su çıkışı standart HAYIR', values: { customer: 'TEST', project: 'TEST 15', systemCount: '2', width: '4000;4500', opening: '4500;5200', rearHeight: '3200;3400', frontHeight: '2600', waterStandard: 'HAYIR' } },
+    { name: 'Test 16', title: 'Kombine test · parapet+cam+üçgen', values: { customer: 'TEST', project: 'TEST 16', systemCount: '3', width: '4000;4500;5000', opening: '4500;5200;6000', rearHeight: '3200;3400;3600', frontHeight: '2600', parapet: 'EVET', parapetHeight: '600', glassTrack: 'EVET', triangleJoinery: 'EVET', waterStandard: 'HAYIR' } }
   ];
 
-  if (hasBg) {
-    objects.push([
-      encode(`<< /Type /XObject /Subtype /Image /Width ${Number(options.backgroundWidth) || 1241} /Height ${Number(options.backgroundHeight) || 1754} /ColorSpace /DeviceRGB /BitsPerComponent 8 /Filter /DCTDecode /Length ${bgBytes.length} >>\nstream\n`),
-      bgBytes,
-      encode('\nendstream')
-    ]);
+  function today() {
+    return new Date().toISOString().slice(0, 10);
+  }
+  function normalizeYesNo(value) {
+    const upper = String(value ?? '').trim().toLocaleUpperCase('tr-TR');
+    if (['EVET', 'YES'].includes(upper)) return 'EVET';
+    if (['HAYIR', 'HAYR', 'NO'].includes(upper)) return 'HAYIR';
+    return String(value ?? '').trim();
   }
 
-  objects.push([encode(`<< /Length ${contentBytes.length} >>\nstream\n`), contentBytes, encode('\nendstream')]);
-
-  const chunks = [];
-  const offsets = [0];
-  let length = 0;
-  const push = (chunk) => {
-    chunks.push(chunk);
-    length += chunk.length;
-  };
-  const pushText = (value) => push(encode(value));
-
-  pushText('%PDF-1.4\n');
-  objects.forEach((objChunks, index) => {
-    offsets.push(length);
-    pushText(`${index + 1} 0 obj\n`);
-    objChunks.forEach(push);
-    pushText('\nendobj\n');
-  });
-
-  const xrefOffset = length;
-  pushText(`xref\n0 ${objects.length + 1}\n`);
-  pushText('0000000000 65535 f \n');
-  for (let i = 1; i <= objects.length; i += 1) {
-    pushText(`${String(offsets[i]).padStart(10, '0')} 00000 n \n`);
-  }
-  pushText(`trailer\n<< /Size ${objects.length + 1} /Root 1 0 R >>\nstartxref\n${xrefOffset}\n%%EOF`);
-
-  return new Blob(chunks, { type: 'application/pdf' });
-}
-
-function filenameFromData(data) {
-  const product = ascii(data.productName).replace(/[^A-Za-z0-9]+/g, '-').replace(/^-|-$/g, '');
-  const order = ascii(data.orderNo || 'request').replace(/[^A-Za-z0-9-]+/g, '-');
-  return `${order}-${product}.pdf`;
-}
-
-function downloadBlob(blob, filename) {
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url;
-  a.download = filename;
-  document.body.appendChild(a);
-  a.click();
-  a.remove();
-  setTimeout(() => URL.revokeObjectURL(url), 1000);
-}
-
-async function downloadPdf() {
-  if (!validateJanelaAwningRules({ showToast: true }) || !validateGlassFoldingRules({ showToast: true }) || !validateGlassGuillotineRules({ showToast: true })) return;
-  const data = getOrderData('en');
-  const blob = buildOrderPdf(data);
-  downloadBlob(blob, filenameFromData(data));
-  toast(t('pdfCreated'));
-}
-
-async function sharePdf() {
-  if (!validateJanelaAwningRules({ showToast: true }) || !validateGlassFoldingRules({ showToast: true }) || !validateGlassGuillotineRules({ showToast: true })) return;
-  const data = getOrderData('en');
-  const blob = buildOrderPdf(data);
-  const filename = filenameFromData(data);
-  const file = new File([blob], filename, { type: 'application/pdf' });
-
-  if (navigator.canShare && navigator.canShare({ files: [file] }) && navigator.share) {
-    try {
-      await navigator.share({
-        title: 'Product Request Form',
-        text: `${data.productName} - ${data.orderNo}`,
-        files: [file]
+  function setBooleanSelectTexts(lang) {
+    BOOLEAN_FIELD_IDS.forEach(id => {
+      const el = $(id);
+      if (!el) return;
+      Array.from(el.options).forEach(opt => {
+        const canonical = normalizeYesNo(opt.value || opt.textContent);
+        if (BOOLEAN_CANONICAL[canonical]) opt.textContent = BOOLEAN_CANONICAL[canonical][lang];
       });
-      toast(t('shareOpened'));
-      return;
-    } catch (error) {
-      const errorName = String(error?.name || '').toLowerCase();
-      const errorMessage = String(error?.message || '').toLowerCase();
-      const cancelled = errorName.includes('abort')
-        || errorName.includes('cancel')
-        || errorMessage.includes('abort')
-        || errorMessage.includes('cancel');
-      if (cancelled) {
-        toast(t('shareCancelled'));
+    });
+  }
+
+  function setText(id, value, html = false) {
+    const el = $(id);
+    if (!el) return;
+    if (html) el.innerHTML = value; else el.textContent = value;
+  }
+
+  function labelSpan(id) {
+    const el = $(id);
+    const label = el && el.closest('label');
+    return label ? label.querySelector('span') : null;
+  }
+
+  function translateUI(lang) {
+    currentLanguage = (lang === 'en') ? 'en' : 'tr';
+    const txt = UI_TEXT[currentLanguage];
+    document.documentElement.lang = currentLanguage;
+    setText('langLabel', txt.langLabel);
+    setText('helpBtn', txt.helpBtn);
+    setText('installBtn', txt.installBtn);
+    setText('appTitleMain', txt.appTitleMain);
+    setText('appTitleSub', txt.appTitleSub);
+    setText('labelProduct', txt.labelProduct);
+    setText('labelModule', txt.labelModule);
+    setText('labelEngine', txt.labelEngine);
+    setText('legendProject', txt.legendProject);
+    setText('legendSystem', txt.legendSystem, true);
+    setText('legendOptions', txt.legendOptions);
+    setText('legendExtra', txt.legendExtra);
+    setText('labelSystemCount', txt.labelSystemCount);
+    setText('labelWidth', txt.labelWidth, true);
+    setText('labelOpening', txt.labelOpening, true);
+    setText('labelRearHeight', txt.labelRearHeight, true);
+    setText('labelFrontHeight', txt.labelFrontHeight, true);
+    setText('labelRayCount', txt.labelRayCount, true);
+    setText('labelPostCount', txt.labelPostCount, true);
+    const projectMap = {customer:'project_customer', project:'project_project', version:'project_version', drawnBy:'project_drawnBy', date:'project_date'};
+    Object.entries(projectMap).forEach(([id,key]) => { const s=labelSpan(id); if (s) s.textContent = txt[key]; });
+    const optionMap = {parapet:'options_parapet', parapetHeight:'options_parapetHeight', glassTrack:'options_glassTrack', structureColor:'options_structureColor', fabric:'options_fabric', fabricProfiles:'options_fabricProfiles', motor:'options_motor', remote:'options_remote', led:'options_led', dimmer:'options_dimmer', extras:'options_extras', triangleJoinery:'extra_triangleJoinery'};
+    Object.entries(optionMap).forEach(([id,key]) => { const s=labelSpan(id); if (s) { if (key.endsWith('Height')) s.innerHTML = txt[key]; else s.textContent = txt[key]; } });
+    setText('labelWaterStandard', txt.extra_waterStandard);
+    setText('quickTestsHead', txt.quickTestsHead);
+    setText('previewTitle', txt.previewTitle);
+    setText('previewBtn', txt.previewBtn);
+    const expandText = previewPanel.classList.contains('is-expanded') ? txt.shrinkPreviewBtn : txt.expandPreviewBtn;
+    setText('expandPreviewBtn', expandText);
+    setText('undoPreviewLabel', txt.undoPreviewBtn);
+    setText('redoPreviewLabel', txt.redoPreviewBtn);
+    updateHistoryControls();
+    if ($('historyControlGroup')) $('historyControlGroup').setAttribute('aria-label', txt.historyGroupLabel);
+    setText('pdfBtn', txt.pdfBtn);
+    setText('generateBtn', txt.generateBtn);
+    setText('resetBtn', txt.resetBtn);
+    setText('calcBtn', txt.calcBtn);
+    setText('projectExportBtn', txt.projectExportBtn);
+    setText('previewProjectExportBtn', txt.previewProjectExportBtn);
+    setText('projectImportBtn', txt.projectImportBtn);
+    setText('checkDrawingBtn', txt.checkDrawingBtn);
+    setText('multiProductBtn', txt.multiProductBtn);
+    setText('multiDimensionBtn', txt.multiDimensionBtn);
+    setText('equalizeGapsBtn', txt.equalizeGapsBtn);
+    setText('postSettingsBtn', txt.postSettingsBtn);
+    setText('bulkExtendBtn', txt.bulkExtendBtn);
+    setText('bulkPostProfileBtn', txt.bulkPostProfileBtn);
+    setText('convertProductBtn', txt.convertProductBtn);
+    setText('fitProductsBtn', txt.fitProductsBtn);
+    setText('multiDeleteBtn', txt.multiDeleteBtn);
+    setText('deleteAllProductsBtn', txt.deleteAllProductsBtn);
+    if ($('bulkPostProfileBtn')) $('bulkPostProfileBtn').title = currentLanguage === 'en' ? 'This feature will be activated in a future revision.' : 'Bu özellik sonraki revizyonlardan birinde aktif edilecek.';
+    syncToolboxBooleanButtons();
+    syncParapetQuickInput();
+    setText('calcTitle', txt.calcTitle);
+    setText('calcSub', txt.calcSub);
+    setText('calcGuide', txt.calcGuide, true);
+    const calcMap = {calcAngle:'calcAngleLabel', calcOpening:'calcOpeningLabel', calcRear:'calcRearLabel', calcFront:'calcFrontLabel'};
+    Object.entries(calcMap).forEach(([id,key]) => { const s=labelSpan(id); if (s) s.textContent = txt[key]; });
+    setText('calcComputeBtn', txt.calcComputeBtn);
+    setText('calcTransferBtn', txt.calcTransferBtn);
+    setText('calcClearBtn', txt.calcClearBtn);
+    setText('helpTitle', txt.helpTitle);
+    setText('showMainDimsLabel', txt.showMainDimsLabel);
+    setText('showAllDimsLabel', txt.showAllDimsLabel);
+    const helpClose = document.querySelector('#helpDialog .modal-actions button');
+    if (helpClose) helpClose.textContent = txt.helpCloseBtn;
+    Object.entries(txt.placeholders).forEach(([id,val]) => { if ($(id)) $(id).placeholder = val; });
+    setBooleanSelectTexts(currentLanguage);
+    translateSlidingDetailsOverlay();
+    translateGuillotineDetailsOverlay();
+    try { localStorage.setItem('pulumur_lang', currentLanguage); } catch (e) {}
+  }
+
+  function setupPwaInstall() {
+    const btn = $('installBtn');
+    if (!btn) return;
+
+    const isStandalone = () =>
+      (window.matchMedia && window.matchMedia('(display-mode: standalone)').matches) ||
+      window.navigator.standalone === true;
+
+    const syncInstallButton = () => {
+      btn.hidden = isStandalone();
+    };
+
+    syncInstallButton();
+
+    window.addEventListener('beforeinstallprompt', evt => {
+      evt.preventDefault();
+      deferredInstallPrompt = evt;
+      syncInstallButton();
+    });
+
+    btn.addEventListener('click', async () => {
+      if (isStandalone()) {
+        btn.hidden = true;
         return;
       }
-      // Real share failure: fall through to download fallback.
+      if (deferredInstallPrompt) {
+        deferredInstallPrompt.prompt();
+        try { await deferredInstallPrompt.userChoice; } catch (e) {}
+        deferredInstallPrompt = null;
+        syncInstallButton();
+        return;
+      }
+      const isEn = currentLanguage === 'en';
+      window.alert(isEn
+        ? 'To use it like an app: open the browser menu and choose “Install app” or “Add to Home screen”.'
+        : 'Uygulama gibi kullanmak için tarayıcı menüsünden “Uygulamayı yükle” veya “Ana ekrana ekle” seçeneğini kullan.');
+    });
+
+    window.addEventListener('appinstalled', () => {
+      deferredInstallPrompt = null;
+      btn.hidden = true;
+    });
+
+    if (window.matchMedia) {
+      const mq = window.matchMedia('(display-mode: standalone)');
+      if (mq && typeof mq.addEventListener === 'function') mq.addEventListener('change', syncInstallButton);
+      else if (mq && typeof mq.addListener === 'function') mq.addListener(syncInstallButton);
+    }
+
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => navigator.serviceWorker.register('./sw.js?v=8.9.33').catch(() => {}), { once: true });
     }
   }
 
-  downloadBlob(blob, filename);
-  toast(t('shareUnsupported'));
-}
+  function fillInitial() {
+    const d = { ...EXCEL_DEFAULT_INPUT, date: today() };
+    ids.forEach(id => {
+      if ($(id) && d[id] !== undefined) $(id).value = d[id];
+    });
+    if ($('date')) $('date').value = d.date;
+    updateRemoteOptions(false);
+    ['rayCount', 'postCount'].forEach(id => {
+      if ($(id)) $(id).dataset.userEdited = 'false';
+    });
+    manualPostPlacementMode = 'standard';
+    glassTrackProfileState = { mode: 'standard', en: 100, boy: 100, et: 2 };
+    glassSupportProfileState = { left: null, right: null };
+    customFrontPostCenters = null;
+    customRayPositions = null;
+    frontPostExtensions = [];
+    parapetSegments = { front: [], side: {} };
+    sideFeatureState = { glassTrack: { left: false, right: false, middle: {} }, triangle: { left: false, right: false, middle: {} }, middleEnabled: {} };
+    glassTrackLengthOffsets = { left: 0, right: 0, middle: {} };
+    triangleDivisionState = { left: null, right: null, middle: {} };
+    backWallState = { left: { xOffset: 0, depth: 600, height: 0 }, right: { xOffset: 0, depth: 600, height: 0 }, middle: {} };
+    backWallSegments = { side: {} };
+    previewDimensionOffsets = {};
+    customSideSupportCenters = {};
+    customSidePosts = {};
+    frontPostProfiles = [];
+    slidingPlacements = [];
+    sideSlidingPlacements = [];
+    pendingSlidingPlacementMeta = null;
+    guillotinePlacements = [];
+    sideGuillotinePlacements = [];
+    pendingGuillotinePlacementMeta = null;
+    toolboxSelectionMode = null;
+    toolboxSelectionItems = new Map();
+    currentProjectRecord = { projectId: null, projectCode: null, revisionNo: 1 };
+    applyAutoRayPost(true);
+  }
 
-function registerEvents() {
-  Object.values(fields).forEach((el) => {
-    if (el === fields.notes) {
-      el.maxLength = NOTES_MAX_CHARS + NOTES_MAX_LINES - 1;
-      el.rows = NOTES_MAX_LINES;
-      el.addEventListener('input', enforceNotesLimit);
-      el.addEventListener('keydown', handleNotesKeydown);
+  function applyAutoRayPost(force = false) {
+    const br = window.PulumurExcelBridge;
+    if (!br || typeof br.autoRayPostCount !== 'function') return;
+    const raw = collectForm();
+    const auto = br.autoRayPostCount(raw.systemCount, raw.width, raw.frontHeight, raw.glassTrack);
+    const rayEl = $('rayCount');
+    const postEl = $('postCount');
+    const rayWasManual = rayEl && rayEl.dataset.userEdited === 'true';
+    const postWasManual = postEl && postEl.dataset.userEdited === 'true';
+
+    if (rayEl && (force || !rayWasManual || String(rayEl.value || '').trim() === '')) {
+      rayEl.value = auto.rayText || '';
+      rayEl.dataset.userEdited = 'false';
     }
-    el.addEventListener('input', onAnyInput);
-    el.addEventListener('change', autoAdvanceOnChange);
-    el.addEventListener('keydown', autoAdvanceOnEnter);
-  });
-  $('#productFamilySelect').addEventListener('change', onProductFamilyChange);
-  $('#productGroupSelect').addEventListener('change', onProductGroupChange);
-  $('#productSubGroupSelect').addEventListener('change', onProductSubGroupChange);
-  $('#saveProfileBtn').addEventListener('click', () => { saveProfile(); onAnyInput(); });
-  $('#clearProfileBtn').addEventListener('click', clearProfile);
-  $('#downloadPdfBtn').addEventListener('click', downloadPdf);
-  $('#sharePdfBtn').addEventListener('click', () => sharePdf().catch(() => toast(t('shareUnsupported'))));
-  refreshCustomSelects();
-  $('#resetOrderTopBtn').addEventListener('click', resetOrder);
-  $$('.language-tabs button').forEach((button) => {
-    button.addEventListener('click', () => setLanguage(button.dataset.lang));
-  });
-}
 
-let deferredInstallPrompt;
-window.addEventListener('beforeinstallprompt', (event) => {
-  event.preventDefault();
-  deferredInstallPrompt = event;
-  $('#installBtn').classList.remove('hidden');
-});
-
-$('#installBtn').addEventListener('click', async () => {
-  if (!deferredInstallPrompt) return;
-  deferredInstallPrompt.prompt();
-  await deferredInstallPrompt.userChoice;
-  deferredInstallPrompt = null;
-  $('#installBtn').classList.add('hidden');
-});
-
-async function initPwa() {
-  if ('serviceWorker' in navigator && location.protocol.startsWith('http')) {
-    try { await navigator.serviceWorker.register('sw.js?v=c147-stable-view-modes'); } catch {}
-  }
-}
-
-
-Object.assign(I18N.en, {
-  'Type': 'Type',
-  'Standard': 'Standard',
-  'Top-Hung': 'Top-Hung',
-  'Glass Thickness': 'Glass Thickness',
-  'Insulated Glass': 'Insulated Glass',
-  'Height': 'Height',
-  'Panel Count': 'Panel Count',
-  'Leaf Stacking Direction (Inside View)': 'Leaf Stacking Direction (Inside View)',
-  'With Threshold': 'With Threshold',
-  'Without Threshold': 'Without Threshold',
-  'Opening Type': 'Opening Type',
-  'Side Opening': 'Side Opening',
-  'Center Opening': 'Center Opening'
-});
-Object.assign(I18N.tr, {
-  'Type': 'Tür',
-  'Standard': 'Standart',
-  'Top-Hung': 'Üstten Taşımalı',
-  'Glass Thickness': 'Cam Kalınlığı',
-  'Insulated Glass': 'Isıcam',
-  'Height': 'Yükseklik',
-  'Panel Count': 'Panel Sayısı',
-  'Leaf Stacking Direction (Inside View)': 'Kanat Toplanma Yönü (İç Bakış)',
-  'With Threshold': 'Eşikli',
-  'Without Threshold': 'Eşiksiz',
-  'Opening Type': 'Açılış Türü',
-  'Side Opening': 'Kenardan',
-  'Center Opening': 'Ortadan'
-});
-Object.assign(I18N.de, {
-  'Type': 'Typ',
-  'Standard': 'Standard',
-  'Top-Hung': 'Oben getragen',
-  'Glass Thickness': 'Glasdicke',
-  'Insulated Glass': 'Isolierglas',
-  'Height': 'Höhe',
-  'Panel Count': 'Paneelanzahl',
-  'Leaf Stacking Direction (Inside View)': 'Flügel-Parkrichtung (Innenansicht)',
-  'With Threshold': 'Mit Schwelle',
-  'Without Threshold': 'Ohne Schwelle',
-  'Opening Type': 'Öffnungsart',
-  'Side Opening': 'Seitlich',
-  'Center Opening': 'Mittig'
-});
-Object.assign(I18N.fr, {
-  'Type': 'Type',
-  'Standard': 'Standard',
-  'Top-Hung': 'Suspendu en partie haute',
-  'Glass Thickness': 'Épaisseur du verre',
-  'Insulated Glass': 'Double vitrage',
-  'Height': 'Hauteur',
-  'Panel Count': 'Nombre de panneaux',
-  'Leaf Stacking Direction (Inside View)': 'Sens de refoulement des vantaux (vue intérieure)',
-  'With Threshold': 'Avec seuil',
-  'Without Threshold': 'Sans seuil',
-  'Opening Type': 'Type d’ouverture',
-  'Side Opening': 'Latérale',
-  'Center Opening': 'Centrale'
-});
-Object.assign(I18N.he, {
-  'Type': 'Type',
-  'Standard': 'Standard',
-  'Top-Hung': 'Top-Hung',
-  'Glass Thickness': 'Glass Thickness',
-  'Insulated Glass': 'Insulated Glass',
-  'Height': 'Height',
-  'Panel Count': 'Panel Count',
-  'Leaf Stacking Direction (Inside View)': 'Leaf Stacking Direction (Inside View)',
-  'With Threshold': 'With Threshold',
-  'Without Threshold': 'Without Threshold',
-  'Opening Type': 'Opening Type',
-  'Side Opening': 'Side Opening',
-  'Center Opening': 'Center Opening'
-});
-
-
-Object.assign(I18N.en, {
-  'Cleanable': 'Cleanable',
-  'Upward Collecting': 'Upward Collecting',
-  'Mechanism': 'Mechanism',
-  'Chain': 'Chain',
-  'Belt': 'Belt',
-  'Motor Direction (Inside View)': 'Motor Direction (Inside View)',
-  'Motor Type': 'Motor Type'
-});
-Object.assign(I18N.tr, {
-  'Cleanable': 'Silinebilir',
-  'Upward Collecting': 'Yukarı Toplanır',
-  'Mechanism': 'Mekanizma',
-  'Chain': 'Zincirli',
-  'Belt': 'Kayışlı',
-  'Motor Direction (Inside View)': 'Motor Yönü (İç Bakış)',
-  'Motor Type': 'Motor Türü',
-  'No': 'Yok'
-});
-Object.assign(I18N.de, {
-  'Cleanable': 'Reinigbar',
-  'Upward Collecting': 'Nach oben sammelnd',
-  'Mechanism': 'Mechanismus',
-  'Chain': 'Kette',
-  'Belt': 'Riemen',
-  'Motor Direction (Inside View)': 'Motorrichtung (Innenansicht)',
-  'Motor Type': 'Motortyp'
-});
-Object.assign(I18N.fr, {
-  'Cleanable': 'Nettoyable',
-  'Upward Collecting': 'Repliable vers le haut',
-  'Mechanism': 'Mécanisme',
-  'Chain': 'Chaîne',
-  'Belt': 'Courroie',
-  'Motor Direction (Inside View)': 'Sens moteur (vue intérieure)',
-  'Motor Type': 'Type de moteur'
-});
-Object.assign(I18N.he, {
-  'Cleanable': 'Cleanable',
-  'Upward Collecting': 'Upward Collecting',
-  'Mechanism': 'Mechanism',
-  'Chain': 'Chain',
-  'Belt': 'Belt',
-  'Motor Direction (Inside View)': 'Motor Direction (Inside View)',
-  'Motor Type': 'Motor Type'
-});
-
-
-// C108: final translation pass for current form labels and option texts.
-Object.assign(I18N.en, {
-  'Glass Systems': 'Glass Systems',
-  'Folding': 'Folding',
-  'Sliding': 'Sliding',
-  'Guillotine': 'Guillotine',
-  'Fixed Ceiling Glass': 'Fixed Ceiling Glass',
-  'A Series – Premium': 'A Series – Premium',
-  'K Series – Smart': 'K Series – Smart',
-  'Motorlu': 'Motorized',
-  'Manuel': 'Manual',
-  'Motor & Reducer': 'Motor & Reducer',
-  'Lighting & Dimmer & Remote': 'Lighting & Dimmer & Remote',
-  'Heater & Sound & Packing': 'Heater, Sound, Packing & Loading',
-  'Heater 2000W 220V Quantity': 'Heater 2000W 220V Quantity',
-  'Heater 3000W 220V Quantity': 'Heater 3000W 220V Quantity',
-  'Sound System Quantity': 'Sound System Quantity',
-  'Packaging Type': 'Packaging Type',
-  'Loading': 'Loading',
-  'Truck': 'Truck',
-  'Container': 'Container'
-});
-Object.assign(I18N.tr, {
-  'Glass Systems': 'Cam Sistemleri',
-  'Folding': 'Katlanır',
-  'Sliding': 'Sürme',
-  'Guillotine': 'Giyotin',
-  'Fixed Ceiling Glass': 'Sabit Cam Tavan',
-  'A Series – Premium': 'A Series – Premium',
-  'K Series – Smart': 'K Series – Smart',
-  'Motorlu': 'Motorlu',
-  'Manuel': 'Manuel',
-  'Motor & Reducer': 'Motor & Redüktör',
-  'Lighting & Dimmer & Remote': 'Aydınlatma & Dimmer & Kumanda',
-  'Heater & Sound & Packing': 'Isıtıcı, Ses, Ambalaj ve Yükleme',
-  'Heater 2000W 220V Quantity': 'Isıtıcı 2000W 220V Adedi',
-  'Heater 3000W 220V Quantity': 'Isıtıcı 3000W 220V Adedi',
-  'Sound System Quantity': 'Ses Sistemi Adedi',
-  'Packaging Type': 'Ambalaj Tipi',
-  'Loading': 'Yükleme',
-  'Truck': 'Tır',
-  'Container': 'Konteyner',
-  'Top-Hung': 'Üstten Taşımalı',
-  'Glass Thickness': 'Cam Kalınlığı',
-  'Insulated Glass': 'Isıcam',
-  'Leaf Stacking Direction (Inside View)': 'Kanat Toplanma Yönü (İç Bakış)',
-  'With Threshold': 'Eşikli',
-  'Without Threshold': 'Eşiksiz',
-  'Opening Type': 'Açılış Türü',
-  'Side Opening': 'Kenardan',
-  'Center Opening': 'Ortadan',
-  'Cleanable': 'Silinebilir',
-  'Upward Collecting': 'Yukarı Toplanır',
-  'Mechanism': 'Mekanizma',
-  'Chain': 'Zincirli',
-  'Belt': 'Kayışlı',
-  'Motor Direction (Inside View)': 'Motor Yönü (İç Bakış)',
-  'Motor Type': 'Motor Türü'
-});
-Object.assign(I18N.de, {
-  'Glass Systems': 'Glassysteme',
-  'Folding': 'Faltsysteme',
-  'Sliding': 'Schiebesysteme',
-  'Guillotine': 'Vertikalschiebefenster',
-  'Fixed Ceiling Glass': 'Festes Glasdach',
-  'A Series – Premium': 'A Series – Premium',
-  'K Series – Smart': 'K Series – Smart',
-  'Motorlu': 'Motorisiert',
-  'Manuel': 'Manuell',
-  'Motor & Reducer': 'Motor & Getriebe',
-  'Lighting & Dimmer & Remote': 'Beleuchtung & Dimmer & Fernbedienung',
-  'Heater & Sound & Packing': 'Heizung, Sound, Verpackung und Verladung',
-  'Loading': 'Verladung',
-  'Truck': 'Lkw',
-  'Container': 'Container'
-});
-Object.assign(I18N.fr, {
-  'Glass Systems': 'Systèmes vitrés',
-  'Folding': 'Pliant',
-  'Sliding': 'Coulissant',
-  'Guillotine': 'Guillotine',
-  'Fixed Ceiling Glass': 'Plafond vitré fixe',
-  'A Series – Premium': 'A Series – Premium',
-  'K Series – Smart': 'K Series – Smart',
-  'Motorlu': 'Motorisé',
-  'Manuel': 'Manuel',
-  'Motor & Reducer': 'Moteur & réducteur',
-  'Lighting & Dimmer & Remote': 'Éclairage & variateur & télécommande',
-  'Heater & Sound & Packing': 'Chauffage, son, emballage et chargement',
-  'Loading': 'Chargement',
-  'Truck': 'Camion',
-  'Container': 'Conteneur'
-});
-Object.assign(I18N.he, {
-  'Glass Systems': 'Glass Systems',
-  'Folding': 'Folding',
-  'Sliding': 'Sliding',
-  'Guillotine': 'Guillotine',
-  'Fixed Ceiling Glass': 'Fixed Ceiling Glass',
-  'A Series – Premium': 'A Series – Premium',
-  'K Series – Smart': 'K Series – Smart',
-  'Motorlu': 'Motorized',
-  'Manuel': 'Manual',
-  'Motor & Reducer': 'Motor & Reducer',
-  'Lighting & Dimmer & Remote': 'Lighting & Dimmer & Remote',
-  'Heater & Sound & Packing': 'Heater, Sound, Packing & Loading',
-  'Loading': 'Loading',
-  'Truck': 'Truck',
-  'Container': 'Container'
-});
-
-function init() {
-  loadLanguage();
-  applyLanguage();
-  fields.orderDate.value = todayISO();
-  fields.orderNo.value = '';
-  loadProfile();
-  renderProducts();
-  renderForm();
-  loadOrderDraft();
-  registerEvents();
-  initColorChartModal();
-  updatePreview();
-  initPwa();
-}
-
-init();
-
-
-Object.assign(I18N.en, {
-  'Cable Outlet': 'Cable Outlet',
-  'Top': 'Top',
-  'Rear': 'Rear',
-  'Rising': 'Rising'
-});
-Object.assign(I18N.tr, {
-  'Cable Outlet': 'Kablo Çıkışı',
-  'Top': 'Üstten',
-  'Rear': 'Arkadan',
-  'Rising': 'Rising'
-});
-Object.assign(I18N.de, {
-  'Cable Outlet': 'Kabelausgang',
-  'Top': 'Oben',
-  'Rear': 'Hinten',
-  'Rising': 'Rising'
-});
-Object.assign(I18N.fr, {
-  'Cable Outlet': 'Sortie de câble',
-  'Top': 'Haut',
-  'Rear': 'Arrière',
-  'Rising': 'Rising'
-});
-Object.assign(I18N.he, {
-  'Cable Outlet': 'Cable Outlet',
-  'Top': 'Top',
-  'Rear': 'Rear',
-  'Rising': 'Rising'
-});
-
-
-
-
-
-
-Object.assign(I18N.en, { 'Lighting & Dimmer & Remote': 'Lighting & Dimmer & Remote' });
-Object.assign(I18N.tr, { 'Lighting & Dimmer & Remote': 'Aydınlatma & Dimmer & Kumanda' });
-Object.assign(I18N.de, { 'Lighting & Dimmer & Remote': 'Beleuchtung & Dimmer & Fernbedienung' });
-Object.assign(I18N.fr, { 'Lighting & Dimmer & Remote': 'Éclairage & Variateur & Télécommande' });
-Object.assign(I18N.he, { 'Lighting & Dimmer & Remote': 'Lighting & Dimmer & Remote' });
-
-
-// C109: enforce final Turkish wording after all translation patches.
-Object.assign(I18N.tr, {
-  'Projection': 'Açılım',
-  'Projection (mm)': 'Açılım',
-  'Projection 1 (mm)': 'Açılım 1',
-  'Projection 2 (mm)': 'Açılım 2',
-  'Remote Control': 'Kumanda',
-  'Light Dimmer (For Linear LED)': 'Dimmer (Linear LED için)',
-  'Light Dimmer (For Spot LED)': 'Dimmer (Spot LED için)',
-  'Dimmer Heater': 'Dimmer (Isıtıcı için)',
-  'Side Beam': 'Cam Kayıt Profili',
-  'Structure': 'Sistem',
-  'System Color': 'Sistem',
-  'Panel Color': 'Panel',
-  'Colours': 'Renkler',
-  'Color Details': 'Renk Bilgileri',
-  'Motor & Remote Control': 'Motor ve Kumanda',
-  'Lighting & Dimmer': 'Aydınlatma & Dimmer',
-  'Lighting & Dimmers': 'Aydınlatma & Dimmer',
-  'Lighting & Dimmer & Remote': 'Aydınlatma & Dimmer & Kumanda',
-  'Heater & Sound & Packing': 'Isıtıcı, Ses, Ambalaj ve Yükleme',
-  'Heater & Sound & Packing & Loading': 'Isıtıcı, Ses, Ambalaj ve Yükleme',
-  'System Quantity': 'Sistem Adedi',
-  'Product Quantity': 'Ürün Adedi',
-  'Quantity': 'Adet'
-});
-if (state.language === 'tr') {
-  applyLanguage();
-  renderProducts();
-  renderForm();
-  updatePreview();
-}
-
-
-// C110: hint translations, PDF/table layout refresh.
-Object.assign(I18N.en, {
-  'Max. 4500 mm | 1 Sistem': 'Max. 4500 mm | 1 System',
-  '2010 mm - 9010 mm | 200 mm | 1 Sistem': '2010 mm - 9010 mm | 200 mm | 1 System',
-  'Max. 4050 mm | 1 Sistem': 'Max. 4050 mm | 1 System',
-  '2038 mm - 7060 mm | 216 mm | 1 Sistem': '2038 mm - 7060 mm | 216 mm | 1 System',
-  '2108 mm - 6860 mm | 216 mm | 1 Sistem': '2108 mm - 6860 mm | 216 mm | 1 System',
-  '2012 mm - 5036 mm | 216 mm | 1 Sistem': '2012 mm - 5036 mm | 216 mm | 1 System',
-  '2288 mm - 5960 mm | 216 mm | 1 Sistem': '2288 mm - 5960 mm | 216 mm | 1 System',
-  'Max. 8000 mm | 1 Sistem (3 Rafters)': 'Max. 8000 mm | 1 System (3 Rafters)',
-  'Max. 13500 mm | 1 Sistem (4 Rafters)': 'Max. 13500 mm | 1 System (4 Rafters)',
-  'Max. 7000 mm | 1 Sistem': 'Max. 7000 mm | 1 System',
-  'Max. 10000 mm | 1 Sistem': 'Max. 10000 mm | 1 System',
-  'Max. 8 Panel | Max. Panel Genişlik 800 mm': 'Max. 8 Panels | Max. Panel Width 800 mm',
-  'Max. 7000 mm | Açılım < Genişlik': 'Max. 7000 mm | Projection < Width',
-  'Max. 5000 mm | Açılım < Genişlik': 'Max. 5000 mm | Projection < Width',
-  'Max. 7000 mm | Açılım 1 ve Açılım 2 genişlikten küçük olmalı': 'Max. 7000 mm | Projection 1 and Projection 2 must be smaller than width',
-  'Açılım maks. 6000 mm': 'Projection max. 6000 mm',
-  'Açılım maks. 3000 mm': 'Projection max. 3000 mm',
-  'Cam kalınlığına göre Max. değer': 'Max. depends on glass thickness',
-  'Seçime göre Max. değer': 'Max. depends on selection'
-});
-Object.assign(I18N.tr, {
-  'Max. 4500 mm | 1 Sistem': 'Max. 4500 mm | 1 Sistem',
-  '2010 mm - 9010 mm | 200 mm | 1 Sistem': '2010 mm - 9010 mm | 200 mm | 1 Sistem',
-  'Max. 4050 mm | 1 Sistem': 'Max. 4050 mm | 1 Sistem',
-  '2038 mm - 7060 mm | 216 mm | 1 Sistem': '2038 mm - 7060 mm | 216 mm | 1 Sistem',
-  '2108 mm - 6860 mm | 216 mm | 1 Sistem': '2108 mm - 6860 mm | 216 mm | 1 Sistem',
-  '2012 mm - 5036 mm | 216 mm | 1 Sistem': '2012 mm - 5036 mm | 216 mm | 1 Sistem',
-  '2288 mm - 5960 mm | 216 mm | 1 Sistem': '2288 mm - 5960 mm | 216 mm | 1 Sistem',
-  'Max. 8000 mm | 1 Sistem (3 Rafters)': 'Max. 8000 mm | 1 Sistem (3 Ray)',
-  'Max. 13500 mm | 1 Sistem (4 Rafters)': 'Max. 13500 mm | 1 Sistem (4 Ray)',
-  'Max. 7000 mm | 1 Sistem': 'Max. 7000 mm | 1 Sistem',
-  'Max. 10000 mm | 1 Sistem': 'Max. 10000 mm | 1 Sistem',
-  'Max. 8 Panel | Max. Panel Genişlik 800 mm': 'Max. 8 Panel | Max. Panel Genişlik 800 mm',
-  'Max. 7000 mm | Açılım < Genişlik': 'Max. 7000 mm | Açılım < Genişlik',
-  'Max. 5000 mm | Açılım < Genişlik': 'Max. 5000 mm | Açılım < Genişlik',
-  'Max. 7000 mm | Açılım 1 ve Açılım 2 genişlikten küçük olmalı': 'Max. 7000 mm | Açılım 1 ve Açılım 2 genişlikten küçük olmalı',
-  'Açılım maks. 6000 mm': 'Açılım maks. 6000 mm',
-  'Açılım maks. 3000 mm': 'Açılım maks. 3000 mm',
-  'Cam kalınlığına göre Max. değer': 'Cam kalınlığına göre Max. değer',
-  'Seçime göre Max. değer': 'Seçime göre Max. değer'
-});
-Object.assign(I18N.de, {
-  'Max. 4500 mm | 1 Sistem': 'Max. 4500 mm | 1 System',
-  '2010 mm - 9010 mm | 200 mm | 1 Sistem': '2010 mm - 9010 mm | 200 mm | 1 System',
-  'Max. 4050 mm | 1 Sistem': 'Max. 4050 mm | 1 System',
-  '2038 mm - 7060 mm | 216 mm | 1 Sistem': '2038 mm - 7060 mm | 216 mm | 1 System',
-  '2108 mm - 6860 mm | 216 mm | 1 Sistem': '2108 mm - 6860 mm | 216 mm | 1 System',
-  '2012 mm - 5036 mm | 216 mm | 1 Sistem': '2012 mm - 5036 mm | 216 mm | 1 System',
-  '2288 mm - 5960 mm | 216 mm | 1 Sistem': '2288 mm - 5960 mm | 216 mm | 1 System',
-  'Max. 8000 mm | 1 Sistem (3 Rafters)': 'Max. 8000 mm | 1 System (3 Schienen)',
-  'Max. 13500 mm | 1 Sistem (4 Rafters)': 'Max. 13500 mm | 1 System (4 Schienen)',
-  'Max. 7000 mm | 1 Sistem': 'Max. 7000 mm | 1 System',
-  'Max. 10000 mm | 1 Sistem': 'Max. 10000 mm | 1 System',
-  'Max. 8 Panel | Max. Panel Genişlik 800 mm': 'Max. 8 Paneele | Max. Panelbreite 800 mm',
-  'Max. 7000 mm | Açılım < Genişlik': 'Max. 7000 mm | Ausladung < Breite',
-  'Max. 5000 mm | Açılım < Genişlik': 'Max. 5000 mm | Ausladung < Breite',
-  'Max. 7000 mm | Açılım 1 ve Açılım 2 genişlikten küçük olmalı': 'Max. 7000 mm | Ausladung 1 und 2 muessen kleiner als die Breite sein',
-  'Açılım maks. 6000 mm': 'Ausladung max. 6000 mm',
-  'Açılım maks. 3000 mm': 'Ausladung max. 3000 mm',
-  'Cam kalınlığına göre Max. değer': 'Max. abhaengig von Glasstaerke',
-  'Seçime göre Max. değer': 'Max. abhaengig von Auswahl'
-});
-Object.assign(I18N.fr, {
-  'Max. 4500 mm | 1 Sistem': 'Max. 4500 mm | 1 système',
-  '2010 mm - 9010 mm | 200 mm | 1 Sistem': '2010 mm - 9010 mm | 200 mm | 1 système',
-  'Max. 4050 mm | 1 Sistem': 'Max. 4050 mm | 1 système',
-  '2038 mm - 7060 mm | 216 mm | 1 Sistem': '2038 mm - 7060 mm | 216 mm | 1 système',
-  '2108 mm - 6860 mm | 216 mm | 1 Sistem': '2108 mm - 6860 mm | 216 mm | 1 système',
-  '2012 mm - 5036 mm | 216 mm | 1 Sistem': '2012 mm - 5036 mm | 216 mm | 1 système',
-  '2288 mm - 5960 mm | 216 mm | 1 Sistem': '2288 mm - 5960 mm | 216 mm | 1 système',
-  'Max. 8000 mm | 1 Sistem (3 Rafters)': 'Max. 8000 mm | 1 système (3 rails)',
-  'Max. 13500 mm | 1 Sistem (4 Rafters)': 'Max. 13500 mm | 1 système (4 rails)',
-  'Max. 7000 mm | 1 Sistem': 'Max. 7000 mm | 1 système',
-  'Max. 10000 mm | 1 Sistem': 'Max. 10000 mm | 1 système',
-  'Max. 8 Panel | Max. Panel Genişlik 800 mm': 'Max. 8 panneaux | largeur panneau max. 800 mm',
-  'Max. 7000 mm | Açılım < Genişlik': 'Max. 7000 mm | projection < largeur',
-  'Max. 5000 mm | Açılım < Genişlik': 'Max. 5000 mm | projection < largeur',
-  'Max. 7000 mm | Açılım 1 ve Açılım 2 genişlikten küçük olmalı': 'Max. 7000 mm | projection 1 et 2 doivent être inférieures à la largeur',
-  'Açılım maks. 6000 mm': 'Projection max. 6000 mm',
-  'Açılım maks. 3000 mm': 'Projection max. 3000 mm',
-  'Cam kalınlığına göre Max. değer': 'Max. selon épaisseur du verre',
-  'Seçime göre Max. değer': 'Max. selon sélection'
-});
-Object.assign(I18N.he, {
-  'Max. 4500 mm | 1 Sistem': 'מקס. 4500 mm | מערכת 1',
-  '2010 mm - 9010 mm | 200 mm | 1 Sistem': '2010 mm - 9010 mm | 200 mm | מערכת 1',
-  'Max. 4050 mm | 1 Sistem': 'מקס. 4050 mm | מערכת 1',
-  '2038 mm - 7060 mm | 216 mm | 1 Sistem': '2038 mm - 7060 mm | 216 mm | מערכת 1',
-  '2108 mm - 6860 mm | 216 mm | 1 Sistem': '2108 mm - 6860 mm | 216 mm | מערכת 1',
-  '2012 mm - 5036 mm | 216 mm | 1 Sistem': '2012 mm - 5036 mm | 216 mm | מערכת 1',
-  '2288 mm - 5960 mm | 216 mm | 1 Sistem': '2288 mm - 5960 mm | 216 mm | מערכת 1',
-  'Max. 8000 mm | 1 Sistem (3 Rafters)': 'מקס. 8000 mm | מערכת 1 (3 מסילות)',
-  'Max. 13500 mm | 1 Sistem (4 Rafters)': 'מקס. 13500 mm | מערכת 1 (4 מסילות)',
-  'Max. 7000 mm | 1 Sistem': 'מקס. 7000 mm | מערכת 1',
-  'Max. 10000 mm | 1 Sistem': 'מקס. 10000 mm | מערכת 1',
-  'Max. 8 Panel | Max. Panel Genişlik 800 mm': 'מקס. 8 פנלים | רוחב פנל מקס. 800 mm',
-  'Max. 7000 mm | Açılım < Genişlik': 'מקס. 7000 mm | פתיחה < רוחב',
-  'Max. 5000 mm | Açılım < Genişlik': 'מקס. 5000 mm | פתיחה < רוחב',
-  'Max. 7000 mm | Açılım 1 ve Açılım 2 genişlikten küçük olmalı': 'מקס. 7000 mm | פתיחה 1 ו-2 חייבות להיות קטנות מהרוחב',
-  'Açılım maks. 6000 mm': 'פתיחה מקס. 6000 mm',
-  'Açılım maks. 3000 mm': 'פתיחה מקס. 3000 mm',
-  'Cam kalınlığına göre Max. değer': 'מקס. לפי עובי זכוכית',
-  'Seçime göre Max. değer': 'מקס. לפי בחירה'
-});
-try {
-  applyLanguage();
-  renderProducts();
-  renderForm();
-  updatePreview();
-} catch {}
-
-// C115: Glass color/type dynamic visibility, product-specific note reset, and PDF/preview value cleanup.
-(function PRF_C115_runtimeUpdates() {
-  const GLASS_PRODUCT_IDS = new Set([
-    'glass_folding_a_series_premium',
-    'glass_folding_k_series_smart',
-    'glass_sliding_a_series_premium',
-    'glass_sliding_k_series_smart',
-    'glass_guillotine_a_series_premium',
-    'glass_guillotine_k_series_smart'
-  ]);
-  const OTHER_FIELD_IDS = new Set(['glassColorOther', 'glassType2GlassOther', 'glassType2PanelOther']);
-  const lastProductKey = 'prf_c115_last_product_id';
-
-  function c115SuffixesForField(baseId) {
-    return $$(`[data-field-id^="${baseId}"]`)
-      .map((el) => String(el.dataset.fieldId || '').replace(baseId, ''))
-      .filter((suffix, index, arr) => arr.indexOf(suffix) === index);
-  }
-
-  function c115SetOptionVisibility(fieldId, option, visible) {
-    $$(`input[type="radio"][name="dyn_${fieldId}"]`).forEach((radio) => {
-      if (radio.value !== option) return;
-      radio.disabled = !visible;
-      const label = radio.closest('label');
-      if (label) {
-        label.hidden = !visible;
-        label.style.display = visible ? '' : 'none';
-        label.classList.toggle('hidden', !visible);
-        label.setAttribute('aria-hidden', visible ? 'false' : 'true');
-      }
-      if (!visible && radio.checked) radio.checked = false;
-    });
-  }
-
-  function c115EnsureOneVisible(fieldId) {
-    const radios = $$(`input[type="radio"][name="dyn_${fieldId}"]`);
-    const visible = radios.filter((radio) => {
-      const label = radio.closest('label');
-      return !radio.disabled && !label?.hidden && label?.style.display !== 'none';
-    });
-    if (visible.length === 1 && !visible[0].checked) visible[0].checked = true;
-  }
-
-  function updateGlassColorChoices() {
-    const product = getProduct();
-    if (!product) return;
-    if (GLASS_PRODUCT_IDS.has(product.id)) {
-      c115SuffixesForField('glassThickness').forEach((suffix) => {
-        const thickness = getFieldValue({ id: `glassThickness${suffix}` });
-        const allowLowE = thickness === 'Insulated Glass';
-        c115SetOptionVisibility(`glassColor${suffix}`, 'Low-e Glass', allowLowE);
-        c115EnsureOneVisible(`glassColor${suffix}`);
-      });
+    const currentRayText = rayEl ? rayEl.value : auto.rayText;
+    const autoPost = br.postCountFromRayText ? br.postCountFromRayText(currentRayText, raw.systemCount, raw.width, raw.frontHeight) : auto.postCount;
+    if (postEl && (force || !postWasManual || String(postEl.value || '').trim() === '')) {
+      postEl.value = autoPost === '' || autoPost === null || autoPost === undefined ? '' : String(autoPost);
+      postEl.dataset.userEdited = 'false';
     }
-    if (product.id === 'glass_fixed_ceiling') {
-      c115SuffixesForField('glassType1').forEach((suffix) => {
-        const type1 = getFieldValue({ id: `glassType1${suffix}` });
-        const allowLowE = type1 === 'Insulated Glass';
-        c115SetOptionVisibility(`glassType2Glass${suffix}`, 'Low-e Glass', allowLowE);
-        c115EnsureOneVisible(`glassType2Glass${suffix}`);
-        c115EnsureOneVisible(`glassType2Panel${suffix}`);
-      });
+  }
+
+  function collectForm() {
+    return ids.reduce((acc, id) => {
+      const el = $(id);
+      if (!el) return acc;
+      const value = el.value;
+      let normalized = upperTableFieldIds.includes(id)
+        ? String(value || '').replace(/\r\n/g, ' ').replace(/\r/g, ' ').replace(/\n/g, ' ').replace(/\s+/g, ' ').trim()
+        : value;
+      if (BOOLEAN_FIELD_IDS.includes(id)) normalized = normalizeYesNo(normalized);
+      acc[id] = normalized;
+      return acc;
+    }, {
+      sideTrack: 'HAYIR',
+      __manualPostPlacementMode: manualPostPlacementMode,
+      __glassTrackProfile: sanitizeGlassTrackProfile(glassTrackProfileState),
+      __glassTrackSupportProfiles: {
+        left: sanitizeOptionalGlassTrackProfile(glassSupportProfileState.left),
+        right: sanitizeOptionalGlassTrackProfile(glassSupportProfileState.right)
+      },
+      __frontPostCenters: Array.isArray(customFrontPostCenters) ? customFrontPostCenters.slice() : null,
+      __customRayPositions: deepCloneJson(customRayPositions),
+      __sideSupportCenters: { ...customSideSupportCenters },
+      __sidePosts: deepCloneJson(customSidePosts) || {},
+      __frontPostProfiles: deepCloneJson(frontPostProfiles) || [],
+      __frontPostExtensions: deepCloneJson(frontPostExtensions) || [],
+      __parapetSegments: deepCloneJson(parapetSegments) || { front: [], side: {} },
+      __sideFeatureState: deepCloneJson(sideFeatureState) || normalizeSideFeatureStateForApp(),
+      __glassTrackLengthOffsets: deepCloneJson(glassTrackLengthOffsets) || { left: 0, right: 0, middle: {} },
+      __triangleDivisionState: deepCloneJson(triangleDivisionState) || { left: null, right: null, middle: {} },
+      __backWallState: deepCloneJson(backWallState) || { left: { xOffset: 0, depth: 600, height: 0 }, right: { xOffset: 0, depth: 600, height: 0 }, middle: {} },
+      __backWallSegments: deepCloneJson(backWallSegments) || { side: {} },
+      __previewDimensionOffsets: deepCloneJson(previewDimensionOffsets) || {},
+      __slidingPlacements: slidingPlacements.map(item => ({ ...item })),
+      __sideSlidingPlacements: sideSlidingPlacements.map(item => ({ ...item })),
+      __guillotinePlacements: guillotinePlacements.map(item => ({ ...item })),
+      __sideGuillotinePlacements: sideGuillotinePlacements.map(item => ({ ...item }))
+    });
+  }
+
+
+  function historySignature(snapshot) {
+    return JSON.stringify({
+      formData: snapshot && snapshot.formData ? snapshot.formData : {},
+      drawingState: snapshot && snapshot.drawingState ? snapshot.drawingState : {}
+    });
+  }
+
+  function createHistoryEntry() {
+    const snapshot = createProjectSnapshot();
+    snapshot.savedAt = '';
+    return { snapshot, signature: historySignature(snapshot) };
+  }
+
+  function updateHistoryControls() {
+    const undoBtn = $('undoPreviewBtn');
+    const redoBtn = $('redoPreviewBtn');
+    const canUndo = projectHistory.index > 0;
+    const canRedo = projectHistory.index >= 0 && projectHistory.index < projectHistory.entries.length - 1;
+    const step = projectHistory.index >= 0 ? projectHistory.index + 1 : 0;
+    const total = projectHistory.entries.length;
+    if (undoBtn) {
+      undoBtn.disabled = !canUndo;
+      undoBtn.setAttribute('aria-disabled', canUndo ? 'false' : 'true');
+      undoBtn.title = currentLanguage === 'en'
+        ? `Undo (Ctrl+Z) · Step ${step}/${total}`
+        : `Geri Al (Ctrl+Z) · Adım ${step}/${total}`;
     }
-    updateConditionalFields();
+    if (redoBtn) {
+      redoBtn.disabled = !canRedo;
+      redoBtn.setAttribute('aria-disabled', canRedo ? 'false' : 'true');
+      redoBtn.title = currentLanguage === 'en'
+        ? `Redo (Ctrl+Y / Ctrl+Shift+Z) · Step ${step}/${total}`
+        : `İleri Al (Ctrl+Y / Ctrl+Shift+Z) · Adım ${step}/${total}`;
+    }
   }
 
-  const originalRenderFormC115 = renderForm;
-  renderForm = function renderFormC115Wrapper() {
-    originalRenderFormC115();
-    updateGlassColorChoices();
-  };
-
-  document.addEventListener('input', (event) => {
-    if (event.target?.matches?.('[data-field-id]')) setTimeout(updateGlassColorChoices, 0);
-  }, true);
-  document.addEventListener('change', (event) => {
-    if (event.target?.matches?.('[data-field-id]')) setTimeout(updateGlassColorChoices, 0);
-  }, true);
-
-  ['productFamilySelect', 'productGroupSelect', 'productSubGroupSelect'].forEach((id) => {
-    const el = document.getElementById(id);
-    if (!el) return;
-    el.addEventListener('change', () => {
-      const currentProductId = state.selectedProductId || '';
-      const previousProductId = sessionStorage.getItem(lastProductKey) || '';
-      if (previousProductId && currentProductId && currentProductId !== previousProductId) {
-        fields.notes.value = '';
-        saveOrderDraft();
-        updatePreview();
-      }
-      sessionStorage.setItem(lastProductKey, currentProductId);
-    });
-  });
-  sessionStorage.setItem(lastProductKey, state.selectedProductId || '');
-
-  const oldFieldRowsC115 = fieldRows;
-  fieldRows = function fieldRowsC115(fieldList, lang = state.language) {
-    const isPergola = isRealPergolaProduct();
-    const rows = [];
-    (fieldList || []).filter(fieldIsActive).forEach((field) => {
-      const id = field.id || '';
-      const baseId = baseFieldId(id);
-      if (isPergola && (baseId === 'pipeLengthOther' || baseId === 'lightingOther')) return;
-      if (OTHER_FIELD_IDS.has(baseId)) return;
-
-      let value = getFieldValue(field);
-      let unit = field.unit || '';
-      let unitAuto = field.unitAuto || '';
-
-      if (isPergola && baseId === 'pipeLengthType' && value === 'Other') {
-        const suffix = fieldPositionSuffix(id);
-        const otherValue = getFieldValue({ id: `pipeLengthOther${suffix}` });
-        if (String(otherValue || '').trim()) {
-          value = otherValue;
-          unit = 'mm';
-          unitAuto = '';
-        }
-      }
-
-      if (isPergola && baseId === 'lightingType' && value === 'Other') {
-        const otherValue = getFieldValue({ id: 'lightingOther' });
-        if (String(otherValue || '').trim()) {
-          value = otherValue;
-          unit = '';
-          unitAuto = '';
-        }
-      }
-
-      if (baseId === 'glassColor' && value === 'Other') {
-        const suffix = fieldPositionSuffix(id);
-        const otherValue = getFieldValue({ id: `glassColorOther${suffix}` });
-        if (String(otherValue || '').trim()) value = otherValue;
-      }
-      if (baseId === 'glassType2Glass' && value === 'Other') {
-        const suffix = fieldPositionSuffix(id);
-        const otherValue = getFieldValue({ id: `glassType2GlassOther${suffix}` });
-        if (String(otherValue || '').trim()) value = otherValue;
-      }
-      if (baseId === 'glassType2Panel' && value === 'Other (Thickness)') {
-        const suffix = fieldPositionSuffix(id);
-        const otherValue = getFieldValue({ id: `glassType2PanelOther${suffix}` });
-        if (String(otherValue || '').trim()) value = otherValue;
-      }
-
-      rows.push([
-        translatedText(field.label, lang),
-        formatValue(value, unit, unitAuto, lang),
-        id
-      ]);
-    });
-    return rows;
-  };
-
-  Object.assign(I18N.en, {
-    'Glass Type 1': 'Glass Type 1',
-    'Glass Type 2': 'Glass Type 2',
-    'Single Glass': 'Single Glass',
-    'Insulated Glass': 'Insulated Glass',
-    'Polycarbonate': 'Polycarbonate',
-    'Sandwich Panel': 'Sandwich Panel',
-    'Transparent': 'Transparent',
-    'Grey': 'Grey',
-    'Low-e Glass': 'Low-e Glass',
-    'Glass Color': 'Glass Color',
-    'Other Value': 'Other Value',
-    'Other (Thickness)': 'Other (Thickness)'
-  });
-  Object.assign(I18N.tr, {
-    'Glass Type 1': 'Cam Tipi 1',
-    'Glass Type 2': 'Cam Tipi 2',
-    'Single Glass': 'Tek Cam',
-    'Insulated Glass': 'Isıcam',
-    'Polycarbonate': 'Polikarbon',
-    'Sandwich Panel': 'Sandviç Panel',
-    'Transparent': 'Şeffaf',
-    'Grey': 'Gri',
-    'Low-e Glass': 'Low-e Cam',
-    'Glass Color': 'Cam Rengi',
-    'Other Value': 'Diğer Değer',
-    'Other (Thickness)': 'Diğer (Kalınlık)'
-  });
-  Object.assign(I18N.de, {
-    'Glass Type 1': 'Glasart 1',
-    'Glass Type 2': 'Glasart 2',
-    'Single Glass': 'Einfachglas',
-    'Insulated Glass': 'Isolierglas',
-    'Polycarbonate': 'Polycarbonat',
-    'Sandwich Panel': 'Sandwichpaneel',
-    'Transparent': 'Transparent',
-    'Grey': 'Grau',
-    'Low-e Glass': 'Low-e-Glas',
-    'Glass Color': 'Glasfarbe',
-    'Other Value': 'Anderer Wert',
-    'Other (Thickness)': 'Andere (Staerke)'
-  });
-  Object.assign(I18N.fr, {
-    'Glass Type 1': 'Type de vitrage 1',
-    'Glass Type 2': 'Type de vitrage 2',
-    'Single Glass': 'Simple vitrage',
-    'Insulated Glass': 'Double vitrage',
-    'Polycarbonate': 'Polycarbonate',
-    'Sandwich Panel': 'Panneau sandwich',
-    'Transparent': 'Transparent',
-    'Grey': 'Gris',
-    'Low-e Glass': 'Verre Low-e',
-    'Glass Color': 'Couleur du verre',
-    'Other Value': 'Autre valeur',
-    'Other (Thickness)': 'Autre (épaisseur)'
-  });
-  Object.assign(I18N.he, {
-    'Glass Type 1': 'Glass Type 1',
-    'Glass Type 2': 'Glass Type 2',
-    'Single Glass': 'Single Glass',
-    'Insulated Glass': 'Insulated Glass',
-    'Polycarbonate': 'Polycarbonate',
-    'Sandwich Panel': 'Sandwich Panel',
-    'Transparent': 'Transparent',
-    'Grey': 'Grey',
-    'Low-e Glass': 'Low-e Glass',
-    'Glass Color': 'Glass Color',
-    'Other Value': 'Other Value',
-    'Other (Thickness)': 'Other (Thickness)'
-  });
-
-  try {
-    applyLanguage();
-    updateGlassColorChoices();
-    updatePreview();
-  } catch {}
-})();
-
-// C115B: keep dependent "Other" cells hidden when their parent choice is not active.
-(function PRF_C115_dependentOtherVisibility() {
-  function fieldControlIdsStartingWith(baseId) {
-    return $$(`[data-field-id^="${baseId}"]`)
-      .map((el) => String(el.dataset.fieldId || ''))
-      .filter((id, index, arr) => id && arr.indexOf(id) === index);
+  function resetProjectHistory(captureCurrent = false) {
+    projectHistory.entries = [];
+    projectHistory.index = -1;
+    projectHistory.suspendDepth = 0;
+    projectHistory.dirtyWhileSuspended = false;
+    if (captureCurrent && lastDrawing) recordProjectHistoryState({ force: true });
+    else updateHistoryControls();
   }
-  function suffixFromFieldId(fieldId, baseId) {
-    return String(fieldId || '').replace(baseId, '');
-  }
-  function setFieldWrapHidden(fieldId, hidden) {
-    $$(`[data-field-id="${fieldId}"]`).forEach((el) => {
-      const wrap = el.closest('label, .choice-field, .singlecheck-field');
-      if (!wrap) return;
-      wrap.hidden = hidden;
-      wrap.style.display = hidden ? 'none' : '';
-      wrap.classList.toggle('hidden', hidden);
-      wrap.setAttribute('aria-hidden', hidden ? 'true' : 'false');
-    });
-  }
-  function fixGlassDependentOtherVisibility() {
-    fieldControlIdsStartingWith('glassColor').forEach((fieldId) => {
-      if (!/^glassColor(__pos\d+)?$/.test(fieldId)) return;
-      const suffix = suffixFromFieldId(fieldId, 'glassColor');
-      setFieldWrapHidden(`glassColorOther${suffix}`, getFieldValue({ id: fieldId }) !== 'Other');
-    });
-    fieldControlIdsStartingWith('glassType1').forEach((fieldId) => {
-      const suffix = suffixFromFieldId(fieldId, 'glassType1');
-      const type1 = getFieldValue({ id: fieldId });
-      const isGlass = ['Single Glass', 'Insulated Glass'].includes(type1);
-      const isPanel = ['Polycarbonate', 'Sandwich Panel'].includes(type1);
-      setFieldWrapHidden(`glassType2GlassOther${suffix}`, !isGlass || getFieldValue({ id: `glassType2Glass${suffix}` }) !== 'Other');
-      setFieldWrapHidden(`glassType2PanelOther${suffix}`, !isPanel || getFieldValue({ id: `glassType2Panel${suffix}` }) !== 'Other (Thickness)');
-    });
-  }
-  const originalUpdateConditionalFieldsC115B = updateConditionalFields;
-  updateConditionalFields = function updateConditionalFieldsC115B() {
-    originalUpdateConditionalFieldsC115B();
-    fixGlassDependentOtherVisibility();
-  };
-  document.addEventListener('input', () => setTimeout(fixGlassDependentOtherVisibility, 0), true);
-  document.addEventListener('change', () => setTimeout(fixGlassDependentOtherVisibility, 0), true);
-  try { fixGlassDependentOtherVisibility(); } catch {}
-})();
 
+  function recordProjectHistoryState(options = {}) {
+    if (projectHistory.restoring) return;
+    if (projectHistory.suspendDepth > 0) {
+      projectHistory.dirtyWhileSuspended = true;
+      return;
+    }
+    let entry;
+    try { entry = createHistoryEntry(); }
+    catch (_) { return; }
+    const current = projectHistory.entries[projectHistory.index];
+    if (!options.force && current && current.signature === entry.signature) {
+      updateHistoryControls();
+      return;
+    }
+    if (projectHistory.index < projectHistory.entries.length - 1) {
+      projectHistory.entries.splice(projectHistory.index + 1);
+    }
+    projectHistory.entries.push(entry);
+    projectHistory.index = projectHistory.entries.length - 1;
+    updateHistoryControls();
+  }
 
-// C116: requested fast-entry defaults and dependent remote/single-choice behavior.
-(function PRF_C116_defaultsRemoteAndSensors() {
-  let applying = false;
-  const isVisibleRadio = (radio) => {
-    const label = radio.closest('label');
-    const field = radio.closest('.choice-field, .singlecheck-field');
-    return !radio.disabled && !radio.hidden && !(label?.hidden) && label?.style.display !== 'none' && !(field?.hidden) && field?.style.display !== 'none';
-  };
-  const radioGroups = () => Array.from(new Set($$('input[type="radio"][name^="dyn_"]').map((radio) => radio.name)));
-  const fieldIdFromName = (name) => String(name || '').replace(/^dyn_/, '');
-  const radiosForField = (fieldId) => $$(`input[type="radio"][name="dyn_${fieldId}"]`);
-  const checkedValue = (fieldId) => radiosForField(fieldId).find((radio) => radio.checked)?.value || '';
-  const setRadioIfEmpty = (fieldId, preferredValue) => {
-    const radios = radiosForField(fieldId);
-    if (!radios.length || checkedValue(fieldId)) return false;
-    const target = radios.find((radio) => radio.value === preferredValue && isVisibleRadio(radio));
-    if (!target) return false;
-    target.checked = true;
+  function beginHistoryTransaction() {
+    projectHistory.suspendDepth += 1;
+  }
+
+  function endHistoryTransaction(commit = true) {
+    if (projectHistory.suspendDepth > 0) projectHistory.suspendDepth -= 1;
+    if (projectHistory.suspendDepth > 0) return;
+    const shouldRecord = commit && projectHistory.dirtyWhileSuspended;
+    projectHistory.dirtyWhileSuspended = false;
+    if (shouldRecord) recordProjectHistoryState();
+    else updateHistoryControls();
+  }
+
+  function clearPendingPreviewTimers() {
+    let hadPendingTimer = false;
+    ids.forEach(id => {
+      const el = $(id);
+      if (!el || !el._previewTimer) return;
+      hadPendingTimer = true;
+      window.clearTimeout(el._previewTimer);
+      el._previewTimer = null;
+    });
+    return hadPendingTimer;
+  }
+
+  function closeTransientPreviewEditorsForHistory() {
+    toolboxSelectionMode = null;
+    toolboxSelectionItems = new Map();
+    if (toolboxContextMenu) toolboxContextMenu.hidden = true;
+    if (toolboxSelectionBanner) toolboxSelectionBanner.hidden = true;
+    pendingSlidingPlacementMeta = null;
+    pendingGuillotinePlacementMeta = null;
+    if (previewPanel) previewPanel.querySelectorAll('.dim-edit-overlay').forEach(node => { node.hidden = true; });
+    refreshToolboxSelectionDecorations();
+  }
+
+  function snapshotForHistoryRestore(entry) {
+    const snapshot = deepCloneJson(entry.snapshot);
+    snapshot.record = deepCloneJson(currentProjectRecord);
+    snapshot.uiSettings = {
+      language: currentLanguage,
+      dimensions: serializePreviewDimensionFilter()
+    };
+    return snapshot;
+  }
+
+  function restoreHistoryIndex(nextIndex, direction) {
+    const entry = projectHistory.entries[nextIndex];
+    if (!entry) return false;
+    clearPendingPreviewTimers();
+    closeTransientPreviewEditorsForHistory();
+    projectHistory.restoring = true;
+    let drawing = null;
+    try {
+      drawing = restoreProjectSnapshot(snapshotForHistoryRestore(entry), { resetZoom: false, requireValidDrawing: true });
+    } catch (err) {
+      statusText.textContent = err.message;
+      console.error(err);
+      return false;
+    } finally {
+      projectHistory.restoring = false;
+    }
+    if (!drawing) return false;
+    projectHistory.index = nextIndex;
+    updateHistoryControls();
+    const step = projectHistory.index + 1;
+    const total = projectHistory.entries.length;
+    statusText.textContent = direction === 'redo'
+      ? (currentLanguage === 'en' ? `Redone. History step ${step}/${total}.` : `İleri alındı. Geçmiş adımı ${step}/${total}.`)
+      : (currentLanguage === 'en' ? `Undone. History step ${step}/${total}.` : `Geri alındı. Geçmiş adımı ${step}/${total}.`);
+    focusPreviewCanvas();
     return true;
-  };
-  const setOptionVisible = (fieldId, option, visible) => {
-    radiosForField(fieldId).forEach((radio) => {
-      if (radio.value !== option) return;
-      radio.disabled = !visible;
-      const label = radio.closest('label');
-      if (label) {
-        label.hidden = !visible;
-        label.style.display = visible ? '' : 'none';
-        label.classList.toggle('hidden', !visible);
-        label.setAttribute('aria-hidden', visible ? 'false' : 'true');
-      }
-      if (!visible && radio.checked) radio.checked = false;
-    });
-  };
-  const setChoiceFieldHidden = (fieldId, hidden) => {
-    radiosForField(fieldId).forEach((radio) => {
-      const field = radio.closest('.choice-field, .singlecheck-field');
-      if (!field) return;
-      field.hidden = hidden;
-      field.style.display = hidden ? 'none' : '';
-      field.classList.toggle('hidden', hidden);
-      field.setAttribute('aria-hidden', hidden ? 'true' : 'false');
-      if (hidden) radio.checked = false;
-    });
-  };
-  const remoteOptionsForMotor = (motorValue) => {
-    const motor = String(motorValue || '').toLowerCase();
-    if (motor.includes('rising')) return ['1 Channel', '6 Channels'];
-    if (motor.includes('io')) return ['1 Channel', '2 Channels', '4 Channels', '40 Channels'];
-    return ['1 Channel', '2 Channels', '4 Channels', '16 Channels'];
-  };
-  const fieldSuffixes = (baseId) => Array.from(new Set($$(`[data-field-id^="${baseId}"]`)
-    .map((el) => String(el.dataset.fieldId || ''))
-    .filter((id) => id === baseId || id.startsWith(`${baseId}__pos`))
-    .map((id) => id.replace(baseId, ''))));
+  }
 
-  const applyZipRemoteRules = () => {
-    const product = getProduct();
-    const isRemoteDynamicProduct = product?.family === 'zip_screen_awning_curtain' || product?.productGroup === 'glass_guillotine';
-    if (!isRemoteDynamicProduct) return false;
-    let changed = false;
-    const controlTypeValue = checkedValue('controlType');
-    if (!controlTypeValue) changed = setRadioIfEmpty('controlType', 'Remote Control') || changed;
-    const isButtonControl = checkedValue('controlType') === 'Button Control';
-    setChoiceFieldHidden('remoteControl', isButtonControl);
-    if (isButtonControl) return changed;
-    const allowed = remoteOptionsForMotor(checkedValue('motor'));
-    const allRemoteOptions = ['1 Channel', '2 Channels', '4 Channels', '6 Channels', '16 Channels', '40 Channels'];
-    allRemoteOptions.forEach((option) => setOptionVisible('remoteControl', option, allowed.includes(option)));
-    return changed;
-  };
-
-  const applyRequestedDefaults = () => {
-    const product = getProduct();
-    let changed = false;
-    if (product && (product.family === 'pergola' || product.id === 'glass_fixed_ceiling')) {
-      fieldSuffixes('waterOutletDetail').forEach((suffix) => { changed = setRadioIfEmpty(`waterOutletDetail${suffix}`, 'From Post') || changed; });
-      fieldSuffixes('waterOutletDirection').forEach((suffix) => { changed = setRadioIfEmpty(`waterOutletDirection${suffix}`, 'Front') || changed; });
-      fieldSuffixes('pipeLengthType').forEach((suffix) => { changed = setRadioIfEmpty(`pipeLengthType${suffix}`, 'Standard') || changed; });
-    }
-    fieldSuffixes('dimmerHeater').forEach((suffix) => { changed = setRadioIfEmpty(`dimmerHeater${suffix}`, 'No') || changed; });
-    if (product?.family === 'zip_screen_awning_curtain') {
-      fieldSuffixes('packagingType').forEach((suffix) => { changed = setRadioIfEmpty(`packagingType${suffix}`, 'Kraft') || changed; });
-    }
-    radioGroups().forEach((name) => {
-      const fieldId = fieldIdFromName(name);
-      const baseId = baseFieldId(fieldId);
-      if (/sensor/i.test(baseId)) {
-        changed = setRadioIfEmpty(fieldId, 'No') || changed;
-      }
-    });
-    return changed;
-  };
-
-  const autoSelectSingleVisibleChoices = () => {
-    let changed = false;
-    radioGroups().forEach((name) => {
-      const radios = $$(`input[type="radio"][name="${name}"]`);
-      if (!radios.length) return;
-      const visible = radios.filter(isVisibleRadio);
-      const hasCheckedVisible = visible.some((radio) => radio.checked);
-      if (visible.length === 1 && !hasCheckedVisible) {
-        visible[0].checked = true;
-        changed = true;
-      }
-    });
-    return changed;
-  };
-
-  const applyAll = () => {
-    if (applying) return;
-    applying = true;
+  function flushCurrentStateBeforeHistoryMove() {
+    if (projectHistory.restoring) return;
+    const hadPendingTimer = clearPendingPreviewTimers();
+    // Buton/modal işlemleri updatePreview sırasında zaten geçmişe kaydedilir.
+    // Her Undo/Redo tıklamasında yeniden updatePreview çalıştırmak, geri alınmış
+    // bir adımın türetilmiş/normalize edilmiş halini yeni dal olarak kaydedip
+    // ileri alma zincirini silebiliyordu. Yalnızca kullanıcı formda bir değer
+    // yazmış ve 350 ms önizleme zamanlayıcısı henüz çalışmamışsa güncel durumu
+    // senkronlayıp tek kez kaydet.
+    if (!hadPendingTimer) return;
+    const previousRestoring = projectHistory.restoring;
+    projectHistory.restoring = true;
     try {
-      let changed = false;
-      changed = applyZipRemoteRules() || changed;
-      changed = applyRequestedDefaults() || changed;
-      changed = autoSelectSingleVisibleChoices() || changed;
-      if (changed) {
-        updateConditionalFields();
-        updateGlassGuillotineDynamicRules?.();
-        if (typeof updateGlassColorChoices === 'function') updateGlassColorChoices();
-        saveOrderDraft();
-        updatePreview();
-      }
+      updatePreview(false);
     } finally {
-      applying = false;
+      projectHistory.restoring = previousRestoring;
     }
-  };
-
-  const originalUpdateConditionalFieldsC116 = updateConditionalFields;
-  updateConditionalFields = function updateConditionalFieldsC116() {
-    originalUpdateConditionalFieldsC116();
-    if (!applying) setTimeout(applyAll, 0);
-  };
-
-  const originalRenderFormC116 = renderForm;
-  renderForm = function renderFormC116() {
-    originalRenderFormC116();
-    setTimeout(applyAll, 0);
-  };
-
-  document.addEventListener('input', (event) => {
-    if (event.target?.matches?.('[data-field-id]')) setTimeout(applyAll, 0);
-  }, true);
-  document.addEventListener('change', (event) => {
-    if (event.target?.matches?.('[data-field-id]')) setTimeout(applyAll, 0);
-  }, true);
-
-  try { setTimeout(applyAll, 0); } catch {}
-})();
-
-
-// C118: Bio-Rise heater/sensors order, final heater title, and shared translations.
-(function PRF_C118_bioRiseHeaterTitleAndTranslations() {
-  try {
-    const previousIsBcubeProductC118 = isBcubeProduct;
-    isBcubeProduct = function isBcubeProductC118(product = getProduct()) {
-      return previousIsBcubeProductC118(product) || product?.id === 'bio_rise';
-    };
-  } catch {}
-  const heaterTitle = 'Heater & Sound & Packing & Loading';
-  ['en', 'tr', 'de', 'fr', 'he'].forEach((lang) => {
-    if (!I18N[lang]) return;
-    I18N[lang]['Heater & Sound & Packing'] = heaterTitle;
-    I18N[lang]['Heater, Sound, Packing & Loading'] = heaterTitle;
-    I18N[lang]['Heater & Sound & Packing & Loading'] = heaterTitle;
-  });
-})();
-
-
-// C119: Bio Rise hint translations.
-(function PRF_C119_bioRiseHintTranslations() {
-  if (typeof I18N === 'undefined') return;
-  Object.assign(I18N.en, {
-    'Max. 4000 mm | 1 Sistem': 'Max. 4000 mm | 1 System',
-    '2070 mm - 6070 mm | 200 mm | 1 Sistem': '2070 mm - 6070 mm | 200 mm | 1 System'
-  });
-  Object.assign(I18N.tr, {
-    'Max. 4000 mm | 1 Sistem': 'Max. 4000 mm | 1 Sistem',
-    '2070 mm - 6070 mm | 200 mm | 1 Sistem': '2070 mm - 6070 mm | 200 mm | 1 Sistem'
-  });
-  Object.assign(I18N.de, {
-    'Max. 4000 mm | 1 Sistem': 'Max. 4000 mm | 1 System',
-    '2070 mm - 6070 mm | 200 mm | 1 Sistem': '2070 mm - 6070 mm | 200 mm | 1 System'
-  });
-  Object.assign(I18N.fr, {
-    'Max. 4000 mm | 1 Sistem': 'Max. 4000 mm | 1 système',
-    '2070 mm - 6070 mm | 200 mm | 1 Sistem': '2070 mm - 6070 mm | 200 mm | 1 système'
-  });
-  Object.assign(I18N.he, {
-    'Max. 4000 mm | 1 Sistem': 'מקס. 4000 mm | מערכת 1',
-    '2070 mm - 6070 mm | 200 mm | 1 Sistem': '2070 mm - 6070 mm | 200 mm | מערכת 1'
-  });
-  try { applyLanguage(); renderForm(); updatePreview(); } catch {}
-})();
-
-
-// C120: final title/language polish and One Sided Roof default for Zip/Awning/Curtain forms.
-(function PRF_C120_finalPolish() {
-  try {
-    const heaterTitles = {
-      en: 'Heater & Sound & Packing & Loading',
-      tr: 'Isıtıcı & Ses & Ambalaj & Yükleme',
-      de: 'Heizung & Sound & Verpackung & Verladung',
-      fr: 'Chauffage & son & emballage & chargement',
-      he: 'חימום & שמע & אריזה & טעינה'
-    };
-    Object.entries(heaterTitles).forEach(([lang, value]) => {
-      if (!I18N?.[lang]) return;
-      [
-        'Heater & Sound & Packing',
-        'Heater & Sound & Packing & Loading',
-        'Heater, Sound, Packing & Loading',
-        'Heater&Sound&Packing & Loading'
-      ].forEach((key) => { I18N[lang][key] = value; });
-    });
-    Object.assign(I18N.tr, {
-      'Yes': 'Evet',
-      'No': 'Hayır',
-      'Remote Control': 'Kumanda',
-      'Projection': 'Açılım',
-      'Projection (mm)': 'Açılım',
-      'Light Dimmer (For Linear LED)': 'Dimmer (Linear LED için)',
-      'Light Dimmer (For Spot LED)': 'Dimmer (Spot LED için)',
-      'Dimmer Heater': 'Dimmer (Isıtıcı için)',
-      'Side Beam': 'Cam Kayıt Profili',
-      'Structure': 'Sistem',
-      'System Color': 'Sistem',
-      'Panel Color': 'Panel'
-    });
-  } catch {}
-
-  let applyingC120 = false;
-  const visibleRadioC120 = (radio) => {
-    const label = radio?.closest?.('label');
-    const field = radio?.closest?.('.choice-field, .singlecheck-field');
-    return !!radio && (!label || label.style.display !== 'none') && (!field || field.style.display !== 'none');
-  };
-  const selectOneSidedRoofNo = () => {
-    const product = typeof getProduct === 'function' ? getProduct() : null;
-    if (product?.family !== 'zip_screen_awning_curtain') return false;
-    let changed = false;
-    const names = Array.from(new Set($$('input[type="radio"][data-field-id^="oneSidedRoof"]').map((radio) => radio.name)));
-    names.forEach((name) => {
-      const radios = $$(`input[type="radio"][name="${name}"]`).filter(visibleRadioC120);
-      if (!radios.length || radios.some((radio) => radio.checked)) return;
-      const target = radios.find((radio) => radio.value === 'Yok') || radios.find((radio) => radio.value === 'No') || radios[0];
-      if (target) {
-        target.checked = true;
-        changed = true;
-      }
-    });
-    return changed;
-  };
-  const applyC120Defaults = () => {
-    if (applyingC120) return;
-    applyingC120 = true;
-    try {
-      const changed = selectOneSidedRoofNo();
-      if (changed) {
-        if (typeof updateConditionalFields === 'function') updateConditionalFields();
-        if (typeof saveOrderDraft === 'function') saveOrderDraft();
-        if (typeof updatePreview === 'function') updatePreview();
-      }
-    } finally {
-      applyingC120 = false;
-    }
-  };
-
-  try {
-    const previousRenderFormC120 = renderForm;
-    renderForm = function renderFormC120() {
-      previousRenderFormC120();
-      setTimeout(applyC120Defaults, 0);
-    };
-  } catch {}
-  try {
-    const previousUpdateConditionalFieldsC120 = updateConditionalFields;
-    updateConditionalFields = function updateConditionalFieldsC120() {
-      previousUpdateConditionalFieldsC120();
-      if (!applyingC120) setTimeout(applyC120Defaults, 0);
-    };
-  } catch {}
-  document.addEventListener('change', (event) => {
-    if (event.target?.matches?.('[data-field-id]')) setTimeout(applyC120Defaults, 0);
-  }, true);
-  try {
-    applyLanguage();
-    renderForm();
-    updatePreview();
-    setTimeout(applyC120Defaults, 0);
-  } catch {}
-})();
-
-
-// C121: cancel PDF preview UI and manage unified Fixed Ceiling Glass Type 2 options.
-(function PRF_C121_previewAndFixedGlassType2() {
-  try {
-    Object.assign(I18N.en, { pdfPreview: 'PDF', pdfPreviewHelp: 'Create, download or share the PDF.' });
-    Object.assign(I18N.tr, { pdfPreview: 'PDF', pdfPreviewHelp: 'PDF oluşturun, indirin veya paylaşın.' });
-    Object.assign(I18N.de, { pdfPreview: 'PDF', pdfPreviewHelp: 'PDF erstellen, herunterladen oder teilen.' });
-    Object.assign(I18N.fr, { pdfPreview: 'PDF', pdfPreviewHelp: 'Créer, télécharger ou partager le PDF.' });
-    Object.assign(I18N.he, { pdfPreview: 'PDF', pdfPreviewHelp: 'צור, הורד או שתף PDF.' });
-  } catch {}
-
-  const fieldSuffixesC121 = (baseId) => Array.from(new Set($$(`[data-field-id^="${baseId}"]`)
-    .map((el) => String(el.dataset.fieldId || ''))
-    .filter((id) => id === baseId || id.startsWith(`${baseId}__pos`))
-    .map((id) => id.replace(baseId, ''))));
-
-  const radiosForC121 = (fieldId) => $$(`input[type="radio"][name="dyn_${fieldId}"]`);
-
-  const setFieldHiddenC121 = (fieldId, hidden) => {
-    $$(`[data-field-id="${fieldId}"]`).forEach((el) => {
-      const wrap = el.closest('label, .choice-field, .singlecheck-field');
-      if (!wrap) return;
-      wrap.hidden = hidden;
-      wrap.style.display = hidden ? 'none' : '';
-      wrap.classList.toggle('hidden', hidden);
-      wrap.setAttribute('aria-hidden', hidden ? 'true' : 'false');
-    });
-  };
-
-  const setOptionVisibleC121 = (fieldId, option, visible) => {
-    radiosForC121(fieldId).forEach((radio) => {
-      if (radio.value !== option) return;
-      const label = radio.closest('label');
-      radio.disabled = !visible;
-      if (label) {
-        label.hidden = !visible;
-        label.style.display = visible ? '' : 'none';
-        label.classList.toggle('hidden', !visible);
-        label.setAttribute('aria-hidden', visible ? 'false' : 'true');
-      }
-      if (!visible && radio.checked) radio.checked = false;
-    });
-  };
-
-  const ensureOneVisibleC121 = (fieldId) => {
-    const visible = radiosForC121(fieldId).filter((radio) => {
-      const label = radio.closest('label');
-      const field = radio.closest('.choice-field, .singlecheck-field');
-      return !radio.disabled && !label?.hidden && label?.style.display !== 'none' && !field?.hidden && field?.style.display !== 'none';
-    });
-    if (visible.length === 1 && !visible[0].checked) visible[0].checked = true;
-  };
-
-  const applyFixedCeilingGlassType2 = () => {
-    const product = typeof getProduct === 'function' ? getProduct() : null;
-    if (product?.id !== 'glass_fixed_ceiling') return;
-    fieldSuffixesC121('glassType1').forEach((suffix) => {
-      const type1 = getFieldValue({ id: `glassType1${suffix}` });
-      const fieldId = `glassType2${suffix}`;
-      const otherId = `glassType2GlassOther${suffix}`;
-      const glassOptions = ['Transparent', 'Grey', 'Low-e Glass', 'Other'];
-      const panelOptions = ['Standard', 'Other (Thickness)'];
-      const isPanel = ['Polycarbonate', 'Sandwich Panel'].includes(type1);
-      const isInsulated = type1 === 'Insulated Glass';
-      const visibleOptions = isPanel ? panelOptions : (isInsulated ? glassOptions : ['Transparent', 'Grey', 'Other']);
-      ['Transparent', 'Grey', 'Low-e Glass', 'Standard', 'Other', 'Other (Thickness)'].forEach((option) => {
-        setOptionVisibleC121(fieldId, option, visibleOptions.includes(option));
-      });
-      const value = getFieldValue({ id: fieldId });
-      setFieldHiddenC121(otherId, !(value === 'Other' || value === 'Other (Thickness)'));
-      ensureOneVisibleC121(fieldId);
-    });
-  };
-
-  const previousFieldRowsC121 = fieldRows;
-  fieldRows = function fieldRowsC121(fieldList, lang = state.language) {
-    return previousFieldRowsC121(fieldList, lang).map((row) => {
-      const baseId = baseFieldId(row?.[2]);
-      if (baseId !== 'glassType2') return row;
-      const suffix = fieldPositionSuffix(row[2]);
-      const value = getFieldValue({ id: row[2] });
-      if (value === 'Other' || value === 'Other (Thickness)') {
-        const otherValue = getFieldValue({ id: `glassType2GlassOther${suffix}` });
-        if (String(otherValue || '').trim()) return [row[0], String(otherValue).trim(), row[2]];
-      }
-      return row;
-    });
-  };
-
-  try {
-    const previousUpdateConditionalFieldsC121 = updateConditionalFields;
-    updateConditionalFields = function updateConditionalFieldsC121() {
-      previousUpdateConditionalFieldsC121();
-      setTimeout(applyFixedCeilingGlassType2, 0);
-    };
-  } catch {}
-  try {
-    const previousRenderFormC121 = renderForm;
-    renderForm = function renderFormC121() {
-      previousRenderFormC121();
-      setTimeout(applyFixedCeilingGlassType2, 0);
-    };
-  } catch {}
-  document.addEventListener('input', (event) => {
-    if (event.target?.matches?.('[data-field-id]')) setTimeout(applyFixedCeilingGlassType2, 0);
-  }, true);
-  document.addEventListener('change', (event) => {
-    if (event.target?.matches?.('[data-field-id]')) setTimeout(applyFixedCeilingGlassType2, 0);
-  }, true);
-  try { applyLanguage(); renderForm(); setTimeout(applyFixedCeilingGlassType2, 0); } catch {}
-})();
-
-
-
-// C126: fixed mobile quick navigation for current product form section headings
-(function setupDynamicFormQuickNav() {
-  const nav = document.getElementById('formQuickNav') || document.querySelector('.mobile-quick-nav');
-  const formArea = document.getElementById('formArea');
-  if (!nav || !formArea) return;
-
-  function isVisible(el) {
-    if (!el) return false;
-    const style = window.getComputedStyle(el);
-    if (style.display === 'none' || style.visibility === 'hidden') return false;
-    const rect = el.getBoundingClientRect();
-    return rect.width > 0 && rect.height > 0;
+    if (lastDrawing) recordProjectHistoryState({ force: projectHistory.index < 0 });
   }
 
-  function cleanHeadingText(text) {
-    return String(text || '')
-      .replace(/\s+/g, ' ')
-      .replace(/^\d+\s*[.)-]\s*/, '')
-      .trim();
-  }
-
-  function setNavVisibility(visible) {
-    nav.classList.toggle('hidden', !visible);
-    document.body.classList.toggle('has-form-quick-nav', visible);
-  }
-
-  function refreshFormQuickNav() {
-    const sections = Array.from(formArea.querySelectorAll('.dynamic-section'))
-      .filter(isVisible)
-      .map((section) => {
-        const heading = section.querySelector(':scope > h3');
-        const text = cleanHeadingText(heading?.textContent || '');
-        return text ? { section, text } : null;
-      })
-      .filter(Boolean);
-
-    nav.innerHTML = '';
-    if (!sections.length) {
-      setNavVisibility(false);
+  function undoProjectHistory() {
+    flushCurrentStateBeforeHistoryMove();
+    if (projectHistory.index <= 0) {
+      updateHistoryControls();
       return;
     }
-
-    const seen = new Set();
-    sections.forEach((item, index) => {
-      const key = item.text.toLocaleLowerCase();
-      if (seen.has(key)) return;
-      seen.add(key);
-
-      if (!item.section.id) item.section.id = `form-section-nav-${index + 1}`;
-      item.section.classList.add('form-quick-nav-target');
-
-      const link = document.createElement('a');
-      link.href = `#${item.section.id}`;
-      link.textContent = item.text;
-      link.addEventListener('click', (event) => {
-        event.preventDefault();
-        const navHeight = nav.classList.contains('hidden') ? 0 : nav.offsetHeight;
-        const top = item.section.getBoundingClientRect().top + window.pageYOffset - navHeight - 12;
-        window.scrollTo({ top: Math.max(0, top), behavior: 'smooth' });
-      });
-      nav.appendChild(link);
-    });
-
-    setNavVisibility(Boolean(nav.children.length));
+    restoreHistoryIndex(projectHistory.index - 1, 'undo');
   }
 
-  let navRefreshTimer = null;
-  const scheduleRefresh = () => {
-    clearTimeout(navRefreshTimer);
-    navRefreshTimer = setTimeout(refreshFormQuickNav, 80);
-  };
-
-  const observer = new MutationObserver(scheduleRefresh);
-  observer.observe(formArea, { childList: true, subtree: true, characterData: true, attributes: true, attributeFilter: ['hidden', 'style', 'class'] });
-
-  document.addEventListener('change', scheduleRefresh, true);
-  document.addEventListener('click', scheduleRefresh, true);
-  window.addEventListener('resize', scheduleRefresh);
-  window.addEventListener('load', scheduleRefresh);
-  window.refreshFormQuickNav = refreshFormQuickNav;
-
-  scheduleRefresh();
-})();
-
-
-
-
-// C127: final cleanup - remove Loading everywhere, remove Bio-Rise remote, and update heater heading.
-(function PRF_C127_removeLoadingAndBioRiseRemoteUi() {
-  const noLoadingTitles = {
-    en: 'Heater & Sound & Packing',
-    tr: 'Isıtıcı & Ses & Ambalaj',
-    de: 'Heizung & Sound & Verpackung',
-    fr: 'Chauffage & son & emballage',
-    he: 'חימום & שמע & אריזה'
-  };
-  try {
-    Object.entries(noLoadingTitles).forEach(([lang, value]) => {
-      if (!I18N?.[lang]) return;
-      [
-        'Heater & Sound & Packing',
-        'Heater & Sound & Packing & Loading',
-        'Heater, Sound, Packing & Loading',
-        'Heater&Sound&Packing & Loading',
-        'Isıtıcı & Ses & Ambalaj & Yükleme'
-      ].forEach((key) => { I18N[lang][key] = value; });
-    });
-  } catch {}
-
-  const stripLoadingRows = (rows) => (Array.isArray(rows)
-    ? rows.filter((row) => String(row?.[2] || '').toLowerCase() !== 'loadingtype'
-      && !/^\s*loading\s*$/i.test(String(row?.[0] || '')))
-    : rows);
-
-  try {
-    const previousFieldRowsC127 = fieldRows;
-    fieldRows = function fieldRowsC127(fields, lang = activeLang) {
-      return stripLoadingRows(previousFieldRowsC127(fields, lang));
-    };
-  } catch {}
-
-  try {
-    compactHeaterMatrixRows = function compactHeaterMatrixRowsC127(rows) {
-      const cleanRows = stripLoadingRows(rows);
-      const blank = ['', '', '__blank'];
-      return [
-        [
-          heaterRowById(cleanRows, 'packagingType', 'Packaging Type'),
-          heaterRowById(cleanRows, 'heater2000Quantity', 'Heater 2000W 220V Quantity'),
-          heaterRowById(cleanRows, 'soundSystemQuantity', 'Sound System Quantity')
-        ],
-        [
-          heaterRowById(cleanRows, 'heater3000Quantity', 'Heater 3000W 220V Quantity'),
-          heaterRowById(cleanRows, 'dimmerHeater', 'Dimmer Heater'),
-          blank
-        ]
-      ];
-    };
-  } catch {}
-
-  const removeLoadingAndBioRiseRemoteFromFormData = () => {
-    try {
-      const product = typeof getProduct === 'function' ? getProduct() : null;
-      const form = typeof buildFormForProduct === 'function' ? buildFormForProduct(product) : null;
-      if (form?.heaterPackaging) form.heaterPackaging = form.heaterPackaging.filter((field) => field?.id !== 'loadingType');
-      if (product?.id === 'bio_rise' && Array.isArray(form?.operation)) {
-        form.operation = form.operation.filter((field) => {
-          const id = String(field?.id || '').toLowerCase();
-          const label = String(field?.label || '').toLowerCase();
-          return !id.includes('remotecontrol') && !label.includes('remote control') && !label.includes('kumanda');
-        });
-      }
-    } catch {}
-  };
-
-  try {
-    const previousRenderFormC127 = renderForm;
-    renderForm = function renderFormC127() {
-      previousRenderFormC127();
-      const product = typeof getProduct === 'function' ? getProduct() : null;
-      if (product?.id === 'bio_rise') {
-        document.querySelectorAll('[data-field-id^="remoteControl"]').forEach((el) => {
-          const field = el.closest('.choice-field, .singlecheck-field, label');
-          if (field) field.remove();
-        });
-      }
-      document.querySelectorAll('[data-field-id^="loadingType"]').forEach((el) => {
-        const field = el.closest('.choice-field, .singlecheck-field, label');
-        if (field) field.remove();
-      });
-    };
-  } catch {}
-
-  try {
-    const previousRenderHeaterCompactSectionTableC127 = renderHeaterCompactSectionTable;
-    renderHeaterCompactSectionTable = function renderHeaterCompactSectionTableC127(section) {
-      const cleaned = { ...section, title: translatedText('Heater & Sound & Packing', activeLang), rows: stripLoadingRows(section?.rows || []) };
-      return previousRenderHeaterCompactSectionTableC127(cleaned);
-    };
-  } catch {}
-
-  try {
-    applyLanguage();
-    renderForm();
-    updatePreview();
-  } catch {}
-})();
-
-
-// C128: Technical sheet mapping and viewer
-const TECHNICAL_SHEET_MAP = {
-  // Pergola
-  'pergola|falcate|minima': 'technical-sheets/falcate-minima.pdf',
-  'pergola|falcate|tectona': 'technical-sheets/falcate-tectona.pdf',
-  'pergola|subulate|minima': 'technical-sheets/subulate-minima.pdf',
-  'pergola|subulate|tectona': 'technical-sheets/subulate-tectona.pdf',
-  'pergola|unifoliate|minima': 'technical-sheets/unifoliate-minima.pdf',
-  'pergola|unifoliate|tectona': 'technical-sheets/unifoliate-tectona.pdf',
-  'pergola|pergo rise|': 'technical-sheets/pergo-rise.pdf',
-  'pergola|pergo rise|pergo rise': 'technical-sheets/pergo-rise.pdf',
-
-  // Bioclimatic
-  'bioclimatic|b-cube|galaxy': 'technical-sheets/b-cube-galaxy-space.pdf',
-  'bioclimatic|b-cube|space': 'technical-sheets/b-cube-galaxy-space.pdf',
-  'bioclimatic|b-cube|freedom': 'technical-sheets/b-cube-freedom-classic.pdf',
-  'bioclimatic|b-cube|classic': 'technical-sheets/b-cube-freedom-classic.pdf',
-  'bioclimatic|b-cube|urban': 'technical-sheets/b-cube-urban.pdf',
-  'bioclimatic|bio-rise|': 'technical-sheets/bio-rise.pdf',
-  'bioclimatic|bio rise|': 'technical-sheets/bio-rise.pdf',
-  'bioclimatic|bio-rise|bio-rise': 'technical-sheets/bio-rise.pdf',
-  'bioclimatic|bio rise|bio rise': 'technical-sheets/bio-rise.pdf',
-
-  // Zip Screen - Awning - Curtain
-  'zip screen - awning - curtain|janela cassette awning|': 'technical-sheets/janela.pdf',
-  'zip screen - awning - curtain|janela awning|': 'technical-sheets/janela.pdf',
-  'zip screen - awning - curtain|pars cassette awning|': 'technical-sheets/pars.pdf',
-  'zip screen - awning - curtain|pars plus cassette awning|': 'technical-sheets/pars-plus.pdf',
-  'zip screen - awning - curtain|pars plus luxe cassette awning|': 'technical-sheets/pars-plus-lux.pdf',
-  'zip screen - awning - curtain|pars plus lux cassette awning|': 'technical-sheets/pars-plus-lux.pdf',
-  'zip screen - awning - curtain|moonlight classic awning|motorlu': 'technical-sheets/moonlight.pdf',
-  'zip screen - awning - curtain|moonlight classic awning|şanzımanlı': 'technical-sheets/moonlight.pdf',
-  'zip screen - awning - curtain|moonlight awning|motorlu': 'technical-sheets/moonlight.pdf',
-  'zip screen - awning - curtain|moonlight awning|şanzımanlı': 'technical-sheets/moonlight.pdf',
-  'zip screen - awning - curtain|sunshine classic awning|motorlu': 'technical-sheets/sunshine-awning.pdf',
-  'zip screen - awning - curtain|sunshine classic awning|şanzımanlı': 'technical-sheets/sunshine-awning.pdf',
-  'zip screen - awning - curtain|sunshine awning|motorlu': 'technical-sheets/sunshine-awning.pdf',
-  'zip screen - awning - curtain|sunshine awning|şanzımanlı': 'technical-sheets/sunshine-awning.pdf',
-  'zip screen - awning - curtain|twins classic awning|motorlu': 'technical-sheets/twins-awning.pdf',
-  'zip screen - awning - curtain|twins classic awning|şanzımanlı': 'technical-sheets/twins-awning.pdf',
-  'zip screen - awning - curtain|twins awning|motorlu': 'technical-sheets/twins-awning.pdf',
-  'zip screen - awning - curtain|twins awning|şanzımanlı': 'technical-sheets/twins-awning.pdf'
-};
-
-function normalizeTechnicalSheetKey(value) {
-  return String(value || '')
-    .trim()
-    .toLocaleLowerCase('tr-TR')
-    .replace(/\s+/g, ' ');
-}
-
-function getSelectedOptionText(selectId) {
-  const select = document.getElementById(selectId);
-  if (!select) return '';
-  const option = select.options && select.selectedIndex >= 0 ? select.options[select.selectedIndex] : null;
-  return option ? option.textContent.trim() : '';
-}
-
-function getTechnicalSheetLabel() {
-  const lang = (window.currentLang || document.documentElement.lang || 'en').toLowerCase();
-  if (lang === 'tr') return 'Teknik Döküman';
-  if (lang === 'de') return 'Technisches Datenblatt';
-  if (lang === 'fr') return 'Fiche technique';
-  if (lang === 'he') return 'Technical Sheet';
-  return 'Technical Sheet';
-}
-
-function getOpenPdfLabel() {
-  const lang = (window.currentLang || document.documentElement.lang || 'en').toLowerCase();
-  if (lang === 'tr') return 'PDF Aç';
-  if (lang === 'de') return 'PDF öffnen';
-  if (lang === 'fr') return 'Ouvrir PDF';
-  if (lang === 'he') return 'Open PDF';
-  return 'Open PDF';
-}
-
-function getCloseLabel() {
-  const lang = (window.currentLang || document.documentElement.lang || 'en').toLowerCase();
-  if (lang === 'tr') return 'Kapat';
-  if (lang === 'de') return 'Schließen';
-  if (lang === 'fr') return 'Fermer';
-  if (lang === 'he') return 'Close';
-  return 'Close';
-}
-
-function getCurrentTechnicalSheetUrl() {
-  const family = normalizeTechnicalSheetKey(getSelectedOptionText('productFamilySelect'));
-  const group = normalizeTechnicalSheetKey(getSelectedOptionText('productGroupSelect'));
-  const subGroup = normalizeTechnicalSheetKey(getSelectedOptionText('productSubGroupSelect'));
-  const directKey = `${family}|${group}|${subGroup}`;
-  const emptySubKey = `${family}|${group}|`;
-  return TECHNICAL_SHEET_MAP[directKey] || TECHNICAL_SHEET_MAP[emptySubKey] || '';
-}
-
-function refreshTechnicalSheetButton() {
-  const wrap = document.getElementById('technicalSheetWrap');
-  const btn = document.getElementById('technicalSheetBtn');
-  if (!wrap || !btn) return;
-  const url = getCurrentTechnicalSheetUrl();
-  btn.textContent = getTechnicalSheetLabel();
-  btn.dataset.sheetUrl = url;
-  wrap.classList.toggle('hidden', !url);
-}
-
-function openTechnicalSheet() {
-  const url = getCurrentTechnicalSheetUrl();
-  if (!url) return;
-  const modal = document.getElementById('technicalSheetModal');
-  const frame = document.getElementById('technicalSheetFrame');
-  const title = document.getElementById('technicalSheetTitle');
-  const openLink = document.getElementById('technicalSheetOpenLink');
-  const closeBtn = document.getElementById('technicalSheetCloseBtn');
-  if (!modal || !frame) {
-    window.open(url, '_blank', 'noopener');
-    return;
-  }
-  if (title) title.textContent = getTechnicalSheetLabel();
-  if (openLink) {
-    openLink.textContent = getOpenPdfLabel();
-    openLink.href = url;
-  }
-  if (closeBtn) closeBtn.textContent = getCloseLabel();
-  frame.src = url;
-  modal.classList.remove('hidden');
-  document.body.style.overflow = 'hidden';
-}
-
-function closeTechnicalSheet() {
-  const modal = document.getElementById('technicalSheetModal');
-  const frame = document.getElementById('technicalSheetFrame');
-  if (modal) modal.classList.add('hidden');
-  if (frame) frame.src = 'about:blank';
-  document.body.style.overflow = '';
-}
-
-(function initTechnicalSheetViewer() {
-  const btn = document.getElementById('technicalSheetBtn');
-  const closeBtn = document.getElementById('technicalSheetCloseBtn');
-  const modal = document.getElementById('technicalSheetModal');
-  if (btn) btn.addEventListener('click', openTechnicalSheet);
-  if (closeBtn) closeBtn.addEventListener('click', closeTechnicalSheet);
-  if (modal) {
-    modal.addEventListener('click', (event) => {
-      if (event.target === modal) closeTechnicalSheet();
-    });
-  }
-  // Modal markup is placed after the script tags in index.html, so use delegated
-  // click handling as a reliable fallback for the Close button and backdrop.
-  document.addEventListener('click', (event) => {
-    const closeButton = event.target && event.target.closest ? event.target.closest('#technicalSheetCloseBtn') : null;
-    if (closeButton) {
-      event.preventDefault();
-      event.stopPropagation();
-      closeTechnicalSheet();
+  function redoProjectHistory() {
+    flushCurrentStateBeforeHistoryMove();
+    if (projectHistory.index < 0 || projectHistory.index >= projectHistory.entries.length - 1) {
+      updateHistoryControls();
       return;
     }
-    const liveModal = document.getElementById('technicalSheetModal');
-    if (liveModal && event.target === liveModal) closeTechnicalSheet();
-  }, true);
-  ['productFamilySelect', 'productGroupSelect', 'productSubGroupSelect'].forEach((id) => {
-    const el = document.getElementById(id);
-    if (el) el.addEventListener('change', () => setTimeout(refreshTechnicalSheetButton, 50));
-  });
-  document.addEventListener('keydown', (event) => {
-    if (event.key === 'Escape') closeTechnicalSheet();
-  });
-  window.addEventListener('load', refreshTechnicalSheetButton);
-  document.addEventListener('change', () => setTimeout(refreshTechnicalSheetButton, 80), true);
-  document.addEventListener('click', () => setTimeout(refreshTechnicalSheetButton, 80), true);
-  window.refreshTechnicalSheetButton = refreshTechnicalSheetButton;
-  setTimeout(refreshTechnicalSheetButton, 120);
-})();
-
-
-
-/* C132: Awning Print Placement = No disables Print Color */
-(function initAwningPrintPlacementNo() {
-  if (typeof I18N !== 'undefined') {
-    Object.assign(I18N.en, { 'Print Placement No Color Disabled': 'Disabled because print placement is No' });
-    Object.assign(I18N.tr, { 'Print Placement No Color Disabled': 'Yazı seçeneği Hayır olduğu için pasif' });
-    Object.assign(I18N.de, { 'Print Placement No Color Disabled': 'Deaktiviert, weil Druckposition Nein ist' });
-    Object.assign(I18N.fr, { 'Print Placement No Color Disabled': 'Désactivé car le marquage est Non' });
-    Object.assign(I18N.he, { 'Print Placement No Color Disabled': 'מושבת כי מיקום ההדפסה הוא לא' });
+    restoreHistoryIndex(projectHistory.index + 1, 'redo');
   }
 
-  function getCheckedValue(name) {
-    const checked = document.querySelector(`input[type="radio"][name="${name}"]:checked`);
-    return checked ? checked.value : '';
-  }
-
-  function suffixFromFieldId(fieldId) {
-    const match = String(fieldId || '').match(/(__pos\d+)$/);
-    return match ? match[1] : '';
-  }
-
-  function clearAndDisablePrintColor(input, disabled) {
-    if (!input) return false;
-
-    const label = input.closest('label');
-    const wrap = input.closest('.input-unit-wrap');
-    const relatedButtons = Array.from((wrap || label || document).querySelectorAll('button'));
-
-    let changed = false;
-    if (disabled && input.value) {
-      input.value = '';
-      changed = true;
-    }
-
-    input.disabled = disabled;
-    input.readOnly = disabled;
-    input.classList.toggle('is-disabled-by-print-placement', disabled);
-    if (label) label.classList.toggle('print-color-disabled', disabled);
-
-    relatedButtons.forEach((button) => {
-      button.disabled = disabled;
-      button.setAttribute('aria-disabled', disabled ? 'true' : 'false');
+  function bindHistoryKeyboardShortcuts() {
+    document.addEventListener('keydown', evt => {
+      if (!previewPanel || !previewPanel.classList.contains('is-expanded')) return;
+      if (!(evt.ctrlKey || evt.metaKey) || evt.altKey) return;
+      const active = document.activeElement;
+      const tag = active && active.tagName ? active.tagName.toLowerCase() : '';
+      if (active && (active.isContentEditable || ['input', 'textarea', 'select'].includes(tag))) return;
+      const key = String(evt.key || '').toLowerCase();
+      if (key === 'z') {
+        evt.preventDefault();
+        if (evt.shiftKey) redoProjectHistory();
+        else undoProjectHistory();
+      } else if (key === 'y') {
+        evt.preventDefault();
+        redoProjectHistory();
+      }
     });
+  }
 
-    if (disabled) {
-      input.placeholder = translatedText('Print Placement No Color Disabled');
+  function firstNumber(value) {
+    const token = String(value ?? '').split(';').map(s => s.trim()).find(s => s && s.toLocaleUpperCase('tr-TR') !== 'NO');
+    const parsed = Number(String(token ?? '').replace(',', '.'));
+    return Number.isFinite(parsed) ? parsed : 0;
+  }
+
+  function validateInput(d) {
+    const txt = UI_TEXT[currentLanguage] || UI_TEXT.tr;
+    const fieldNames = currentLanguage === 'en'
+      ? { width: 'Width', opening: 'Projection', rearHeight: 'Rear H', frontHeight: 'Front H' }
+      : { width: 'Genişlik', opening: 'Açılım', rearHeight: 'Arka H', frontHeight: 'Ön H' };
+    const missing = [];
+    if (firstNumber(d.width) <= 0) missing.push(fieldNames.width);
+    if (firstNumber(d.opening) <= 0) missing.push(fieldNames.opening);
+    if (firstNumber(d.rearHeight) <= 0) missing.push(fieldNames.rearHeight);
+    if (firstNumber(d.frontHeight) <= 0) missing.push(fieldNames.frontHeight);
+    if (missing.length) throw new Error(currentLanguage === 'en' ? `Fill: ${missing.join(', ')}.` : `${missing.join(', ')} alanlarını doldur.`);
+  }
+
+  function autosizeTextarea(el) {
+    if (!el || el.tagName !== 'TEXTAREA') return;
+    el.style.height = 'auto';
+    el.style.height = Math.max(42, el.scrollHeight) + 'px';
+  }
+
+  function syncUpperInputWrap(data) {
+    if (wrappingFields || !window.PulumurGeometry || typeof window.PulumurGeometry.wrapTextForUpperInput !== 'function') return;
+    wrappingFields = true;
+    try {
+      upperTableFieldIds.forEach(id => {
+        const el = $(id);
+        if (!el || el.tagName !== 'TEXTAREA') return;
+        const plain = String(el.value || '').replace(/\r\n/g, ' ').replace(/\r/g, ' ').replace(/\n/g, ' ').replace(/\s+/g, ' ').trim();
+        const wrapped = window.PulumurGeometry.wrapTextForUpperInput(plain, data);
+        if (el.value !== wrapped) el.value = wrapped;
+        autosizeTextarea(el);
+      });
+    } finally {
+      wrappingFields = false;
+    }
+  }
+
+  function updatePreview(resetZoom = false) {
+    try {
+      applyAutoRayPost(false);
+      const data = collectForm();
+      validateInput(data);
+      const drawing = window.PulumurGeometry.buildDrawing(data);
+      syncUpperInputWrap(data);
+      lastDrawing = drawing;
+      renderPreview(drawing, resetZoom);
+      applyPreviewDimensionOffsets();
+      applyPreviewDimensionFilter();
+      syncToolboxBooleanButtons();
+      refreshToolboxSelectionDecorations();
+      recordProjectHistoryState();
+      const d = drawing.input;
+      statusText.textContent = currentLanguage === 'en'
+        ? `Ready: Page1 B1=${d.sayfa1 ? d.sayfa1.B1_width : Math.round(d.width)} | ${Math.round(d.opening)} mm projection, ${d.systems.map(s => s.rayCount).join(';')} rails, ${d.postCount} posts, angle ${window.PulumurGeometry.formatDeg(d.angle)}. Use the mouse wheel to zoom and drag with the left button to pan. V8.9.33: left, right and activated intermediate side views use independent support, parapet, product, triangle and wall states. In multi-position drawings the final right-side view is the editing master and the final left-side view is its clean semantic mirror.`
+        : `Hazır: Sayfa1 B1=${d.sayfa1 ? d.sayfa1.B1_width : Math.round(d.width)} | ${Math.round(d.opening)} mm açılım, ${d.systems.map(s => s.rayCount).join(';')} ray, ${d.postCount} dikme, açı ${window.PulumurGeometry.formatDeg(d.angle)}. Tekerlek ile zoom, sol tuş basılı sürükle ile pan. V8.9.33: sol, sağ ve etkinleştirilen ara poz yan görünüşleri destek, parapet, ürün, üçgen doğrama ve arka duvar durumlarını bağımsız saklar. Çoklu pozda son sağ yan görünüş düzenleme kaynağıdır; son sol yan görünüş bunun temiz ve semantik ayna sunumudur.`;
+      return drawing;
+    } catch (err) {
+      const txt = UI_TEXT[currentLanguage] || UI_TEXT.tr;
+      // Geçici/yanlış bir form değeri mevcut çizimi ve kullanıcının zoom/pan konumunu silmesin.
+      if (!getPreviewSvg()) preview.innerHTML = `<div class="empty-state">${escapeHtml(txt.emptyPreview)}</div>`;
+      statusText.textContent = err.message;
+      return null;
+    }
+  }
+
+
+  function isPreviewToggleOn(el) {
+    return !!(el && el.classList.contains('is-on'));
+  }
+
+  function setPreviewToggleState(el, on) {
+    if (!el) return;
+    el.classList.toggle('is-on', !!on);
+    el.classList.toggle('is-off', !on);
+    el.setAttribute('aria-pressed', on ? 'true' : 'false');
+  }
+
+
+  function normalizePreviewDimensionOffsets(raw) {
+    const out = {};
+    if (!raw || typeof raw !== 'object' || Array.isArray(raw)) return out;
+    Object.entries(raw).forEach(([key, value]) => {
+      if (!key || !value || typeof value !== 'object') return;
+      const x = Number(value.x) || 0;
+      const y = Number(value.y) || 0;
+      if (Math.abs(x) > 0.001 || Math.abs(y) > 0.001) out[String(key)] = { x, y };
+    });
+    return out;
+  }
+
+  function applyPreviewDimensionOffsets() {
+    preview.querySelectorAll('[data-preview-dim-key]').forEach(group => {
+      const key = String(group.dataset.previewDimKey || '');
+      const axis = String(group.dataset.dimensionAxis || 'aligned').toLowerCase();
+      const saved = previewDimensionOffsets[key] || { x: 0, y: 0 };
+      const x = axis === 'vertical' ? (Number(saved.x) || 0) : 0;
+      const y = axis === 'horizontal' ? (Number(saved.y) || 0) : 0;
+      group.setAttribute('transform', `translate(${x} ${y})`);
+    });
+  }
+
+  function previewDimensionDragCandidate(target) {
+    if (!target || !target.closest || toolboxSelectionMode) return null;
+    const group = target.closest('.editable-dimension,.preview-dimension-plain');
+    if (!group) return null;
+    const axis = String(group.dataset.dimensionAxis || '').toLowerCase();
+    if (!['horizontal','vertical'].includes(axis)) return null;
+    const key = String(group.dataset.previewDimKey || group.dataset.dimId || '');
+    if (!key) return null;
+    return { group, axis, key };
+  }
+
+  function svgDeltaFromClient(dx, dy) {
+    const svg = getPreviewSvg();
+    if (!svg) return { x: 0, y: 0 };
+    const rect = svg.getBoundingClientRect();
+    const vb = svg.viewBox && svg.viewBox.baseVal ? svg.viewBox.baseVal : null;
+    if (!rect.width || !rect.height || !vb) return { x: 0, y: 0 };
+    return { x: dx * vb.width / rect.width, y: dy * vb.height / rect.height };
+  }
+
+  function beginPreviewDimensionDrag(evt) {
+    if (evt.button !== 0) return false;
+    const candidate = previewDimensionDragCandidate(evt.target);
+    if (!candidate) return false;
+    const saved = previewDimensionOffsets[candidate.key] || { x: 0, y: 0 };
+    dimensionDragState = { ...candidate, pointerId: evt.pointerId, startClientX: evt.clientX, startClientY: evt.clientY, baseX: Number(saved.x) || 0, baseY: Number(saved.y) || 0, moved: false, captured: false };
+    evt.stopPropagation();
+    return true;
+  }
+
+  function movePreviewDimensionDrag(evt) {
+    const state = dimensionDragState;
+    if (!state || state.pointerId !== evt.pointerId) return false;
+    const clientDx = evt.clientX - state.startClientX;
+    const clientDy = evt.clientY - state.startClientY;
+    if (!state.moved && Math.hypot(clientDx, clientDy) >= 3) {
+      state.moved = true;
+      state.group.classList.add('is-dimension-dragging');
+      if (preview.setPointerCapture) { try { preview.setPointerCapture(evt.pointerId); state.captured = true; } catch (_) {} }
+    }
+    if (!state.moved) { evt.stopPropagation(); return true; }
+    const delta = svgDeltaFromClient(clientDx, clientDy);
+    const x = state.axis === 'vertical' ? state.baseX + delta.x : 0;
+    const y = state.axis === 'horizontal' ? state.baseY + delta.y : 0;
+    state.group.setAttribute('transform', `translate(${x} ${y})`);
+    if (state.moved) {
+      previewState.dragMoved = true;
+      statusText.textContent = currentLanguage === 'en' ? `Dimension line moved on the ${state.axis === 'horizontal' ? 'Y' : 'X'} axis.` : `Ölçü çizgisi ${state.axis === 'horizontal' ? 'Y' : 'X'} ekseninde kaydırılıyor.`;
+    }
+    evt.preventDefault(); evt.stopPropagation(); return true;
+  }
+
+  function endPreviewDimensionDrag(evt) {
+    const state = dimensionDragState;
+    if (!state || (evt && state.pointerId !== evt.pointerId)) return false;
+    state.group.classList.remove('is-dimension-dragging');
+    if (state.moved) {
+      const transform = state.group.getAttribute('transform') || '';
+      const match = /translate\(([-+0-9.eE]+)[ ,]+([-+0-9.eE]+)\)/.exec(transform);
+      const x = match ? Number(match[1]) || 0 : 0, y = match ? Number(match[2]) || 0 : 0;
+      previewDimensionOffsets[state.key] = { x: state.axis === 'vertical' ? x : 0, y: state.axis === 'horizontal' ? y : 0 };
+      recordProjectHistoryState();
+      statusText.textContent = currentLanguage === 'en' ? 'Dimension line position saved for the preview.' : 'Ölçü çizgisi konumu önizleme için kaydedildi.';
+    }
+    if (evt && state.captured && preview.releasePointerCapture) { try { preview.releasePointerCapture(state.pointerId); } catch (_) {} }
+    dimensionDragState = null;
+    window.setTimeout(() => { if (previewState.dragMoved) previewState.dragMoved = false; }, 0);
+    if (evt && state.moved) { evt.preventDefault(); evt.stopPropagation(); }
+    return true;
+  }
+
+  function availablePreviewPositionCount() {
+    const d = lastDrawing && lastDrawing.input ? lastDrawing.input : null;
+    if (!d) return 1;
+    return Math.max(1, Number(d.positionCount) || 0, Array.isArray(d.positions) ? d.positions.length : 0, Array.isArray(d.systems) ? d.systems.length : 0);
+  }
+
+  function serializePreviewDimensionFilter() {
+    return {
+      main: previewDimensionFilter.main !== false,
+      all: previewDimensionFilter.all === true,
+      preset: String(previewDimensionFilter.preset || 'main'),
+      horizontal: previewDimensionFilter.horizontal !== false,
+      vertical: previewDimensionFilter.vertical !== false,
+      editable: previewDimensionFilter.editable !== false,
+      readonly: previewDimensionFilter.readonly !== false,
+      positions: Array.isArray(previewDimensionFilter.positions) ? previewDimensionFilter.positions.map(Number).filter(Number.isInteger) : null
+    };
+  }
+
+  function restorePreviewDimensionFilter(raw) {
+    const value = raw && typeof raw === 'object' ? raw : {};
+    // v8.9.21 ve daha eski proje dosyalarıyla geriye dönük uyumluluk.
+    if (!Object.prototype.hasOwnProperty.call(value, 'preset')) {
+      previewDimensionFilter.main = value.main !== false;
+      previewDimensionFilter.all = value.main !== false && value.all === true;
+      previewDimensionFilter.preset = previewDimensionFilter.main ? (previewDimensionFilter.all ? 'all' : 'main') : 'none';
+      previewDimensionFilter.horizontal = true;
+      previewDimensionFilter.vertical = true;
+      previewDimensionFilter.editable = true;
+      previewDimensionFilter.readonly = true;
+      previewDimensionFilter.positions = null;
+      return;
+    }
+    previewDimensionFilter.main = value.main !== false;
+    previewDimensionFilter.all = value.all === true;
+    previewDimensionFilter.preset = ['main','all','none','custom'].includes(String(value.preset)) ? String(value.preset) : 'custom';
+    previewDimensionFilter.horizontal = value.horizontal !== false;
+    previewDimensionFilter.vertical = value.vertical !== false;
+    previewDimensionFilter.editable = value.editable !== false;
+    previewDimensionFilter.readonly = value.readonly !== false;
+    previewDimensionFilter.positions = Array.isArray(value.positions) ? value.positions.map(Number).filter(Number.isInteger) : null;
+  }
+
+  function setDimensionFilterPreset(preset) {
+    const next = String(preset || 'all');
+    if (next === 'none') {
+      previewDimensionFilter.main = false;
+      previewDimensionFilter.all = false;
+      previewDimensionFilter.preset = 'none';
+    } else if (next === 'main') {
+      previewDimensionFilter.main = true;
+      previewDimensionFilter.all = false;
+      previewDimensionFilter.preset = 'main';
+      previewDimensionFilter.horizontal = true;
+      previewDimensionFilter.vertical = true;
+      previewDimensionFilter.editable = true;
+      previewDimensionFilter.readonly = true;
+      previewDimensionFilter.positions = null;
     } else {
-      input.placeholder = input.dataset.placeholderKey ? pickerButtonLabel(input.dataset.placeholderKey === 'Select Fabric' ? 'fabric' : 'textColor') : t('enterValue');
+      previewDimensionFilter.main = true;
+      previewDimensionFilter.all = true;
+      previewDimensionFilter.preset = 'all';
+      previewDimensionFilter.horizontal = true;
+      previewDimensionFilter.vertical = true;
+      previewDimensionFilter.editable = true;
+      previewDimensionFilter.readonly = true;
+      previewDimensionFilter.positions = null;
     }
-
-    return changed;
+    syncDimensionFilterControls();
+    applyPreviewDimensionFilter();
   }
 
-  function updateAwningPrintColorState() {
-    let needsPreviewUpdate = false;
+  function dimensionNodeEditable(node) {
+    return node.classList.contains('editable-dimension') && String(node.dataset.editable || 'true') !== 'false';
+  }
 
-    document.querySelectorAll('input[id^="dyn_printColor"]').forEach((input) => {
-      const fieldId = input.dataset.fieldId || input.id.replace(/^dyn_/, '');
-      const suffix = suffixFromFieldId(fieldId);
-      const placement = getCheckedValue(`dyn_printPlacement${suffix}`);
-      const placementGroup = document.querySelector(`input[name="dyn_printPlacement${suffix}"]`)?.closest('.choice-field');
-      const placementVisible = placementGroup ? !placementGroup.hidden : true;
-      const disabled = placementVisible && placement === 'No';
+  function dimensionMatchesAdvancedFilter(node) {
+    const axis = String(node.dataset.dimensionAxis || 'aligned').toLowerCase();
+    let axisMatch = false;
+    if (axis === 'horizontal') axisMatch = previewDimensionFilter.horizontal;
+    else if (axis === 'vertical') axisMatch = previewDimensionFilter.vertical;
+    else axisMatch = previewDimensionFilter.horizontal && previewDimensionFilter.vertical;
+    if (!axisMatch) return false;
 
-      if (clearAndDisablePrintColor(input, disabled)) {
-        needsPreviewUpdate = true;
+    const editable = dimensionNodeEditable(node);
+    if (editable && !previewDimensionFilter.editable) return false;
+    if (!editable && !previewDimensionFilter.readonly) return false;
+
+    const selectedPositions = previewDimensionFilter.positions;
+    if (Array.isArray(selectedPositions)) {
+      const positionIndex = Number(node.dataset.positionIndex);
+      if (!Number.isInteger(positionIndex) || positionIndex < 0 || !selectedPositions.includes(positionIndex)) return false;
+    }
+    return true;
+  }
+
+  function applyPreviewDimensionFilter() {
+    const showMain = previewDimensionFilter.main !== false;
+    const showAll = showMain && previewDimensionFilter.all === true;
+    setPreviewToggleState($('showMainDims'), showMain && !showAll);
+    const allBtn = $('showAllDims');
+    if (allBtn) {
+      const state = dimensionFilterMasterState();
+      setPreviewToggleState(allBtn, state.all);
+      allBtn.classList.toggle('is-mixed', state.partial);
+      if (state.partial) {
+        allBtn.classList.remove('is-on', 'is-off');
+        allBtn.setAttribute('aria-pressed', 'mixed');
+      }
+    }
+
+    preview.querySelectorAll('.editable-dimension, .preview-dimension-plain').forEach(node => {
+      const type = String(node.dataset.dimensionType || 'main').toLowerCase();
+      const baseVisible = showMain && (showAll || type !== 'detail');
+      const visible = baseVisible && dimensionMatchesAdvancedFilter(node);
+      node.style.display = visible ? '' : 'none';
+    });
+    syncDimensionFilterControls();
+  }
+
+  function dimensionFilterText() {
+    return currentLanguage === 'en' ? {
+      title: 'Dimension Filter', axis: 'Orientation', horizontal: 'Horizontal', vertical: 'Vertical', edit: 'Status', editable: 'Editable', readonly: 'Reference only', position: 'Position', all: 'All', close: 'Close'
+    } : {
+      title: 'Ölçü Filtresi', axis: 'Yön', horizontal: 'Yatay', vertical: 'Dikey', edit: 'Durum', editable: 'Düzenlenebilir', readonly: 'Bilgi amaçlı', position: 'Poz', all: 'Hepsi', close: 'Kapat'
+    };
+  }
+
+  function rebuildDimensionPositionFilters() {
+    const host = $('dimensionFilterPositions');
+    if (!host) return;
+    const count = availablePreviewPositionCount();
+    const selected = previewDimensionFilter.positions;
+    host.innerHTML = Array.from({ length: count }, (_, index) => {
+      const checked = !Array.isArray(selected) || selected.includes(index);
+      const label = currentLanguage === 'en' ? `Position ${index + 1}` : `Poz ${index + 1}`;
+      return `<label><input type="checkbox" data-dim-position="${index}"${checked ? ' checked' : ''}><span>${label}</span></label>`;
+    }).join('');
+  }
+
+  function dimensionFilterMasterState() {
+    const flags = [
+      previewDimensionFilter.horizontal !== false,
+      previewDimensionFilter.vertical !== false,
+      previewDimensionFilter.editable !== false,
+      previewDimensionFilter.readonly !== false
+    ];
+    const count = availablePreviewPositionCount();
+    const selected = Array.isArray(previewDimensionFilter.positions)
+      ? new Set(previewDimensionFilter.positions.map(Number).filter(Number.isInteger))
+      : null;
+    for (let index = 0; index < count; index += 1) flags.push(!selected || selected.has(index));
+    const selectedCount = flags.filter(Boolean).length;
+    return {
+      all: previewDimensionFilter.main !== false && previewDimensionFilter.all === true && selectedCount === flags.length,
+      none: selectedCount === 0,
+      partial: selectedCount > 0 && selectedCount < flags.length
+    };
+  }
+
+  function syncDimensionFilterControls() {
+    const text = dimensionFilterText();
+    const set = (id, value) => { const el = $(id); if (el) el.textContent = value; };
+    set('dimensionFilterTitle', text.title);
+    set('dimensionFilterAxisTitle', text.axis);
+    set('dimensionFilterHorizontalLabel', text.horizontal);
+    set('dimensionFilterVerticalLabel', text.vertical);
+    set('dimensionFilterEditTitle', text.edit);
+    set('dimensionFilterEditableLabel', text.editable);
+    set('dimensionFilterReadonlyLabel', text.readonly);
+    set('dimensionFilterPositionTitle', text.position);
+    set('dimensionFilterMasterLabel', text.all);
+    const close = $('dimensionFilterClose'); if (close) close.setAttribute('aria-label', text.close);
+    const checks = {
+      horizontal: previewDimensionFilter.horizontal,
+      vertical: previewDimensionFilter.vertical,
+      editable: previewDimensionFilter.editable,
+      readonly: previewDimensionFilter.readonly
+    };
+    Object.entries(checks).forEach(([key, checked]) => {
+      const input = document.querySelector(`[data-dim-filter="${key}"]`);
+      if (input) input.checked = !!checked;
+    });
+    rebuildDimensionPositionFilters();
+    const master = $('dimensionFilterMaster');
+    if (master) {
+      const state = dimensionFilterMasterState();
+      master.checked = state.all;
+      master.indeterminate = state.partial;
+      master.setAttribute('aria-checked', state.partial ? 'mixed' : (state.all ? 'true' : 'false'));
+    }
+  }
+
+  function closeDimensionFilterMenu() {
+    const menu = $('dimensionFilterMenu');
+    const btn = $('showAllDims');
+    if (menu) menu.hidden = true;
+    if (btn) btn.setAttribute('aria-expanded', 'false');
+  }
+
+  function toggleDimensionFilterMenu(forceOpen = null) {
+    const menu = $('dimensionFilterMenu');
+    const btn = $('showAllDims');
+    if (!menu || !btn) return;
+    const open = forceOpen == null ? menu.hidden : !!forceOpen;
+    menu.hidden = !open;
+    btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+    if (open) syncDimensionFilterControls();
+  }
+
+  function updateDimensionFilterFromMenu() {
+    previewDimensionFilter.main = true;
+    previewDimensionFilter.all = true;
+    previewDimensionFilter.preset = 'custom';
+    ['horizontal','vertical','editable','readonly'].forEach(key => {
+      const input = document.querySelector(`[data-dim-filter="${key}"]`);
+      previewDimensionFilter[key] = !!(input && input.checked);
+    });
+    const positions = Array.from(document.querySelectorAll('[data-dim-position]'));
+    const selected = positions.filter(input => input.checked).map(input => Number(input.dataset.dimPosition)).filter(Number.isInteger);
+    previewDimensionFilter.positions = selected.length === positions.length ? null : selected;
+    applyPreviewDimensionFilter();
+  }
+
+  function setAllDimensionFilterChoices(checked) {
+    const next = !!checked;
+    previewDimensionFilter.main = next;
+    previewDimensionFilter.all = next;
+    previewDimensionFilter.preset = next ? 'all' : 'none';
+    previewDimensionFilter.horizontal = next;
+    previewDimensionFilter.vertical = next;
+    previewDimensionFilter.editable = next;
+    previewDimensionFilter.readonly = next;
+    previewDimensionFilter.positions = next ? null : [];
+    applyPreviewDimensionFilter();
+  }
+
+  function bindPreviewFilterControls() {
+    const mainEl = $('showMainDims');
+    const allEl = $('showAllDims');
+    const menu = $('dimensionFilterMenu');
+    if (!mainEl || !allEl || !menu || dimensionFilterMenuBound) return;
+    dimensionFilterMenuBound = true;
+
+    mainEl.onclick = () => {
+      if (previewDimensionFilter.preset === 'main' && previewDimensionFilter.main) setDimensionFilterPreset('none');
+      else setDimensionFilterPreset('main');
+      closeDimensionFilterMenu();
+    };
+    allEl.onclick = evt => { evt.preventDefault(); evt.stopPropagation(); toggleDimensionFilterMenu(); };
+    $('dimensionFilterClose').onclick = closeDimensionFilterMenu;
+    menu.addEventListener('click', evt => { evt.stopPropagation(); });
+    menu.addEventListener('change', evt => {
+      const target = evt.target;
+      if (!target) return;
+      if (target.id === 'dimensionFilterMaster') {
+        setAllDimensionFilterChoices(target.checked);
+        return;
+      }
+      if (target.matches('[data-dim-filter]') || target.matches('[data-dim-position]')) updateDimensionFilterFromMenu();
+    });
+    document.addEventListener('click', evt => {
+      const control = $('dimensionFilterControl');
+      if (control && !control.contains(evt.target)) closeDimensionFilterMenu();
+    });
+    document.addEventListener('keydown', evt => { if (evt.key === 'Escape' && !$('dimensionFilterMenu').hidden) closeDimensionFilterMenu(); });
+    setDimensionFilterPreset('main');
+  }
+
+  function getPreviewStage() {
+    return preview.querySelector('.preview-stage');
+  }
+
+  function getPreviewSvg() {
+    return preview.querySelector('svg');
+  }
+
+  function getSvgViewBoxSize(svg) {
+    const vb = svg && svg.viewBox && svg.viewBox.baseVal;
+    return {
+      width: Math.max(1, vb && vb.width ? vb.width : (svg ? (svg.clientWidth || 1000) : 1000)),
+      height: Math.max(1, vb && vb.height ? vb.height : (svg ? (svg.clientHeight || 1000) : 1000))
+    };
+  }
+
+  function computePreviewFitScale(svg) {
+    const box = getSvgViewBoxSize(svg);
+    const padding = 24;
+    const availableW = Math.max(120, preview.clientWidth - padding * 2);
+    const availableH = Math.max(120, preview.clientHeight - padding * 2);
+    return Math.max(0.01, Math.min(availableW / box.width, availableH / box.height));
+  }
+
+  function applyPreviewScale() {
+    const stage = getPreviewStage();
+    const svg = getPreviewSvg();
+    if (!stage || !svg) return;
+    const box = getSvgViewBoxSize(svg);
+    previewState.baseScale = computePreviewFitScale(svg);
+    const totalScale = previewState.baseScale * previewState.zoom;
+    stage.style.width = `${Math.max(80, box.width * totalScale)}px`;
+    stage.style.height = `${Math.max(80, box.height * totalScale)}px`;
+  }
+
+  function renderPreview(drawing, resetZoom = false) {
+    const svg = window.PulumurGeometry.renderSvg(drawing);
+    const oldStage = getPreviewStage();
+    const oldSvg = getPreviewSvg();
+
+    // KALICI ÖNİZLEME KURALI (v8.9.15+): İlk çizim veya kullanıcının açıkça
+    // “Önizlemeyi Yenile” komutu dışında zoom/pan yeniden hesaplanmaz.
+    if (resetZoom || !oldStage || !oldSvg) {
+      preview.innerHTML = `<div class="preview-stage">${svg}</div>`;
+      previewState.zoom = 1;
+      preview.scrollLeft = 0;
+      preview.scrollTop = 0;
+      window.requestAnimationFrame(() => applyPreviewScale());
+      return;
+    }
+
+    // Dinamik güncellemelerde mevcut zoom/pan sahnesini bozmadan sadece SVG içeriğini yenile.
+    const keepLeftRatio = preview.scrollLeft / Math.max(1, preview.scrollWidth - preview.clientWidth);
+    const keepTopRatio = preview.scrollTop / Math.max(1, preview.scrollHeight - preview.clientHeight);
+    const totalScale = Math.max(0.0001, (Number(previewState.baseScale) || 1) * (Number(previewState.zoom) || 1));
+    const keepWorldCenterX = (preview.scrollLeft + preview.clientWidth / 2) / totalScale;
+    const keepWorldCenterY = (preview.scrollTop + preview.clientHeight / 2) / totalScale;
+    const keepScrollLeft = preview.scrollLeft;
+    const keepScrollTop = preview.scrollTop;
+
+    if (oldStage && oldSvg) {
+      const temp = document.createElement('div');
+      temp.innerHTML = svg;
+      const nextSvg = temp.firstElementChild;
+      if (nextSvg) {
+        oldSvg.replaceWith(nextSvg);
+        // Yeni çizimin viewBox ölçüsü değişse bile aynı gerçek ölçek korunur.
+        // Böylece ürün/ölçü düzenleme sonrasında kullanıcının zoom seviyesi değişmez.
+        const nextBox = getSvgViewBoxSize(nextSvg);
+        oldStage.style.width = `${Math.max(80, nextBox.width * totalScale)}px`;
+        oldStage.style.height = `${Math.max(80, nextBox.height * totalScale)}px`;
+        const restore = () => {
+          preview.scrollLeft = Math.max(0, keepWorldCenterX * totalScale - preview.clientWidth / 2);
+          preview.scrollTop = Math.max(0, keepWorldCenterY * totalScale - preview.clientHeight / 2);
+        };
+        restore();
+        window.requestAnimationFrame(restore);
+        return;
+      }
+    }
+
+    // Yedek yol: stage yoksa kur ama zoom resetleme.
+    preview.innerHTML = `<div class="preview-stage">${svg}</div>`;
+    const stage = getPreviewStage();
+    const newSvg = getPreviewSvg();
+    if (stage && newSvg) {
+      const box = getSvgViewBoxSize(newSvg);
+      const totalScale = Math.max(0.0001, (Number(previewState.baseScale) || 1) * (Number(previewState.zoom) || 1));
+      stage.style.width = `${Math.max(80, box.width * totalScale)}px`;
+      stage.style.height = `${Math.max(80, box.height * totalScale)}px`;
+    }
+    preview.scrollLeft = keepScrollLeft;
+    preview.scrollTop = keepScrollTop;
+    window.requestAnimationFrame(() => {
+      preview.scrollLeft = keepScrollLeft || keepLeftRatio * Math.max(1, preview.scrollWidth - preview.clientWidth);
+      preview.scrollTop = keepScrollTop || keepTopRatio * Math.max(1, preview.scrollHeight - preview.clientHeight);
+    });
+  }
+
+  function fitPreview() {
+    previewState.zoom = 1;
+    preview.scrollLeft = 0;
+    preview.scrollTop = 0;
+    applyPreviewScale();
+  }
+
+  function setPreviewZoom(nextZoom, clientX, clientY) {
+    const svg = getPreviewSvg();
+    if (!svg) return;
+    const rect = preview.getBoundingClientRect();
+    const oldScale = Math.max(0.0001, previewState.baseScale * previewState.zoom);
+    const localX = (clientX ?? (rect.left + rect.width / 2)) - rect.left;
+    const localY = (clientY ?? (rect.top + rect.height / 2)) - rect.top;
+    const worldX = (preview.scrollLeft + localX) / oldScale;
+    const worldY = (preview.scrollTop + localY) / oldScale;
+    previewState.zoom = Math.max(previewState.minZoom, Math.min(previewState.maxZoom, nextZoom));
+    applyPreviewScale();
+    const newScale = Math.max(0.0001, previewState.baseScale * previewState.zoom);
+    preview.scrollLeft = Math.max(0, worldX * newScale - localX);
+    preview.scrollTop = Math.max(0, worldY * newScale - localY);
+  }
+
+
+  function splitEditableList(value) {
+    return String(value ?? '').split(';').map(x => x.trim()).filter(Boolean);
+  }
+
+  function updateEditableListValue(field, index, value, silent = false) {
+    const el = $(field);
+    if (!el || String(field || '').startsWith('__')) return;
+    const clean = String(value ?? '').replace(/[^0-9]/g, '');
+    if (!clean || Number(clean) <= 0) return;
+    if (field === 'frontHeight') {
+      el.value = clean;
+      if (!silent) {
+        el.dispatchEvent(new Event('input', { bubbles: true }));
+        el.dispatchEvent(new Event('change', { bubbles: true }));
+      }
+      return;
+    }
+    const list = splitEditableList(el.value);
+    const count = Math.max(index + 1, list.length, lastDrawing && lastDrawing.input ? (lastDrawing.input.sidePositionCount || 1) : 1);
+    const fallback = list[0] || clean;
+    while (list.length < count) list.push(fallback);
+    list[index] = clean;
+    el.value = count > 1 ? list.join(';') : clean;
+    if (field === 'width') { const postEl = $('postCount'); const rayEl = $('rayCount'); if (postEl) postEl.dataset.userEdited = 'false'; if (rayEl) rayEl.dataset.userEdited = 'false'; }
+    if (!silent) {
+      el.dispatchEvent(new Event('input', { bubbles: true }));
+      el.dispatchEvent(new Event('change', { bubbles: true }));
+    }
+  }
+
+  function currentEditableListValue(field, index, fallback) {
+    const el = $(field);
+    if (!el || String(field || '').startsWith('__')) return fallback || '';
+    if (field === 'frontHeight') return String(el.value || fallback || '').trim();
+    const list = splitEditableList(el.value);
+    return String(list[index] || list[0] || fallback || '').trim();
+  }
+
+  function smartText(key, fallback) {
+    const lang = currentLanguage === 'en' ? 'en' : 'tr';
+    return key && key[lang] ? key[lang] : fallback;
+  }
+
+  function dimensionMetaFromHit(hit) {
+    return {
+      dimId: hit.dataset.dimId || '',
+      field: hit.dataset.editField || '',
+      index: Math.max(0, Number(hit.dataset.editIndex || 0) || 0),
+      label: hit.dataset.editLabel || 'Ölçü',
+      value: hit.dataset.editValue || '',
+      view: hit.dataset.view || '',
+      zoneId: hit.dataset.zoneId || '',
+      editable: hit.dataset.editable !== 'false',
+      dimensionType: hit.dataset.dimensionType || 'main',
+      actionType: hit.dataset.actionType || 'main_resize',
+      canResize: hit.dataset.canResize === 'true',
+      canAddSameProfile: hit.dataset.canAddSameProfile === 'true',
+      canAddDifferentProfile: hit.dataset.canAddDifferentProfile === 'true',
+      canPlaceProduct: hit.dataset.canPlaceProduct === 'true',
+      canRemoveElement: hit.dataset.canRemoveElement === 'true',
+      passiveReason: hit.dataset.passiveReason || '',
+      profileInstanceId: hit.dataset.profileInstanceId || '',
+      sideGapIndex: Math.max(0, Number(hit.dataset.sideGapIndex || 0) || 0),
+      sidePostId: hit.dataset.sidePostId || '',
+      raySystemIndex: Math.max(0, Number(hit.dataset.raySystemIndex || 0) || 0),
+      rayIntervalIndex: Math.max(0, Number(hit.dataset.rayIntervalIndex || 0) || 0),
+      raySpanMode: hit.dataset.raySpanMode || '',
+      parapetView: hit.dataset.parapetView || '',
+      parapetSegmentId: hit.dataset.parapetSegmentId || '',
+      parapetSegmentIndex: Math.max(0, Number(hit.dataset.parapetSegmentIndex || 0) || 0),
+      segmentStart: Number(hit.dataset.segmentStart || 0) || 0,
+      segmentEnd: Number(hit.dataset.segmentEnd || 0) || 0,
+      sideIndex: Math.max(0, Number(hit.dataset.sideIndex || 0) || 0),
+      sideViewKey: normalizeSideViewKey(hit.dataset.sideViewKey, Number(hit.dataset.sideIndex || 0) || 0),
+      dimensionAxis: hit.dataset.dimensionAxis || '',
+      previewDimKey: hit.dataset.previewDimKey || '',
+      layer: hit.dataset.layer || ''
+    };
+  }
+
+  function viewLabel(view) {
+    const isEn = currentLanguage === 'en';
+    const map = isEn
+      ? { Top: 'Top View', Front: 'Front View', Side: 'Side View', Right: 'Right View' }
+      : { Top: 'Üst Görünüş', Front: 'Ön Görünüş', Side: 'Yan Görünüş', Right: 'Sağ Görünüş' };
+    return map[view] || view || (isEn ? 'Drawing' : 'Çizim');
+  }
+
+  function isFrontPostGapMeta(meta) {
+    return !!meta && meta.view === 'Front' && /^front_post_gap_\d+$/i.test(String(meta.dimId || ''));
+  }
+
+  function isLeftSideSupportGapMeta(meta) {
+    if (!meta || !['Side', 'Right'].includes(String(meta.view || ''))) return false;
+    const id = String(meta.dimId || '');
+    return String(meta.field || '') === '__zone__' && /^side_gap_/i.test(id) && Number.isFinite(Number(meta.sideGapIndex));
+  }
+
+  function currentSideSupportGeometry(meta) {
+    const d = lastDrawing && lastDrawing.input ? lastDrawing.input : null;
+    const key = sideViewKeyFromMeta(meta);
+    const geom = key === 'right'
+      ? (d && d.rightSideSupportGeometry)
+      : (d && d.sideSupportGeometry ? d.sideSupportGeometry[key] : null);
+    return geom && geom.exists ? geom : null;
+  }
+
+  function currentSideGap(meta) {
+    const geom = currentSideSupportGeometry(meta);
+    if (!geom || !Array.isArray(geom.gaps)) return null;
+    const idx = Math.max(0, Number(meta && meta.sideGapIndex) || 0);
+    return geom.gaps[idx] || null;
+  }
+
+  function materializeSidePosts(meta) {
+    const key = sideViewKeyFromMeta(meta);
+    if (Object.prototype.hasOwnProperty.call(customSidePosts, key)) {
+      return Array.isArray(customSidePosts[key]) ? customSidePosts[key].map(item => ({ ...item, profile: sanitizeGlassTrackProfile(item.profile) })) : [];
+    }
+    const geom = currentSideSupportGeometry(meta);
+    const posts = geom && Array.isArray(geom.posts) ? geom.posts.map((post, i) => ({
+      id: String(post.id || `side_${key}_${i}`),
+      centerX: Number(post.centerX),
+      profile: sanitizeGlassTrackProfile(post.profile || { mode: 'standard', en: post.width || 100, boy: 100, et: 2 }),
+      extension: Number.isFinite(Number(post.extension)) ? Number(post.extension) : 0
+    })) : [];
+    customSidePosts[key] = posts;
+    return posts.map(item => ({ ...item, profile: { ...item.profile } }));
+  }
+
+  function storeSidePosts(meta, posts) {
+    const key = sideViewKeyFromMeta(meta);
+    customSidePosts[key] = posts.map(item => ({
+      id: String(item.id || `side_${key}_${Date.now()}`),
+      centerX: Number(item.centerX),
+      profile: sanitizeGlassTrackProfile(item.profile),
+      extension: Number.isFinite(Number(item.extension)) ? Number(item.extension) : 0
+    })).sort((a, b) => a.centerX - b.centerX);
+    delete customSideSupportCenters[key];
+  }
+
+  function reindexSidePlacementsAfterInsert(sideIndex, gapIndex, sideViewKey = null) {
+    const key = normalizeSideViewKey(sideViewKey, sideIndex);
+    const shift = item => {
+      if (normalizeSideViewKey(item.sideViewKey, item.sideIndex) !== key) return item;
+      const idx = Number(item.sideGapIndex ?? 0);
+      if (idx === gapIndex) return null;
+      return { ...item, sideGapIndex: idx > gapIndex ? idx + 1 : idx, sideZone: `gap_${idx > gapIndex ? idx + 1 : idx}` };
+    };
+    sideSlidingPlacements = sideSlidingPlacements.map(shift).filter(Boolean);
+    sideGuillotinePlacements = sideGuillotinePlacements.map(shift).filter(Boolean);
+  }
+
+  function resizeLeftSideSupportGap(meta, targetGap) {
+    const geom = currentSideSupportGeometry(meta);
+    const gap = currentSideGap(meta);
+    if (!geom || !gap || !Array.isArray(geom.posts) || !geom.posts.length) throw new Error(currentLanguage === 'en' ? 'No movable support post exists in this side view.' : 'Bu yan görünüşte hareket ettirilebilir destek dikmesi yok.');
+    const target = Number(targetGap);
+    if (!Number.isFinite(target) || target < 0) throw new Error(currentLanguage === 'en' ? 'Enter zero or a positive number.' : 'Sıfır veya pozitif bir sayı gir.');
+    const posts = materializeSidePosts(meta);
+    const gapIndex = Math.max(0, Math.min(posts.length, Number(meta.sideGapIndex) || 0));
+    const movingIndex = gapIndex < posts.length ? gapIndex : posts.length - 1;
+    const moving = posts[movingIndex];
+    const width = Number(moving.profile && moving.profile.en) || 100;
+    let nextCenter;
+    if (gapIndex < posts.length) nextCenter = Number(gap.left) + target + width / 2;
+    else nextCenter = Number(gap.right) - target - width / 2;
+    const leftLimit = movingIndex === 0 ? Number(geom.wallX) : posts[movingIndex - 1].centerX + (Number(posts[movingIndex - 1].profile.en) || 100) / 2;
+    const rightLimit = movingIndex === posts.length - 1 ? Number(geom.frontPostRearFace) : posts[movingIndex + 1].centerX - (Number(posts[movingIndex + 1].profile.en) || 100) / 2;
+    if (nextCenter - width / 2 < leftLimit - 0.001 || nextCenter + width / 2 > rightLimit + 0.001) {
+      throw new Error(currentLanguage === 'en' ? 'The support post would overlap another post, the wall or the front post.' : 'Destek dikmesi başka bir dikmeyle, duvarla veya ön dikmeyle üst üste gelir.');
+    }
+    moving.centerX = nextCenter;
+    storeSidePosts(meta, posts);
+  }
+
+  function addSidePostToGap(meta, profile) {
+    const geom = currentSideSupportGeometry(meta);
+    const gap = currentSideGap(meta);
+    if (!geom || !gap) throw new Error(currentLanguage === 'en' ? 'Side gap not found.' : 'Yan görünüş aralığı bulunamadı.');
+    const nextProfile = sanitizeGlassTrackProfile(profile || { mode: 'standard', en: 100, boy: 100, et: 2 });
+    const gapWidth = Number(gap.width) || (Number(gap.right) - Number(gap.left));
+    if (gapWidth + 0.001 < nextProfile.en) throw new Error(currentLanguage === 'en' ? 'The selected gap is narrower than the profile.' : 'Seçilen aralık profil genişliğinden daha dar.');
+    const posts = materializeSidePosts(meta);
+    const gapIndex = Math.max(0, Number(meta.sideGapIndex) || 0);
+    posts.push({ id: `side_${sideViewKeyFromMeta(meta)}_${Date.now()}_${Math.random().toString(36).slice(2, 7)}`, centerX: (Number(gap.left) + Number(gap.right)) / 2, profile: nextProfile, extension: 0 });
+    storeSidePosts(meta, posts);
+    reindexSidePlacementsAfterInsert(Number(meta.index) || 0, gapIndex, sideViewKeyFromMeta(meta));
+  }
+
+  function deleteSidePost(sideIndex, postId, sideViewKey = null) {
+    const meta = { index: Number(sideIndex) || 0, sideViewKey: normalizeSideViewKey(sideViewKey, sideIndex) };
+    const key = sideViewKeyFromMeta(meta);
+    const posts = materializeSidePosts(meta);
+    const next = posts.filter(item => String(item.id) !== String(postId));
+    if (next.length === posts.length) throw new Error(currentLanguage === 'en' ? 'Support post not found.' : 'Destek dikmesi bulunamadı.');
+    storeSidePosts(meta, next);
+    sideSlidingPlacements = sideSlidingPlacements.filter(item => normalizeSideViewKey(item.sideViewKey, item.sideIndex) !== key);
+    sideGuillotinePlacements = sideGuillotinePlacements.filter(item => normalizeSideViewKey(item.sideViewKey, item.sideIndex) !== key);
+  }
+
+  function segmentHeightFromList(list, coordinate, fallback = 0) {
+    const x = Number(coordinate) || 0;
+    const items = Array.isArray(list) ? list : [];
+    const hit = items.find((item, index) => {
+      const start = Number(item && item.start) || 0;
+      const end = Number(item && item.end) || 0;
+      return x >= start - 0.001 && (x < end - 0.001 || (index === items.length - 1 && x <= end + 0.001));
+    });
+    return hit ? Math.max(0, Number(hit.height) || 0) : Math.max(0, Number(fallback) || 0);
+  }
+
+  function currentFrontParapetHeightAt(absoluteX) {
+    const d = lastDrawing && lastDrawing.input ? lastDrawing.input : {};
+    const list = d.parapetSegments && Array.isArray(d.parapetSegments.front) ? d.parapetSegments.front : [];
+    return segmentHeightFromList(list, (Number(absoluteX) || 0) - Number(d.systemStartX || 300), Number(d.parapetHeight) || 0);
+  }
+
+  function currentSideParapetHeightAt(sideIndex, absoluteX, sideViewKey = null) {
+    const d = lastDrawing && lastDrawing.input ? lastDrawing.input : null;
+    const key = normalizeSideViewKey(sideViewKey, sideIndex);
+    const geom = key === 'right' ? (d && d.rightSideSupportGeometry) : (d && d.sideSupportGeometry ? d.sideSupportGeometry[key] : null);
+    const wallX = geom && Number.isFinite(Number(geom.wallX)) ? Number(geom.wallX) : 0;
+    const list = parapetSegments && parapetSegments.side ? parapetSegments.side[key] : [];
+    return segmentHeightFromList(list, Number(absoluteX) - wallX, Number(d && d.parapetHeight) || 0);
+  }
+
+  function currentSideGlassTrackClearHeight(localParapetHeight = 0, sideViewKey = '0', sideIndex = 0) {
+    const d = lastDrawing && lastDrawing.input ? lastDrawing.input : {};
+    const key = normalizeSideViewKey(sideViewKey, sideIndex);
+    const trackActive = sideFeatureValue('glassTrack', key);
+    const profile = sanitizeGlassTrackProfile(d.glassTrackProfile || glassTrackProfileState);
+    // Cam kaydı o yan görünüşte gerçekten varsa üst referans profilin -Y dış
+    // kenarıdır. O tarafta cam kaydı kapalıysa oluk altı / Ön H referansı kullanılır.
+    const trackDrop = trackActive ? 3 + Number(profile.en || 0) : 0;
+    return Math.max(1, Number(d.frontHeight || 0) - trackDrop - Math.max(0, Number(localParapetHeight) || 0));
+  }
+
+  function sideProductMeta(meta) {
+    const geom = currentSideSupportGeometry(meta);
+    const gap = currentSideGap(meta);
+    if (!geom || !gap) return null;
+    const gapIndex = Math.max(0, Number(meta.sideGapIndex) || 0);
+    const zoneWidth = Number(gap.width) || Math.max(0, Number(gap.right) - Number(gap.left));
+    const d = lastDrawing && lastDrawing.input ? lastDrawing.input : {};
+    const sideViewKey = sideViewKeyFromMeta(meta);
+    const localParapet = currentSideParapetHeightAt(Number(meta.index) || 0, (Number(gap.left) + Number(gap.right)) / 2, sideViewKey);
+    // v8.9.32: Yan görünüşte yeni ürün eklenirken her iki yönde de 5 mm
+    // montaj payı otomatik düşülür. Bu yalnız başlangıç/Alana Uydur değeridir;
+    // kullanıcı detay ekranında genişlik ve yüksekliği sonradan manuel değiştirebilir.
+    const placementHeight = Math.max(1, currentSideGlassTrackClearHeight(localParapet, sideViewKey, Number(meta.index) || 0) - 5);
+    return {
+      ...meta,
+      placementView: sideViewKey === 'right' ? 'side-right' : 'side-left',
+      sideViewKey,
+      sideIndex: Number(meta.index) || 0,
+      sideGapIndex: gapIndex,
+      sideZone: `gap_${gapIndex}`,
+      value: zoneWidth,
+      placementWidth: Math.max(1, zoneWidth - 5),
+      placementHeight
+    };
+  }
+
+  function productRecordForMeta(meta) {
+    if (!meta) return null;
+    const isSide = ['side-left','side-right'].includes(String(meta.placementView || '')) || (['Side','Right'].includes(String(meta.view || '')) && isLeftSideSupportGapMeta(meta));
+    if (isSide) {
+      const sideIndex = Number(meta.sideIndex ?? meta.index) || 0;
+      const sideViewKey = sideViewKeyFromMeta(meta);
+      const sideGapIndex = Number(meta.sideGapIndex) || 0;
+      const sideZone = String(meta.sideZone || `gap_${sideGapIndex}`);
+      const sameView = item => normalizeSideViewKey(item.sideViewKey, item.sideIndex) === sideViewKey;
+      const sliding = sideSlidingPlacements.find(item => sameView(item) && (String(item.sideZone || '') === sideZone || Number(item.sideGapIndex) === sideGapIndex));
+      if (sliding) return { type: 'sliding_glass', placement: sliding, collection: 'sideSlidingPlacements', isSide: true };
+      const guillotine = sideGuillotinePlacements.find(item => sameView(item) && (String(item.sideZone || '') === sideZone || Number(item.sideGapIndex) === sideGapIndex));
+      if (guillotine) return { type: 'guillotine_glass', placement: guillotine, collection: 'sideGuillotinePlacements', isSide: true };
+      return null;
+    }
+    const gapIndex = Number(meta.gapIndex ?? meta.index) || 0;
+    const sliding = slidingPlacements.find(item => Number(item.gapIndex) === gapIndex);
+    if (sliding) return { type: 'sliding_glass', placement: sliding, collection: 'slidingPlacements', isSide: false };
+    const guillotine = guillotinePlacements.find(item => Number(item.gapIndex) === gapIndex);
+    if (guillotine) return { type: 'guillotine_glass', placement: guillotine, collection: 'guillotinePlacements', isSide: false };
+    return null;
+  }
+
+  function findProductForMeta(meta) {
+    return productRecordForMeta(meta);
+  }
+
+  function findProductByInteraction(meta) {
+    if (!meta) return null;
+    const id = String(meta.placementId || '');
+    const all = [
+      ['sliding_glass', 'slidingPlacements', slidingPlacements],
+      ['sliding_glass', 'sideSlidingPlacements', sideSlidingPlacements],
+      ['guillotine_glass', 'guillotinePlacements', guillotinePlacements],
+      ['guillotine_glass', 'sideGuillotinePlacements', sideGuillotinePlacements]
+    ];
+    for (const [type, collection, items] of all) {
+      const placement = items.find(item => String(item.id || '') === id);
+      if (placement) return { type, collection, placement, isSide: collection.startsWith('side') };
+    }
+    return productRecordForMeta(meta);
+  }
+
+  function deleteProductRecord(record) {
+    if (!record || !record.placement) return false;
+    const id = String(record.placement.id || '');
+    const remove = items => items.filter(item => id ? String(item.id || '') !== id : item !== record.placement);
+    if (record.collection === 'slidingPlacements') slidingPlacements = remove(slidingPlacements);
+    else if (record.collection === 'sideSlidingPlacements') sideSlidingPlacements = remove(sideSlidingPlacements);
+    else if (record.collection === 'guillotinePlacements') guillotinePlacements = remove(guillotinePlacements);
+    else if (record.collection === 'sideGuillotinePlacements') sideGuillotinePlacements = remove(sideGuillotinePlacements);
+    else return false;
+    return true;
+  }
+
+  function setRadioGroupValue(overlay, name, value, fallback) {
+    let matched = false;
+    overlay.querySelectorAll(`input[name="${name}"]`).forEach(el => {
+      el.checked = String(el.value) === String(value);
+      if (el.checked) matched = true;
+    });
+    if (!matched && fallback !== undefined) {
+      overlay.querySelectorAll(`input[name="${name}"]`).forEach(el => { el.checked = String(el.value) === String(fallback); });
+    }
+  }
+
+  function allocatePozNos(prefix, count) {
+    const source = prefix === 'S'
+      ? [...slidingPlacements, ...sideSlidingPlacements]
+      : [...guillotinePlacements, ...sideGuillotinePlacements];
+    const used = new Set(source.map(item => String(item.pozNo || '').toUpperCase()));
+    const result = [];
+    let n = 1;
+    while (result.length < count) {
+      const candidate = `${prefix}${String(n).padStart(2, '0')}`;
+      if (!used.has(candidate)) { result.push(candidate); used.add(candidate); }
+      n += 1;
+    }
+    return result;
+  }
+
+  function frontProductMeta(meta) {
+    const d = lastDrawing && lastDrawing.input ? lastDrawing.input : {};
+    const gapIndex = Number(meta.index) || 0;
+    const clearWidth = Math.max(1, Number(meta.value) || 1);
+    const centers = currentFrontPostCenters();
+    const left = centers[gapIndex] != null ? centers[gapIndex] + frontPostWidthAt(gapIndex) / 2 : 0;
+    const right = centers[gapIndex + 1] != null ? centers[gapIndex + 1] - frontPostWidthAt(gapIndex + 1) / 2 : left;
+    const parapetH = currentFrontParapetHeightAt((left + right) / 2);
+    return {
+      ...meta,
+      placementView: 'front',
+      gapIndex,
+      placementWidth: Math.max(1, Number(meta.placementWidth) || clearWidth - 5),
+      placementHeight: Math.max(1, Number(meta.placementHeight) || (Number(d.frontHeight || 0) - parapetH - 5))
+    };
+  }
+
+  function normalizedProductMeta(meta) {
+    if (!meta) return null;
+    if (['side-left','side-right'].includes(String(meta.placementView || '')) || isLeftSideSupportGapMeta(meta)) return sideProductMeta(meta);
+    if (meta.placementView === 'front' || isFrontPostGapMeta(meta)) return frontProductMeta(meta);
+    return null;
+  }
+
+  function interactionMetaToProductMeta(interactionMeta, record) {
+    const placement = record && record.placement ? record.placement : {};
+    if (['side-left','side-right'].includes(String(interactionMeta.placementView || '')) || record && record.isSide) {
+      const sideIndex = Number(interactionMeta.sideIndex ?? placement.sideIndex) || 0;
+      const sideViewKey = normalizeSideViewKey(interactionMeta.sideViewKey || placement.sideViewKey, sideIndex);
+      const sideGapIndex = Number(interactionMeta.sideGapIndex ?? placement.sideGapIndex) || 0;
+      const node = Array.from(preview.querySelectorAll(`.editable-dimension[data-side-gap-index="${sideGapIndex}"]`)).find(el => normalizeSideViewKey(el.dataset.sideViewKey, sideIndex) === sideViewKey && Number(el.dataset.editIndex || el.dataset.sideIndex || 0) === sideIndex);
+      const fromDim = node ? sideProductMeta(dimensionMetaFromHit(node)) : null;
+      return fromDim || {
+        placementView: sideViewKey === 'right' ? 'side-right' : 'side-left', view: sideViewKey === 'right' ? 'Right' : 'Side', index: sideIndex, sideIndex, sideViewKey, sideGapIndex,
+        sideZone: String(interactionMeta.sideZone || placement.sideZone || `gap_${sideGapIndex}`),
+        value: Number(placement.width || 1) + 5, placementWidth: Number(placement.width || 1), placementHeight: Number(placement.height || 1)
+      };
+    }
+    const gapIndex = Number(interactionMeta.gapIndex ?? placement.gapIndex) || 0;
+    const node = preview.querySelector(`[data-dim-id="front_post_gap_${gapIndex + 1}"]`);
+    const fromDim = node ? dimensionMetaFromHit(node) : null;
+    return fromDim ? frontProductMeta(fromDim) : {
+      placementView: 'front', view: 'Front', index: gapIndex, gapIndex,
+      value: Number(placement.width || 1) + 5, placementWidth: Number(placement.width || 1), placementHeight: Number(placement.height || 1)
+    };
+  }
+
+  function syncSideFeatureMenu(feature) {
+    const prefix = feature === 'triangle' ? 'triangleJoinery' : 'glassTrack';
+    const menu = $(`${prefix}SideMenu`);
+    if (!menu) return;
+    const left = menu.querySelector('[data-side-key="0"]');
+    const right = menu.querySelector('[data-side-key="right"]');
+    if (left) left.checked = sideFeatureValue(feature, '0');
+    if (right) right.checked = sideFeatureValue(feature, 'right');
+  }
+
+  function syncToolboxBooleanButtons() {
+    ensureSideFeatureStateInitialized();
+    const text = UI_TEXT[currentLanguage] || UI_TEXT.tr;
+    const labels = { glassTrack: text.options_glassTrack, triangleJoinery: text.extra_triangleJoinery, waterStandard: text.extra_waterStandard };
+    document.querySelectorAll('[data-boolean-field]').forEach(btn => {
+      const field = btn.dataset.booleanField;
+      const labelEl = btn.querySelector('.boolean-quick-label');
+      const stateEl = btn.querySelector('.boolean-quick-state');
+      if (labelEl) labelEl.textContent = labels[field] || field;
+      if (field === 'glassTrack' || field === 'triangleJoinery') {
+        const feature = field === 'triangleJoinery' ? 'triangle' : 'glassTrack';
+        const left = sideFeatureValue(feature, '0'), right = sideFeatureValue(feature, 'right');
+        const value = left && right ? 'EVET' : (!left && !right ? 'HAYIR' : 'KISMİ');
+        if (stateEl) stateEl.textContent = value === 'KISMİ' ? (currentLanguage === 'en' ? 'PARTIAL' : 'KISMİ') : BOOLEAN_CANONICAL[value][currentLanguage];
+        btn.classList.toggle('is-yes', value === 'EVET');
+        btn.classList.toggle('is-no', value === 'HAYIR');
+        btn.classList.toggle('is-partial', value === 'KISMİ');
+        btn.setAttribute('aria-pressed', value === 'EVET' ? 'true' : 'mixed');
+        syncSideFeatureMenu(feature);
+        return;
+      }
+      const select = $(field);
+      if (!select) return;
+      const value = normalizeYesNo(select.value) === 'EVET' ? 'EVET' : 'HAYIR';
+      if (stateEl) stateEl.textContent = BOOLEAN_CANONICAL[value][currentLanguage];
+      btn.classList.toggle('is-yes', value === 'EVET');
+      btn.classList.toggle('is-no', value !== 'EVET');
+      btn.setAttribute('aria-pressed', value === 'EVET' ? 'true' : 'false');
+    });
+  }
+
+  function toggleToolboxBoolean(field) {
+    if (field === 'glassTrack' || field === 'triangleJoinery') {
+      const feature = field === 'triangleJoinery' ? 'triangle' : 'glassTrack';
+      const allOn = sideFeatureValue(feature, '0') && sideFeatureValue(feature, 'right');
+      setSideFeatureValue(feature, '0', !allOn);
+      setSideFeatureValue(feature, 'right', !allOn);
+      syncMainFormFromSideFeature(feature);
+      syncToolboxBooleanButtons();
+      updatePreview(false);
+      return;
+    }
+    const select = $(field);
+    if (!select) return;
+    select.value = normalizeYesNo(select.value) === 'EVET' ? 'HAYIR' : 'EVET';
+    syncToolboxBooleanButtons();
+    select.dispatchEvent(new Event('change', { bubbles: true }));
+  }
+
+  function toggleSideFeatureMenu(field) {
+    const menu = $(`${field}SideMenu`);
+    if (!menu) return;
+    const next = menu.hidden;
+    document.querySelectorAll('.side-feature-menu').forEach(node => { node.hidden = true; });
+    menu.hidden = !next;
+  }
+
+  function applySideFeatureCheckbox(input) {
+    const field = input.dataset.sideFeatureField;
+    const feature = field === 'triangleJoinery' ? 'triangle' : 'glassTrack';
+    setSideFeatureValue(feature, input.dataset.sideKey, input.checked);
+    syncMainFormFromSideFeature(feature);
+    syncToolboxBooleanButtons();
+    updatePreview(false);
+  }
+
+  function toolboxSelectionKey(type, meta) {
+    if (type === 'product') {
+      const id = String(meta.placementId || '').trim();
+      if (id) return `product:${id}`;
+      const view = String(meta.placementView || 'front');
+      const zone = ['side-left','side-right'].includes(view)
+        ? `${sideViewKeyFromMeta(meta)}:${String(meta.sideZone || `gap_${Number(meta.sideGapIndex) || 0}`)}`
+        : String(Number(meta.gapIndex) || 0);
+      return `product:${String(meta.productType || 'product')}:${view}:${zone}`;
+    }
+    return `dimension:${String(meta.dimId || '')}`;
+  }
+
+  function isProductSelectionMode(mode) {
+    return ['multi-delete', 'convert-product', 'fit-products'].includes(String(mode || ''));
+  }
+
+  function isProfileSelectionMode(mode) { return String(mode || '') === 'bulk-extend'; }
+
+  function isEligibleToolboxDimension(meta, mode) {
+    if (!meta) return false;
+    if (mode === 'multi-product') {
+      const productMeta = normalizedProductMeta(meta);
+      return !!productMeta && !!meta.canPlaceProduct && !productRecordForMeta(productMeta);
+    }
+    if (mode === 'multi-dimension') {
+      if (!meta.editable || !meta.canResize) return false;
+      if (isFrontPostGapMeta(meta)) {
+        const count = lastDrawing && lastDrawing.input ? Number(lastDrawing.input.postCount) || 0 : 0;
+        return count > 2;
+      }
+      return true;
+    }
+    if (mode === 'equalize-gaps') {
+      const count = lastDrawing && lastDrawing.input ? Number(lastDrawing.input.postCount) || 0 : 0;
+      if (count > 2 && isFrontPostGapMeta(meta)) return true;
+      if (isLeftSideSupportGapMeta(meta)) {
+        const geom = currentSideSupportGeometry(meta);
+        return !!geom && Array.isArray(geom.posts) && geom.posts.length > 0;
+      }
+      return false;
+    }
+    return false;
+  }
+
+  function createToolboxMarker(hit, selected) {
+    const ns = 'http://www.w3.org/2000/svg';
+    const host = hit.closest('g') || hit.parentNode;
+    if (!host || !host.appendChild) return;
+    const isDimension = host.classList && (host.classList.contains('editable-dimension') || host.classList.contains('preview-dimension-plain'));
+    let x = Number(hit.getAttribute('x') || 0);
+    let y = Number(hit.getAttribute('y') || 0);
+    let w = Math.max(1, Number(hit.getAttribute('width') || 0));
+    let h = Math.max(1, Number(hit.getAttribute('height') || 0));
+    if ((!Number.isFinite(w) || w <= 1) && hit.getBBox) {
+      try { const box = hit.getBBox(); x = box.x; y = box.y; w = Math.max(1, box.width); h = Math.max(1, box.height); } catch (_) {}
+    }
+    const size = Math.max(88, Math.min(150, Math.max(88, Math.min(Math.max(w, 88), Math.max(h, 88)) * 0.22)));
+    let markerX = x + (w - size) / 2;
+    let markerY = y + (h - size) / 2;
+
+    // Bütün ölçü seçim kutuları, ölçü yazısının ekran üzerindeki üst orta noktasına yerleşir.
+    if (isDimension) {
+      const textNode = host.querySelector('text');
+      if (textNode) {
+        let placed = false;
+        try {
+          const rect = textNode.getBoundingClientRect();
+          const ctm = host.getScreenCTM && host.getScreenCTM();
+          const svg = host.ownerSVGElement;
+          if (rect && ctm && svg && typeof DOMPoint === 'function') {
+            const screenPoint = new DOMPoint(rect.left + rect.width / 2, rect.top - 6);
+            const localPoint = screenPoint.matrixTransform(ctm.inverse());
+            markerX = localPoint.x - size / 2;
+            markerY = localPoint.y - size;
+            placed = true;
+          }
+        } catch (_) {}
+        if (!placed) {
+          const textX = Number(textNode.getAttribute('x'));
+          const textY = Number(textNode.getAttribute('y'));
+          if (Number.isFinite(textX) && Number.isFinite(textY)) {
+            markerX = textX - size / 2;
+            markerY = textY - size - 18;
+          }
+        }
+      }
+    }
+
+    const marker = document.createElementNS(ns, 'g');
+    marker.setAttribute('class', `toolbox-selection-marker${selected ? ' is-selected' : ''}`);
+    marker.setAttribute('pointer-events', 'all');
+    marker.setAttribute('role', 'checkbox');
+    marker.setAttribute('aria-checked', selected ? 'true' : 'false');
+    marker.setAttribute('tabindex', '0');
+    // Kutunun kendisi de seçim hedefidir. Kaynak hit öğesi, ürün ve ölçü
+    // seçimlerinde aynı çözümleyici üzerinden kullanılabilsin diye saklanır.
+    marker.__toolboxSelectionSource = hit;
+    const rect = document.createElementNS(ns, 'rect');
+    rect.setAttribute('x', String(markerX)); rect.setAttribute('y', String(markerY));
+    rect.setAttribute('width', String(size)); rect.setAttribute('height', String(size));
+    rect.setAttribute('rx', String(size * 0.16)); rect.setAttribute('ry', String(size * 0.16));
+    const check = document.createElementNS(ns, 'path');
+    check.setAttribute('d', `M ${markerX + size * 0.24} ${markerY + size * 0.56} L ${markerX + size * 0.45} ${markerY + size * 0.78} L ${markerX + size * 0.82} ${markerY + size * 0.28}`);
+    marker.append(rect, check);
+    host.appendChild(marker);
+  }
+
+  function toolboxSelectionFilterLabel(mode) {
+    const labels = {
+      'multi-product': currentLanguage === 'en' ? 'Product placement dimensions' : 'Ürün yerleştirme ölçüleri',
+      'multi-dimension': currentLanguage === 'en' ? 'Resizable dimensions' : 'Düzenlenebilir ölçüler',
+      'equalize-gaps': currentLanguage === 'en' ? 'Front / side post gaps' : 'Ön / yan dikme aralıkları',
+      'convert-product': currentLanguage === 'en' ? 'Existing products' : 'Mevcut ürünler',
+      'fit-products': currentLanguage === 'en' ? 'Existing products' : 'Mevcut ürünler',
+      'multi-delete': currentLanguage === 'en' ? 'Existing products' : 'Mevcut ürünler',
+      'bulk-extend': currentLanguage === 'en' ? 'Extendable profiles' : 'Uzatılabilir profiller'
+    };
+    return labels[mode] || '';
+  }
+
+  function clearToolboxElementFilter() {
+    preview.querySelectorAll('.toolbox-filtered-out').forEach(node => node.classList.remove('toolbox-filtered-out'));
+  }
+
+  function refreshToolboxSelectionDecorations() {
+    preview.querySelectorAll('.toolbox-selection-marker').forEach(node => node.remove());
+    preview.querySelectorAll('.toolbox-selectable,.toolbox-selected').forEach(node => node.classList.remove('toolbox-selectable', 'toolbox-selected'));
+    clearToolboxElementFilter();
+    preview.classList.toggle('toolbox-selection-active', !!toolboxSelectionMode);
+    updateToolboxSelectionBanner();
+    ['multiProductBtn','multiDimensionBtn','equalizeGapsBtn','convertProductBtn','fitProductsBtn','multiDeleteBtn','bulkExtendBtn'].forEach(id => {
+      const btn = $(id); if (btn) btn.classList.toggle('is-active-command',
+        (id === 'multiProductBtn' && toolboxSelectionMode === 'multi-product') ||
+        (id === 'multiDimensionBtn' && toolboxSelectionMode === 'multi-dimension') ||
+        (id === 'equalizeGapsBtn' && toolboxSelectionMode === 'equalize-gaps') ||
+        (id === 'convertProductBtn' && toolboxSelectionMode === 'convert-product') ||
+        (id === 'fitProductsBtn' && toolboxSelectionMode === 'fit-products') ||
+        (id === 'multiDeleteBtn' && toolboxSelectionMode === 'multi-delete') ||
+        (id === 'bulkExtendBtn' && toolboxSelectionMode === 'bulk-extend'));
+    });
+    if (!toolboxSelectionMode) { applyPreviewDimensionFilter(); return; }
+    const dimensionGroups = Array.from(preview.querySelectorAll('.editable-dimension,.preview-dimension-plain'));
+    const interactionGroups = Array.from(preview.querySelectorAll('[data-interaction-type]')).map(hit => hit.closest('g') || hit);
+    dimensionGroups.forEach(group => group.classList.add('toolbox-filtered-out'));
+    interactionGroups.forEach(group => group.classList.add('toolbox-filtered-out'));
+    if (isProfileSelectionMode(toolboxSelectionMode)) {
+      preview.querySelectorAll('[data-interaction-type="glassTrackEditor"],[data-interaction-type="postEditor"],[data-interaction-type="frontPostProfileEditor"]').forEach(hit => {
+        const meta=previewInteractionMetaFromHit(hit);
+        if(meta.interactionType==='glassTrackEditor' && meta.profilePart==='support' && !meta.sidePostId) return;
+        const host=hit.closest('g')||hit;host.classList.remove('toolbox-filtered-out');
+        const key=`profile:${meta.interactionType}:${meta.sideViewKey}:${meta.sidePostId||meta.postIndex||meta.profilePart}`;
+        hit.dataset.toolboxProfileKey=key;hit.classList.add('toolbox-selectable');if(toolboxSelectionItems.has(key))hit.classList.add('toolbox-selected');createToolboxMarker(hit,toolboxSelectionItems.has(key));
+      });
+      return;
+    }
+    if (isProductSelectionMode(toolboxSelectionMode)) {
+      preview.querySelectorAll('[data-interaction-type="productEditor"]').forEach(hit => {
+        const host = hit.closest('g') || hit; host.classList.remove('toolbox-filtered-out');
+        const meta = previewInteractionMetaFromHit(hit), key = toolboxSelectionKey('product', meta);
+        hit.classList.add('toolbox-selectable'); if (toolboxSelectionItems.has(key)) hit.classList.add('toolbox-selected');
+        createToolboxMarker(hit, toolboxSelectionItems.has(key));
+      });
+      return;
+    }
+    preview.querySelectorAll('.editable-dimension').forEach(group => {
+      const meta = dimensionMetaFromHit(group);
+      if (!isEligibleToolboxDimension(meta, toolboxSelectionMode)) return;
+      group.classList.remove('toolbox-filtered-out'); group.style.display = '';
+      const key = toolboxSelectionKey('dimension', meta), hit = group.querySelector('.editable-dimension-hit') || group;
+      group.classList.add('toolbox-selectable'); if (toolboxSelectionItems.has(key)) group.classList.add('toolbox-selected');
+      createToolboxMarker(hit, toolboxSelectionItems.has(key));
+    });
+  }
+
+  function selectionMetaFromTarget(target) {
+    if (!toolboxSelectionMode || !target || !target.closest) return null;
+    const marker = target.closest('.toolbox-selection-marker');
+    if (marker && marker.__toolboxSelectionSource) target = marker.__toolboxSelectionSource;
+    if (isProfileSelectionMode(toolboxSelectionMode)) {
+      const hit=target.closest('[data-interaction-type="glassTrackEditor"],[data-interaction-type="postEditor"],[data-interaction-type="frontPostProfileEditor"]');
+      if(!hit)return null;
+      const meta=previewInteractionMetaFromHit(hit); const key=hit.dataset.toolboxProfileKey||`profile:${meta.interactionType}:${meta.sideViewKey}:${meta.sidePostId||meta.postIndex||meta.profilePart}`;
+      return { type:'profile', key, meta };
+    }
+    if (isProductSelectionMode(toolboxSelectionMode)) {
+      const hit = target.closest('[data-interaction-type="productEditor"]');
+      if (!hit) return null;
+      const meta = previewInteractionMetaFromHit(hit);
+      return { type: 'product', meta, key: toolboxSelectionKey('product', meta) };
+    }
+    const group = target.closest('.editable-dimension');
+    if (!group) return null;
+    const meta = dimensionMetaFromHit(group);
+    if (!isEligibleToolboxDimension(meta, toolboxSelectionMode)) return null;
+    return { type: 'dimension', meta, key: toolboxSelectionKey('dimension', meta) };
+  }
+
+  function toggleToolboxSelectionFromHit(target) {
+    const candidate = selectionMetaFromTarget(target);
+    if (!candidate) return;
+    if (toolboxSelectionItems.has(candidate.key)) toolboxSelectionItems.delete(candidate.key);
+    else toolboxSelectionItems.set(candidate.key, candidate.meta);
+    refreshToolboxSelectionDecorations();
+    const count = toolboxSelectionItems.size;
+    statusText.textContent = currentLanguage === 'en' ? `${count} item(s) selected. Press Enter or right-click to finish.` : `${count} öğe seçildi. Bitirmek için Enter'a bas veya sağ tıkla.`;
+  }
+
+  function hideToolboxContextMenu() {
+    if (toolboxContextMenu) toolboxContextMenu.hidden = true;
+  }
+
+  function ensureToolboxSelectionBanner() {
+    if (toolboxSelectionBanner) return toolboxSelectionBanner;
+    toolboxSelectionBanner = document.createElement('div');
+    toolboxSelectionBanner.className = 'toolbox-selection-banner';
+    toolboxSelectionBanner.hidden = true;
+    toolboxSelectionBanner.innerHTML = `<span class="toolbox-selection-banner-text"></span><span class="toolbox-selection-banner-actions"><button type="button" data-action="finish">Tamam / Enter</button><button type="button" data-action="cancel">İptal / Esc</button></span>`;
+    const host = previewPanel.querySelector('.preview-workspace') || previewPanel;
+    host.appendChild(toolboxSelectionBanner);
+    toolboxSelectionBanner.addEventListener('click', evt => {
+      const action = evt.target && evt.target.dataset ? evt.target.dataset.action : '';
+      if (action === 'finish') finishToolboxSelection();
+      else if (action === 'cancel') cancelToolboxSelection(currentLanguage === 'en' ? 'Selection cancelled.' : 'Seçim iptal edildi.');
+    });
+    return toolboxSelectionBanner;
+  }
+
+  function updateToolboxSelectionBanner() {
+    const banner = ensureToolboxSelectionBanner();
+    if (!toolboxSelectionMode) { banner.hidden = true; return; }
+    const count = toolboxSelectionItems.size;
+    const modeText = {
+      'multi-product': currentLanguage === 'en' ? 'Select product placement dimensions.' : 'Ürün eklenecek ölçüleri seç.',
+      'multi-dimension': currentLanguage === 'en' ? 'Select dimensions to edit.' : 'Düzenlenecek ölçüleri seç.',
+      'equalize-gaps': currentLanguage === 'en' ? 'Select front or left-side post gaps to equalize.' : 'Eşitlenecek ön veya sol yan dikme aralıklarını seç.',
+      'convert-product': currentLanguage === 'en' ? 'Select one or more products whose type will be changed.' : 'Tipi değiştirilecek bir veya daha fazla ürün seç.',
+      'fit-products': currentLanguage === 'en' ? 'Select products to fit to their openings.' : 'Alana uydurulacak ürünleri seç.',
+      'multi-delete': currentLanguage === 'en' ? 'Select products to delete.' : 'Silinecek ürünleri seç.',
+      'bulk-extend': currentLanguage === 'en' ? 'Select profiles to extend or shorten.' : 'Uzatılacak veya kısaltılacak profilleri seç.'
+    }[toolboxSelectionMode] || '';
+    const countText = currentLanguage === 'en' ? `${count} selected` : `${count} seçili`;
+    const filterText = toolboxSelectionFilterLabel(toolboxSelectionMode);
+    banner.querySelector('.toolbox-selection-banner-text').textContent = `${modeText} ${countText}${filterText ? ` · ${currentLanguage === 'en' ? 'Filter' : 'Filtre'}: ${filterText}` : ''}`;
+    const buttons = banner.querySelectorAll('button');
+    if (buttons[0]) buttons[0].textContent = currentLanguage === 'en' ? 'Finish / Enter' : 'Tamam / Enter';
+    if (buttons[1]) buttons[1].textContent = currentLanguage === 'en' ? 'Cancel / Esc' : 'İptal / Esc';
+    banner.hidden = false;
+  }
+
+  function ensureToolboxContextMenu() {
+    if (toolboxContextMenu) return toolboxContextMenu;
+    toolboxContextMenu = document.createElement('div');
+    toolboxContextMenu.className = 'toolbox-context-menu';
+    toolboxContextMenu.hidden = true;
+    toolboxContextMenu.innerHTML = `<button type="button" data-action="finish">Tamam / Enter</button><button type="button" data-action="cancel">İptal / Escape</button>`;
+    document.body.appendChild(toolboxContextMenu);
+    toolboxContextMenu.addEventListener('click', evt => {
+      const action = evt.target && evt.target.dataset ? evt.target.dataset.action : '';
+      if (action === 'finish') finishToolboxSelection();
+      else if (action === 'cancel') cancelToolboxSelection();
+    });
+    document.addEventListener('mousedown', evt => { if (toolboxContextMenu && !toolboxContextMenu.contains(evt.target)) hideToolboxContextMenu(); });
+    return toolboxContextMenu;
+  }
+
+  function showToolboxContextMenu(x, y) {
+    const menu = ensureToolboxContextMenu();
+    const buttons = menu.querySelectorAll('button');
+    if (buttons[0]) buttons[0].textContent = currentLanguage === 'en' ? 'Finish / Enter' : 'Tamam / Enter';
+    if (buttons[1]) buttons[1].textContent = currentLanguage === 'en' ? 'Cancel / Escape' : 'İptal / Escape';
+    menu.style.left = `${Math.max(8, Math.min(window.innerWidth - 210, x))}px`;
+    menu.style.top = `${Math.max(8, Math.min(window.innerHeight - 110, y))}px`;
+    menu.hidden = false;
+  }
+
+  function startToolboxSelection(mode) {
+    if (toolboxSelectionMode === mode) {
+      cancelToolboxSelection(currentLanguage === 'en' ? 'Selection cancelled.' : 'Seçim iptal edildi.');
+      return;
+    }
+    if (!lastDrawing) updatePreview(false);
+    if (!lastDrawing) return;
+    toolboxSelectionMode = mode;
+    toolboxSelectionItems = new Map();
+    hideToolboxContextMenu();
+    refreshToolboxSelectionDecorations();
+    const messages = {
+      'multi-product': currentLanguage === 'en' ? 'Select product placement dimensions, then press Enter or right-click.' : 'Ürün eklenecek ölçüleri seç; sonra Enter’a bas veya sağ tıkla.',
+      'multi-dimension': currentLanguage === 'en' ? 'Select dimensions to edit, then press Enter or right-click.' : 'Düzenlenecek ölçüleri seç; sonra Enter’a bas veya sağ tıkla.',
+      'equalize-gaps': currentLanguage === 'en' ? 'Select at least two gaps in the same front/side view, then press Enter or right-click.' : 'Aynı ön/yan görünüşte en az iki aralık seç; sonra Enter’a bas veya sağ tıkla.',
+      'convert-product': currentLanguage === 'en' ? 'Select one or more sliding or guillotine products, then press Enter or right-click.' : 'Bir veya daha fazla sürme ya da giyotin seç; sonra Enter’a bas veya sağ tıkla.',
+      'fit-products': currentLanguage === 'en' ? 'Select one or more products, then press Enter or right-click.' : 'Bir veya daha fazla ürün seç; sonra Enter’a bas veya sağ tıkla.',
+      'multi-delete': currentLanguage === 'en' ? 'Select products to delete, then press Enter or right-click.' : 'Silinecek ürünleri seç; sonra Enter’a bas veya sağ tıkla.',
+      'bulk-extend': currentLanguage === 'en' ? 'Select extendable profiles, then press Enter or right-click.' : 'Uzatılabilir profilleri seç; sonra Enter’a bas veya sağ tıkla.'
+    };
+    statusText.textContent = messages[mode] || '';
+    focusPreviewCanvas();
+  }
+
+  function cancelToolboxSelection(message = '') {
+    toolboxSelectionMode = null;
+    toolboxSelectionItems = new Map();
+    hideToolboxContextMenu();
+    refreshToolboxSelectionDecorations();
+    if (message) statusText.textContent = message;
+  }
+
+  function ensureBulkProductChooser() {
+    let overlay = $('bulkProductChooserOverlay');
+    if (overlay) return overlay;
+    overlay = document.createElement('div');
+    overlay.id = 'bulkProductChooserOverlay';
+    overlay.className = 'dim-edit-overlay';
+    overlay.hidden = true;
+    overlay.innerHTML = `<form class="dim-edit-card bulk-product-chooser-card"><div class="dim-edit-title" id="bulkProductChooserTitle">Çoklu Ürün Ekleme</div><div id="bulkProductChooserRows" class="bulk-selection-list"></div><label class="dim-edit-label"><span id="bulkProductTypeLabel">Ürün</span><select id="bulkProductType"><option value="sliding_glass">Sürme Cam</option><option value="guillotine_glass">Giyotin Cam</option></select></label><div class="dim-edit-actions"><button id="bulkProductChooserCancel" type="button" class="dim-edit-cancel">İptal</button><button type="submit" class="dim-edit-apply">Tamam</button></div></form>`;
+    previewPanel.appendChild(overlay);
+    overlay.querySelector('#bulkProductChooserCancel').addEventListener('click', () => { overlay.hidden = true; });
+    overlay.addEventListener('mousedown', evt => { if (evt.target === overlay) overlay.hidden = true; });
+    overlay.querySelector('form').addEventListener('submit', evt => {
+      evt.preventDefault();
+      const metas = Array.isArray(overlay._metas) ? overlay._metas : [];
+      const product = overlay.querySelector('#bulkProductType').value;
+      overlay.hidden = true;
+      if (product === 'guillotine_glass') showGuillotineDetailsOverlay({ batchMetas: metas, bulk: true });
+      else showSlidingDetailsOverlay({ batchMetas: metas, bulk: true });
+    });
+    return overlay;
+  }
+
+  function showBulkProductChooser(metas) {
+    const overlay = ensureBulkProductChooser();
+    overlay._metas = metas.map(meta => ({ ...meta }));
+    const isEn = currentLanguage === 'en';
+    overlay.querySelector('#bulkProductChooserTitle').textContent = isEn ? 'Multiple Product Placement' : 'Çoklu Ürün Ekleme';
+    overlay.querySelector('#bulkProductTypeLabel').textContent = isEn ? 'Product' : 'Ürün';
+    overlay.querySelector('#bulkProductChooserCancel').textContent = isEn ? 'Cancel' : 'İptal';
+    const options = overlay.querySelectorAll('#bulkProductType option');
+    if (options[0]) options[0].textContent = isEn ? 'Sliding Glass' : 'Sürme Cam';
+    if (options[1]) options[1].textContent = isEn ? 'Guillotine' : 'Giyotin Cam';
+    overlay.querySelector('#bulkProductChooserRows').innerHTML = metas.map((meta, i) => `<div><b>${i + 1}.</b> ${escapeHtml(viewLabel(meta.view))} · ${escapeHtml(meta.label || '')} · ${Math.round(Number(meta.placementWidth || 0))} × ${Math.round(Number(meta.placementHeight || 0))} mm</div>`).join('');
+    overlay.hidden = false;
+    window.setTimeout(() => overlay.querySelector('#bulkProductType').focus({ preventScroll: true }), 20);
+  }
+
+  function captureBulkEditState() {
+    return createProjectSnapshot();
+  }
+
+  function applyDimensionValueForBulk(meta, value) {
+    if (String(meta.actionType||'') === 'ray_interval_resize') resizeRayInterval(meta, value);
+    else if (isParapetWidthMeta(meta)) resizeParapetSegmentWidth(meta, value);
+    else if (isLeftSideSupportGapMeta(meta)) resizeLeftSideSupportGap(meta, value);
+    else if (isFrontPostGapMeta(meta)) resizeFrontPostGap(meta, value);
+    else {
+      if (!meta.canResize || String(meta.field || '').startsWith('__')) throw new Error(currentLanguage === 'en' ? `${meta.label}: not directly editable.` : `${meta.label}: doğrudan düzenlenebilir değil.`);
+      updateEditableListValue(meta.field, meta.index, String(value), true);
+    }
+    const drawing = updatePreview(false);
+    if (!drawing) throw new Error(statusText.textContent || (currentLanguage === 'en' ? 'Drawing could not be rebuilt.' : 'Çizim yeniden oluşturulamadı.'));
+  }
+
+  function ensureBulkDimensionOverlay() {
+    let overlay = $('bulkDimensionOverlay');
+    if (overlay) return overlay;
+    overlay = document.createElement('div');
+    overlay.id = 'bulkDimensionOverlay';
+    overlay.className = 'dim-edit-overlay';
+    overlay.hidden = true;
+    overlay.innerHTML = `<form class="dim-edit-card bulk-dimension-card"><div class="dim-edit-title" id="bulkDimensionTitle">Çoklu Ölçü Düzenleme</div><div id="bulkDimensionRows" class="bulk-selection-list"></div><label class="dim-edit-label"><span id="bulkDimensionValueLabel">Yeni ölçü *(mm)</span><input id="bulkDimensionValue" type="text" inputmode="numeric" autocomplete="off"></label><div id="bulkDimensionError" class="dim-edit-error"></div><div class="dim-edit-actions"><button id="bulkDimensionCancel" type="button" class="dim-edit-cancel">İptal</button><button type="submit" class="dim-edit-apply">Tamam</button></div></form>`;
+    previewPanel.appendChild(overlay);
+    const input = overlay.querySelector('#bulkDimensionValue');
+    input.addEventListener('input', () => { input.value = String(input.value || '').replace(/[^0-9]/g, ''); overlay.querySelector('#bulkDimensionError').textContent = ''; });
+    overlay.querySelector('#bulkDimensionCancel').addEventListener('click', () => { overlay.hidden = true; });
+    overlay.addEventListener('mousedown', evt => { if (evt.target === overlay) overlay.hidden = true; });
+    overlay.querySelector('form').addEventListener('submit', evt => {
+      evt.preventDefault();
+      const metas = Array.isArray(overlay._metas) ? overlay._metas : [];
+      const value = Number(input.value || 0);
+      const error = overlay.querySelector('#bulkDimensionError');
+      if (!(value > 0)) { error.textContent = currentLanguage === 'en' ? 'Enter a positive number.' : 'Pozitif bir sayı gir.'; return; }
+      const rollback = captureBulkEditState();
+      suppressFormPreviewUpdate = true;
+      beginHistoryTransaction();
+      let commitHistory = false;
+      try {
+        metas.forEach(meta => applyDimensionValueForBulk(meta, value));
+        overlay.hidden = true;
+        commitHistory = true;
+        statusText.textContent = currentLanguage === 'en' ? `${metas.length} dimensions updated.` : `${metas.length} ölçü güncellendi.`;
+      } catch (err) {
+        projectHistory.restoring = true;
+        try { restoreProjectSnapshot(rollback, { resetZoom: false }); } catch (_) {}
+        finally { projectHistory.restoring = false; }
+        error.textContent = err.message;
+      } finally {
+        suppressFormPreviewUpdate = false;
+        endHistoryTransaction(commitHistory);
+      }
+    });
+    return overlay;
+  }
+
+  function showBulkDimensionOverlay(metas) {
+    const overlay = ensureBulkDimensionOverlay();
+    const isEn = currentLanguage === 'en';
+    overlay._metas = metas.map(meta => ({ ...meta }));
+    overlay.querySelector('#bulkDimensionTitle').textContent = isEn ? 'Multiple Dimension Editing' : 'Çoklu Ölçü Düzenleme';
+    overlay.querySelector('#bulkDimensionValueLabel').textContent = isEn ? 'New dimension *(mm)' : 'Yeni ölçü *(mm)';
+    overlay.querySelector('#bulkDimensionCancel').textContent = isEn ? 'Cancel' : 'İptal';
+    overlay.querySelector('#bulkDimensionRows').innerHTML = metas.map((meta, i) => `<div><b>${i + 1}.</b> ${escapeHtml(viewLabel(meta.view))} · ${escapeHtml(meta.label || '')} · ${escapeHtml(String(meta.value || ''))} mm</div>`).join('');
+    overlay.querySelector('#bulkDimensionValue').value = '';
+    overlay.querySelector('#bulkDimensionError').textContent = '';
+    overlay.hidden = false;
+    window.setTimeout(() => overlay.querySelector('#bulkDimensionValue').focus({ preventScroll: true }), 20);
+  }
+
+  function finishToolboxSelection() {
+    hideToolboxContextMenu();
+    if (!toolboxSelectionMode) return;
+    if (!toolboxSelectionItems.size) {
+      statusText.textContent = currentLanguage === 'en' ? 'Select at least one item.' : 'En az bir öğe seç.';
+      return;
+    }
+    const mode = toolboxSelectionMode;
+    const items = Array.from(toolboxSelectionItems.values());
+    cancelToolboxSelection();
+    if (mode === 'bulk-extend') {
+      showBulkExtendOverlay(items);
+      return;
+    }
+    if (mode === 'multi-product') {
+      const metas = items.map(normalizedProductMeta).filter(Boolean);
+      showBulkProductChooser(metas);
+      return;
+    }
+    if (mode === 'multi-dimension') {
+      showBulkDimensionOverlay(items);
+      return;
+    }
+    if (mode === 'equalize-gaps') {
+      try { equalizeSelectedGaps(items); }
+      catch (err) { statusText.textContent = err.message; window.alert(err.message); }
+      return;
+    }
+    if (mode === 'convert-product') {
+      try { beginProductTypeConversion(items); }
+      catch (err) { statusText.textContent = err.message; window.alert(err.message); }
+      return;
+    }
+    if (mode === 'fit-products') {
+      try { fitSelectedProductsToOpenings(items); }
+      catch (err) { statusText.textContent = err.message; window.alert(err.message); }
+      return;
+    }
+    if (mode === 'multi-delete') {
+      const records = items.map(findProductByInteraction).filter(Boolean);
+      const ok = window.confirm(currentLanguage === 'en' ? `Delete ${records.length} selected product(s)?` : `${records.length} seçili ürün silinsin mi?`);
+      if (!ok) return;
+      records.forEach(deleteProductRecord);
+      updatePreview(false);
+      statusText.textContent = currentLanguage === 'en' ? `${records.length} products deleted.` : `${records.length} ürün silindi.`;
+    }
+  }
+
+  function deleteAllProducts() {
+    if (toolboxSelectionMode) cancelToolboxSelection();
+    const count = slidingPlacements.length + sideSlidingPlacements.length + guillotinePlacements.length + sideGuillotinePlacements.length + (normalizeYesNo($('triangleJoinery') && $('triangleJoinery').value) === 'EVET' ? 1 : 0);
+    if (!count) {
+      statusText.textContent = currentLanguage === 'en' ? 'There are no added products to delete.' : 'Silinecek eklenmiş ürün yok.';
+      return;
+    }
+    if (!window.confirm(currentLanguage === 'en' ? 'Delete all sliding, guillotine and triangle joinery products?' : 'Tüm sürme, giyotin ve üçgen doğrama ürünleri silinsin mi?')) return;
+    slidingPlacements = [];
+    sideSlidingPlacements = [];
+    guillotinePlacements = [];
+    sideGuillotinePlacements = [];
+    if ($('triangleJoinery')) $('triangleJoinery').value = 'HAYIR';
+    setSideFeatureValue('triangle', '0', false);
+    setSideFeatureValue('triangle', 'right', false);
+    Object.keys(sideFeatureState.triangle.middle || {}).forEach(key => { sideFeatureState.triangle.middle[key] = false; });
+    syncToolboxBooleanButtons();
+    updatePreview(false);
+    statusText.textContent = currentLanguage === 'en' ? 'All added products were deleted.' : 'Sonradan eklenen tüm ürünler silindi.';
+  }
+
+
+  function allProductRecords() {
+    return [
+      ...slidingPlacements.map(placement => ({ type: 'sliding_glass', collection: 'slidingPlacements', placement, isSide: false })),
+      ...sideSlidingPlacements.map(placement => ({ type: 'sliding_glass', collection: 'sideSlidingPlacements', placement, isSide: true })),
+      ...guillotinePlacements.map(placement => ({ type: 'guillotine_glass', collection: 'guillotinePlacements', placement, isSide: false })),
+      ...sideGuillotinePlacements.map(placement => ({ type: 'guillotine_glass', collection: 'sideGuillotinePlacements', placement, isSide: true }))
+    ];
+  }
+
+  function productZoneKey(record) {
+    if (!record || !record.placement) return '';
+    const p = record.placement;
+    if (record.isSide || ['side-left', 'side-right'].includes(String(p.placementView || ''))) {
+      const key = normalizeSideViewKey(p.sideViewKey, p.sideIndex);
+      return `side:${key}:${String(p.sideZone || `gap_${Number(p.sideGapIndex) || 0}`)}`;
+    }
+    return `front:${Number(p.gapIndex) || 0}`;
+  }
+
+  function productTypeLabel(type) {
+    if (String(type) === 'guillotine_glass') return currentLanguage === 'en' ? 'Guillotine' : 'Giyotin';
+    return currentLanguage === 'en' ? 'Sliding' : 'Sürme';
+  }
+
+  function productDisplayLabel(record) {
+    const p = record && record.placement ? record.placement : {};
+    return `${String(p.pozNo || '?')} · ${productTypeLabel(record && record.type)}`;
+  }
+
+  function productAvailableMetaForRecord(record) {
+    if (!record || !record.placement || !lastDrawing || !lastDrawing.input) return null;
+    const p = record.placement;
+    const d = lastDrawing.input;
+    if (record.isSide || ['side-left', 'side-right'].includes(String(p.placementView || ''))) {
+      const sideIndex = Number(p.sideIndex) || 0;
+      const sideViewKey = normalizeSideViewKey(p.sideViewKey, sideIndex);
+      const sideGapIndex = Number(p.sideGapIndex) || 0;
+      const geom = sideViewKey === 'right'
+        ? d.rightSideSupportGeometry
+        : (d.sideSupportGeometry && (d.sideSupportGeometry[sideViewKey] || d.sideSupportGeometry[String(sideIndex)]));
+      const gap = geom && Array.isArray(geom.gaps) ? geom.gaps[sideGapIndex] : null;
+      if (!geom || !gap) return null;
+      const localParapet = currentSideParapetHeightAt(sideIndex, (Number(gap.left) + Number(gap.right)) / 2, sideViewKey);
+      return {
+        placementView: sideViewKey === 'right' ? 'side-right' : 'side-left',
+        view: sideViewKey === 'right' ? 'Right' : 'Side',
+        index: sideIndex, sideIndex, sideViewKey, sideGapIndex,
+        sideZone: String(p.sideZone || `gap_${sideGapIndex}`),
+        value: Math.max(0, Number(gap.width) || 0),
+        placementWidth: Math.max(1, (Number(gap.width) || 0) - 5),
+        placementHeight: Math.max(1, currentSideGlassTrackClearHeight(localParapet, sideViewKey, sideIndex) - 5)
+      };
+    }
+    const gapIndex = Number(p.gapIndex) || 0;
+    const centers = currentFrontPostCenters();
+    if (gapIndex < 0 || gapIndex >= centers.length - 1) return null;
+    const left = centers[gapIndex] + frontPostWidthAt(gapIndex) / 2;
+    const right = centers[gapIndex + 1] - frontPostWidthAt(gapIndex + 1) / 2;
+    const clear = Math.max(0, right - left);
+    return {
+      placementView: 'front', view: 'Front', index: gapIndex, gapIndex,
+      value: clear,
+      placementWidth: Math.max(1, clear - 5),
+      placementHeight: Math.max(1, Number(d.frontHeight || 0) - currentFrontParapetHeightAt((left + right) / 2) - 5)
+    };
+  }
+
+  function centerRemainderOrder(count) {
+    const center = (Math.max(1, count) - 1) / 2;
+    return Array.from({ length: count }, (_, i) => i).sort((a, b) => Math.abs(a - center) - Math.abs(b - center) || a - b);
+  }
+
+  function equalizedGapTargets(total, count) {
+    const safeCount = Math.max(1, Number(count) || 1);
+    const base = Math.floor(total / safeCount);
+    const targets = Array.from({ length: safeCount }, () => base);
+    let remainder = Math.max(0, Math.min(safeCount - 1, Math.round(total - base * safeCount)));
+    const order = centerRemainderOrder(safeCount);
+    for (let i = 0; i < remainder; i += 1) targets[order[i]] += 1;
+    const residual = total - targets.reduce((sum, value) => sum + value, 0);
+    if (Math.abs(residual) > 1e-9) targets[order[0]] += residual;
+    return targets;
+  }
+
+  function equalizeSelectedFrontGaps(metas) {
+    const indices = Array.from(new Set((metas || []).filter(isFrontPostGapMeta).map(meta => Number(meta.index) || 0))).sort((a, b) => a - b);
+    if (indices.length < 2) throw new Error(currentLanguage === 'en' ? 'Select at least two front post gaps.' : 'En az iki ön dikme aralığı seç.');
+    const centers = currentFrontPostCenters();
+    if (centers.length < 3 || indices.some(i => i < 0 || i >= centers.length - 1)) throw new Error(currentLanguage === 'en' ? 'Selected post gaps are no longer valid.' : 'Seçilen dikme aralıkları artık geçerli değil.');
+    const widths = centers.map((_, i) => frontPostWidthAt(i));
+    const allGaps = Array.from({length: centers.length - 1}, (_, i) => centers[i + 1] - widths[i + 1] / 2 - (centers[i] + widths[i] / 2));
+    if (indices.some(i => !(allGaps[i] > 0))) throw new Error(currentLanguage === 'en' ? 'One selected gap is zero or negative.' : 'Seçilen aralıklardan biri sıfır veya negatiftir.');
+    const selectedTotal = indices.reduce((sum, i) => sum + allGaps[i], 0);
+    const targets = equalizedGapTargets(selectedTotal, indices.length);
+    indices.forEach((gapIndex, order) => { allGaps[gapIndex] = targets[order]; });
+    const rollback = createProjectSnapshot(); beginHistoryTransaction(); let commit = false;
+    try {
+      const next = centers.slice();
+      for (let i = 0; i < allGaps.length; i += 1) next[i + 1] = next[i] + widths[i] / 2 + allGaps[i] + widths[i + 1] / 2;
+      next[next.length - 1] = centers[centers.length - 1];
+      // Sağ uç sabit kalırken olası kayan toplamı, seçilmemiş merkez aralığa dağıt.
+      const drift = next[next.length - 1] - centers[centers.length - 1];
+      if (Math.abs(drift) > 0.001) {
+        const adjustable = allGaps.map((_,i)=>i).filter(i=>!indices.includes(i));
+        if (!adjustable.length) throw new Error(currentLanguage === 'en' ? 'The selected gaps cannot be equalized while both edge posts remain fixed.' : 'İki kenar dikme sabitken seçilen aralıklar eşitlenemiyor.');
+        const targetGap = adjustable[Math.floor(adjustable.length/2)];
+        allGaps[targetGap] -= drift;
+        if (!(allGaps[targetGap] > 0)) throw new Error(currentLanguage === 'en' ? 'The remaining gap is insufficient.' : 'Arada kalan bölüm kaydırma için yetersiz.');
+        for (let i = 0; i < allGaps.length; i += 1) next[i + 1] = next[i] + widths[i] / 2 + allGaps[i] + widths[i + 1] / 2;
+      }
+      customFrontPostCenters = next;
+      // v8.9.27: Aralık geometrisi değişse bile kullanıcı tarafından kaydedilmiş
+      // ürün genişlikleri korunur. Otomatik yeniden sığdırma yalnız toolbox’taki
+      // “Ürünü Alana Uydur” komutuyla yapılır.
+      const drawing=updatePreview(false); if(!drawing) throw new Error(statusText.textContent || 'Çizim yeniden oluşturulamadı.');
+      commit=true; statusText.textContent=currentLanguage==='en'?`${indices.length} selected gaps equalized.`:`${indices.length} seçili aralık eşitlendi.`;
+    } catch(err){ projectHistory.restoring=true; try{restoreProjectSnapshot(rollback,{resetZoom:false});}catch(_){} finally{projectHistory.restoring=false;} throw err; }
+    finally{endHistoryTransaction(commit);}
+  }
+
+
+  function equalizeSelectedSideGaps(metas) {
+    const groups = new Map();
+    (metas || []).filter(isLeftSideSupportGapMeta).forEach(meta => {
+      const key = String(Number(meta.index) || 0);
+      if (!groups.has(key)) groups.set(key, []);
+      groups.get(key).push(meta);
+    });
+    if (groups.size !== 1) throw new Error(currentLanguage === 'en' ? 'Select gaps from one side view at a time.' : 'Tek seferde aynı yan görünüşteki aralıkları seç.');
+    const [sideKey, selectedMetas] = Array.from(groups.entries())[0] || [];
+    const meta = selectedMetas && selectedMetas[0];
+    const geom = currentSideSupportGeometry(meta);
+    if (!geom || !Array.isArray(geom.posts) || !geom.posts.length || !Array.isArray(geom.gaps)) throw new Error(currentLanguage === 'en' ? 'Side support geometry could not be found.' : 'Yan destek geometrisi bulunamadı.');
+    const indices = Array.from(new Set(selectedMetas.map(item => Number(item.sideGapIndex) || 0))).sort((a,b)=>a-b);
+    if (indices.length < 2) throw new Error(currentLanguage === 'en' ? 'Select at least two side gaps.' : 'En az iki yan görünüş aralığı seç.');
+    if (indices.some(i => i < 0 || i >= geom.gaps.length)) throw new Error(currentLanguage === 'en' ? 'One selected side gap is no longer valid.' : 'Seçilen yan aralıklardan biri artık geçerli değil.');
+    const posts = materializeSidePosts(meta);
+    const gaps = geom.gaps.map(item => Number(item.width) || 0);
+    if (indices.some(i => !(gaps[i] >= 0))) throw new Error(currentLanguage === 'en' ? 'One selected gap is invalid.' : 'Seçilen aralıklardan biri geçersiz.');
+    const selectedTotal = indices.reduce((sum,i)=>sum+gaps[i],0);
+    const targets = equalizedGapTargets(selectedTotal, indices.length);
+    indices.forEach((gapIndex, order)=>{gaps[gapIndex]=targets[order];});
+    let cursor = Number(geom.wallX) || 0;
+    posts.forEach((post, i) => {
+      const width = Math.max(1, Number(post.profile && post.profile.en) || 100);
+      cursor += gaps[i] + width / 2;
+      post.centerX = cursor;
+      cursor += width / 2;
+    });
+    const finalRight = cursor + gaps[gaps.length - 1];
+    if (Math.abs(finalRight - Number(geom.frontPostRearFace)) > 0.01) throw new Error(currentLanguage === 'en' ? 'The equalized gaps do not fit between the wall and front post.' : 'Eşitlenen aralıklar duvar ile ön dikme arasına sığmıyor.');
+    storeSidePosts(meta, posts);
+    // v8.9.27: Yan aralıklar eşitlendiğinde ürünlerin manuel genişlikleri
+    // değiştirilmez. Gerekirse kullanıcı “Ürünü Alana Uydur” komutunu çalıştırır.
+  }
+
+  function equalizeSelectedGaps(metas) {
+    const front = (metas || []).filter(isFrontPostGapMeta);
+    const side = (metas || []).filter(isLeftSideSupportGapMeta);
+    if (front.length && side.length) throw new Error(currentLanguage === 'en' ? 'Front and side gaps cannot be equalized in the same operation.' : 'Ön ve yan görünüş aralıkları aynı işlemde eşitlenemez.');
+    if (front.length) return equalizeSelectedFrontGaps(front);
+    if (side.length) {
+      const rollback = createProjectSnapshot(); beginHistoryTransaction(); let commit=false;
+      try {
+        equalizeSelectedSideGaps(side);
+        const drawing=updatePreview(false); if(!drawing) throw new Error(statusText.textContent || 'Çizim yeniden oluşturulamadı.');
+        commit=true;
+        statusText.textContent=currentLanguage==='en'?`${side.length} selected side gaps equalized.`:`${side.length} seçili yan görünüş aralığı eşitlendi.`;
+      } catch(err) {
+        projectHistory.restoring=true; try{restoreProjectSnapshot(rollback,{resetZoom:false});}catch(_){} finally{projectHistory.restoring=false;}
+        throw err;
+      } finally { endHistoryTransaction(commit); }
+      return;
+    }
+    throw new Error(currentLanguage === 'en' ? 'Select at least two valid gaps.' : 'En az iki geçerli aralık seç.');
+  }
+
+  function fitSelectedProductsToOpenings(interactionMetas) {
+    const records = [];
+    const seen = new Set();
+    (interactionMetas || []).forEach(meta => {
+      const record = findProductByInteraction(meta);
+      const id = record && record.placement ? String(record.placement.id || '') : '';
+      if (!record || (id && seen.has(id))) return;
+      if (id) seen.add(id);
+      records.push(record);
+    });
+    if (!records.length) throw new Error(currentLanguage === 'en' ? 'No valid product was selected.' : 'Geçerli bir ürün seçilmedi.');
+    const rollback = createProjectSnapshot();
+    beginHistoryTransaction();
+    let commit = false;
+    try {
+      records.forEach(record => {
+        const available = productAvailableMetaForRecord(record);
+        if (!available) throw new Error(currentLanguage === 'en' ? `${productDisplayLabel(record)} opening could not be found.` : `${productDisplayLabel(record)} yerleşim alanı bulunamadı.`);
+        record.placement.width = Math.max(1, Number(available.placementWidth) || 1);
+        record.placement.height = Math.max(1, Number(available.placementHeight) || 1);
+        if (record.type === 'sliding_glass') record.placement.panelCount = slidingPanelCount(record.placement.width, record.placement.openingType);
+      });
+      const drawing = updatePreview(false);
+      if (!drawing) throw new Error(statusText.textContent || (currentLanguage === 'en' ? 'Drawing could not be rebuilt.' : 'Çizim yeniden oluşturulamadı.'));
+      commit = true;
+      statusText.textContent = currentLanguage === 'en'
+        ? `${records.length} product size(s) were fitted to their openings.`
+        : `${records.length} ürünün ölçüsü yerleşim alanına uyduruldu.`;
+    } catch (err) {
+      projectHistory.restoring = true;
+      try { restoreProjectSnapshot(rollback, { resetZoom: false }); } catch (_) {}
+      finally { projectHistory.restoring = false; }
+      throw err;
+    } finally {
+      endHistoryTransaction(commit);
+    }
+  }
+
+  function beginProductTypeConversion(interactionMetas) {
+    const metas = Array.isArray(interactionMetas) ? interactionMetas : [interactionMetas];
+    const records=[]; const seen=new Set();
+    metas.forEach(meta=>{const r=findProductByInteraction(meta); const id=r&&r.placement?String(r.placement.id||''):''; if(r&&!seen.has(id)){seen.add(id);records.push(r);}});
+    if(!records.length) throw new Error(currentLanguage==='en'?'The selected products could not be found.':'Seçilen ürünler bulunamadı.');
+    const sourceType=records[0].type;
+    if(records.some(r=>r.type!==sourceType)) throw new Error(currentLanguage==='en'?'Select products of the same type in one conversion.':'Tek dönüşümde aynı tip ürünleri seç.');
+    const batchMetas=records.map(record=>{
+      const available=productAvailableMetaForRecord(record)||{};
+      return {...available, placementWidth:Math.max(1,Number(record.placement.width)||Number(available.placementWidth)||1), placementHeight:Math.max(1,Number(record.placement.height)||Number(available.placementHeight)||1)};
+    });
+    const payload={...batchMetas[0],batchMetas};
+    if(sourceType==='sliding_glass') showGuillotineDetailsOverlay(payload,{convertFromRecords:records});
+    else showSlidingDetailsOverlay(payload,{convertFromRecords:records});
+  }
+
+  function numericTokens(value) {
+    return (String(value == null ? '' : value).match(/-?\d+(?:[.,]\d+)?/g) || []).map(token => Number(token.replace(',', '.'))).filter(Number.isFinite);
+  }
+
+  function makeDrawingIssue(code, severity, trTitle, enTitle, trDetail, enDetail, target = null) {
+    return {
+      code,
+      severity: severity === 'warning' ? 'warning' : 'error',
+      title: currentLanguage === 'en' ? enTitle : trTitle,
+      detail: currentLanguage === 'en' ? enDetail : trDetail,
+      target
+    };
+  }
+
+  function productTarget(record) {
+    return record && record.placement ? { kind: 'product', placementId: String(record.placement.id || '') } : null;
+  }
+
+  function validateDuplicateZoneProducts(context) {
+    const issues = [];
+    const groups = new Map();
+    context.products.forEach(record => {
+      const key = productZoneKey(record);
+      if (!key) return;
+      if (!groups.has(key)) groups.set(key, []);
+      groups.get(key).push(record);
+    });
+    groups.forEach(records => {
+      if (records.length < 2) return;
+      const labels = records.map(productDisplayLabel).join(', ');
+      issues.push(makeDrawingIssue('duplicate-zone-products', 'error', 'Aynı aralıkta birden fazla ürün', 'Multiple products in the same opening', `${labels} aynı yerleşim alanını kullanıyor.`, `${labels} use the same placement opening.`, productTarget(records[0])));
+    });
+    return issues;
+  }
+
+  function sideGeometryEntriesForChecks(drawingInput) {
+    const d = drawingInput || {};
+    const entries = [];
+    const leftMap = d.sideSupportGeometry && typeof d.sideSupportGeometry === 'object' ? d.sideSupportGeometry : {};
+    Object.entries(leftMap).forEach(([key, geom]) => {
+      if (geom) entries.push({ key: normalizeSideViewKey(key, Number(key) || 0), geom, sideIndex: Number(geom.sideIndex ?? key) || 0 });
+    });
+    if (d.rightSideSupportGeometry) {
+      entries.push({ key: 'right', geom: d.rightSideSupportGeometry, sideIndex: Number(d.rightSideSupportGeometry.sideIndex ?? Math.max(0, Number(d.sidePositionCount || 1) - 1)) || 0 });
+    }
+    return entries;
+  }
+
+  function sidePositionLabel(key, sideIndex) {
+    if (key === 'right') return currentLanguage === 'en' ? 'right side view' : 'sağ yan görünüş';
+    if (String(key) === '0') return currentLanguage === 'en' ? 'left side view' : 'sol yan görünüş';
+    return currentLanguage === 'en' ? `side position ${Number(sideIndex) + 1}` : `Poz ${Number(sideIndex) + 1} yan görünüş`;
+  }
+
+  function validatePostOverlaps(context) {
+    const issues = [];
+    if (!context.drawing) return issues;
+    const centers = currentFrontPostCenters();
+    for (let i = 0; i < centers.length - 1; i += 1) {
+      const clear = centers[i + 1] - frontPostWidthAt(i + 1) / 2 - (centers[i] + frontPostWidthAt(i) / 2);
+      if (clear < -0.001) issues.push(makeDrawingIssue('front-post-overlap', 'error', 'Ön dikmeler üst üste geliyor', 'Front posts overlap', `${i + 1}. ve ${i + 2}. ön dikme ${Math.abs(clear).toFixed(1)} mm çakışıyor.`, `Front posts ${i + 1} and ${i + 2} overlap by ${Math.abs(clear).toFixed(1)} mm.`, { kind: 'frontPost', postIndex: i + 1 }));
+    }
+    sideGeometryEntriesForChecks(context.drawing.input).forEach(({ key: sideKey, geom, sideIndex }) => {
+      if (!geom || !Array.isArray(geom.posts)) return;
+      const label = sidePositionLabel(sideKey, sideIndex);
+      const posts = geom.posts.slice().sort((a, b) => Number(a.centerX) - Number(b.centerX));
+      posts.forEach((post, index) => {
+        const left = Number(post.left != null ? post.left : Number(post.centerX) - Number(post.width || (post.profile && post.profile.en) || 100) / 2);
+        const right = Number(post.right != null ? post.right : Number(post.centerX) + Number(post.width || (post.profile && post.profile.en) || 100) / 2);
+        const previous = index > 0 ? posts[index - 1] : null;
+        const target = { kind: 'sidePost', sidePostId: String(post.id || ''), sideIndex, sideViewKey: sideKey };
+        if (previous) {
+          const previousRight = Number(previous.right != null ? previous.right : Number(previous.centerX) + Number(previous.width || (previous.profile && previous.profile.en) || 100) / 2);
+          if (left < previousRight - 0.001) issues.push(makeDrawingIssue('side-post-overlap', 'error', 'Yan destek dikmeleri üst üste geliyor', 'Side support posts overlap', `${label} içinde iki destek dikmesi çakışıyor.`, `Two support posts overlap in the ${label}.`, target));
+        }
+        if (left < Number(geom.wallX) - 0.001 || right > Number(geom.frontPostRearFace) + 0.001) issues.push(makeDrawingIssue('side-post-boundary', 'error', 'Yan destek dikmesi sınır dışına taşıyor', 'Side support post exceeds its limits', `${label} destek dikmesi duvar veya ön dikme sınırını aşıyor.`, `A support post in the ${label} exceeds the wall or front-post limit.`, target));
+      });
+    });
+    return issues;
+  }
+
+  function validateNonPositiveDimensions(context) {
+    const issues = [];
+    const fields = [
+      ['width', 'Genişlik', 'Width', 'front_total_width'],
+      ['opening', 'Açılım', 'Projection', 'side_opening_pos_1'],
+      ['rearHeight', 'Arka yükseklik', 'Rear height', 'side_rear_height_pos_1'],
+      ['frontHeight', 'Ön yükseklik', 'Front height', 'front_height']
+    ];
+    if (normalizeYesNo(context.form.parapet) === 'EVET') fields.push(['parapetHeight', 'Parapet yüksekliği', 'Parapet height', 'front_parapet_height_info']);
+    fields.forEach(([field, trName, enName, dimId]) => {
+      numericTokens(context.form[field]).forEach((value, index) => {
+        if (value > 0) return;
+        issues.push(makeDrawingIssue('non-positive-dimension', 'error', 'Sıfır veya negatif ölçü', 'Zero or negative dimension', `${trName}${index ? ` (${index + 1}. değer)` : ''}: ${value} mm.`, `${enName}${index ? ` (value ${index + 1})` : ''}: ${value} mm.`, { kind: 'dimension', dimId: index && field === 'opening' ? `side_opening_pos_${index + 1}` : index && field === 'rearHeight' ? `side_rear_height_pos_${index + 1}` : dimId, field }));
+      });
+    });
+    context.products.forEach(record => {
+      const p = record.placement;
+      if (!(Number(p.width) > 0) || !(Number(p.height) > 0)) issues.push(makeDrawingIssue('non-positive-product-size', 'error', 'Ürün ölçüsü sıfır veya negatif', 'Product size is zero or negative', `${productDisplayLabel(record)} ölçüsü ${Number(p.width) || 0} × ${Number(p.height) || 0} mm.`, `${productDisplayLabel(record)} size is ${Number(p.width) || 0} × ${Number(p.height) || 0} mm.`, productTarget(record)));
+    });
+    return issues;
+  }
+
+  function validateProfilesAgainstGaps(context) {
+    const issues = [];
+    if (!context.drawing) return issues;
+    const centers = currentFrontPostCenters();
+    centers.forEach((center, index) => {
+      const profile = frontPostProfiles[index];
+      if (!profile) return;
+      const width = Math.max(1, Number(profile.en) || 1);
+      const leftDistance = index > 0 ? center - centers[index - 1] : Infinity;
+      const rightDistance = index < centers.length - 1 ? centers[index + 1] - center : Infinity;
+      if (width >= Math.min(leftDistance, rightDistance) - 0.001) issues.push(makeDrawingIssue('front-profile-too-wide', 'error', 'Dikme profili aralıktan geniş', 'Post profile is wider than its spacing', `${index + 1}. ön dikmenin ${width} mm profili komşu dikme aralığına sığmıyor.`, `The ${width} mm profile of front post ${index + 1} does not fit between adjacent posts.`, { kind: 'frontPost', postIndex: index }));
+    });
+    sideGeometryEntriesForChecks(context.drawing.input).forEach(({ key: sideKey, geom, sideIndex }) => {
+      if (!geom || !Array.isArray(geom.posts)) return;
+      const label = sidePositionLabel(sideKey, sideIndex);
+      const posts = geom.posts.slice().sort((a, b) => Number(a.centerX) - Number(b.centerX));
+      posts.forEach((post, index) => {
+        const width = Math.max(1, Number(post.width || (post.profile && post.profile.en)) || 1);
+        const leftBoundary = index ? Number(posts[index - 1].centerX) : Number(geom.wallX);
+        const rightBoundary = index < posts.length - 1 ? Number(posts[index + 1].centerX) : Number(geom.frontPostRearFace);
+        if (width >= Math.min(Number(post.centerX) - leftBoundary, rightBoundary - Number(post.centerX)) * 2 - 0.001) issues.push(makeDrawingIssue('side-profile-too-wide', 'error', 'Destek profili aralıktan geniş', 'Support profile is wider than its spacing', `${label} içindeki ${width} mm destek profili mevcut aralığa sığmıyor.`, `The ${width} mm support profile in the ${label} does not fit its available spacing.`, { kind: 'sidePost', sidePostId: String(post.id || ''), sideIndex, sideViewKey: sideKey }));
+      });
+    });
+    return issues;
+  }
+
+  function validateMissingProductInformation(context) {
+    const issues = [];
+    context.products.forEach(record => {
+      const p = record.placement || {};
+      const required = record.type === 'guillotine_glass'
+        ? ['id','pozNo','series','type','mechanism','glassThickness','glassColor','panelCount','motorDirection','view','motorType','remoteControl']
+        : ['id','pozNo','series','type','openingType','glassThickness','glassColor','panelCount'];
+      const missing = required.filter(key => String(p[key] == null ? '' : p[key]).trim() === '');
+      if (missing.length) issues.push(makeDrawingIssue('missing-product-information', 'error', 'Eksik ürün bilgisi', 'Missing product information', `${productDisplayLabel(record)}: ${missing.join(', ')} alanları eksik.`, `${productDisplayLabel(record)}: ${missing.join(', ')} fields are missing.`, productTarget(record)));
+    });
+    return issues;
+  }
+
+  function validateDuplicatePozNumbers(context) {
+    const issues = [];
+    const groups = new Map();
+    context.products.forEach(record => {
+      const poz = String(record.placement && record.placement.pozNo || '').trim().toUpperCase();
+      if (!poz) return;
+      if (!groups.has(poz)) groups.set(poz, []);
+      groups.get(poz).push(record);
+    });
+    groups.forEach((records, poz) => {
+      if (records.length < 2) return;
+      records.forEach(record => issues.push(makeDrawingIssue('duplicate-poz-number', 'error', 'Aynı poz numarası tekrar kullanılmış', 'Duplicate position number', `${poz} numarası ${records.length} üründe kullanılıyor.`, `${poz} is used by ${records.length} products.`, productTarget(record))));
+    });
+    return issues;
+  }
+
+  function validateProductFitsOpening(context) {
+    const issues = [];
+    if (!context.drawing) return issues;
+    context.products.forEach(record => {
+      const available = productAvailableMetaForRecord(record);
+      if (!available) {
+        issues.push(makeDrawingIssue('product-opening-missing', 'error', 'Ürün yerleşim alanı bulunamadı', 'Product opening could not be found', `${productDisplayLabel(record)} artık geçerli bir aralığa bağlı değil.`, `${productDisplayLabel(record)} is no longer linked to a valid opening.`, productTarget(record)));
+        return;
+      }
+      const p = record.placement;
+      const tooWide = Number(p.width) > Number(available.placementWidth) + 0.5;
+      const tooHigh = Number(p.height) > Number(available.placementHeight) + 0.5;
+      if (tooWide || tooHigh) issues.push(makeDrawingIssue('product-too-large', 'error', 'Ürün ölçüsü yerleşim alanından büyük', 'Product is larger than its opening', `${productDisplayLabel(record)} ${Math.round(Number(p.width) || 0)} × ${Math.round(Number(p.height) || 0)} mm; kullanılabilir alan ${Math.round(available.placementWidth)} × ${Math.round(available.placementHeight)} mm.`, `${productDisplayLabel(record)} is ${Math.round(Number(p.width) || 0)} × ${Math.round(Number(p.height) || 0)} mm; available opening is ${Math.round(available.placementWidth)} × ${Math.round(available.placementHeight)} mm.`, productTarget(record)));
+    });
+    return issues;
+  }
+
+  function validateTriangleProductConflicts(context) {
+    const issues = [];
+    context.products.filter(record => record.isSide || ['side-left','side-right'].includes(String(record.placement && record.placement.placementView || ''))).forEach(record => {
+      const placement = record.placement || {};
+      const key = normalizeSideViewKey(placement.sideViewKey, placement.sideIndex);
+      if (!sideFeatureValue('triangle', key)) return;
+      issues.push(makeDrawingIssue('triangle-product-conflict', 'error', 'Üçgen doğrama ile ürün çakışması', 'Triangle joinery conflicts with a product', `${productDisplayLabel(record)} ile aynı yan görünüşte üçgen doğrama bulunuyor. Üretim öncesi yerleşim kontrol edilmeli.`, `${productDisplayLabel(record)} shares the same side opening with triangle joinery. Check the placement before production.`, productTarget(record)));
+    });
+    return issues;
+  }
+
+  function validatePergolaProductionRules(context) {
+    const issues = [];
+    const d = context.drawing && context.drawing.input;
+    if (!d) return issues;
+
+    const warning = (code, trTitle, enTitle, trDetail, enDetail, target) =>
+      issues.push(makeDrawingIssue(code, 'warning', trTitle, enTitle, trDetail, enDetail, target));
+
+    (d.positions || []).forEach((p, i) => {
+      const opening = Number(p.opening) || 0;
+      if (opening > 7000) warning(
+        'opening-over-7000', 'Açılım sınırı aşıldı', 'Projection limit exceeded',
+        `Poz ${i + 1} açılımı ${Math.round(opening)} mm; tavsiye edilen üst sınır 7000 mm.`,
+        `Position ${i + 1} projection is ${Math.round(opening)} mm; the recommended upper limit is 7000 mm.`,
+        { kind: 'dimension', dimId: `side_opening_pos_${i + 1}` }
+      );
+
+      const deg = Math.abs(Number(p.angleRad) || 0) * 180 / Math.PI;
+      if (deg < 6 || deg > 15) warning(
+        'ray-angle-outside-6-15', 'Ray açısı 6°–15° aralığı dışında', 'Ray angle is outside 6°–15°',
+        `Poz ${i + 1} ray açısı ${deg.toFixed(2)}°. Üretim için önerilen aralık 6° ile 15° arasındadır.`,
+        `Position ${i + 1} ray angle is ${deg.toFixed(2)}°. The recommended production range is 6° to 15°.`,
+        { kind: 'dimension', dimId: `side_opening_pos_${i + 1}` }
+      );
+    });
+
+    (d.systems || []).forEach((sys, s) => {
+      (sys.rays || []).slice(0, -1).forEach((x, r) => {
+        const clear = Number(sys.rays[r + 1]) - Number(x) - 80;
+        const targetId = sys.rays.length > 2 ? `top_ray_spacing_${s}_${r}` : null;
+        if (clear > 4000) warning(
+          'ray-gap-over-4000', 'İki ray arası sınırı aşıldı', 'Ray spacing limit exceeded',
+          `Poz ${s + 1}, ray ${r + 1}-${r + 2} net arası ${Math.round(clear)} mm; tavsiye edilen üst sınır 4000 mm.`,
+          `Position ${s + 1}, rays ${r + 1}-${r + 2} clear spacing is ${Math.round(clear)} mm; the recommended upper limit is 4000 mm.`,
+          targetId ? { kind: 'dimension', dimId: targetId } : null
+        );
+        if (clear < 25) warning(
+          'ray-gap-under-25', 'İki ray arası çok düşük', 'Ray spacing is too small',
+          `Poz ${s + 1}, ray ${r + 1}-${r + 2} net arası ${Math.round(clear)} mm; üretim kontrol değeri en az 25 mm.`,
+          `Position ${s + 1}, rays ${r + 1}-${r + 2} clear spacing is ${Math.round(clear)} mm; the production check value is at least 25 mm.`,
+          targetId ? { kind: 'dimension', dimId: targetId } : null
+        );
+      });
+    });
+
+    const centers = currentFrontPostCenters();
+    for (let i = 0; i < centers.length - 1; i += 1) {
+      const clear = centers[i + 1] - frontPostWidthAt(i + 1) / 2 - (centers[i] + frontPostWidthAt(i) / 2);
+      if (clear > 4000) warning(
+        'front-post-gap-over-4000', 'Ön dikme aralığı sınırı aşıldı', 'Front post spacing limit exceeded',
+        `${i + 1}-${i + 2}. ön dikmeler arası ${Math.round(clear)} mm; tavsiye edilen üst sınır 4000 mm.`,
+        `Front posts ${i + 1}-${i + 2}: ${Math.round(clear)} mm; the recommended upper limit is 4000 mm.`,
+        { kind: 'dimension', dimId: `front_post_gap_${i + 1}` }
+      );
+    }
+
+    sideGeometryEntriesForChecks(d).forEach(({ key, geom, sideIndex }) => (geom.gaps || []).forEach((gap, i) => {
+      if (Number(gap.width) > 5000) warning(
+        'side-support-gap-over-5000', 'Destek dikmesi aralığı sınırı aşıldı', 'Support-post spacing limit exceeded',
+        `${sidePositionLabel(key, sideIndex)}, yan aralık ${i + 1}: ${Math.round(gap.width)} mm; tavsiye edilen üst sınır 5000 mm.`,
+        `${sidePositionLabel(key, sideIndex)}, side gap ${i + 1}: ${Math.round(gap.width)} mm; the recommended upper limit is 5000 mm.`,
+        { kind: 'dimension', dimId: `side_gap_${key}_${sideIndex}_${i}`, sideViewKey: key }
+      );
+    }));
+
+    const parapet = Number(context.form.parapetHeight) || 0;
+    const front = Math.max(0, ...numericTokens(context.form.frontHeight));
+    if (parapet > front) warning(
+      'parapet-over-front-height', 'Parapet yüksekliği ön H değerini aşıyor', 'Parapet exceeds front height',
+      `Parapet ${parapet} mm, ön H ${front} mm.`, `Parapet is ${parapet} mm, front height is ${front} mm.`,
+      { kind: 'dimension', dimId: 'front_parapet_height_info' }
+    );
+    return issues;
+  }
+
+  function validateSegmentedParapetsAndExtensions(context) {
+    const issues = [];
+    const d = context.drawing && context.drawing.input;
+    if (!d) return issues;
+    const warning = (code, trTitle, enTitle, trDetail, enDetail, target) => issues.push(makeDrawingIssue(code, 'warning', trTitle, enTitle, trDetail, enDetail, target));
+    const frontHeight = Number(d.frontHeight) || 0;
+    const rawState = context.form && context.form.__parapetSegments && typeof context.form.__parapetSegments === 'object' ? context.form.__parapetSegments : {};
+    const inspect = (list, length, labelTr, labelEn, view, sideIndex = 0) => {
+      const items = Array.isArray(list) && list.length ? list.map(item => ({ ...item })).sort((a,b)=>(Number(a.start)||0)-(Number(b.start)||0)) : [];
+      items.forEach((item, index) => {
+        const start = Number(item.start), end = Number(item.end), height = Number(item.height);
+        const target = { kind: 'parapet', segmentId: String(item.id || '') };
+        if (!(end > start)) warning('parapet-nonpositive-width', 'Parapet parçası genişliği geçersiz', 'Invalid parapet segment width', `${labelTr} ${index + 1}. parçasının genişliği sıfır veya negatiftir.`, `${labelEn} segment ${index + 1} has zero or negative width.`, target);
+        if (start < -0.001 || end > length + 0.001) warning('parapet-outside-range', 'Parapet sistem sınırının dışında', 'Parapet is outside the system range', `${labelTr} ${index + 1}. parçası 0–${Math.round(length)} mm sınırının dışına taşıyor.`, `${labelEn} segment ${index + 1} exceeds the 0–${Math.round(length)} mm range.`, target);
+        if (height > frontHeight + 0.001) warning('parapet-segment-over-front-height', 'Parapet yüksekliği ön H değerini aşıyor', 'Parapet exceeds front height', `${labelTr} ${index + 1}. parçası ${Math.round(height)} mm; ön H ${Math.round(frontHeight)} mm.`, `${labelEn} segment ${index + 1} is ${Math.round(height)} mm; front height is ${Math.round(frontHeight)} mm.`, target);
+        if (index > 0) {
+          const previous = items[index - 1];
+          const delta = start - Number(previous.end);
+          if (delta < -0.001) warning('parapet-segment-overlap', 'Parapet parçaları üst üste geliyor', 'Parapet segments overlap', `${labelTr} ${index}. ve ${index + 1}. parçaları ${Math.round(Math.abs(delta))} mm üst üste geliyor.`, `${labelEn} segments ${index} and ${index + 1} overlap by ${Math.round(Math.abs(delta))} mm.`, target);
+          else if (delta > 0.001) warning('parapet-segment-gap', 'Parapet parçaları arasında boşluk var', 'Gap between parapet segments', `${labelTr} ${index}. ve ${index + 1}. parçaları arasında ${Math.round(delta)} mm boşluk var.`, `${labelEn} segments ${index} and ${index + 1} have a ${Math.round(delta)} mm gap.`, target);
+        }
+      });
+      if (items.length) {
+        if (Number(items[0].start) > 0.001) warning('parapet-leading-gap', 'Parapet başlangıcında boşluk var', 'Gap at parapet start', `${labelTr} başlangıcında ${Math.round(Number(items[0].start))} mm parapetsiz bölüm var.`, `${labelEn} has a ${Math.round(Number(items[0].start))} mm uncovered section at the start.`, { kind: 'parapet', segmentId: String(items[0].id || '') });
+        if (Number(items[items.length - 1].end) < length - 0.001) warning('parapet-trailing-gap', 'Parapet bitişinde boşluk var', 'Gap at parapet end', `${labelTr} bitişinde ${Math.round(length - Number(items[items.length - 1].end))} mm parapetsiz bölüm var.`, `${labelEn} has a ${Math.round(length - Number(items[items.length - 1].end))} mm uncovered section at the end.`, { kind: 'parapet', segmentId: String(items[items.length - 1].id || '') });
+      }
+    };
+    if (normalizeYesNo(context.form.parapet) === 'EVET') {
+      inspect(rawState.front || (d.parapetSegments && d.parapetSegments.front), Number(d.width) || 0, 'Ön görünüş parapeti', 'Front-view parapet', 'front');
+      (d.positions || []).slice(0, Number(d.sidePositionCount) || 1).forEach((position, index) => {
+        const source = rawState.side && (rawState.side[String(index)] || rawState.side[index]);
+        inspect(source || (d.parapetSegments && d.parapetSegments.side && d.parapetSegments.side[String(index)]), Number(position.opening) || 0, `Poz ${index + 1} sol/ara yan parapeti`, `Position ${index + 1} left/intermediate side parapet`, 'side', index);
+      });
+      const rightIndex = Math.max(0, Number(d.sidePositionCount || 1) - 1);
+      const rightPosition = Array.isArray(d.positions) ? (d.positions[rightIndex] || d.positions[0]) : null;
+      const rightSource = rawState.side && rawState.side.right;
+      const rightFallback = d.parapetSegments && d.parapetSegments.side && d.parapetSegments.side.right;
+      if (rightPosition && (sideFeatureValue('glassTrack', 'right') || sideFeatureValue('triangle', 'right') || (Array.isArray(rightSource) && rightSource.length) || (Array.isArray(rightFallback) && rightFallback.length))) {
+        inspect(rightSource || rightFallback, Number(rightPosition.opening) || 0, 'Sağ yan parapeti', 'Right-side parapet', 'side', rightIndex);
+      }
+    }
+    (Array.isArray(context.form.__frontPostExtensions) ? context.form.__frontPostExtensions : []).forEach((value, index) => {
+      const extension = Number(value) || 0;
+      if (extension > frontHeight) warning('front-post-extension-deep', 'Dikme zeminin çok altına uzatılmış', 'Post extends far below floor level', `${index + 1}. ön dikme ${Math.round(extension)} mm -Y yönüne uzatılmış. Üretim öncesi temel/gömme detayı kontrol edilmeli.`, `Front post ${index + 1} extends ${Math.round(extension)} mm in the -Y direction. Check the foundation/embed detail before production.`, { kind: 'frontPost', postIndex: index });
+    });
+    const sidePostsState = context.form.__sidePosts && typeof context.form.__sidePosts === 'object' ? context.form.__sidePosts : {};
+    Object.entries(sidePostsState).forEach(([rawSideKey, items]) => {
+      const sideKey = normalizeSideViewKey(rawSideKey, Number(rawSideKey) || 0);
+      const sideIndex = sideKey === 'right' ? Math.max(0, Number(d.sidePositionCount || 1) - 1) : (Number(sideKey) || 0);
+      const label = sidePositionLabel(sideKey, sideIndex);
+      (Array.isArray(items) ? items : []).forEach((item, index) => {
+        const extension = Number(item && item.extension);
+        if (!Number.isFinite(extension) || Math.abs(extension) < 0.001) return;
+        const postId = String((item && item.id) || `side_${sideKey}_${index}`);
+        const target = { kind: 'sidePost', sidePostId: postId, sideIndex, sideViewKey: sideKey };
+        if (extension > frontHeight) warning('side-post-extension-deep', 'Destek dikmesi zeminin çok altına uzatılmış', 'Support post extends far below floor level', `${label} destek dikmesi ${Math.round(extension)} mm -Y yönüne uzatılmış. Üretim öncesi temel/gömme detayı kontrol edilmeli.`, `A support post in the ${label} extends ${Math.round(extension)} mm in the -Y direction. Check the foundation/embed detail before production.`, target);
+        if (extension < -frontHeight) warning('side-post-shortening-excessive', 'Destek dikmesi aşırı kısaltılmış', 'Support post is shortened excessively', `${label} destek dikmesi alttan ${Math.round(Math.abs(extension))} mm kısaltılmış. Profil boyu üretim için kontrol edilmeli.`, `A support post in the ${label} is shortened by ${Math.round(Math.abs(extension))} mm from the lower end. Check the resulting profile length.`, target);
+      });
+    });
+    const custom = context.form.__customRayPositions && typeof context.form.__customRayPositions === 'object' ? context.form.__customRayPositions : {};
+    (d.systems || []).forEach((sys, systemIndex) => {
+      const rays = Array.isArray(custom[String(systemIndex)]) ? custom[String(systemIndex)].map(Number) : null;
+      if (!rays || rays.length !== Number(sys.rayCount)) return;
+      const expectedFirst = Number(sys.rayAreaStartX);
+      const expectedLast = Number(sys.rayAreaEndX) - 80;
+      if (Math.abs(rays[0] - expectedFirst) > 0.01 || Math.abs(rays[rays.length - 1] - expectedLast) > 0.01) warning('outer-ray-moved', 'İlk veya son ray sabit konumdan ayrılmış', 'First or last rail moved from its fixed position', `Poz ${systemIndex + 1} dış ray konumları sistem sınırlarıyla uyuşmuyor.`, `Position ${systemIndex + 1} outer rail positions do not match the system boundaries.`, null);
+    });
+    return issues;
+  }
+
+  const DRAWING_PRODUCTION_VALIDATORS = [
+    validateDuplicateZoneProducts,
+    validatePostOverlaps,
+    validateNonPositiveDimensions,
+    validateProfilesAgainstGaps,
+    validateMissingProductInformation,
+    validateDuplicatePozNumbers,
+    validateProductFitsOpening,
+    validateTriangleProductConflicts,
+    validatePergolaProductionRules,
+    validateSegmentedParapetsAndExtensions
+  ];
+
+  function runDrawingProductionChecks(drawing) {
+    const context = { drawing: drawing || null, form: collectForm(), products: allProductRecords() };
+    return DRAWING_PRODUCTION_VALIDATORS.flatMap(validator => {
+      try { return validator(context) || []; }
+      catch (err) { return [makeDrawingIssue('validator-failure', 'warning', 'Kontrol tamamlanamadı', 'A validation check could not be completed', err.message || String(err), err.message || String(err), null)]; }
+    });
+  }
+
+  function clearDrawingCheckHighlight() {
+    if (drawingCheckHighlightTimer) window.clearTimeout(drawingCheckHighlightTimer);
+    drawingCheckHighlightTimer = null;
+    preview.querySelectorAll('.drawing-check-highlight').forEach(node => node.classList.remove('drawing-check-highlight'));
+    preview.classList.remove('drawing-check-canvas-highlight');
+  }
+
+  function selectorAttribute(value) {
+    return String(value == null ? '' : value).replace(/\\/g, '\\\\').replace(/"/g, '\\"');
+  }
+
+  function highlightDrawingCheckIssue(issue) {
+    clearDrawingCheckHighlight();
+    const target = issue && issue.target;
+    let nodes = [];
+    if (target && target.kind === 'product' && target.placementId) nodes = Array.from(preview.querySelectorAll(`[data-placement-id="${selectorAttribute(target.placementId)}"]`));
+    else if (target && target.kind === 'frontPost') nodes = Array.from(preview.querySelectorAll(`[data-interaction-type="frontPostProfileEditor"][data-post-index="${Number(target.postIndex) || 0}"],[data-interaction-type="postEditor"][data-post-index="${Number(target.postIndex) || 0}"]`));
+    else if (target && target.kind === 'sidePost' && target.sidePostId) nodes = Array.from(preview.querySelectorAll(`[data-side-post-id="${selectorAttribute(target.sidePostId)}"]`));
+    else if (target && target.kind === 'parapet' && target.segmentId) nodes = Array.from(preview.querySelectorAll(`[data-interaction-type="parapetEditor"][data-parapet-segment-id="${selectorAttribute(target.segmentId)}"]`));
+    else if (target && target.kind === 'dimension' && target.dimId) nodes = Array.from(preview.querySelectorAll(`[data-dim-id="${selectorAttribute(target.dimId)}"]`));
+    nodes = nodes.flatMap(node => {
+      const group = node.closest && (node.closest('.preview-product-zone') || node.closest('.preview-post-zone') || node.closest('.editable-dimension') || node.closest('g'));
+      return group && group !== node ? [node, group] : [node];
+    });
+    if (!nodes.length) preview.classList.add('drawing-check-canvas-highlight');
+    else nodes.forEach(node => node.classList.add('drawing-check-highlight'));
+    drawingCheckHighlightTimer = window.setTimeout(clearDrawingCheckHighlight, 5000);
+  }
+
+  function ensureDrawingCheckOverlay() {
+    let overlay = $('drawingCheckOverlay');
+    if (overlay) return overlay;
+    overlay = document.createElement('div');
+    overlay.id = 'drawingCheckOverlay';
+    overlay.className = 'dim-edit-overlay drawing-check-overlay';
+    overlay.hidden = true;
+    overlay.innerHTML = `<section class="dim-edit-card drawing-check-card" role="dialog" aria-modal="true" aria-labelledby="drawingCheckTitle">
+      <div class="drawing-check-head"><div><div id="drawingCheckTitle" class="dim-edit-title">Çizimi Kontrol Et</div><div id="drawingCheckSub" class="drawing-check-sub"></div></div><button id="drawingCheckCloseTop" type="button" class="sliding-modal-close" aria-label="Kapat"><span aria-hidden="true"></span></button></div>
+      <div id="drawingCheckSummary" class="drawing-check-summary"></div>
+      <div id="drawingCheckList" class="drawing-check-list"></div>
+      <div class="dim-edit-actions"><button id="drawingCheckRerun" type="button" class="dim-edit-cancel">Tekrar Kontrol Et</button><button id="drawingCheckClose" type="button" class="dim-edit-apply">Kapat</button></div>
+    </section>`;
+    previewPanel.appendChild(overlay);
+    const close = () => { overlay.hidden = true; clearDrawingCheckHighlight(); focusPreviewCanvas(); };
+    overlay.querySelector('#drawingCheckClose').addEventListener('click', close);
+    overlay.querySelector('#drawingCheckCloseTop').addEventListener('click', close);
+    overlay.querySelector('#drawingCheckRerun').addEventListener('click', checkDrawingForProduction);
+    overlay.addEventListener('mousedown', evt => { if (evt.target === overlay) close(); });
+    overlay.addEventListener('keydown', evt => { if (evt.key === 'Escape') { evt.preventDefault(); close(); } });
+    overlay.querySelector('#drawingCheckList').addEventListener('click', evt => {
+      const row = evt.target && evt.target.closest ? evt.target.closest('[data-check-index]') : null;
+      if (!row) return;
+      const issue = Array.isArray(overlay._issues) ? overlay._issues[Number(row.dataset.checkIndex)] : null;
+      if (issue) highlightDrawingCheckIssue(issue);
+    });
+    return overlay;
+  }
+
+  function showDrawingCheckResults(issues, drawingAvailable) {
+    const overlay = ensureDrawingCheckOverlay();
+    const isEn = currentLanguage === 'en';
+    const errors = issues.filter(issue => issue.severity === 'error').length;
+    const warnings = issues.length - errors;
+    overlay._issues = issues;
+    overlay.querySelector('#drawingCheckTitle').textContent = isEn ? 'Check Drawing' : 'Çizimi Kontrol Et';
+    overlay.querySelector('#drawingCheckSub').textContent = isEn ? 'Advisory production checks for the pergola, sliding and guillotine products. Warnings never block drawing generation.' : 'Pergola, sürme ve giyotinler için tavsiye niteliğinde üretim kontrolleri. Uyarılar çizim oluşturmayı engellemez.';
+    overlay.querySelector('#drawingCheckRerun').textContent = isEn ? 'Check Again' : 'Tekrar Kontrol Et';
+    overlay.querySelector('#drawingCheckClose').textContent = isEn ? 'Close' : 'Kapat';
+    overlay.querySelector('#drawingCheckCloseTop').setAttribute('aria-label', isEn ? 'Close' : 'Kapat');
+    const summary = overlay.querySelector('#drawingCheckSummary');
+    summary.className = `drawing-check-summary ${errors ? 'has-errors' : warnings ? 'has-warnings' : 'is-clean'}`;
+    summary.innerHTML = issues.length
+      ? `<strong>${isEn ? `${errors} error(s), ${warnings} warning(s)` : `${errors} hata, ${warnings} uyarı`}</strong><span>${isEn ? 'Click an item to highlight the related element.' : 'İlgili elemanı vurgulamak için sonuca tıkla.'}</span>`
+      : `<strong>${isEn ? 'No issue found' : 'Sorun bulunmadı'}</strong><span>${isEn ? 'The drawing passed the currently defined production checks.' : 'Çizim, şu an tanımlı üretim kontrollerinden geçti.'}</span>`;
+    const list = overlay.querySelector('#drawingCheckList');
+    list.innerHTML = issues.length ? issues.map((issue, index) => `<button type="button" class="drawing-check-row is-${issue.severity}" data-check-index="${index}"><span class="drawing-check-icon" aria-hidden="true">${issue.severity === 'warning' ? '!' : '×'}</span><span class="drawing-check-copy"><strong>${escapeHtml(issue.title)}</strong><small>${escapeHtml(issue.detail)}</small></span><span class="drawing-check-locate">${isEn ? 'Highlight' : 'Vurgula'}</span></button>`).join('') : `<div class="drawing-check-empty">✓ ${isEn ? 'Ready according to current rules.' : 'Mevcut kurallara göre hazır.'}</div>`;
+    if (!drawingAvailable && issues.length) list.insertAdjacentHTML('afterbegin', `<div class="drawing-check-stale-note">${isEn ? 'The current form could not be rebuilt; geometry-dependent checks were skipped.' : 'Mevcut form yeniden çizilemedi; geometriye bağlı kontroller atlandı.'}</div>`);
+    overlay.hidden = false;
+    window.setTimeout(() => overlay.querySelector('#drawingCheckClose').focus({ preventScroll: true }), 20);
+  }
+
+  function checkDrawingForProduction() {
+    if (toolboxSelectionMode) cancelToolboxSelection();
+    const drawing = updatePreview(false);
+    const issues = runDrawingProductionChecks(drawing);
+    showDrawingCheckResults(issues, !!drawing);
+    statusText.textContent = issues.length
+      ? (currentLanguage === 'en' ? `${issues.length} production check result(s) found.` : `${issues.length} üretim kontrol sonucu bulundu.`)
+      : (currentLanguage === 'en' ? 'No issue was found in the current production checks.' : 'Mevcut üretim kontrollerinde sorun bulunmadı.');
+  }
+
+  function currentFrontPostCenters() {
+    const fromDrawing = lastDrawing && lastDrawing.input && Array.isArray(lastDrawing.input.postCenterXs)
+      ? lastDrawing.input.postCenterXs.map(Number)
+      : [];
+    if (Array.isArray(customFrontPostCenters) && customFrontPostCenters.length === fromDrawing.length) {
+      return customFrontPostCenters.map(Number);
+    }
+    return fromDrawing;
+  }
+
+
+  function currentFrontPostProfiles(count = null) {
+    const n = count == null ? currentFrontPostCenters().length : Math.max(0, Number(count) || 0);
+    return Array.from({ length: n }, (_, i) => frontPostProfiles[i] ? sanitizeGlassTrackProfile(frontPostProfiles[i]) : null);
+  }
+
+  function frontPostWidthAt(index) {
+    const d = lastDrawing && lastDrawing.input ? lastDrawing.input : {};
+    const widths = Array.isArray(d.frontPostWidths) ? d.frontPostWidths : [];
+    return Math.max(1, Number(widths[index]) || 100);
+  }
+
+  function shiftFrontPlacementsAfterInsert(gapIndex) {
+    const shift = item => {
+      const idx = Number(item.gapIndex) || 0;
+      if (idx === gapIndex) return null;
+      return { ...item, gapIndex: idx > gapIndex ? idx + 1 : idx };
+    };
+    slidingPlacements = slidingPlacements.map(shift).filter(Boolean);
+    guillotinePlacements = guillotinePlacements.map(shift).filter(Boolean);
+  }
+
+  function insertFrontPostInGap(meta, profile = null) {
+    const centers = currentFrontPostCenters();
+    const gapIndex = Math.max(0, Number(meta.index) || 0);
+    if (gapIndex >= centers.length - 1) throw new Error(currentLanguage === 'en' ? 'Front post gap not found.' : 'Ön dikme aralığı bulunamadı.');
+    const leftFace = centers[gapIndex] + frontPostWidthAt(gapIndex) / 2;
+    const rightFace = centers[gapIndex + 1] - frontPostWidthAt(gapIndex + 1) / 2;
+    const nextProfile = profile ? sanitizeGlassTrackProfile(profile) : null;
+    const nextWidth = nextProfile ? nextProfile.en : 100;
+    if (rightFace - leftFace + 0.001 < nextWidth) throw new Error(currentLanguage === 'en' ? 'The selected gap is narrower than the post profile.' : 'Seçilen aralık dikme profilinden daha dar.');
+    const center = (leftFace + rightFace) / 2;
+    centers.splice(gapIndex + 1, 0, center);
+    const profiles = currentFrontPostProfiles(centers.length - 1);
+    profiles.splice(gapIndex + 1, 0, nextProfile);
+    frontPostExtensions.splice(gapIndex + 1, 0, 0);
+    customFrontPostCenters = centers;
+    frontPostProfiles = profiles;
+    const postEl = $('postCount');
+    if (postEl) { postEl.value = String(centers.length); postEl.dataset.userEdited = 'true'; }
+    shiftFrontPlacementsAfterInsert(gapIndex);
+  }
+
+  function deleteFrontPost(postIndex) {
+    const centers = currentFrontPostCenters();
+    const idx = Math.max(0, Number(postIndex) || 0);
+    if (centers.length <= 2) throw new Error(currentLanguage === 'en' ? 'At least two front posts must remain.' : 'En az iki ön dikme kalmalıdır.');
+    if (idx >= centers.length) throw new Error(currentLanguage === 'en' ? 'Front post not found.' : 'Ön dikme bulunamadı.');
+    centers.splice(idx, 1);
+    const profiles = currentFrontPostProfiles(centers.length + 1);
+    profiles.splice(idx, 1);
+    frontPostExtensions.splice(idx, 1);
+    const d = lastDrawing && lastDrawing.input ? lastDrawing.input : {};
+    if (centers.length) {
+      if (Number.isFinite(Number(d.solX))) centers[0] = Number(d.solX);
+      if (Number.isFinite(Number(d.sagX))) centers[centers.length - 1] = Number(d.sagX);
+    }
+    const remap = item => {
+      const gap = Number(item.gapIndex) || 0;
+      const leftAdjacent = Math.max(0, idx - 1);
+      if (gap === leftAdjacent || gap === idx) return null;
+      return { ...item, gapIndex: gap > idx ? gap - 1 : gap };
+    };
+    slidingPlacements = slidingPlacements.map(remap).filter(Boolean);
+    guillotinePlacements = guillotinePlacements.map(remap).filter(Boolean);
+    customFrontPostCenters = centers;
+    frontPostProfiles = profiles;
+    const postEl = $('postCount');
+    if (postEl) { postEl.value = String(centers.length); postEl.dataset.userEdited = 'true'; }
+  }
+
+  function nextSlidingPozNo() {
+    const used = new Set([...slidingPlacements, ...sideSlidingPlacements].map(item => String(item.pozNo || '').toUpperCase()));
+    let n = 1;
+    while (used.has(`S${String(n).padStart(2, '0')}`)) n += 1;
+    return `S${String(n).padStart(2, '0')}`;
+  }
+
+  function slidingPanelCount(width, openingType) {
+    let count = Math.max(2, Math.ceil(Math.max(1, Number(width) || 1) / 1200));
+    if (String(openingType || '').toUpperCase() === 'CENTER OPENING') {
+      count = Math.max(4, count);
+      if (count % 2 !== 0) count += 1;
+    }
+    return count;
+  }
+
+  function resizeRayInterval(meta, targetValue) {
+    const target = Number(targetValue);
+    if (!(target > 0)) throw new Error(currentLanguage === 'en' ? 'Enter a positive ray dimension.' : 'Pozitif bir ray ölçüsü gir.');
+    const d = lastDrawing && lastDrawing.input;
+    if (!d || !Array.isArray(d.systems)) throw new Error(currentLanguage === 'en' ? 'Ray geometry could not be found.' : 'Ray geometrisi bulunamadı.');
+
+    const s = Number(meta.raySystemIndex ?? meta.index ?? 0);
+    const segment = Number(meta.rayIntervalIndex ?? 0);
+    const sys = d.systems[s];
+    if (!sys || !Array.isArray(sys.rays)) throw new Error(currentLanguage === 'en' ? 'Ray system could not be found.' : 'Ray sistemi bulunamadı.');
+    if (sys.rays.length <= 2) throw new Error(currentLanguage === 'en' ? 'Two-ray spacing editing will be defined later.' : 'İki raylı sistem mesafe düzenleme kuralı daha sonra tanımlanacak.');
+
+    const rays = (customRayPositions && Array.isArray(customRayPositions[s]) ? customRayPositions[s].slice() : sys.rays.slice()).map(Number);
+    const rayCount = rays.length;
+    const segmentCount = rayCount - 1;
+    if (segment < 0 || segment >= segmentCount) throw new Error(currentLanguage === 'en' ? 'Ray dimension could not be found.' : 'Ray ölçüsü bulunamadı.');
+
+    const leftOuter = rays[0];
+    const rightOuter = rays[rayCount - 1] + 80;
+    const centers = rays.map(x => x + 40);
+
+    if (segment === 0) {
+      centers[1] = leftOuter + target;
+    } else if (segment === segmentCount - 1) {
+      centers[rayCount - 2] = rightOuter - target;
+    } else {
+      // Dört raylı sistemde orta bölme merkezini korur; iki orta ray
+      // hedef ölçünün yarısı kadar -X / +X yönünde simetrik hareket eder.
+      const leftIndex = segment;
+      const rightIndex = segment + 1;
+      const midpoint = (centers[leftIndex] + centers[rightIndex]) / 2;
+      centers[leftIndex] = midpoint - target / 2;
+      centers[rightIndex] = midpoint + target / 2;
+    }
+
+    const next = centers.map(c => c - 40);
+    next[0] = leftOuter;
+    next[next.length - 1] = rightOuter - 80;
+
+    // Üretim tavsiyeleri çizimi engellemez; yalnız fiziksel ray çakışması engellenir.
+    for (let i = 1; i < next.length; i += 1) {
+      if (next[i] < next[i - 1] + 80 - 0.001) {
+        throw new Error(currentLanguage === 'en' ? 'The entered value causes the rays to overlap.' : 'Girilen değer rayların üst üste gelmesine neden oluyor.');
+      }
+    }
+
+    customRayPositions = customRayPositions || {};
+    customRayPositions[s] = next;
+    customFrontPostCenters = null;
+  }
+
+  function resizeFrontPostGap(meta, targetGap) {
+    const centers = currentFrontPostCenters();
+    const gapIndex = Math.max(0, Number(meta.index) || 0);
+    if (centers.length < 3) {
+      throw new Error(currentLanguage === 'en' ? 'The gap cannot be resized in a two-post system because the first and last posts are fixed.' : 'İki dikmeli sistemde ilk ve son dikme sabit olduğu için aralık değiştirilemez.');
+    }
+    if (gapIndex >= centers.length - 1) throw new Error(currentLanguage === 'en' ? 'Post gap not found.' : 'Dikme aralığı bulunamadı.');
+    const isLastGap = gapIndex === centers.length - 2;
+    const leftWidth = frontPostWidthAt(gapIndex);
+    const rightWidth = frontPostWidthAt(gapIndex + 1);
+    if (isLastGap) {
+      const nextX = centers[gapIndex + 1] - rightWidth / 2 - targetGap - leftWidth / 2;
+      if (gapIndex > 0) {
+        const previousRight = centers[gapIndex - 1] + frontPostWidthAt(gapIndex - 1) / 2;
+        if (nextX - leftWidth / 2 < previousRight - 0.001) throw new Error(currentLanguage === 'en' ? 'The entered dimension overlaps the previous post.' : 'Girilen ölçü bir önceki dikmeyle çakışmaya neden oluyor.');
+      }
+      centers[gapIndex] = nextX;
+    } else {
+      const nextX = centers[gapIndex] + leftWidth / 2 + targetGap + rightWidth / 2;
+      if (gapIndex + 2 < centers.length) {
+        const nextLeft = centers[gapIndex + 2] - frontPostWidthAt(gapIndex + 2) / 2;
+        if (nextX + rightWidth / 2 > nextLeft + 0.001) throw new Error(currentLanguage === 'en' ? 'The entered dimension overlaps the next post.' : 'Girilen ölçü bir sonraki dikmeyle çakışmaya neden oluyor.');
+      }
+      centers[gapIndex + 1] = nextX;
+    }
+    customFrontPostCenters = centers;
+    // v8.9.27: Tek bir dikme aralığı değiştirildiğinde mevcut ürün ölçüsü
+    // manuel değer olarak korunur. Alan dışına taşarsa Çizimi Kontrol Et uyarır.
+  }
+
+  function placementIsSide(meta) {
+    return !!meta && ['side-left', 'side-right'].includes(String(meta.placementView || ''));
+  }
+
+  function placementMetasFromPending(meta) {
+    return Array.isArray(meta && meta.batchMetas) ? meta.batchMetas : (meta ? [meta] : []);
+  }
+
+  function storeSlidingPlacement(placement) {
+    const isSide = ['side-left', 'side-right'].includes(String(placement.placementView || ''));
+    if (isSide) {
+      const key = normalizeSideViewKey(placement.sideViewKey, placement.sideIndex);
+      placement.sideViewKey = key;
+      placement.placementView = key === 'right' ? 'side-right' : 'side-left';
+      const sameZone = item => normalizeSideViewKey(item.sideViewKey, item.sideIndex) === key && String(item.sideZone) === String(placement.sideZone);
+      sideSlidingPlacements = sideSlidingPlacements.filter(item => !sameZone(item) && String(item.id || '') !== String(placement.id || ''));
+      sideGuillotinePlacements = sideGuillotinePlacements.filter(item => !sameZone(item));
+      sideSlidingPlacements.push(placement);
+    } else {
+      slidingPlacements = slidingPlacements.filter(item => Number(item.gapIndex) !== Number(placement.gapIndex) && String(item.id || '') !== String(placement.id || ''));
+      guillotinePlacements = guillotinePlacements.filter(item => Number(item.gapIndex) !== Number(placement.gapIndex));
+      slidingPlacements.push(placement);
+    }
+  }
+
+  function storeGuillotinePlacement(placement) {
+    const isSide = ['side-left', 'side-right'].includes(String(placement.placementView || ''));
+    if (isSide) {
+      const key = normalizeSideViewKey(placement.sideViewKey, placement.sideIndex);
+      placement.sideViewKey = key;
+      placement.placementView = key === 'right' ? 'side-right' : 'side-left';
+      const sameZone = item => normalizeSideViewKey(item.sideViewKey, item.sideIndex) === key && String(item.sideZone) === String(placement.sideZone);
+      sideGuillotinePlacements = sideGuillotinePlacements.filter(item => !sameZone(item) && String(item.id || '') !== String(placement.id || ''));
+      sideSlidingPlacements = sideSlidingPlacements.filter(item => !sameZone(item));
+      sideGuillotinePlacements.push(placement);
+    } else {
+      guillotinePlacements = guillotinePlacements.filter(item => Number(item.gapIndex) !== Number(placement.gapIndex) && String(item.id || '') !== String(placement.id || ''));
+      slidingPlacements = slidingPlacements.filter(item => Number(item.gapIndex) !== Number(placement.gapIndex));
+      guillotinePlacements.push(placement);
+    }
+  }
+
+  function ensureSlidingDetailsOverlay() {
+    let overlay = $('slidingDetailsOverlay');
+    if (overlay) return overlay;
+    overlay = document.createElement('div');
+    overlay.id = 'slidingDetailsOverlay';
+    overlay.className = 'dim-edit-overlay sliding-details-overlay';
+    overlay.hidden = true;
+    overlay.innerHTML = `
+      <form id="slidingDetailsForm" class="dim-edit-card sliding-details-card">
+        <div class="sliding-modal-head">
+          <div class="sliding-modal-title"><span class="sliding-title-icon" aria-hidden="true"></span><span data-sliding-text="title">Sliding Details</span></div>
+          <button id="slidingDetailsClose" class="sliding-modal-close" type="button" aria-label="Close"><span aria-hidden="true"></span></button>
+        </div>
+        <div class="sliding-details-grid">
+          <section class="sliding-choice-group sliding-series-group" role="group" aria-labelledby="slidingSeriesTitle">
+            <div id="slidingSeriesTitle" class="sliding-group-title"><span class="sliding-group-icon icon-series" aria-hidden="true"></span><span data-sliding-text="productSeries">Product Series</span></div>
+            <label><input type="radio" name="slidingSeries" value="A SERIES" checked><span data-sliding-text="aSeries">A Series</span></label>
+            <label><input type="radio" name="slidingSeries" value="K SERIES"><span data-sliding-text="kSeries">K Series</span></label>
+          </section>
+          <section class="sliding-choice-group sliding-type-group" role="group" aria-labelledby="slidingTypeTitle">
+            <div id="slidingTypeTitle" class="sliding-group-title"><span class="sliding-group-icon icon-type" aria-hidden="true"></span><span data-sliding-text="type">Type</span></div>
+            <label><input type="radio" name="slidingType" value="WITH THRESHOLD" checked><span data-sliding-text="withThreshold">With Threshold</span></label>
+            <label><input type="radio" name="slidingType" value="WITHOUT THRESHOLD"><span data-sliding-text="withoutThreshold">Without Threshold</span></label>
+          </section>
+          <section class="sliding-choice-group sliding-opening-group" role="group" aria-labelledby="slidingOpeningTitle">
+            <div id="slidingOpeningTitle" class="sliding-group-title"><span class="sliding-group-icon icon-opening" aria-hidden="true"></span><span data-sliding-text="openingType">Opening Type</span></div>
+            <label><input type="radio" name="slidingOpening" value="SIDE OPENING" checked><span data-sliding-text="sideOpening">Side Opening</span></label>
+            <label><input type="radio" name="slidingOpening" value="CENTER OPENING"><span data-sliding-text="centerOpening">Center Opening</span></label>
+          </section>
+          <section class="sliding-choice-group sliding-thickness-group" role="group" aria-labelledby="slidingThicknessTitle">
+            <div id="slidingThicknessTitle" class="sliding-group-title"><span class="sliding-group-icon icon-thickness" aria-hidden="true"></span><span data-sliding-text="glassThickness">Glass Thickness</span></div>
+            <label><input type="radio" name="slidingThickness" value="8 MM"><span data-sliding-text="mm8">8 mm</span></label>
+            <label id="slidingThickness10Wrap"><input type="radio" name="slidingThickness" value="10 MM" checked><span data-sliding-text="mm10">10 mm</span></label>
+            <label><input type="radio" name="slidingThickness" value="INSULATED GLASS"><span data-sliding-text="insulatedGlass">Insulated Glass</span></label>
+          </section>
+          <section class="sliding-choice-group sliding-color-group" role="group" aria-labelledby="slidingColorTitle">
+            <div id="slidingColorTitle" class="sliding-group-title"><span class="sliding-group-icon icon-color" aria-hidden="true"></span><span data-sliding-text="glassColor">Glass Color</span></div>
+            <label><input type="radio" name="slidingColor" value="TRANSPARENT" checked><span data-sliding-text="transparent">Transparent</span></label>
+            <label><input type="radio" name="slidingColor" value="GREY"><span data-sliding-text="grey">Grey</span></label>
+            <label><input type="radio" name="slidingColor" value="BRONZE"><span data-sliding-text="bronze">Bronze</span></label>
+            <label id="slidingLowEWrap"><input type="radio" name="slidingColor" value="LOW-E GLASS" disabled><span data-sliding-text="lowEGlass">Low-e Glass</span></label>
+            <label><input type="radio" name="slidingColor" value="OTHER"><span data-sliding-text="other">Other</span></label>
+            <div id="slidingOtherRow" class="sliding-other-row" hidden>
+              <input id="slidingOtherColor" class="sliding-other-input" type="text" placeholder="Enter custom glass color" autocomplete="off">
+            </div>
+          </section>
+          <div class="sliding-auto-fields">
+            <label class="sliding-summary-field sliding-poz-field"><span data-sliding-text="pozNo">Position No.</span><input id="slidingPozNo" type="text" readonly></label>
+            <label class="sliding-summary-field"><span><span data-sliding-text="width">Width *</span> <small>(mm)</small></span><input id="slidingWidth" type="text" inputmode="numeric" autocomplete="off"></label>
+            <label class="sliding-summary-field"><span><span data-sliding-text="height">Height *</span> <small>(mm)</small></span><input id="slidingHeight" type="text" inputmode="numeric" autocomplete="off"></label>
+            <label class="sliding-summary-field sliding-panel-field"><span data-sliding-text="panelCount">Panel Count</span><input id="slidingPanelCount" type="text" readonly></label>
+          </div>
+          <div id="slidingBatchList" class="bulk-selection-list product-batch-list" hidden></div>
+        </div>
+        <input id="slidingQuantity" type="hidden" value="1">
+        <div id="slidingDetailsError" class="dim-edit-error sliding-details-error" aria-live="polite"></div>
+        <div class="dim-edit-actions sliding-details-actions">
+          <button id="slidingDetailsDelete" type="button" class="dim-edit-delete" hidden>Mevcut Ürünü Sil</button>
+          <button id="slidingDetailsCancel" type="button" class="dim-edit-cancel" data-sliding-text="cancel">Cancel</button>
+          <button type="submit" class="dim-edit-apply" data-sliding-text="confirm">Confirm</button>
+        </div>
+      </form>`;
+    previewPanel.appendChild(overlay);
+    translateSlidingDetailsOverlay(overlay);
+
+    const form = overlay.querySelector('#slidingDetailsForm');
+    const otherInput = overlay.querySelector('#slidingOtherColor');
+    const error = overlay.querySelector('#slidingDetailsError');
+
+    const checkedValue = name => (overlay.querySelector(`input[name="${name}"]:checked`) || {}).value || '';
+    const refreshRules = () => {
+      const series = checkedValue('slidingSeries');
+      const thickness10 = overlay.querySelector('input[name="slidingThickness"][value="10 MM"]');
+      const isK = series === 'K SERIES';
+      thickness10.disabled = isK;
+      overlay.querySelector('#slidingThickness10Wrap').classList.toggle('is-disabled', isK);
+      if (isK && thickness10.checked) overlay.querySelector('input[name="slidingThickness"][value="8 MM"]').checked = true;
+      const thickness = checkedValue('slidingThickness');
+      const lowE = overlay.querySelector('input[name="slidingColor"][value="LOW-E GLASS"]');
+      const lowEActive = thickness === 'INSULATED GLASS';
+      lowE.disabled = !lowEActive;
+      overlay.querySelector('#slidingLowEWrap').classList.toggle('is-disabled', !lowEActive);
+      if (!lowEActive && lowE.checked) overlay.querySelector('input[name="slidingColor"][value="TRANSPARENT"]').checked = true;
+      const color = checkedValue('slidingColor');
+      overlay.querySelector('#slidingOtherRow').hidden = color !== 'OTHER';
+      const openingType = checkedValue('slidingOpening');
+      const width = Number(overlay.querySelector('#slidingWidth').value) || 1;
+      overlay.querySelector('#slidingPanelCount').value = String(slidingPanelCount(width, openingType));
+      const batchList = overlay.querySelector('#slidingBatchList');
+      if (batchList) {
+        batchList.querySelectorAll('.product-batch-row').forEach(row => {
+          const widthInput = row.querySelector('[data-batch-field="width"]');
+          const panelInput = row.querySelector('[data-batch-field="panel"]');
+          if (widthInput && panelInput) panelInput.value = String(slidingPanelCount(Number(widthInput.value) || 1, openingType));
+        });
+      }
+      error.textContent = '';
+    };
+
+    overlay.querySelectorAll('input[type="radio"]').forEach(radio => radio.addEventListener('change', refreshRules));
+    const cleanDimensionInput = input => {
+      const clean = String(input.value || '').replace(/[^0-9]/g, '');
+      if (input.value !== clean) input.value = clean;
+      error.textContent = '';
+    };
+    [overlay.querySelector('#slidingWidth'), overlay.querySelector('#slidingHeight')].forEach(input => {
+      input.addEventListener('input', () => { cleanDimensionInput(input); refreshRules(); });
+    });
+    overlay.querySelector('#slidingBatchList').addEventListener('input', evt => {
+      const input = evt.target && evt.target.matches && evt.target.matches('[data-batch-field="width"],[data-batch-field="height"]') ? evt.target : null;
+      if (!input) return;
+      cleanDimensionInput(input);
+      if (input.dataset.batchField === 'width') {
+        const row = input.closest('.product-batch-row');
+        const panel = row && row.querySelector('[data-batch-field="panel"]');
+        if (panel) panel.value = String(slidingPanelCount(Number(input.value) || 1, checkedValue('slidingOpening')));
+      }
+    });
+    otherInput.addEventListener('input', () => { error.textContent = ''; });
+
+    const close = () => {
+      overlay.hidden = true;
+      pendingSlidingPlacementMeta = null;
+      focusPreviewCanvas();
+    };
+    overlay.querySelector('#slidingDetailsCancel').addEventListener('click', close);
+    overlay.querySelector('#slidingDetailsClose').addEventListener('click', close);
+    overlay.querySelector('#slidingDetailsDelete').addEventListener('click', () => {
+      const record = pendingSlidingPlacementMeta && pendingSlidingPlacementMeta.editRecord;
+      if (!record) return;
+      if (!window.confirm(currentLanguage === 'en' ? 'Delete this existing sliding product?' : 'Bu mevcut sürme ürünü silinsin mi?')) return;
+      deleteProductRecord(record);
+      close();
+      updatePreview(false);
+      statusText.textContent = currentLanguage === 'en' ? 'Existing product deleted.' : 'Mevcut ürün silindi.';
+    });
+    overlay.addEventListener('mousedown', evt => { if (evt.target === overlay) close(); });
+    overlay.addEventListener('keydown', evt => { if (evt.key === 'Escape') { evt.preventDefault(); close(); } });
+
+    form.addEventListener('submit', evt => {
+      evt.preventDefault();
+      if (!pendingSlidingPlacementMeta) return;
+      const qty = 1;
+      let glassColor = checkedValue('slidingColor');
+      if (glassColor === 'OTHER') {
+        glassColor = String(otherInput.value || '').trim().toUpperCase();
+        if (!glassColor) {
+          error.textContent = (SLIDING_UI_TEXT[currentLanguage] || SLIDING_UI_TEXT.tr).otherRequired;
+          otherInput.focus();
+          return;
+        }
+      }
+      const meta = pendingSlidingPlacementMeta;
+      const metas = placementMetasFromPending(meta);
+      const openingType = checkedValue('slidingOpening');
+      const editRecord = meta.editRecord || null;
+      const convertRecord = meta.convertRecord || null;
+      const pozNos = Array.isArray(meta.batchPozNos) ? meta.batchPozNos : [editRecord ? editRecord.placement.pozNo : overlay.querySelector('#slidingPozNo').value];
+      const dimensionInputs = metas.map((item, index) => {
+        const widthInput = index === 0
+          ? overlay.querySelector('#slidingWidth')
+          : overlay.querySelector(`#slidingBatchList [data-batch-index="${index}"][data-batch-field="width"]`);
+        const heightInput = index === 0
+          ? overlay.querySelector('#slidingHeight')
+          : overlay.querySelector(`#slidingBatchList [data-batch-index="${index}"][data-batch-field="height"]`);
+        const width = Number(widthInput && widthInput.value);
+        const height = Number(heightInput && heightInput.value);
+        if (!(width > 0) || !(height > 0)) return { invalid: true, input: !(width > 0) ? widthInput : heightInput, index };
+        return { width, height };
+      });
+      const invalidDimension = dimensionInputs.find(item => item.invalid);
+      if (invalidDimension) {
+        const poz = String(pozNos[invalidDimension.index] || '');
+        error.textContent = currentLanguage === 'en' ? `Enter positive width and height values for ${poz}.` : `${poz} için pozitif genişlik ve yükseklik gir.`;
+        if (invalidDimension.input) invalidDimension.input.focus();
+        return;
+      }
+      const placements = metas.map((item, index) => {
+        const isSidePlacement = placementIsSide(item);
+        const width = dimensionInputs[index].width;
+        const height = dimensionInputs[index].height;
+        const existing = editRecord && index === 0 ? editRecord.placement : null;
+        return {
+          id: existing && existing.id ? existing.id : (isSidePlacement ? `sliding_side_${Date.now()}_${index}_${sideViewKeyFromMeta(item)}_${item.sideZone}` : `sliding_${Date.now()}_${index}_${item.index}`),
+          gapIndex: Number(item.index) || 0,
+          placementView: isSidePlacement ? (sideViewKeyFromMeta(item) === 'right' ? 'side-right' : 'side-left') : 'front',
+          sideIndex: isSidePlacement ? (Number(item.sideIndex) || 0) : null,
+          sideViewKey: isSidePlacement ? sideViewKeyFromMeta(item) : '',
+          sideZone: isSidePlacement ? String(item.sideZone || '') : '',
+          sideGapIndex: isSidePlacement ? (Number(item.sideGapIndex) || 0) : null,
+          series: checkedValue('slidingSeries'),
+          type: checkedValue('slidingType'),
+          openingType,
+          glassThickness: checkedValue('slidingThickness'),
+          glassColor,
+          width,
+          height,
+          panelCount: slidingPanelCount(width, openingType),
+          quantity: Math.round(qty),
+          pozNo: String(pozNos[index] || pozNos[0] || nextSlidingPozNo()),
+          leftPostStandard: isSidePlacement ? true : !frontPostProfiles[Number(item.index) || 0]
+        };
+      });
+      placements.forEach(storeSlidingPlacement);
+      overlay.hidden = true;
+      pendingSlidingPlacementMeta = null;
+      suppressFormPreviewUpdate = true;
+      try { updatePreview(false); }
+      finally { window.setTimeout(() => { suppressFormPreviewUpdate = false; }, 450); }
+      if (editRecord) statusText.textContent = currentLanguage === 'en' ? `${placements[0].pozNo} updated.` : `${placements[0].pozNo} güncellendi.`;
+      else if (convertRecord) statusText.textContent = currentLanguage === 'en' ? `${String(convertRecord.placement.pozNo || '')} was converted to ${placements[0].pozNo} sliding product.` : `${String(convertRecord.placement.pozNo || '')}, ${placements[0].pozNo} sürme ürününe dönüştürüldü.`;
+      else if (placements.length > 1) statusText.textContent = currentLanguage === 'en' ? `${placements.length} sliding products placed.` : `${placements.length} sürme ürün yerleştirildi.`;
+      else {
+        const placement = placements[0];
+        const slidingTxt = SLIDING_UI_TEXT[currentLanguage] || SLIDING_UI_TEXT.tr;
+        statusText.textContent = ['side-left','side-right'].includes(String(placement.placementView || ''))
+          ? (currentLanguage === 'en' ? `${placement.pozNo} placed in the ${sidePositionLabel(normalizeSideViewKey(placement.sideViewKey, placement.sideIndex), placement.sideIndex)}.` : `${placement.pozNo} ${sidePositionLabel(normalizeSideViewKey(placement.sideViewKey, placement.sideIndex), placement.sideIndex)} içine yerleştirildi.`)
+          : slidingTxt.placed(placement.pozNo, placement.gapIndex + 1, placement.gapIndex + 2);
+      }
+    });
+    return overlay;
+  }
+
+  function showSlidingDetailsOverlay(meta, options = {}) {
+    const overlay = ensureSlidingDetailsOverlay();
+    translateSlidingDetailsOverlay(overlay);
+    const batchMetas = Array.isArray(meta && meta.batchMetas) ? meta.batchMetas.map(normalizedProductMeta).filter(Boolean) : null;
+    const baseMeta = batchMetas && batchMetas.length ? batchMetas[0] : normalizedProductMeta(meta) || { ...meta };
+    const conversionRecords = Array.isArray(options.convertFromRecords) ? options.convertFromRecords : (options.convertFrom ? [options.convertFrom] : []);
+    const conversionRecord = conversionRecords[0] || null;
+    const record = options.editExisting || meta.editProduct || meta.placementId ? (meta.placementId ? findProductByInteraction(meta) : productRecordForMeta(baseMeta)) : null;
+    const existing = record && record.type === 'sliding_glass' ? record.placement : null;
+    pendingSlidingPlacementMeta = { ...baseMeta, batchMetas: batchMetas || undefined, editRecord: existing ? record : null, convertRecord: conversionRecord, convertRecords: conversionRecords };
+    const allMetas = batchMetas || [baseMeta];
+    const gap = Math.max(1, Number(baseMeta.value) || 1);
+    const width = Math.max(1, Number(baseMeta.placementWidth) || (gap - 5));
+    const d = lastDrawing && lastDrawing.input ? lastDrawing.input : {};
+    const height = Math.max(1, Number(baseMeta.placementHeight) || (Number(d.frontHeight || 0) - Number(d.parapetHeight || 0) - 5));
+    setRadioGroupValue(overlay, 'slidingSeries', existing && existing.series, 'A SERIES');
+    setRadioGroupValue(overlay, 'slidingType', existing && existing.type, 'WITH THRESHOLD');
+    setRadioGroupValue(overlay, 'slidingOpening', existing && existing.openingType, 'SIDE OPENING');
+    setRadioGroupValue(overlay, 'slidingThickness', existing && existing.glassThickness, '10 MM');
+    const knownColors = ['TRANSPARENT','GREY','BRONZE','LOW-E GLASS'];
+    const existingColor = existing ? String(existing.glassColor || 'TRANSPARENT') : 'TRANSPARENT';
+    setRadioGroupValue(overlay, 'slidingColor', knownColors.includes(existingColor) ? existingColor : (existing ? 'OTHER' : 'TRANSPARENT'), 'TRANSPARENT');
+    overlay.querySelector('#slidingOtherColor').value = knownColors.includes(existingColor) ? '' : existingColor;
+    overlay.querySelector('#slidingOtherRow').hidden = knownColors.includes(existingColor);
+    overlay.querySelector('#slidingWidth').value = String(Math.round(existing ? existing.width : width));
+    overlay.querySelector('#slidingHeight').value = String(Math.round(existing ? existing.height : height));
+    overlay.querySelector('#slidingPanelCount').value = String(slidingPanelCount(existing ? existing.width : width, existing ? existing.openingType : 'SIDE OPENING'));
+    overlay.querySelector('#slidingQuantity').value = '1';
+    const pozNos = batchMetas ? allocatePozNos('S', batchMetas.length) : [existing ? existing.pozNo : nextSlidingPozNo()];
+    pendingSlidingPlacementMeta.batchPozNos = pozNos;
+    overlay.querySelector('#slidingPozNo').value = pozNos[0];
+    const batchList = overlay.querySelector('#slidingBatchList');
+    const slidingTxt = SLIDING_UI_TEXT[currentLanguage] || SLIDING_UI_TEXT.tr;
+    batchList.hidden = !(batchMetas && batchMetas.length > 1);
+    batchList.innerHTML = batchMetas && batchMetas.length > 1 ? batchMetas.slice(1).map((item, offset) => {
+      const index = offset + 1;
+      const itemWidth = Math.max(1, Math.round(Number(item.placementWidth) || 1));
+      const itemHeight = Math.max(1, Math.round(Number(item.placementHeight) || 1));
+      return `<div class="product-batch-row product-batch-row-sliding" data-batch-index="${index}">
+        <label class="product-batch-field product-batch-poz"><span>${escapeHtml(slidingTxt.pozNo)}</span><input type="text" value="${escapeHtml(pozNos[index])}" readonly></label>
+        <label class="product-batch-field"><span>${escapeHtml(slidingTxt.width)} <small>(mm)</small></span><input type="text" inputmode="numeric" autocomplete="off" data-batch-index="${index}" data-batch-field="width" value="${itemWidth}"></label>
+        <label class="product-batch-field"><span>${escapeHtml(slidingTxt.height)} <small>(mm)</small></span><input type="text" inputmode="numeric" autocomplete="off" data-batch-index="${index}" data-batch-field="height" value="${itemHeight}"></label>
+        <label class="product-batch-field product-batch-panel"><span>${escapeHtml(slidingTxt.panelCount)}</span><input type="text" data-batch-index="${index}" data-batch-field="panel" value="${slidingPanelCount(itemWidth, existing ? existing.openingType : 'SIDE OPENING')}" readonly></label>
+      </div>`;
+    }).join('') : '';
+    const deleteBtn = overlay.querySelector('#slidingDetailsDelete');
+    deleteBtn.hidden = !existing;
+    deleteBtn.textContent = currentLanguage === 'en' ? 'Delete Existing Product' : 'Mevcut Ürünü Sil';
+    overlay.querySelector('#slidingDetailsError').textContent = '';
+    overlay.hidden = false;
+    const active = overlay.querySelector('input[name="slidingSeries"]:checked');
+    if (active) active.dispatchEvent(new Event('change', { bubbles: true }));
+    window.setTimeout(() => { const first = overlay.querySelector('input[name="slidingSeries"]:checked'); if (first) first.focus({ preventScroll: true }); }, 20);
+  }
+
+
+  function nextGuillotinePozNo() {
+    const used = new Set([...guillotinePlacements, ...sideGuillotinePlacements].map(item => String(item.pozNo || '').toUpperCase()));
+    let n = 1;
+    while (used.has(`G${String(n).padStart(2, '0')}`)) n += 1;
+    return `G${String(n).padStart(2, '0')}`;
+  }
+
+  function ensureGuillotineDetailsOverlay() {
+    let overlay = $('guillotineDetailsOverlay');
+    if (overlay) return overlay;
+    overlay = document.createElement('div');
+    overlay.id = 'guillotineDetailsOverlay';
+    overlay.className = 'dim-edit-overlay sliding-details-overlay guillotine-details-overlay';
+    overlay.hidden = true;
+    overlay.innerHTML = `
+      <form id="guillotineDetailsForm" class="dim-edit-card sliding-details-card guillotine-details-card">
+        <div class="sliding-modal-head">
+          <div class="sliding-modal-title"><span class="guillotine-title-icon" aria-hidden="true"></span><span data-guillotine-text="title">Guillotine Details</span></div>
+          <button id="guillotineDetailsClose" class="sliding-modal-close" type="button" aria-label="Close"><span aria-hidden="true"></span></button>
+        </div>
+        <div class="guillotine-details-grid">
+          <section class="sliding-choice-group guillotine-series-group" role="group">
+            <div class="sliding-group-title"><span class="sliding-group-icon icon-series" aria-hidden="true"></span><span data-guillotine-text="productSeries">Product Series</span></div>
+            <label><input type="radio" name="guillotineSeries" value="A SERIES" checked><span data-guillotine-text="aSeries">A Series</span></label>
+            <label><input type="radio" name="guillotineSeries" value="K SERIES"><span data-guillotine-text="kSeries">K Series</span></label>
+          </section>
+          <section class="sliding-choice-group guillotine-type-group" role="group">
+            <div class="sliding-group-title"><span class="sliding-group-icon icon-type" aria-hidden="true"></span><span data-guillotine-text="type">Type</span></div>
+            <label><input type="radio" name="guillotineType" value="STANDARD" checked><span data-guillotine-text="standard">Standard</span></label>
+            <label><input type="radio" name="guillotineType" value="CLEANABLE"><span data-guillotine-text="cleanable">Cleanable</span></label>
+            <label id="guillotineUpwardWrap"><input type="radio" name="guillotineType" value="UPWARD COLLECTING"><span data-guillotine-text="upwardCollecting">Upward Collecting</span></label>
+          </section>
+          <section class="sliding-choice-group guillotine-mechanism-group" role="group">
+            <div class="sliding-group-title"><span class="sliding-group-icon icon-mechanism" aria-hidden="true"></span><span data-guillotine-text="mechanism">Mechanism</span></div>
+            <label id="guillotineChainWrap"><input type="radio" name="guillotineMechanism" value="CHAIN" checked><span data-guillotine-text="chain">Chain</span></label>
+            <label><input type="radio" name="guillotineMechanism" value="BELT"><span data-guillotine-text="belt">Belt</span></label>
+          </section>
+          <section class="sliding-choice-group guillotine-thickness-group" role="group">
+            <div class="sliding-group-title"><span class="sliding-group-icon icon-thickness" aria-hidden="true"></span><span data-guillotine-text="glassThickness">Glass Thickness</span></div>
+            <label id="guillotine8mmWrap"><input type="radio" name="guillotineThickness" value="8 MM" checked><span data-guillotine-text="mm8">8 mm</span></label>
+            <label><input type="radio" name="guillotineThickness" value="INSULATED GLASS"><span data-guillotine-text="insulatedGlass">Insulated Glass</span></label>
+          </section>
+          <section class="sliding-choice-group guillotine-panel-group" role="group">
+            <div class="sliding-group-title"><span class="sliding-group-icon icon-panel" aria-hidden="true"></span><span data-guillotine-text="panelCount">Panel Type</span></div>
+            <label><input type="radio" name="guillotinePanel" value="1+1" checked><span data-guillotine-text="panel11">1+1</span></label>
+            <label><input type="radio" name="guillotinePanel" value="1+2"><span data-guillotine-text="panel12">1+2</span></label>
+          </section>
+          <section class="sliding-choice-group guillotine-motor-direction-group" role="group">
+            <div class="sliding-group-title"><span class="sliding-group-icon icon-direction" aria-hidden="true"></span><span data-guillotine-text="motorDirection">Motor Direction</span></div>
+            <label><input type="radio" name="guillotineMotorDirection" value="RIGHT" checked><span data-guillotine-text="right">Right</span></label>
+            <label><input type="radio" name="guillotineMotorDirection" value="LEFT"><span data-guillotine-text="left">Left</span></label>
+          </section>
+          <section class="sliding-choice-group guillotine-view-group" role="group">
+            <div class="sliding-group-title"><span class="sliding-group-icon icon-view" aria-hidden="true"></span><span data-guillotine-text="view">View</span></div>
+            <label><input type="radio" name="guillotineView" value="INSIDE VIEW" checked><span data-guillotine-text="insideView">Inside View</span></label>
+            <label><input type="radio" name="guillotineView" value="OUTSIDE VIEW"><span data-guillotine-text="outsideView">Outside View</span></label>
+          </section>
+          <section class="sliding-choice-group guillotine-motor-type-group" role="group">
+            <div class="sliding-group-title"><span class="sliding-group-icon icon-motor" aria-hidden="true"></span><span data-guillotine-text="motorType">Motor Type</span></div>
+            <label><input type="radio" name="guillotineMotorType" value="SOMFY RTS" checked><span data-guillotine-text="somfyRts">Somfy RTS</span></label>
+            <label><input type="radio" name="guillotineMotorType" value="SOMFY IO"><span data-guillotine-text="somfyIo">Somfy IO</span></label>
+            <label><input type="radio" name="guillotineMotorType" value="RISING"><span data-guillotine-text="rising">Rising</span></label>
+          </section>
+          <section class="sliding-choice-group sliding-color-group guillotine-color-group" role="group">
+            <div class="sliding-group-title"><span class="sliding-group-icon icon-color" aria-hidden="true"></span><span data-guillotine-text="glassColor">Glass Color</span></div>
+            <label><input type="radio" name="guillotineColor" value="TRANSPARENT" checked><span data-guillotine-text="transparent">Transparent</span></label>
+            <label><input type="radio" name="guillotineColor" value="GREY"><span data-guillotine-text="grey">Grey</span></label>
+            <label><input type="radio" name="guillotineColor" value="BRONZE"><span data-guillotine-text="bronze">Bronze</span></label>
+            <label id="guillotineLowEWrap"><input type="radio" name="guillotineColor" value="LOW-E GLASS" disabled><span data-guillotine-text="lowEGlass">Low-e Glass</span></label>
+            <label><input type="radio" name="guillotineColor" value="OTHER"><span data-guillotine-text="other">Other</span></label>
+            <div id="guillotineOtherRow" class="sliding-other-row" hidden><input id="guillotineOtherColor" class="sliding-other-input" type="text" autocomplete="off"></div>
+          </section>
+          <section class="sliding-choice-group guillotine-remote-group" role="group">
+            <div class="sliding-group-title"><span class="sliding-group-icon icon-remote" aria-hidden="true"></span><span data-guillotine-text="remoteControl">Remote Control</span></div>
+            <label><input type="radio" name="guillotineRemote" value="1 CHANNEL" checked><span data-guillotine-text="ch1">1 Channel</span></label>
+            <label><input type="radio" name="guillotineRemote" value="2 CHANNELS"><span data-guillotine-text="ch2">2 Channels</span></label>
+            <label><input type="radio" name="guillotineRemote" value="4 CHANNELS"><span data-guillotine-text="ch4">4 Channels</span></label>
+            <label><input type="radio" name="guillotineRemote" value="6 CHANNELS"><span data-guillotine-text="ch6">6 Channels</span></label>
+            <label><input type="radio" name="guillotineRemote" value="16 CHANNELS"><span data-guillotine-text="ch16">16 Channels</span></label>
+            <label><input type="radio" name="guillotineRemote" value="40 CHANNELS"><span data-guillotine-text="ch40">40 Channels</span></label>
+          </section>
+          <div class="sliding-auto-fields guillotine-auto-fields">
+            <label class="sliding-summary-field sliding-poz-field"><span data-guillotine-text="pozNo">Position No.</span><input id="guillotinePozNo" type="text" readonly></label>
+            <label class="sliding-summary-field"><span><span data-guillotine-text="width">Width *</span> <small>(mm)</small></span><input id="guillotineWidth" type="text" inputmode="numeric" autocomplete="off"></label>
+            <label class="sliding-summary-field"><span><span data-guillotine-text="height">Height *</span> <small>(mm)</small></span><input id="guillotineHeight" type="text" inputmode="numeric" autocomplete="off"></label>
+          </div>
+          <div id="guillotineBatchList" class="bulk-selection-list product-batch-list" hidden></div>
+        </div>
+        <div id="guillotineDetailsError" class="dim-edit-error sliding-details-error" aria-live="polite"></div>
+        <div class="dim-edit-actions sliding-details-actions">
+          <button id="guillotineDetailsDelete" type="button" class="dim-edit-delete" hidden>Mevcut Ürünü Sil</button>
+          <button id="guillotineDetailsCancel" type="button" class="dim-edit-cancel" data-guillotine-text="cancel">Cancel</button>
+          <button type="submit" class="dim-edit-apply" data-guillotine-text="confirm">Confirm</button>
+        </div>
+      </form>`;
+    previewPanel.appendChild(overlay);
+    translateGuillotineDetailsOverlay(overlay);
+
+    const form = overlay.querySelector('#guillotineDetailsForm');
+    const error = overlay.querySelector('#guillotineDetailsError');
+    const otherInput = overlay.querySelector('#guillotineOtherColor');
+    const checkedValue = name => (overlay.querySelector(`input[name="${name}"]:checked`) || {}).value || '';
+    const setDisabled = (wrapId, input, disabled) => {
+      input.disabled = disabled;
+      overlay.querySelector(`#${wrapId}`).classList.toggle('is-disabled', disabled);
+    };
+    const refreshRules = () => {
+      const isK = checkedValue('guillotineSeries') === 'K SERIES';
+      const mm8 = overlay.querySelector('input[name="guillotineThickness"][value="8 MM"]');
+      const insulated = overlay.querySelector('input[name="guillotineThickness"][value="INSULATED GLASS"]');
+      setDisabled('guillotine8mmWrap', mm8, isK);
+      if (isK && mm8.checked) insulated.checked = true;
+      const upward = overlay.querySelector('input[name="guillotineType"][value="UPWARD COLLECTING"]');
+      setDisabled('guillotineUpwardWrap', upward, isK);
+      if (isK && upward.checked) overlay.querySelector('input[name="guillotineType"][value="STANDARD"]').checked = true;
+      const chain = overlay.querySelector('input[name="guillotineMechanism"][value="CHAIN"]');
+      setDisabled('guillotineChainWrap', chain, isK);
+      if (isK && chain.checked) overlay.querySelector('input[name="guillotineMechanism"][value="BELT"]').checked = true;
+      const lowE = overlay.querySelector('input[name="guillotineColor"][value="LOW-E GLASS"]');
+      const lowEActive = checkedValue('guillotineThickness') === 'INSULATED GLASS';
+      setDisabled('guillotineLowEWrap', lowE, !lowEActive);
+      if (!lowEActive && lowE.checked) overlay.querySelector('input[name="guillotineColor"][value="TRANSPARENT"]').checked = true;
+      overlay.querySelector('#guillotineOtherRow').hidden = checkedValue('guillotineColor') !== 'OTHER';
+      error.textContent = '';
+    };
+    overlay.querySelectorAll('input[type="radio"]').forEach(radio => radio.addEventListener('change', refreshRules));
+    const cleanDimensionInput = input => {
+      const clean = String(input.value || '').replace(/[^0-9]/g, '');
+      if (input.value !== clean) input.value = clean;
+      error.textContent = '';
+    };
+    [overlay.querySelector('#guillotineWidth'), overlay.querySelector('#guillotineHeight')].forEach(input => {
+      input.addEventListener('input', () => cleanDimensionInput(input));
+    });
+    overlay.querySelector('#guillotineBatchList').addEventListener('input', evt => {
+      const input = evt.target && evt.target.matches && evt.target.matches('[data-batch-field="width"],[data-batch-field="height"]') ? evt.target : null;
+      if (input) cleanDimensionInput(input);
+    });
+    otherInput.addEventListener('input', () => { error.textContent = ''; });
+    const close = () => { overlay.hidden = true; pendingGuillotinePlacementMeta = null; focusPreviewCanvas(); };
+    overlay.querySelector('#guillotineDetailsCancel').addEventListener('click', close);
+    overlay.querySelector('#guillotineDetailsClose').addEventListener('click', close);
+    overlay.querySelector('#guillotineDetailsDelete').addEventListener('click', () => {
+      const record = pendingGuillotinePlacementMeta && pendingGuillotinePlacementMeta.editRecord;
+      if (!record) return;
+      if (!window.confirm(currentLanguage === 'en' ? 'Delete this existing guillotine product?' : 'Bu mevcut giyotin ürünü silinsin mi?')) return;
+      deleteProductRecord(record);
+      close();
+      updatePreview(false);
+      statusText.textContent = currentLanguage === 'en' ? 'Existing product deleted.' : 'Mevcut ürün silindi.';
+    });
+    overlay.addEventListener('mousedown', evt => { if (evt.target === overlay) close(); });
+    overlay.addEventListener('keydown', evt => { if (evt.key === 'Escape') { evt.preventDefault(); close(); } });
+    form.addEventListener('submit', evt => {
+      evt.preventDefault();
+      if (!pendingGuillotinePlacementMeta) return;
+      let glassColor = checkedValue('guillotineColor');
+      if (glassColor === 'OTHER') {
+        glassColor = String(otherInput.value || '').trim().toUpperCase();
+        if (!glassColor) {
+          error.textContent = (GUILLOTINE_UI_TEXT[currentLanguage] || GUILLOTINE_UI_TEXT.tr).otherRequired;
+          otherInput.focus();
+          return;
+        }
+      }
+      const meta = pendingGuillotinePlacementMeta;
+      const metas = placementMetasFromPending(meta);
+      const editRecord = meta.editRecord || null;
+      const convertRecord = meta.convertRecord || null;
+      const pozNos = Array.isArray(meta.batchPozNos) ? meta.batchPozNos : [editRecord ? editRecord.placement.pozNo : overlay.querySelector('#guillotinePozNo').value];
+      const dimensionInputs = metas.map((item, index) => {
+        const widthInput = index === 0
+          ? overlay.querySelector('#guillotineWidth')
+          : overlay.querySelector(`#guillotineBatchList [data-batch-index="${index}"][data-batch-field="width"]`);
+        const heightInput = index === 0
+          ? overlay.querySelector('#guillotineHeight')
+          : overlay.querySelector(`#guillotineBatchList [data-batch-index="${index}"][data-batch-field="height"]`);
+        const width = Number(widthInput && widthInput.value);
+        const height = Number(heightInput && heightInput.value);
+        if (!(width > 0) || !(height > 0)) return { invalid: true, input: !(width > 0) ? widthInput : heightInput, index };
+        return { width, height };
+      });
+      const invalidDimension = dimensionInputs.find(item => item.invalid);
+      if (invalidDimension) {
+        const poz = String(pozNos[invalidDimension.index] || '');
+        error.textContent = currentLanguage === 'en' ? `Enter positive width and height values for ${poz}.` : `${poz} için pozitif genişlik ve yükseklik gir.`;
+        if (invalidDimension.input) invalidDimension.input.focus();
+        return;
+      }
+      const placements = metas.map((item, index) => {
+        const isSidePlacement = placementIsSide(item);
+        const existing = editRecord && index === 0 ? editRecord.placement : null;
+        return {
+          id: existing && existing.id ? existing.id : (isSidePlacement ? `guillotine_side_${Date.now()}_${index}_${sideViewKeyFromMeta(item)}_${item.sideZone}` : `guillotine_${Date.now()}_${index}_${item.index}`),
+          gapIndex: Number(item.index) || 0,
+          placementView: isSidePlacement ? (sideViewKeyFromMeta(item) === 'right' ? 'side-right' : 'side-left') : 'front',
+          sideIndex: isSidePlacement ? (Number(item.sideIndex) || 0) : null,
+          sideViewKey: isSidePlacement ? sideViewKeyFromMeta(item) : '',
+          sideZone: isSidePlacement ? String(item.sideZone || '') : '',
+          sideGapIndex: isSidePlacement ? (Number(item.sideGapIndex) || 0) : null,
+          series: checkedValue('guillotineSeries'),
+          type: checkedValue('guillotineType'),
+          mechanism: checkedValue('guillotineMechanism'),
+          glassThickness: checkedValue('guillotineThickness'),
+          glassColor,
+          panelCount: checkedValue('guillotinePanel'),
+          motorDirection: checkedValue('guillotineMotorDirection'),
+          view: checkedValue('guillotineView'),
+          motorType: checkedValue('guillotineMotorType'),
+          remoteControl: checkedValue('guillotineRemote'),
+          width: dimensionInputs[index].width,
+          height: dimensionInputs[index].height,
+          quantity: 1,
+          pozNo: String(pozNos[index] || pozNos[0] || nextGuillotinePozNo()),
+          leftPostStandard: isSidePlacement ? true : !frontPostProfiles[Number(item.index) || 0]
+        };
+      });
+      placements.forEach(storeGuillotinePlacement);
+      overlay.hidden = true;
+      pendingGuillotinePlacementMeta = null;
+      suppressFormPreviewUpdate = true;
+      try { updatePreview(false); }
+      finally { window.setTimeout(() => { suppressFormPreviewUpdate = false; }, 450); }
+      if (editRecord) statusText.textContent = currentLanguage === 'en' ? `${placements[0].pozNo} updated.` : `${placements[0].pozNo} güncellendi.`;
+      else if (convertRecord) statusText.textContent = currentLanguage === 'en' ? `${String(convertRecord.placement.pozNo || '')} was converted to ${placements[0].pozNo} guillotine product.` : `${String(convertRecord.placement.pozNo || '')}, ${placements[0].pozNo} giyotin ürününe dönüştürüldü.`;
+      else if (placements.length > 1) statusText.textContent = currentLanguage === 'en' ? `${placements.length} guillotine products placed.` : `${placements.length} giyotin ürün yerleştirildi.`;
+      else {
+        const placement = placements[0];
+        const txt = GUILLOTINE_UI_TEXT[currentLanguage] || GUILLOTINE_UI_TEXT.tr;
+        statusText.textContent = ['side-left','side-right'].includes(String(placement.placementView || ''))
+          ? (currentLanguage === 'en' ? `${placement.pozNo} placed in the ${sidePositionLabel(normalizeSideViewKey(placement.sideViewKey, placement.sideIndex), placement.sideIndex)}.` : `${placement.pozNo} ${sidePositionLabel(normalizeSideViewKey(placement.sideViewKey, placement.sideIndex), placement.sideIndex)} içine yerleştirildi.`)
+          : txt.placed(placement.pozNo, placement.gapIndex + 1, placement.gapIndex + 2);
+      }
+    });
+    return overlay;
+  }
+
+  function showGuillotineDetailsOverlay(meta, options = {}) {
+    const overlay = ensureGuillotineDetailsOverlay();
+    translateGuillotineDetailsOverlay(overlay);
+    const batchMetas = Array.isArray(meta && meta.batchMetas) ? meta.batchMetas.map(normalizedProductMeta).filter(Boolean) : null;
+    const baseMeta = batchMetas && batchMetas.length ? batchMetas[0] : normalizedProductMeta(meta) || { ...meta };
+    const conversionRecords = Array.isArray(options.convertFromRecords) ? options.convertFromRecords : (options.convertFrom ? [options.convertFrom] : []);
+    const conversionRecord = conversionRecords[0] || null;
+    const record = options.editExisting || meta.editProduct || meta.placementId ? (meta.placementId ? findProductByInteraction(meta) : productRecordForMeta(baseMeta)) : null;
+    const existing = record && record.type === 'guillotine_glass' ? record.placement : null;
+    pendingGuillotinePlacementMeta = { ...baseMeta, batchMetas: batchMetas || undefined, editRecord: existing ? record : null, convertRecord: conversionRecord, convertRecords: conversionRecords };
+    const gap = Math.max(1, Number(baseMeta.value) || 1);
+    const width = Math.max(1, Number(baseMeta.placementWidth) || (gap - 5));
+    const d = lastDrawing && lastDrawing.input ? lastDrawing.input : {};
+    const height = Math.max(1, Number(baseMeta.placementHeight) || (Number(d.frontHeight || 0) - Number(d.parapetHeight || 0) - 5));
+    const defaults = {
+      guillotineSeries: 'A SERIES', guillotineType: 'STANDARD', guillotineMechanism: 'CHAIN',
+      guillotineThickness: '8 MM', guillotineColor: 'TRANSPARENT', guillotinePanel: '1+1',
+      guillotineMotorDirection: 'RIGHT', guillotineView: 'INSIDE VIEW', guillotineMotorType: 'SOMFY RTS', guillotineRemote: '1 CHANNEL'
+    };
+    const values = existing ? {
+      guillotineSeries: existing.series, guillotineType: existing.type, guillotineMechanism: existing.mechanism,
+      guillotineThickness: existing.glassThickness, guillotineColor: existing.glassColor, guillotinePanel: existing.panelCount,
+      guillotineMotorDirection: existing.motorDirection, guillotineView: existing.view, guillotineMotorType: existing.motorType, guillotineRemote: existing.remoteControl
+    } : defaults;
+    const knownColors = ['TRANSPARENT','GREY','BRONZE','LOW-E GLASS'];
+    Object.entries(defaults).forEach(([name, fallback]) => {
+      let value = values[name] || fallback;
+      if (name === 'guillotineColor' && !knownColors.includes(String(value))) value = 'OTHER';
+      setRadioGroupValue(overlay, name, value, fallback);
+    });
+    const existingColor = existing ? String(existing.glassColor || 'TRANSPARENT') : 'TRANSPARENT';
+    overlay.querySelector('#guillotineOtherColor').value = knownColors.includes(existingColor) ? '' : existingColor;
+    overlay.querySelector('#guillotineOtherRow').hidden = knownColors.includes(existingColor);
+    overlay.querySelector('#guillotineWidth').value = String(Math.round(existing ? existing.width : width));
+    overlay.querySelector('#guillotineHeight').value = String(Math.round(existing ? existing.height : height));
+    const pozNos = batchMetas ? allocatePozNos('G', batchMetas.length) : [existing ? existing.pozNo : nextGuillotinePozNo()];
+    pendingGuillotinePlacementMeta.batchPozNos = pozNos;
+    overlay.querySelector('#guillotinePozNo').value = pozNos[0];
+    const batchList = overlay.querySelector('#guillotineBatchList');
+    const guillotineTxt = GUILLOTINE_UI_TEXT[currentLanguage] || GUILLOTINE_UI_TEXT.tr;
+    batchList.hidden = !(batchMetas && batchMetas.length > 1);
+    batchList.innerHTML = batchMetas && batchMetas.length > 1 ? batchMetas.slice(1).map((item, offset) => {
+      const index = offset + 1;
+      const itemWidth = Math.max(1, Math.round(Number(item.placementWidth) || 1));
+      const itemHeight = Math.max(1, Math.round(Number(item.placementHeight) || 1));
+      return `<div class="product-batch-row product-batch-row-guillotine" data-batch-index="${index}">
+        <label class="product-batch-field product-batch-poz"><span>${escapeHtml(guillotineTxt.pozNo)}</span><input type="text" value="${escapeHtml(pozNos[index])}" readonly></label>
+        <label class="product-batch-field"><span>${escapeHtml(guillotineTxt.width)} <small>(mm)</small></span><input type="text" inputmode="numeric" autocomplete="off" data-batch-index="${index}" data-batch-field="width" value="${itemWidth}"></label>
+        <label class="product-batch-field"><span>${escapeHtml(guillotineTxt.height)} <small>(mm)</small></span><input type="text" inputmode="numeric" autocomplete="off" data-batch-index="${index}" data-batch-field="height" value="${itemHeight}"></label>
+      </div>`;
+    }).join('') : '';
+    const deleteBtn = overlay.querySelector('#guillotineDetailsDelete');
+    deleteBtn.hidden = !existing;
+    deleteBtn.textContent = currentLanguage === 'en' ? 'Delete Existing Product' : 'Mevcut Ürünü Sil';
+    overlay.querySelector('#guillotineDetailsError').textContent = '';
+    overlay.hidden = false;
+    const active = overlay.querySelector('input[name="guillotineSeries"]:checked');
+    if (active) active.dispatchEvent(new Event('change', { bubbles: true }));
+    window.setTimeout(() => { const first = overlay.querySelector('input[name="guillotineSeries"]:checked'); if (first) first.focus({ preventScroll: true }); }, 20);
+  }
+
+  function ensureDimensionEditOverlay() {
+    let overlay = $('dimensionEditOverlay');
+    if (overlay) return overlay;
+    overlay = document.createElement('div');
+    overlay.id = 'dimensionEditOverlay';
+    overlay.className = 'dim-edit-overlay v66-smart-dim-overlay';
+    overlay.hidden = true;
+    overlay.innerHTML = `
+      <form id="dimensionEditForm" class="dim-edit-card v66-smart-dim-card">
+        <div class="dim-edit-title" id="dimensionEditTitle">Ölçü Düzenle</div>
+        <div class="dim-edit-meta" id="dimensionEditMeta"></div>
+        <label class="dim-edit-label" id="dimensionValueWrap">
+          <span id="dimensionEditLabel">Yeni değer</span>
+          <input id="dimensionEditInput" type="text" inputmode="numeric" autocomplete="off" />
+        </label>
+        <fieldset class="v66-action-fieldset">
+          <legend id="dimensionActionLegend">İşlem</legend>
+          <label><input type="radio" name="dimensionAction" value="resize" checked /> <span id="dimActionResize">Sadece ölçüyü değiştir</span></label>
+          <label><input type="radio" name="dimensionAction" value="addSameProfile" /> <span id="dimActionAddSame">Bu aralığa aynı profilden ekle</span></label>
+          <label><input type="radio" name="dimensionAction" value="addDifferentProfile" /> <span id="dimActionAddDifferent">Bu aralığa farklı profil ekle</span></label>
+          <label><input type="radio" name="dimensionAction" value="placeProduct" /> <span id="dimActionProduct">Bu alana ürün yerleştir</span></label>
+          <label><input type="radio" name="dimensionAction" value="editProduct" /> <span id="dimActionProfile">Mevcut ürünü düzenle</span></label>
+        </fieldset>
+        <div class="v66-action-options" id="dimensionActionOptions">
+          <label id="productOptionWrap">Ürün
+            <select id="dimensionProductSelect"></select>
+          </label>
+          <label id="profileOptionWrap">Profil
+            <select id="dimensionProfileSelect"></select>
+          </label>
+          <div id="dimensionCustomProfileFields" class="dimension-custom-profile-fields" hidden>
+            <label><span>En</span><input id="dimensionProfileEn" type="text" inputmode="numeric" autocomplete="off" value="100" /></label>
+            <label><span>Boy</span><input id="dimensionProfileBoy" type="text" inputmode="numeric" autocomplete="off" value="100" /></label>
+            <label><span>Et</span><input id="dimensionProfileEt" type="text" inputmode="numeric" autocomplete="off" value="2" /></label>
+          </div>
+          <div class="v66-profile-hint" id="dimensionProfileHint"></div>
+        </div>
+        <div id="dimensionEditError" class="dim-edit-error" aria-live="polite"></div>
+        <div class="dim-edit-actions">
+          <button id="dimensionEditCancel" type="button" class="dim-edit-cancel">İptal</button>
+          <button id="dimensionEditApply" type="submit" class="dim-edit-apply">Tamam</button>
+        </div>
+      </form>`;
+    previewPanel.appendChild(overlay);
+
+    const input = overlay.querySelector('#dimensionEditInput');
+    const form = overlay.querySelector('#dimensionEditForm');
+    const cancel = overlay.querySelector('#dimensionEditCancel');
+    const productSelect = overlay.querySelector('#dimensionProductSelect');
+    const profileSelect = overlay.querySelector('#dimensionProfileSelect');
+    SMART_PRODUCT_OPTIONS.forEach(p => {
+      const opt = document.createElement('option');
+      opt.value = p.id;
+      opt.textContent = currentLanguage === 'en' ? p.en : p.tr;
+      productSelect.appendChild(opt);
+    });
+    SMART_PROFILE_OPTIONS.forEach(p => {
+      const opt = document.createElement('option');
+      opt.value = p.id;
+      opt.textContent = currentLanguage === 'en' ? p.en : p.tr;
+      profileSelect.appendChild(opt);
+    });
+
+    const closeOverlay = () => {
+      overlay.hidden = true;
+      pendingDimensionEdit = null;
+      focusPreviewCanvas();
+    };
+
+    const refreshActionOptions = () => {
+      const action = (overlay.querySelector('input[name="dimensionAction"]:checked') || {}).value || 'resize';
+      overlay.querySelector('#productOptionWrap').hidden = action !== 'placeProduct';
+      overlay.querySelector('#profileOptionWrap').hidden = true;
+      profileSelect.disabled = true;
+      overlay.querySelector('#dimensionCustomProfileFields').hidden = action !== 'addDifferentProfile';
+      overlay.querySelector('#dimensionProfileHint').textContent = '';
+      input.disabled = action !== 'resize';
+    };
+
+    overlay.querySelectorAll('input[name="dimensionAction"]').forEach(r => r.addEventListener('change', refreshActionOptions));
+    profileSelect.addEventListener('change', refreshActionOptions);
+
+    overlay.querySelectorAll('#dimensionProfileEn,#dimensionProfileBoy,#dimensionProfileEt').forEach(profileInput => {
+      profileInput.addEventListener('input', () => {
+        const clean = String(profileInput.value || '').replace(/[^0-9]/g, '');
+        if (profileInput.value !== clean) profileInput.value = clean;
+        overlay.querySelector('#dimensionEditError').textContent = '';
+      });
+    });
+
+    input.addEventListener('input', () => {
+      const clean = String(input.value || '').replace(/[^0-9]/g, '');
+      if (input.value !== clean) input.value = clean;
+      overlay.querySelector('#dimensionEditError').textContent = '';
+    });
+
+    cancel.addEventListener('click', closeOverlay);
+    overlay.addEventListener('mousedown', evt => { if (evt.target === overlay) closeOverlay(); });
+
+    form.addEventListener('submit', evt => {
+      evt.preventDefault();
+      evt.stopPropagation();
+      if (!pendingDimensionEdit) return;
+      const meta = pendingDimensionEdit;
+      const action = (overlay.querySelector('input[name="dimensionAction"]:checked') || {}).value || 'resize';
+      const clean = String(input.value || '').replace(/[^0-9]/g, '');
+      const error = overlay.querySelector('#dimensionEditError');
+
+      const finishUpdate = (message) => {
+        overlay.hidden = true;
+        pendingDimensionEdit = null;
+        suppressFormPreviewUpdate = true;
+        try { updatePreview(false); }
+        finally { window.setTimeout(() => { suppressFormPreviewUpdate = false; }, 450); }
+        if (message) statusText.textContent = message;
+      };
+
+      if (action === 'resize') {
+        const rayInterval = String(meta.actionType || '') === 'ray_interval_resize';
+        const sideSupportGap = isLeftSideSupportGapMeta(meta);
+        if (!clean || (!sideSupportGap && Number(clean) <= 0) || (sideSupportGap && Number(clean) < 0)) {
+          error.textContent = sideSupportGap
+            ? (currentLanguage === 'en' ? 'Enter zero or a positive number.' : 'Sıfır veya pozitif bir sayı gir.')
+            : (currentLanguage === 'en' ? 'Enter a positive number.' : 'Pozitif bir sayı gir.');
+          input.focus();
+          return;
+        }
+        if (rayInterval) {
+          try { resizeRayInterval(meta, Number(clean)); }
+          catch (err) { error.textContent = err.message; return; }
+          finishUpdate(currentLanguage === 'en' ? 'Ray positions updated.' : 'Ray konumları güncellendi.');
+          return;
+        }
+        if (isParapetWidthMeta(meta)) {
+          try { resizeParapetSegmentWidth(meta, Number(clean)); }
+          catch (err) { error.textContent = err.message; return; }
+          finishUpdate(currentLanguage === 'en' ? 'Parapet segment width updated.' : 'Parapet parçası genişliği güncellendi.');
+          return;
+        }
+        if (sideSupportGap) {
+          try {
+            resizeLeftSideSupportGap(meta, Number(clean));
+          } catch (err) {
+            error.textContent = err.message;
+            return;
+          }
+          finishUpdate(currentLanguage === 'en' ? 'Support post position updated.' : 'Destek dikmesi konumu güncellendi.');
+          return;
+        }
+        if (isFrontPostGapMeta(meta)) {
+          try {
+            resizeFrontPostGap(meta, Number(clean));
+          } catch (err) {
+            error.textContent = err.message;
+            return;
+          }
+          finishUpdate(currentLanguage === 'en' ? 'Post gap updated.' : 'Dikme aralığı güncellendi.');
+          return;
+        }
+        if (!meta.canResize || String(meta.field || '').startsWith('__')) {
+          error.textContent = currentLanguage === 'en' ? 'This dimension is not connected to a direct resize field yet.' : 'Bu ölçü henüz doğrudan ölçü değiştirme alanına bağlı değil.';
+          return;
+        }
+        const editedEl = $(meta.field);
+        if (editedEl && editedEl._previewTimer) window.clearTimeout(editedEl._previewTimer);
+        updateEditableListValue(meta.field, meta.index, clean, true);
+        finishUpdate(currentLanguage === 'en' ? 'Dimension updated.' : 'Ölçü güncellendi.');
+        return;
+      }
+
+      if (action === 'addSameProfile' || action === 'addDifferentProfile') {
+        const sideGap = isLeftSideSupportGapMeta(meta);
+        const frontGap = isFrontPostGapMeta(meta);
+        if (!sideGap && !frontGap) {
+          error.textContent = currentLanguage === 'en' ? 'Profile insertion is not available in this zone.' : 'Bu bölgeye profil ekleme aktif değil.';
+          return;
+        }
+        let profile = null;
+        if (action === 'addDifferentProfile') {
+          const rawEn = Number(overlay.querySelector('#dimensionProfileEn').value || 0);
+          const rawBoy = Number(overlay.querySelector('#dimensionProfileBoy').value || 0);
+          const rawEt = Number(overlay.querySelector('#dimensionProfileEt').value || 0);
+          if (!(rawEn > 0) || !(rawBoy > 0) || !(rawEt > 0) || rawEt * 2 >= Math.min(rawEn, rawBoy)) {
+            error.textContent = currentLanguage === 'en'
+              ? 'Enter positive width, depth and wall thickness values. Thickness must be less than half of the smaller side.'
+              : 'En, Boy ve Et Kalınlığı pozitif olmalı; et kalınlığı küçük kenarın yarısından az olmalıdır.';
+            return;
+          }
+          profile = sanitizeGlassTrackProfile({ mode: 'other', en: rawEn, boy: rawBoy, et: rawEt });
+        }
+        try {
+          if (sideGap) addSidePostToGap(meta, profile || { mode: 'standard', en: 100, boy: 100, et: 2 });
+          else insertFrontPostInGap(meta, profile);
+        } catch (err) {
+          error.textContent = err.message;
+          return;
+        }
+        finishUpdate(currentLanguage === 'en' ? 'Post added at the center of the selected gap.' : 'Dikme seçilen aralığın tam ortasına eklendi.');
+        return;
+      }
+
+      if (action === 'editProduct') {
+        const productMeta = normalizedProductMeta(meta);
+        const record = productRecordForMeta(productMeta);
+        if (!record) {
+          error.textContent = currentLanguage === 'en' ? 'No existing product was found in this zone.' : 'Bu alanda düzenlenecek mevcut ürün bulunamadı.';
+          return;
+        }
+        overlay.hidden = true;
+        pendingDimensionEdit = null;
+        const editMeta = { ...productMeta, editProduct: true, placementId: record.placement.id, productType: record.type };
+        if (record.type === 'guillotine_glass') showGuillotineDetailsOverlay(editMeta, { editExisting: true });
+        else showSlidingDetailsOverlay(editMeta, { editExisting: true });
+        return;
+      }
+
+      if (action === 'placeProduct') {
+        const frontGap = isFrontPostGapMeta(meta);
+        const sideGap = isLeftSideSupportGapMeta(meta);
+        if (!frontGap && !sideGap) {
+          error.textContent = currentLanguage === 'en' ? 'This zone is not ready for product placement.' : 'Bu bölge ürün yerleşimine hazır değil.';
+          return;
+        }
+        const placementMeta = sideGap ? sideProductMeta(meta) : meta;
+        if (!placementMeta || Number(placementMeta.placementWidth || placementMeta.value || 0) <= 0 || (sideGap && Number(placementMeta.placementHeight || 0) <= 0)) {
+          error.textContent = currentLanguage === 'en' ? 'The selected zone is too small for a product.' : 'Seçilen bölge ürün yerleşimi için çok küçük.';
+          return;
+        }
+        const selectedProduct = productSelect.value || 'sliding_glass';
+        overlay.hidden = true;
+        pendingDimensionEdit = null;
+        if (selectedProduct === 'guillotine_glass') showGuillotineDetailsOverlay(placementMeta);
+        else showSlidingDetailsOverlay(placementMeta);
       }
     });
 
-    if (needsPreviewUpdate) {
-      if (typeof updatePreview === 'function') updatePreview();
-      if (typeof saveOrderDraft === 'function') saveOrderDraft();
-    }
-  }
-
-  document.addEventListener('change', (event) => {
-    const target = event.target;
-    if (!target) return;
-    const name = target.name || '';
-    const id = target.id || '';
-    const fieldId = target.dataset?.fieldId || '';
-    if (
-      name.startsWith('dyn_printPlacement') ||
-      id.startsWith('dyn_printColor') ||
-      fieldId.startsWith('valanceType') ||
-      fieldId.startsWith('printPlacement')
-    ) {
-      setTimeout(updateAwningPrintColorState, 0);
-    }
-  }, true);
-
-  document.addEventListener('click', () => setTimeout(updateAwningPrintColorState, 80), true);
-  window.addEventListener('load', () => setTimeout(updateAwningPrintColorState, 250));
-  setTimeout(updateAwningPrintColorState, 350);
-
-  window.updateAwningPrintColorState = updateAwningPrintColorState;
-})();
-
-
-// C135: keep top bars measured and keep Technical Sheet modal above shortcut buttons
-(function setupStableTopBarsAndTechnicalSheetModal() {
-  const nav = document.getElementById('formQuickNav') || document.querySelector('.mobile-quick-nav');
-  const header = document.querySelector('.app-header');
-  const modal = document.getElementById('technicalSheetModal');
-
-  function modalIsOpen() {
-    return !!(modal && !modal.classList.contains('hidden'));
-  }
-
-  function navIsVisible() {
-    if (!nav || nav.classList.contains('hidden') || modalIsOpen()) return false;
-    const style = window.getComputedStyle(nav);
-    if (style.display === 'none' || style.visibility === 'hidden') return false;
-    const rect = nav.getBoundingClientRect();
-    return rect.width > 0 && rect.height > 0;
-  }
-
-  function updateTopBarLayout() {
-    const navVisible = navIsVisible();
-    document.body.classList.toggle('technical-sheet-open', modalIsOpen());
-
-    const navHeight = navVisible && nav ? Math.ceil(nav.getBoundingClientRect().height) : 0;
-    const headerHeight = navVisible && header ? Math.ceil(header.getBoundingClientRect().height) : 0;
-    const totalHeight = navVisible ? navHeight + headerHeight : 0;
-
-    document.documentElement.style.setProperty('--form-quick-nav-height', `${navHeight}px`);
-    document.documentElement.style.setProperty('--app-header-height', `${headerHeight}px`);
-    document.documentElement.style.setProperty('--fixed-top-stack-height', `${totalHeight}px`);
-  }
-
-  const delayedUpdate = (delay = 60) => setTimeout(updateTopBarLayout, delay);
-
-  window.addEventListener('load', () => {
-    delayedUpdate(50);
-    delayedUpdate(300);
-    delayedUpdate(800);
-  });
-  window.addEventListener('resize', () => delayedUpdate(80));
-  window.addEventListener('orientationchange', () => delayedUpdate(300));
-  document.addEventListener('click', () => delayedUpdate(120), true);
-  document.addEventListener('change', () => delayedUpdate(120), true);
-  document.addEventListener('scroll', () => delayedUpdate(40), true);
-
-  try {
-    if (nav) {
-      new MutationObserver(() => delayedUpdate(30))
-        .observe(nav, { attributes: true, childList: true, subtree: true });
-    }
-  } catch {}
-
-  try {
-    if (modal) {
-      new MutationObserver(() => delayedUpdate(20))
-        .observe(modal, { attributes: true, childList: true, subtree: true });
-    }
-  } catch {}
-
-  updateTopBarLayout();
-  delayedUpdate(100);
-  delayedUpdate(500);
-})();
-
-
-// C147: stable translated Mobile / Tablet / Desktop view tabs with defensive class cleanup
-(function setupStableViewModeTabs() {
-  const STORAGE_KEY = 'prf_view_mode_v4';
-  const OLD_KEYS = ['prf_view_mode_v1', 'prf_view_mode_v2', 'prf_view_mode_v3'];
-  const WIDTHS = { mobile: 0, tablet: 820, desktop: 1180 };
-
-  const LABELS = {
-    tr: { mobile: 'Mobil Görünüm', tablet: 'Tablet Görünüm', desktop: 'Masaüstü Görünüm' },
-    en: { mobile: 'Mobile View', tablet: 'Tablet View', desktop: 'Desktop View' },
-    de: { mobile: 'Mobilansicht', tablet: 'Tabletansicht', desktop: 'Desktopansicht' },
-    fr: { mobile: 'Vue mobile', tablet: 'Vue tablette', desktop: 'Vue bureau' },
-    he: { mobile: 'תצוגת מובייל', tablet: 'תצוגת טאבלט', desktop: 'תצוגת מחשב' }
-  };
-
-  function safeMode(mode) {
-    return WIDTHS.hasOwnProperty(mode) ? mode : 'mobile';
-  }
-
-  function normalizeLang(value) {
-    const lang = String(value || '').toLowerCase();
-    if (lang.startsWith('tr')) return 'tr';
-    if (lang.startsWith('de')) return 'de';
-    if (lang.startsWith('fr')) return 'fr';
-    if (lang.startsWith('he') || lang.startsWith('iw') || lang.includes('עבר')) return 'he';
-    return 'en';
-  }
-
-  function currentLanguage() {
-    const active = document.querySelector('.language-tabs button.active');
-    return normalizeLang(active?.dataset?.lang || document.documentElement.lang || localStorage.getItem('prf_language_v1') || 'en');
-  }
-
-  function viewportWidth() {
-    return Math.max(280, window.innerWidth || document.documentElement.clientWidth || 360);
-  }
-
-  function zoomFor(mode) {
-    const target = WIDTHS[mode] || 0;
-    if (!target) return 1;
-    return Math.min(1, viewportWidth() / target);
-  }
-
-  function clearModeClasses() {
-    const classes = ['force-mobile-view', 'force-tablet-view', 'force-desktop-view'];
-    classes.forEach((cls) => {
-      document.documentElement.classList.remove(cls);
-      if (document.body) document.body.classList.remove(cls);
+    overlay.addEventListener('keydown', evt => {
+      if (evt.key === 'Escape') {
+        evt.preventDefault();
+        closeOverlay();
+      }
     });
 
-    if (document.body) {
-      document.body.style.removeProperty('zoom');
-      document.body.style.removeProperty('width');
-      document.body.style.removeProperty('min-width');
-      document.body.style.removeProperty('max-width');
-      document.body.style.removeProperty('transform');
-    }
-    document.documentElement.style.removeProperty('zoom');
-    document.documentElement.style.removeProperty('width');
-    document.documentElement.style.removeProperty('min-width');
-    document.documentElement.style.removeProperty('max-width');
+    return overlay;
   }
 
-  function updateButtons(mode) {
-    const labels = LABELS[currentLanguage()] || LABELS.en;
-    const map = {
-      mobile: document.getElementById('mobileViewBtn'),
-      tablet: document.getElementById('tabletViewBtn'),
-      desktop: document.getElementById('desktopViewBtn')
+  function showDimensionEditOverlay(meta) {
+    const overlay = ensureDimensionEditOverlay();
+    pendingDimensionEdit = meta;
+    const isEn = currentLanguage === 'en';
+    const labels = SMART_ACTION_LABELS[isEn ? 'en' : 'tr'];
+    overlay.querySelector('#dimensionEditTitle').textContent = isEn ? 'Edit Smart Dimension' : 'Akıllı Ölçü Düzenle';
+    overlay.querySelector('#dimensionEditMeta').innerHTML = `
+      <b>${isEn ? 'View' : 'Görünüş'}:</b> ${escapeHtml(viewLabel(meta.view))}<br>
+      <b>${isEn ? 'Dimension' : 'Ölçü'}:</b> ${escapeHtml(meta.label || '')}<br>
+      <b>${isEn ? 'Current value' : 'Mevcut değer'}:</b> ${escapeHtml(meta.value || '')} mm<br>
+      <b>Zone:</b> ${escapeHtml(meta.zoneId || '-')}`;
+    overlay.querySelector('#dimensionEditLabel').textContent = isEn ? `${meta.label} value *(mm)` : `${meta.label} değeri *(mm)`;
+    overlay.querySelector('#dimensionActionLegend').textContent = isEn ? 'Action' : 'İşlem';
+    overlay.querySelector('#dimActionResize').textContent = labels.resize;
+    overlay.querySelector('#dimActionAddSame').textContent = labels.addSameProfile;
+    overlay.querySelector('#dimActionAddDifferent').textContent = labels.addDifferentProfile;
+    overlay.querySelector('#dimActionProduct').textContent = labels.placeProduct;
+    overlay.querySelector('#dimActionProfile').textContent = labels.editProfile;
+    overlay.querySelector('#dimensionEditCancel').textContent = isEn ? 'Cancel' : 'İptal';
+    overlay.querySelector('#dimensionEditApply').textContent = isEn ? 'OK' : 'Tamam';
+    overlay.querySelector('#dimensionEditError').textContent = '';
+    overlay.querySelector('#dimensionProductSelect').querySelectorAll('option').forEach((opt, i) => { const p = SMART_PRODUCT_OPTIONS[i]; if (p) opt.textContent = isEn ? p.en : p.tr; });
+    overlay.querySelector('#dimensionProfileSelect').querySelectorAll('option').forEach((opt, i) => { const p = SMART_PROFILE_OPTIONS[i]; if (p) opt.textContent = isEn ? p.en : p.tr; });
+
+    const frontPostGap = isFrontPostGapMeta(meta);
+    const sideSupportGap = isLeftSideSupportGapMeta(meta);
+    const postCountForGap = lastDrawing && lastDrawing.input ? Number(lastDrawing.input.postCount) || 0 : 0;
+    const existingProduct = productRecordForMeta(normalizedProductMeta(meta));
+    const actionMap = {
+      resize: sideSupportGap ? !!meta.canResize : (frontPostGap ? (!!meta.canResize && postCountForGap > 2) : !!meta.canResize),
+      addSameProfile: (frontPostGap || sideSupportGap) && !!meta.canAddSameProfile,
+      addDifferentProfile: (frontPostGap || sideSupportGap) && !!meta.canAddDifferentProfile,
+      placeProduct: (frontPostGap || sideSupportGap) && !!meta.canPlaceProduct && !existingProduct,
+      editProduct: !!existingProduct
+    };
+    overlay.querySelectorAll('input[name="dimensionAction"]').forEach(r => {
+      r.disabled = !actionMap[r.value];
+      r.closest('label').classList.toggle('disabled', r.disabled);
+      r.checked = false;
+    });
+    const firstAllowed = Array.from(overlay.querySelectorAll('input[name="dimensionAction"]')).find(r => !r.disabled);
+    if (firstAllowed) firstAllowed.checked = true;
+    const input = overlay.querySelector('#dimensionEditInput');
+    input.value = String(currentEditableListValue(meta.field, meta.index, meta.value) || '').replace(/[^0-9]/g, '');
+    input.disabled = !(firstAllowed && firstAllowed.value === 'resize');
+    overlay.querySelectorAll('input[name="dimensionAction"]').forEach(r => {
+      r.onchange = () => {
+        input.disabled = r.value !== 'resize' || r.disabled;
+        overlay.querySelector('#productOptionWrap').hidden = r.value !== 'placeProduct';
+        overlay.querySelector('#dimensionCustomProfileFields').hidden = r.value !== 'addDifferentProfile';
+      };
+    });
+    overlay.querySelector('#dimensionProfileSelect').disabled = true;
+    overlay.querySelector('#dimensionCustomProfileFields').hidden = !(firstAllowed && firstAllowed.value === 'addDifferentProfile');
+    overlay.querySelector('#profileOptionWrap').classList.add('is-disabled');
+    overlay.hidden = false;
+    const profileSelect = overlay.querySelector('#dimensionProfileSelect');
+    profileSelect.dispatchEvent(new Event('change'));
+    window.setTimeout(() => {
+      if (!input.disabled) {
+        input.focus({ preventScroll: true });
+        input.select();
+      }
+    }, 20);
+  }
+
+  function showPassiveDimensionInfo(meta) {
+    const overlay = ensureDimensionEditOverlay();
+    pendingDimensionEdit = meta;
+    const isEn = currentLanguage === 'en';
+    overlay.querySelector('#dimensionEditTitle').textContent = isEn ? 'Information Dimension' : 'Bilgi Ölçüsü';
+    overlay.querySelector('#dimensionEditMeta').innerHTML = `
+      <b>${isEn ? 'View' : 'Görünüş'}:</b> ${escapeHtml(viewLabel(meta.view))}<br>
+      <b>${isEn ? 'Dimension' : 'Ölçü'}:</b> ${escapeHtml(meta.label || '')}<br>
+      <b>${isEn ? 'Current value' : 'Mevcut değer'}:</b> ${escapeHtml(meta.value || '')} mm<br>
+      <b>${isEn ? 'Note' : 'Not'}:</b> ${escapeHtml(meta.passiveReason || (isEn ? 'This dimension is for information only.' : 'Bu ölçü şu an sadece bilgi amaçlıdır.'))}`;
+    overlay.querySelector('#dimensionValueWrap').hidden = true;
+    overlay.querySelector('.v66-action-fieldset').hidden = true;
+    overlay.querySelector('#dimensionActionOptions').hidden = true;
+    overlay.querySelector('#dimensionEditError').textContent = '';
+    overlay.querySelector('#dimensionEditCancel').textContent = isEn ? 'Close' : 'Kapat';
+    overlay.querySelector('#dimensionEditApply').hidden = true;
+    overlay.hidden = false;
+  }
+
+  function restoreActiveDimensionPanelParts() {
+    const overlay = ensureDimensionEditOverlay();
+    overlay.querySelector('#dimensionValueWrap').hidden = false;
+    overlay.querySelector('.v66-action-fieldset').hidden = false;
+    overlay.querySelector('#dimensionActionOptions').hidden = false;
+    overlay.querySelector('#dimensionEditApply').hidden = false;
+  }
+
+
+  function previewInteractionMetaFromHit(hit) {
+    return {
+      interactionType: hit.dataset.interactionType || '',
+      postIndex: Math.max(0, Number(hit.dataset.postIndex || 0) || 0),
+      currentPostCount: Math.max(0, Number(hit.dataset.currentPostCount || 0) || 0),
+      totalRayCount: Math.max(0, Number(hit.dataset.totalRayCount || 0) || 0),
+      placementMode: (hit.dataset.placementMode || 'standard').toLowerCase() === 'equal' ? 'equal' : 'standard',
+      profileMode: hit.dataset.profileMode || '',
+      profilePart: hit.dataset.profilePart || '',
+      profileScope: hit.dataset.profileScope || '',
+      en: Number(hit.dataset.en || 0) || 0,
+      boy: Number(hit.dataset.boy || 0) || 0,
+      et: Number(hit.dataset.et || 0) || 0,
+      sidePostId: hit.dataset.sidePostId || '',
+      sideIndex: Math.max(0, Number(hit.dataset.sideIndex || 0) || 0),
+      sideViewKey: normalizeSideViewKey(hit.dataset.sideViewKey, Number(hit.dataset.sideIndex || 0) || 0),
+      placementId: hit.dataset.placementId || '',
+      productType: hit.dataset.productType || '',
+      placementView: hit.dataset.placementView || '',
+      gapIndex: Math.max(0, Number(hit.dataset.gapIndex || 0) || 0),
+      sideGapIndex: Math.max(0, Number(hit.dataset.sideGapIndex || 0) || 0),
+      sideZone: hit.dataset.sideZone || '',
+      postExtension: Number.isFinite(Number(hit.dataset.postExtension)) ? Number(hit.dataset.postExtension) : 0,
+      trackLengthOffset: Number.isFinite(Number(hit.dataset.trackLengthOffset)) ? Number(hit.dataset.trackLengthOffset) : 0,
+      parapetView: hit.dataset.parapetView || '',
+      parapetSegmentId: hit.dataset.parapetSegmentId || '',
+      parapetSegmentIndex: Math.max(0, Number(hit.dataset.parapetSegmentIndex || 0) || 0),
+      segmentStart: Number(hit.dataset.segmentStart || 0) || 0,
+      segmentEnd: Number(hit.dataset.segmentEnd || 0) || 0,
+      segmentHeight: Number(hit.dataset.segmentHeight || 0) || 0,
+      sideEnabled: hit.dataset.sideEnabled === 'true',
+      triangleDivisionCount: Math.max(1, Number(hit.dataset.triangleDivisionCount || 1) || 1),
+      wallXOffset: Number(hit.dataset.wallXOffset || 0) || 0,
+      wallDepth: Math.max(1, Number(hit.dataset.wallDepth || 600) || 600),
+      wallHeight: Math.max(1, Number(hit.dataset.wallHeight || 1) || 1),
+      wallSegmentId: hit.dataset.wallSegmentId || '',
+      wallSegmentIndex: Math.max(0, Number(hit.dataset.wallSegmentIndex || 0) || 0)
+    };
+  }
+
+
+  function ensureGlassTrackEditorOverlay() {
+    let overlay = $('glassTrackEditorOverlay');
+    if (overlay) return overlay;
+    overlay = document.createElement('div');
+    overlay.id = 'glassTrackEditorOverlay';
+    overlay.className = 'dim-edit-overlay glass-track-editor-overlay';
+    overlay.hidden = true;
+    overlay.innerHTML = `
+      <form id="glassTrackEditorForm" class="dim-edit-card glass-track-editor-card">
+        <div class="dim-edit-title" id="glassTrackEditorTitle">Cam Kaydı Profili Düzenle</div>
+        <div class="dim-edit-meta" id="glassTrackEditorMeta"></div>
+        <div class="glass-profile-options">
+          <label><input type="radio" name="glassProfileMode" value="standard" checked /> <span id="glassProfileStandard">Standart 100x100x2</span></label>
+          <label><input type="radio" name="glassProfileMode" value="40x130x2" /> <span id="glassProfile40130">40x130x2</span></label>
+          <label><input type="radio" name="glassProfileMode" value="other" /> <span id="glassProfileOther">Diğer</span></label>
+        </div>
+        <div id="glassProfileCustomFields" class="glass-profile-custom-fields" hidden>
+          <label><span>En</span><input id="glassProfileEn" type="text" inputmode="numeric" autocomplete="off" /></label>
+          <label><span>Boy</span><input id="glassProfileBoy" type="text" inputmode="numeric" autocomplete="off" /></label>
+          <label><span>Et</span><input id="glassProfileEt" type="text" inputmode="numeric" autocomplete="off" /></label>
+        </div>
+        <div id="glassTrackEditorNote" class="post-editor-note"></div>
+        <div id="glassTrackEditorError" class="dim-edit-error" aria-live="polite"></div>
+        <div class="dim-edit-actions">
+          <button id="glassTrackEditorDelete" type="button" class="dim-edit-delete" hidden>Dikmeyi Sil</button>
+          <button id="glassTrackEditorExtend" type="button" class="dim-edit-cancel" hidden>Uzat / Kısalt</button>
+          <button id="glassTrackEditorWallFit" type="button" class="dim-edit-cancel" hidden disabled>Duvara Oturt</button>
+          <button id="glassTrackEditorCancel" type="button" class="dim-edit-cancel">İptal</button>
+          <button id="glassTrackEditorApply" type="submit" class="dim-edit-apply">Tamam</button>
+        </div>
+      </form>`;
+    previewPanel.appendChild(overlay);
+
+    const customWrap = overlay.querySelector('#glassProfileCustomFields');
+    const refresh = () => {
+      const mode = (overlay.querySelector('input[name="glassProfileMode"]:checked') || {}).value || 'standard';
+      customWrap.hidden = mode !== 'other';
+    };
+    overlay.querySelectorAll('input[name="glassProfileMode"]').forEach(r => r.addEventListener('change', refresh));
+    overlay.querySelectorAll('#glassProfileEn,#glassProfileBoy,#glassProfileEt').forEach(input => {
+      input.addEventListener('input', () => {
+        const clean = String(input.value || '').replace(/[^0-9]/g, '');
+        if (input.value !== clean) input.value = clean;
+        overlay.querySelector('#glassTrackEditorError').textContent = '';
+      });
+    });
+    const close = () => { overlay.hidden = true; focusPreviewCanvas(); };
+    overlay.querySelector('#glassTrackEditorCancel').addEventListener('click', close);
+    overlay.querySelector('#glassTrackEditorDelete').addEventListener('click', () => {
+      const postId = overlay.dataset.sidePostId || '';
+      const sideIndex = Number(overlay.dataset.sideIndex || 0) || 0;
+      const sideViewKey = normalizeSideViewKey(overlay.dataset.sideViewKey, sideIndex);
+      const isTrack = overlay.dataset.profilePart === 'track';
+      const message = isTrack
+        ? (currentLanguage === 'en' ? 'Delete the glass track only on this side?' : 'Cam kaydı yalnızca bu tarafta silinsin mi?')
+        : (currentLanguage === 'en' ? 'Delete this support post?' : 'Bu destek dikmesi silinsin mi?');
+      if (!window.confirm(message)) return;
+      try {
+        if (isTrack) {
+          setSideFeatureValue('glassTrack', sideViewKey, false);
+          syncMainFormFromSideFeature('glassTrack');
+        } else deleteSidePost(sideIndex, postId, sideViewKey);
+      } catch (err) { overlay.querySelector('#glassTrackEditorError').textContent = err.message; return; }
+      close();
+      updatePreview(false);
+      statusText.textContent = isTrack
+        ? (currentLanguage === 'en' ? 'Glass track deleted on this side.' : 'Cam kaydı bu tarafta silindi.')
+        : (currentLanguage === 'en' ? 'Support post deleted.' : 'Destek dikmesi silindi.');
+    });
+    overlay.querySelector('#glassTrackEditorExtend').addEventListener('click', () => {
+      const postId = overlay.dataset.sidePostId || '';
+      const sideIndex = Number(overlay.dataset.sideIndex || 0) || 0;
+      const sideViewKey = normalizeSideViewKey(overlay.dataset.sideViewKey, sideIndex);
+      overlay.hidden = true;
+      if (overlay.dataset.profilePart === 'track') showGlassTrackLengthOverlay(sideViewKey, sideIndex);
+      else if (postId) showSidePostExtensionOverlay(sideIndex, postId, sideViewKey);
+    });
+    overlay.querySelector('#glassTrackEditorWallFit').addEventListener('click', () => {
+      if (overlay.dataset.profilePart !== 'track') return;
+      const sideIndex = Number(overlay.dataset.sideIndex || 0) || 0;
+      const sideViewKey = normalizeSideViewKey(overlay.dataset.sideViewKey, sideIndex);
+      const d = lastDrawing && lastDrawing.input;
+      const geom = d ? (sideViewKey === 'right' ? d.rightSideSupportGeometry : (d.sideSupportGeometry && d.sideSupportGeometry[sideViewKey])) : null;
+      const position = d && Array.isArray(d.positions) ? (d.positions[sideIndex] || d.positions[0]) : null;
+      if (!geom || !geom.exists || !position) {
+        overlay.querySelector('#glassTrackEditorError').textContent = currentLanguage === 'en' ? 'Wall reference could not be found.' : 'Duvar referansı bulunamadı.';
+        return;
+      }
+      const desiredLength = Math.max(1, Number(geom.frontPostRearFace) - Number(geom.wallX));
+      const baseLength = Math.max(1, Number(position.opening) - 100);
+      setGlassTrackLengthOffsetForKey(sideViewKey, desiredLength - baseLength);
+      overlay.hidden = true;
+      updatePreview(false);
+      statusText.textContent = currentLanguage === 'en' ? 'Glass track fitted to the back wall.' : 'Cam kaydı arka duvara oturtuldu.';
+    });
+    overlay.addEventListener('click', evt => { if (evt.target === overlay) close(); });
+    overlay.addEventListener('keydown', evt => { if (evt.key === 'Escape') { evt.preventDefault(); close(); } });
+    overlay.querySelector('#glassTrackEditorForm').addEventListener('submit', evt => {
+      evt.preventDefault();
+      const mode = (overlay.querySelector('input[name="glassProfileMode"]:checked') || {}).value || 'standard';
+      let next = { mode, en: 100, boy: 100, et: 2 };
+      if (mode === '40x130x2') next = { mode, en: 40, boy: 130, et: 2 };
+      if (mode === 'other') {
+        next = {
+          mode,
+          en: Number(overlay.querySelector('#glassProfileEn').value || 0),
+          boy: Number(overlay.querySelector('#glassProfileBoy').value || 0),
+          et: Number(overlay.querySelector('#glassProfileEt').value || 0)
+        };
+      }
+      next = sanitizeGlassTrackProfile(next);
+      const err = overlay.querySelector('#glassTrackEditorError');
+      if (!Number.isFinite(next.en) || !Number.isFinite(next.boy) || next.en <= 0 || next.boy <= 0) {
+        err.textContent = currentLanguage === 'en' ? 'Enter positive profile dimensions.' : 'Profil ölçüleri pozitif olmalı.';
+        return;
+      }
+      const modeType = overlay.dataset.profilePart || 'track';
+      const scope = overlay.dataset.profileScope || '';
+      if (modeType === 'support') {
+        const sidePostId = overlay.dataset.sidePostId || '';
+        const sideIndex = Number(overlay.dataset.sideIndex || 0) || 0;
+        const sideViewKey = normalizeSideViewKey(overlay.dataset.sideViewKey, sideIndex);
+        if (sidePostId) {
+          const meta = { index: sideIndex, sideViewKey };
+          const posts = materializeSidePosts(meta);
+          const target = posts.find(item => String(item.id) === String(sidePostId));
+          if (target) { target.profile = next; storeSidePosts(meta, posts); }
+        } else if (scope === 'left' || scope === 'right') glassSupportProfileState[scope] = next;
+      } else {
+        glassTrackProfileState = next;
+        glassSupportProfileState = { left: null, right: null };
+      }
+      overlay.hidden = true;
+      updatePreview(false);
+      statusText.textContent = currentLanguage === 'en'
+        ? (modeType === 'support'
+            ? `${supportProfileScopeLabel(scope, true)} profile set to ${Math.round(next.en)}x${Math.round(next.boy)}x${Math.round(next.et)}.`
+            : `Glass profile set to ${Math.round(next.en)}x${Math.round(next.boy)}x${Math.round(next.et)}.`)
+        : (modeType === 'support'
+            ? `${supportProfileScopeLabel(scope, false)} profili ${Math.round(next.en)}x${Math.round(next.boy)}x${Math.round(next.et)} olarak ayarlandı.`
+            : `Cam kaydı profili ${Math.round(next.en)}x${Math.round(next.boy)}x${Math.round(next.et)} olarak ayarlandı.`);
+    });
+    return overlay;
+  }
+
+  function showGlassTrackEditorOverlay(meta) {
+    const overlay = ensureGlassTrackEditorOverlay();
+    const isEn = currentLanguage === 'en';
+    const isSupport = (meta.profilePart || '') === 'support';
+    const scope = meta.profileScope || '';
+    const current = sanitizeGlassTrackProfile(isSupport
+      ? ({ mode: meta.profileMode || 'other', en: meta.en || 100, boy: meta.boy || 100, et: meta.et || 2 })
+      : glassTrackProfileState);
+    overlay.dataset.sidePostId = isSupport ? (meta.sidePostId || '') : '';
+    overlay.dataset.sideIndex = String(Number(meta.sideIndex) || 0);
+    overlay.dataset.sideViewKey = normalizeSideViewKey(meta.sideViewKey || meta.profileScope, Number(meta.sideIndex) || 0);
+    overlay.dataset.profilePart = isSupport ? 'support' : 'track';
+    overlay.dataset.profileScope = scope;
+    overlay.querySelector('#glassTrackEditorTitle').textContent = isSupport
+      ? (isEn ? 'Edit Support Profile' : 'Destek Dikmesi Profili Düzenle')
+      : (isEn ? 'Edit Glass Track Profile' : 'Cam Kaydı Profili Düzenle');
+    overlay.querySelector('#glassProfileStandard').textContent = isEn ? 'Standard 100x100x2' : 'Standart 100x100x2';
+    overlay.querySelector('#glassProfile40130').textContent = '40x130x2';
+    overlay.querySelector('#glassProfileOther').textContent = isEn ? 'Other' : 'Diğer';
+    overlay.querySelector('#glassTrackEditorCancel').textContent = isEn ? 'Cancel' : 'İptal';
+    overlay.querySelector('#glassTrackEditorApply').textContent = isEn ? 'OK' : 'Tamam';
+    const deleteBtn = overlay.querySelector('#glassTrackEditorDelete');
+    deleteBtn.hidden = isSupport ? !meta.sidePostId : false;
+    deleteBtn.textContent = isSupport ? (isEn ? 'Delete Post' : 'Dikmeyi Sil') : (isEn ? 'Delete Glass Track' : 'Cam Kaydını Sil');
+    const extendBtn = overlay.querySelector('#glassTrackEditorExtend');
+    extendBtn.hidden = isSupport ? !meta.sidePostId : false;
+    extendBtn.textContent = isSupport ? (isEn ? 'Extend / Shorten Post' : 'Dikmeyi Uzat / Kısalt') : (isEn ? 'Extend / Shorten Profile' : 'Profili Uzat / Kısalt');
+    const wallFitBtn = overlay.querySelector('#glassTrackEditorWallFit');
+    wallFitBtn.hidden = isSupport;
+    wallFitBtn.disabled = false;
+    wallFitBtn.classList.remove('disabled');
+    wallFitBtn.textContent = isEn ? 'Fit to Wall' : 'Duvara Oturt';
+    overlay.querySelector('#glassTrackEditorMeta').innerHTML = `
+      <b>${isEn ? 'Clicked area' : 'Tıklanan alan'}:</b> ${escapeHtml(isSupport ? supportProfileScopeLabel(scope, isEn) : (isEn ? 'glass track - whole system' : 'cam kaydı - tüm sistem'))}<br>
+      <b>${isEn ? 'Effect' : 'Etki'}:</b> ${escapeHtml(isSupport ? (isEn ? 'only this support and its top-view section' : 'sadece bu destek dikmesi ve üst görünüş kesiti') : (isEn ? 'all glass tracks + default support profiles' : 'tüm cam kayıtları + varsayılan destek profilleri'))}<br>
+      <b>${isEn ? 'Current' : 'Mevcut'}:</b> ${Math.round(current.en)}x${Math.round(current.boy)}x${Math.round(current.et)}${isSupport && meta.sidePostId ? `<br><b>${isEn ? 'Lower-end offset' : 'Alt uç ofseti'}:</b> ${Math.round(Number(meta.postExtension) || 0)} mm` : ''}`;
+    overlay.querySelector('#glassTrackEditorNote').textContent = isSupport
+      ? (isEn
+          ? 'Support edit changes the section only. By default the lower end sits on the local parapet. Use Extend / Shorten Post to override the lower end; the main glass track is not affected.'
+          : 'Destek düzenleme yalnızca kesiti değiştirir. Alt uç varsayılan olarak bulunduğu parapet parçasına oturur. Alt ucu manuel değiştirmek için Dikmeyi Uzat / Kısalt seçeneğini kullan; ana cam kaydı etkilenmez.')
+      : (isEn
+          ? 'The section profile is shared, while delete and length operations affect only the clicked side.'
+          : 'Kesit profili ortaktır; silme ve uzunluk işlemleri yalnızca tıklanan tarafı etkiler.');
+    overlay.querySelector('#glassTrackEditorError').textContent = '';
+    overlay.querySelectorAll('input[name="glassProfileMode"]').forEach(r => {
+      r.checked = r.value === current.mode || (current.mode === '40x130' && r.value === '40x130x2');
+    });
+    if (!overlay.querySelector('input[name="glassProfileMode"]:checked')) overlay.querySelector('input[name="glassProfileMode"][value="standard"]').checked = true;
+    overlay.querySelector('#glassProfileEn').value = String(Math.round(current.en));
+    overlay.querySelector('#glassProfileBoy').value = String(Math.round(current.boy));
+    overlay.querySelector('#glassProfileEt').value = String(Math.round(current.et));
+    const customWrap = overlay.querySelector('#glassProfileCustomFields');
+    customWrap.hidden = (overlay.querySelector('input[name="glassProfileMode"]:checked') || {}).value !== 'other';
+    overlay.hidden = false;
+  }
+
+
+  function ensureFrontPostProfileOverlay() {
+    let overlay = $('frontPostProfileOverlay');
+    if (overlay) return overlay;
+    overlay = document.createElement('div');
+    overlay.id = 'frontPostProfileOverlay';
+    overlay.className = 'dim-edit-overlay post-profile-overlay';
+    overlay.hidden = true;
+    overlay.innerHTML = `<form class="dim-edit-card"><div class="dim-edit-title" id="frontPostProfileTitle">Ön Dikme Profili Düzenle</div>
+      <div class="dim-edit-meta" id="frontPostProfileMeta"></div>
+      <div class="glass-profile-options">
+        <label><input type="radio" name="frontPostProfileMode" value="standard"><span id="frontPostProfileStandard">Standart 100×100×2</span></label>
+        <label><input type="radio" name="frontPostProfileMode" value="40x130x2"><span>40×130×2</span></label>
+        <label><input type="radio" name="frontPostProfileMode" value="other"><span id="frontPostProfileOther">Diğer</span></label>
+      </div>
+      <div id="frontPostProfileFields" class="dimension-custom-profile-fields" hidden>
+        <label><span>En</span><input id="frontPostProfileEn" type="text" inputmode="numeric"></label>
+        <label><span>Boy</span><input id="frontPostProfileBoy" type="text" inputmode="numeric"></label>
+        <label><span>Et</span><input id="frontPostProfileEt" type="text" inputmode="numeric"></label>
+      </div>
+      <div class="post-editor-note" id="frontPostProfileNote"></div><div id="frontPostProfileError" class="dim-edit-error"></div>
+      <div class="dim-edit-actions"><button id="frontPostProfileDelete" type="button" class="dim-edit-delete">Dikmeyi Sil</button><button id="frontPostProfileExtend" type="button" class="dim-edit-cancel">Dikmeyi Uzat / Kısalt</button><button id="frontPostProfileCancel" type="button" class="dim-edit-cancel">İptal</button><button type="submit" class="dim-edit-apply">Tamam</button></div></form>`;
+    previewPanel.appendChild(overlay);
+    const sync = () => { overlay.querySelector('#frontPostProfileFields').hidden = (overlay.querySelector('input[name="frontPostProfileMode"]:checked') || {}).value !== 'other'; };
+    overlay.querySelectorAll('input[name="frontPostProfileMode"]').forEach(r => r.addEventListener('change', sync));
+    overlay.querySelectorAll('#frontPostProfileEn,#frontPostProfileBoy,#frontPostProfileEt').forEach(input => input.addEventListener('input', () => { input.value = String(input.value || '').replace(/[^0-9]/g, ''); overlay.querySelector('#frontPostProfileError').textContent=''; }));
+    const close=()=>{overlay.hidden=true;focusPreviewCanvas();};
+    overlay.querySelector('#frontPostProfileCancel').addEventListener('click', close);
+    overlay.addEventListener('mousedown', evt=>{if(evt.target===overlay)close();});
+    overlay.querySelector('#frontPostProfileDelete').addEventListener('click',()=>{
+      const idx=Math.max(0,Number(overlay.dataset.postIndex)||0);
+      if(!window.confirm(currentLanguage==='en'?'Delete this front post?':'Bu ön dikme silinsin mi?'))return;
+      try{deleteFrontPost(idx);}catch(err){overlay.querySelector('#frontPostProfileError').textContent=err.message;return;}
+      close();updatePreview(false);
+    });
+    overlay.querySelector('#frontPostProfileExtend').addEventListener('click',()=>{const idx=Math.max(0,Number(overlay.dataset.postIndex)||0);overlay.hidden=true;showFrontPostExtensionOverlay(idx);});
+    overlay.querySelector('form').addEventListener('submit', evt=>{
+      evt.preventDefault();
+      const idx=Math.max(0,Number(overlay.dataset.postIndex)||0);
+      const mode=(overlay.querySelector('input[name="frontPostProfileMode"]:checked')||{}).value||'standard';
+      const error=overlay.querySelector('#frontPostProfileError');
+      if(mode==='other'){
+        const en=Number(overlay.querySelector('#frontPostProfileEn').value||0), boy=Number(overlay.querySelector('#frontPostProfileBoy').value||0), et=Number(overlay.querySelector('#frontPostProfileEt').value||0);
+        if(!(en>0&&boy>0&&et>=0)){error.textContent=currentLanguage==='en'?'Enter valid width, depth and thickness values.':'Geçerli En, Boy ve Et değerleri gir.';return;}
+        frontPostProfiles[idx]=sanitizeGlassTrackProfile({mode:'other',en,boy,et});
+      } else if(mode==='40x130x2') frontPostProfiles[idx]=sanitizeGlassTrackProfile({mode:'40x130x2',en:40,boy:130,et:2});
+      else frontPostProfiles[idx]=null;
+      close();updatePreview(false);
+    });
+    return overlay;
+  }
+
+  function showFrontPostProfileOverlay(postIndex) {
+    const overlay=ensureFrontPostProfileOverlay();
+    const idx=Math.max(0,Number(postIndex)||0), isEn=currentLanguage==='en';
+    const current=frontPostProfiles[idx]?sanitizeGlassTrackProfile(frontPostProfiles[idx]):{mode:'standard',en:100,boy:100,et:2};
+    overlay.dataset.postIndex=String(idx);
+    overlay.querySelector('#frontPostProfileTitle').textContent=isEn?'Edit Front Post Profile':'Ön Dikme Profili Düzenle';
+    overlay.querySelector('#frontPostProfileMeta').innerHTML=`<b>${isEn?'Front post':'Ön dikme'}:</b> ${idx+1}<br><b>${isEn?'Current':'Mevcut'}:</b> ${Math.round(current.en)} × ${Math.round(current.boy)} × ${Math.round(current.et)} mm<br><b>${isEn?'Lower-end offset':'Alt uç ofseti'}:</b> ${Math.round(Number(frontPostExtensions[idx])||0)} mm`;
+    overlay.querySelector('#frontPostProfileStandard').textContent=isEn?'Standard 100×100×2':'Standart 100×100×2';
+    overlay.querySelector('#frontPostProfileOther').textContent=isEn?'Other':'Diğer';
+    overlay.querySelector('#frontPostProfileNote').textContent=isEn?'The front view uses En; the top view uses En × Boy × Et and keeps the gutter-side -Y edge aligned.':'Ön görünüşte En, üst görünüşte En × Boy × Et kullanılır; kesitin oluk tarafındaki -Y dış kenarı sabit kalır.';
+    overlay.querySelector('#frontPostProfileDelete').textContent=isEn?'Delete Post':'Dikmeyi Sil';
+    overlay.querySelector('#frontPostProfileExtend').textContent=isEn?'Extend / Shorten Post':'Dikmeyi Uzat / Kısalt';
+    overlay.querySelector('#frontPostProfileCancel').textContent=isEn?'Cancel':'İptal';
+    const mode=current.mode==='40x130x2'?'40x130x2':(frontPostProfiles[idx]?'other':'standard');
+    overlay.querySelectorAll('input[name="frontPostProfileMode"]').forEach(r=>{r.checked=r.value===mode;});
+    overlay.querySelector('#frontPostProfileEn').value=String(Math.round(current.en));
+    overlay.querySelector('#frontPostProfileBoy').value=String(Math.round(current.boy));
+    overlay.querySelector('#frontPostProfileEt').value=String(Math.round(current.et));
+    overlay.querySelector('#frontPostProfileFields').hidden=mode!=='other';
+    overlay.querySelector('#frontPostProfileError').textContent='';
+    overlay.hidden=false;
+  }
+
+  function normalizeSignedMillimeterInput(value) {
+    const raw = String(value == null ? '' : value).replace(/[^0-9-]/g, '');
+    const negative = raw.includes('-');
+    const digits = raw.replace(/-/g, '');
+    return `${negative ? '-' : ''}${digits}`;
+  }
+
+  function ensureSidePostExtensionOverlay() {
+    let overlay = $('sidePostExtensionOverlay');
+    if (overlay) return overlay;
+    overlay = document.createElement('div');
+    overlay.id = 'sidePostExtensionOverlay';
+    overlay.className = 'dim-edit-overlay';
+    overlay.hidden = true;
+    overlay.innerHTML = `<form class="dim-edit-card">
+      <div class="dim-edit-title" id="sidePostExtensionTitle">Destek Dikmesini Uzat / Kısalt</div>
+      <div class="dim-edit-meta" id="sidePostExtensionMeta"></div>
+      <label class="dim-edit-label"><span id="sidePostExtensionLabel">Alt uç ofseti *(mm)</span><input id="sidePostExtensionInput" type="text" inputmode="decimal" autocomplete="off"></label>
+      <div class="post-editor-note" id="sidePostExtensionNote"></div>
+      <div id="sidePostExtensionError" class="dim-edit-error"></div>
+      <div class="dim-edit-actions"><button id="sidePostExtensionReset" type="button" class="dim-edit-delete">Parapete Oturt</button><button id="sidePostExtensionCancel" type="button" class="dim-edit-cancel">İptal</button><button type="submit" class="dim-edit-apply">Tamam</button></div>
+    </form>`;
+    previewPanel.appendChild(overlay);
+    const input = overlay.querySelector('#sidePostExtensionInput');
+    input.addEventListener('input', () => {
+      const clean = normalizeSignedMillimeterInput(input.value);
+      if (input.value !== clean) input.value = clean;
+      overlay.querySelector('#sidePostExtensionError').textContent = '';
+    });
+    const close = () => { overlay.hidden = true; focusPreviewCanvas(); };
+    overlay.querySelector('#sidePostExtensionCancel').addEventListener('click', close);
+    overlay.addEventListener('mousedown', evt => { if (evt.target === overlay) close(); });
+    const applyValue = value => {
+      const sideIndex = Math.max(0, Number(overlay.dataset.sideIndex) || 0);
+      const postId = overlay.dataset.sidePostId || '';
+      const sideViewKey = normalizeSideViewKey(overlay.dataset.sideViewKey, sideIndex);
+      const numeric = Number(value);
+      if (!postId || !Number.isFinite(numeric)) {
+        overlay.querySelector('#sidePostExtensionError').textContent = currentLanguage === 'en' ? 'Enter a valid signed millimetre value.' : 'Geçerli, işaretli bir milimetre değeri gir.';
+        return;
+      }
+      const meta = { index: sideIndex, sideViewKey };
+      const posts = materializeSidePosts(meta);
+      const target = posts.find(item => String(item.id) === String(postId));
+      if (!target) {
+        overlay.querySelector('#sidePostExtensionError').textContent = currentLanguage === 'en' ? 'Support post not found.' : 'Destek dikmesi bulunamadı.';
+        return;
+      }
+      target.extension = Math.round(numeric);
+      storeSidePosts(meta, posts);
+      overlay.hidden = true;
+      updatePreview(false);
+      statusText.textContent = currentLanguage === 'en'
+        ? `Support-post lower-end offset set to ${Math.round(numeric)} mm.`
+        : `Destek dikmesi alt uç ofseti ${Math.round(numeric)} mm olarak ayarlandı.`;
+    };
+    overlay.querySelector('#sidePostExtensionReset').addEventListener('click', () => applyValue(0));
+    overlay.querySelector('form').addEventListener('submit', evt => { evt.preventDefault(); applyValue(input.value); });
+    return overlay;
+  }
+
+  function showSidePostExtensionOverlay(sideIndex, postId, sideViewKey = null) {
+    const overlay = ensureSidePostExtensionOverlay();
+    const index = Math.max(0, Number(sideIndex) || 0);
+    const id = String(postId || '');
+    const key = normalizeSideViewKey(sideViewKey, index);
+    const posts = materializeSidePosts({ index, sideViewKey: key });
+    const target = posts.find(item => String(item.id) === id);
+    const current = target && Number.isFinite(Number(target.extension)) ? Number(target.extension) : 0;
+    const isEn = currentLanguage === 'en';
+    overlay.dataset.sideIndex = String(index);
+    overlay.dataset.sidePostId = id;
+    overlay.dataset.sideViewKey = key;
+    overlay.dataset.sideIndex = String(Math.max(0, Number(sideIndex) || 0));
+    overlay.querySelector('#sidePostExtensionTitle').textContent = isEn ? 'Extend / Shorten Support Post' : 'Destek Dikmesini Uzat / Kısalt';
+    overlay.querySelector('#sidePostExtensionMeta').textContent = isEn ? `Side view ${index + 1} · support post` : `Yan görünüş ${index + 1} · destek dikmesi`;
+    overlay.querySelector('#sidePostExtensionLabel').textContent = isEn ? 'Lower-end offset *(mm)' : 'Alt uç ofseti *(mm)';
+    overlay.querySelector('#sidePostExtensionNote').textContent = isEn
+      ? 'The +Y upper end stays fixed. 0 seats the lower end on the local parapet; a positive value extends it in -Y, and a negative value shortens it upward.'
+      : '+Y yönündeki üst uç sabit kalır. 0 değeri alt ucu yerel parapete oturtur; pozitif değer -Y yönüne uzatır, negatif değer alttan kısaltır.';
+    overlay.querySelector('#sidePostExtensionReset').textContent = isEn ? 'Seat on Parapet' : 'Parapete Oturt';
+    overlay.querySelector('#sidePostExtensionCancel').textContent = isEn ? 'Cancel' : 'İptal';
+    overlay.querySelector('#sidePostExtensionInput').value = String(Math.round(current));
+    overlay.querySelector('#sidePostExtensionError').textContent = '';
+    overlay.hidden = false;
+    window.setTimeout(() => { const input = overlay.querySelector('#sidePostExtensionInput'); input.focus({ preventScroll: true }); input.select(); }, 20);
+  }
+
+  function ensureGlassTrackLengthOverlay() {
+    let overlay = $('glassTrackLengthOverlay');
+    if (overlay) return overlay;
+    overlay = document.createElement('div');
+    overlay.id = 'glassTrackLengthOverlay';
+    overlay.className = 'dim-edit-overlay';
+    overlay.hidden = true;
+    overlay.innerHTML = `<form class="dim-edit-card"><div class="dim-edit-title" id="glassTrackLengthTitle">Cam Kaydı Profilini Uzat / Kısalt</div><div class="dim-edit-meta" id="glassTrackLengthMeta"></div><label class="dim-edit-label"><span id="glassTrackLengthLabel">Duvar yönü uzunluk ofseti *(mm)</span><input id="glassTrackLengthInput" type="text" inputmode="decimal"></label><div class="post-editor-note" id="glassTrackLengthNote"></div><div id="glassTrackLengthError" class="dim-edit-error"></div><div class="dim-edit-actions"><button id="glassTrackLengthWallFit" type="button" class="dim-edit-delete">Duvara Oturt</button><button id="glassTrackLengthCancel" type="button" class="dim-edit-cancel">İptal</button><button type="submit" class="dim-edit-apply">Tamam</button></div></form>`;
+    previewPanel.appendChild(overlay);
+    const input = overlay.querySelector('#glassTrackLengthInput');
+    input.addEventListener('input', () => { input.value = normalizeSignedMillimeterInput(input.value); overlay.querySelector('#glassTrackLengthError').textContent = ''; });
+    const close = () => { overlay.hidden = true; focusPreviewCanvas(); };
+    overlay.querySelector('#glassTrackLengthCancel').addEventListener('click', close);
+    overlay.querySelector('#glassTrackLengthWallFit').addEventListener('click', () => {
+      const key = normalizeSideViewKey(overlay.dataset.sideViewKey, Number(overlay.dataset.sideIndex || 0) || 0);
+      const d = lastDrawing && lastDrawing.input;
+      const lastIndex = Math.max(0, Number(d && d.sidePositionCount || 1) - 1);
+      const index = key === 'right' ? lastIndex : Math.max(0, Number(key) || Number(overlay.dataset.sideIndex || 0) || 0);
+      const geom = key === 'right' ? (d && d.rightSideSupportGeometry) : (d && d.sideSupportGeometry && d.sideSupportGeometry[key]);
+      const p = d && d.positions && d.positions[index];
+      if (!geom || !p) {
+        overlay.querySelector('#glassTrackLengthError').textContent = currentLanguage === 'en' ? 'Wall/track geometry could not be found.' : 'Duvar/cam kaydı geometrisi bulunamadı.';
+        return;
+      }
+      const offset = Number(geom.frontPostRearFace) - Number(geom.wallX) - (Number(p.opening) - 100);
+      setGlassTrackLengthOffsetForKey(key, Math.round(offset));
+      input.value = String(Math.round(offset));
+      close();
+      updatePreview(false);
+      statusText.textContent = currentLanguage === 'en' ? 'Glass track seated on the local back wall.' : 'Cam kaydı yerel arka duvara oturtuldu.';
+    });
+    overlay.addEventListener('mousedown', evt => { if (evt.target === overlay) close(); });
+    overlay.querySelector('form').addEventListener('submit', evt => {
+      evt.preventDefault();
+      const value = Number(input.value);
+      if (!Number.isFinite(value)) { overlay.querySelector('#glassTrackLengthError').textContent = currentLanguage === 'en' ? 'Enter a valid signed value.' : 'Geçerli işaretli bir değer gir.'; return; }
+      setGlassTrackLengthOffsetForKey(overlay.dataset.sideViewKey, Math.round(value));
+      close(); updatePreview(false);
+    });
+    return overlay;
+  }
+
+  function showGlassTrackLengthOverlay(sideViewKey, sideIndex = 0) {
+    const overlay = ensureGlassTrackLengthOverlay();
+    const key = normalizeSideViewKey(sideViewKey, sideIndex), isEn = currentLanguage === 'en';
+    overlay.dataset.sideViewKey = key;
+    overlay.querySelector('#glassTrackLengthTitle').textContent = isEn ? 'Extend / Shorten Glass Track' : 'Cam Kaydı Profilini Uzat / Kısalt';
+    overlay.querySelector('#glassTrackLengthMeta').textContent = key === 'right' ? (isEn ? 'Right side' : 'Sağ yan görünüş') : (key === '0' ? (isEn ? 'Left side' : 'Sol yan görünüş') : `${isEn ? 'Intermediate position' : 'Ara poz'} ${Number(key)+1}`);
+    overlay.querySelector('#glassTrackLengthLabel').textContent = isEn ? 'Wall-direction length offset *(mm)' : 'Duvar yönü uzunluk ofseti *(mm)';
+    overlay.querySelector('#glassTrackLengthNote').textContent = isEn ? 'Positive extends toward the local wall; negative shortens from that wall side. Fit to Wall calculates the exact local wall contact.' : 'Pozitif değer ilgili duvar yönüne uzatır; negatif değer aynı taraftan kısaltır. Duvara Oturt, yerel duvar temasını otomatik hesaplar.';
+    overlay.querySelector('#glassTrackLengthWallFit').textContent = isEn ? 'Fit to Wall' : 'Duvara Oturt';
+    overlay.querySelector('#glassTrackLengthInput').value = String(Math.round(glassTrackLengthOffsetForKey(key)));
+    overlay.querySelector('#glassTrackLengthError').textContent = '';
+    overlay.hidden = false;
+    window.setTimeout(() => { const input=overlay.querySelector('#glassTrackLengthInput'); input.focus({preventScroll:true}); input.select(); },20);
+  }
+
+  function ensureFrontPostExtensionOverlay() {
+    let overlay=$('frontPostExtensionOverlay');
+    if(overlay)return overlay;
+    overlay=document.createElement('div');
+    overlay.id='frontPostExtensionOverlay';
+    overlay.className='dim-edit-overlay';
+    overlay.hidden=true;
+    overlay.innerHTML=`<form class="dim-edit-card"><div class="dim-edit-title" id="frontPostExtensionTitle">Dikmeyi Uzat</div><div class="dim-edit-meta" id="frontPostExtensionMeta"></div><label class="dim-edit-label"><span id="frontPostExtensionLabel">-Y uzatma *(mm)</span><input id="frontPostExtensionInput" type="text" inputmode="numeric"></label><div class="post-editor-note" id="frontPostExtensionNote"></div><div id="frontPostExtensionError" class="dim-edit-error"></div><div class="dim-edit-actions"><button id="frontPostExtensionReset" type="button" class="dim-edit-delete">Sıfırla</button><button id="frontPostExtensionCancel" type="button" class="dim-edit-cancel">İptal</button><button type="submit" class="dim-edit-apply">Tamam</button></div></form>`;
+    previewPanel.appendChild(overlay);
+    const input=overlay.querySelector('#frontPostExtensionInput');
+    input.addEventListener('input',()=>{input.value=String(input.value||'').replace(/[^0-9]/g,'');overlay.querySelector('#frontPostExtensionError').textContent='';});
+    const close=()=>{overlay.hidden=true;focusPreviewCanvas();};
+    overlay.querySelector('#frontPostExtensionCancel').addEventListener('click',close);
+    overlay.addEventListener('mousedown',evt=>{if(evt.target===overlay)close();});
+    const applyValue=value=>{const idx=Math.max(0,Number(overlay.dataset.postIndex)||0);while(frontPostExtensions.length<=idx)frontPostExtensions.push(0);frontPostExtensions[idx]=Math.max(0,Number(value)||0);overlay.hidden=true;updatePreview(false);statusText.textContent=currentLanguage==='en'?`Front post ${idx+1} extension updated.`:`${idx+1}. ön dikme uzatması güncellendi.`;};
+    overlay.querySelector('#frontPostExtensionReset').addEventListener('click',()=>applyValue(0));
+    overlay.querySelector('form').addEventListener('submit',evt=>{evt.preventDefault();applyValue(input.value);});
+    return overlay;
+  }
+
+  function showFrontPostExtensionOverlay(postIndex) {
+    const overlay=ensureFrontPostExtensionOverlay();
+    const idx=Math.max(0,Number(postIndex)||0), isEn=currentLanguage==='en';
+    overlay.dataset.postIndex=String(idx);
+    overlay.querySelector('#frontPostExtensionTitle').textContent=isEn?'Extend Front Post':'Dikmeyi Uzat';
+    overlay.querySelector('#frontPostExtensionMeta').textContent=isEn?`Front post ${idx+1}`:`Ön dikme ${idx+1}`;
+    overlay.querySelector('#frontPostExtensionLabel').textContent=isEn?'-Y extension *(mm)':'-Y uzatma *(mm)';
+    overlay.querySelector('#frontPostExtensionNote').textContent=isEn?'The top connection and roof angle remain fixed. The lower end may enter the parapet or pass below floor level.':'Üst bağlantı ve çatı açısı sabit kalır. Alt uç parapetin içine veya zemin kotunun altına gidebilir.';
+    overlay.querySelector('#frontPostExtensionReset').textContent=isEn?'Reset':'Sıfırla';
+    overlay.querySelector('#frontPostExtensionCancel').textContent=isEn?'Cancel':'İptal';
+    overlay.querySelector('#frontPostExtensionInput').value=String(Math.round(Number(frontPostExtensions[idx])||0));
+    overlay.querySelector('#frontPostExtensionError').textContent='';
+    overlay.hidden=false;
+    window.setTimeout(()=>overlay.querySelector('#frontPostExtensionInput').focus({preventScroll:true}),20);
+  }
+
+  function isParapetWidthMeta(meta) {
+    return !!meta && String(meta.actionType || '') === 'parapet_width_resize' && String(meta.parapetSegmentId || '').trim() !== '';
+  }
+
+  function resizeParapetSegmentWidth(meta, targetWidth) {
+    const width = Number(targetWidth);
+    if (!Number.isFinite(width) || width <= 0) throw new Error(currentLanguage === 'en' ? 'Enter a positive parapet width.' : 'Pozitif bir parapet genişliği gir.');
+    const list = materializeParapetSegments(meta);
+    let index = list.findIndex(item => String(item.id) === String(meta.parapetSegmentId));
+    if (index < 0) index = Math.max(0, Math.min(list.length - 1, Number(meta.parapetSegmentIndex) || 0));
+    if (index < 0 || !list[index]) throw new Error(currentLanguage === 'en' ? 'Parapet segment could not be found.' : 'Parapet parçası bulunamadı.');
+    if (list.length < 2) throw new Error(currentLanguage === 'en' ? 'Divide the parapet before changing an individual segment width.' : 'Tek bir parapet parçasının genişliğini değiştirmek için önce parapeti böl.');
+    const current = list[index], minWidth = 1;
+    if (index === list.length - 1) {
+      const fixedEnd = Number(current.end) || 0, nextStart = fixedEnd - width, previous = list[index - 1];
+      if (!previous || nextStart <= Number(previous.start) + minWidth - 0.001) throw new Error(currentLanguage === 'en' ? 'The previous parapet segment would have zero or negative width.' : 'Önceki parapet parçasının genişliği sıfır veya negatif olur.');
+      current.start = nextStart; previous.end = nextStart;
+    } else {
+      const fixedStart = Number(current.start) || 0, nextEnd = fixedStart + width, following = list[index + 1];
+      if (!following || nextEnd >= Number(following.end) - minWidth + 0.001) throw new Error(currentLanguage === 'en' ? 'The next parapet segment would have zero or negative width.' : 'Sonraki parapet parçasının genişliği sıfır veya negatif olur.');
+      current.end = nextEnd; following.start = nextEnd;
+    }
+    storeParapetSegments(meta, list);
+  }
+
+  function parapetLengthForMeta(meta) {
+    const d = lastDrawing && lastDrawing.input ? lastDrawing.input : {};
+    if (String(meta && meta.parapetView || '').toLowerCase() === 'side') {
+      const index = Number(meta && meta.sideIndex) || 0;
+      const p = Array.isArray(d.positions) ? (d.positions[index] || d.positions[0]) : null;
+      return Math.max(0, Number(p && p.opening) || 0);
+    }
+    return Math.max(0, Number(d.width) || 0);
+  }
+
+  function parapetSourceListForMeta(meta) {
+    const d = lastDrawing && lastDrawing.input ? lastDrawing.input : {};
+    if (String(meta && meta.parapetView || '').toLowerCase() === 'side') {
+      const index = Number(meta && meta.sideIndex) || 0;
+      const key = sideViewKeyFromMeta(meta);
+      const map = d.parapetSegments && d.parapetSegments.side ? d.parapetSegments.side : {};
+      return deepCloneJson(map[key] || map[String(index)] || []) || [];
+    }
+    return deepCloneJson(d.parapetSegments && d.parapetSegments.front || []) || [];
+  }
+
+  function materializeParapetSegments(meta) {
+    const side = String(meta && meta.parapetView || '').toLowerCase() === 'side';
+    if (side) {
+      const key = sideViewKeyFromMeta(meta);
+      parapetSegments.side = parapetSegments.side && typeof parapetSegments.side === 'object' ? parapetSegments.side : {};
+      if (!Array.isArray(parapetSegments.side[key]) || !parapetSegments.side[key].length) parapetSegments.side[key] = parapetSourceListForMeta(meta);
+      return parapetSegments.side[key].map(item => ({ ...item }));
+    }
+    if (!Array.isArray(parapetSegments.front) || !parapetSegments.front.length) parapetSegments.front = parapetSourceListForMeta(meta);
+    return parapetSegments.front.map(item => ({ ...item }));
+  }
+
+  function storeParapetSegments(meta, list) {
+    const clean = (Array.isArray(list) ? list : []).map((item, index) => ({
+      id: String(item.id || `parapet_${Date.now()}_${index}`),
+      start: Number(item.start) || 0,
+      end: Number(item.end) || 0,
+      height: Math.max(0, Number(item.height) || 0)
+    })).sort((a, b) => a.start - b.start || a.end - b.end);
+    if (String(meta && meta.parapetView || '').toLowerCase() === 'side') {
+      const key = sideViewKeyFromMeta(meta);
+      parapetSegments.side = parapetSegments.side && typeof parapetSegments.side === 'object' ? parapetSegments.side : {};
+      parapetSegments.side[key] = clean;
+    } else parapetSegments.front = clean;
+    const all = [
+      ...(Array.isArray(parapetSegments.front) ? parapetSegments.front : []),
+      ...Object.values(parapetSegments.side || {}).flatMap(items => Array.isArray(items) ? items : [])
+    ];
+    const maxHeight = all.reduce((max, item) => Math.max(max, Number(item.height) || 0), 0);
+    if ($('parapet')) $('parapet').value = maxHeight > 0 ? 'EVET' : 'HAYIR';
+    const currentBase = Number($('parapetHeight') && $('parapetHeight').value) || 0;
+    if ($('parapetHeight') && !(currentBase > 0) && maxHeight > 0) $('parapetHeight').value = String(Math.round(maxHeight));
+    syncToolboxBooleanButtons();
+    syncParapetQuickInput();
+  }
+
+  function ensureParapetEditorOverlay() {
+    let overlay = $('parapetEditorOverlay');
+    if (overlay) return overlay;
+    overlay = document.createElement('div');
+    overlay.id = 'parapetEditorOverlay';
+    overlay.className = 'dim-edit-overlay parapet-editor-overlay';
+    overlay.hidden = true;
+    overlay.innerHTML = `<form class="dim-edit-card parapet-editor-card">
+      <div class="dim-edit-title" id="parapetEditorTitle">Parapet Parçasını Düzenle</div>
+      <div class="dim-edit-meta" id="parapetEditorMeta"></div>
+      <div class="parapet-editor-grid">
+        <label><span id="parapetStartLabel">Başlangıç X *(mm)</span><input id="parapetStartInput" type="text" inputmode="numeric"></label>
+        <label><span id="parapetEndLabel">Bitiş X *(mm)</span><input id="parapetEndInput" type="text" inputmode="numeric"></label>
+        <label><span id="parapetHeightLabel">Yükseklik *(mm)</span><input id="parapetSegmentHeightInput" type="text" inputmode="numeric"></label>
+        <label><span id="parapetDivideLabel">Eşit parçaya böl</span><input id="parapetDivideInput" type="text" inputmode="numeric" placeholder="1"></label>
+      </div>
+      <div id="parapetEditorNote" class="post-editor-note"></div>
+      <div id="parapetEditorError" class="dim-edit-error" aria-live="polite"></div>
+      <div class="dim-edit-actions">
+        <button id="parapetMergeAll" type="button" class="secondary-btn">Tek Parçaya Döndür</button>
+        <button id="parapetEditorCancel" type="button" class="dim-edit-cancel">İptal</button>
+        <button type="submit" class="dim-edit-apply">Tamam</button>
+      </div>
+    </form>`;
+    previewPanel.appendChild(overlay);
+    overlay.querySelectorAll('#parapetStartInput,#parapetEndInput,#parapetSegmentHeightInput,#parapetDivideInput').forEach(input => input.addEventListener('input', () => {
+      input.value = String(input.value || '').replace(/[^0-9]/g, '');
+      overlay.querySelector('#parapetEditorError').textContent = '';
+    }));
+    const close = () => { overlay.hidden = true; focusPreviewCanvas(); };
+    overlay.querySelector('#parapetEditorCancel').addEventListener('click', close);
+    overlay.addEventListener('mousedown', evt => { if (evt.target === overlay) close(); });
+    overlay.addEventListener('keydown', evt => { if (evt.key === 'Escape') { evt.preventDefault(); close(); } });
+    overlay.querySelector('#parapetMergeAll').addEventListener('click', () => {
+      const meta = overlay._meta || {};
+      const length = parapetLengthForMeta(meta);
+      const height = Math.max(0, Number(overlay.querySelector('#parapetSegmentHeightInput').value) || Number(meta.segmentHeight) || Number($('parapetHeight') && $('parapetHeight').value) || 0);
+      if (!(length > 0 && height > 0)) return;
+      storeParapetSegments(meta, [{ id: `${meta.parapetView || 'front'}_${Number(meta.sideIndex) || 0}_parapet_1`, start: 0, end: length, height }]);
+      close();
+      updatePreview(false);
+      statusText.textContent = currentLanguage === 'en' ? 'The parapet was returned to one piece.' : 'Parapet tek parçaya döndürüldü.';
+    });
+    overlay.querySelector('form').addEventListener('submit', evt => {
+      evt.preventDefault();
+      const meta = overlay._meta || {};
+      const error = overlay.querySelector('#parapetEditorError');
+      const length = parapetLengthForMeta(meta);
+      const start = Number(overlay.querySelector('#parapetStartInput').value);
+      const end = Number(overlay.querySelector('#parapetEndInput').value);
+      const height = Number(overlay.querySelector('#parapetSegmentHeightInput').value);
+      const divide = Math.max(1, Math.floor(Number(overlay.querySelector('#parapetDivideInput').value) || 1));
+      if (!Number.isFinite(start) || !Number.isFinite(end) || !Number.isFinite(height) || start < 0 || end <= start || end > length + 0.001 || height < 0) {
+        error.textContent = currentLanguage === 'en' ? `Enter a valid range between 0 and ${Math.round(length)} mm and a non-negative height.` : `0–${Math.round(length)} mm arasında geçerli bir aralık ve sıfır veya pozitif yükseklik gir.`;
+        return;
+      }
+      const list = materializeParapetSegments(meta);
+      let index = list.findIndex(item => String(item.id) === String(meta.parapetSegmentId));
+      if (index < 0) index = Math.max(0, Math.min(list.length - 1, Number(meta.parapetSegmentIndex) || 0));
+      if (index < 0 || !list[index]) { error.textContent = currentLanguage === 'en' ? 'Parapet segment could not be found.' : 'Parapet parçası bulunamadı.'; return; }
+      const before = index > 0 ? list[index - 1] : null;
+      const after = index < list.length - 1 ? list[index + 1] : null;
+      if (before && start <= Number(before.start) + 0.001) { error.textContent = currentLanguage === 'en' ? 'The previous segment would have zero or negative width.' : 'Önceki parapet parçasının genişliği sıfır veya negatif olur.'; return; }
+      if (after && end >= Number(after.end) - 0.001) { error.textContent = currentLanguage === 'en' ? 'The next segment would have zero or negative width.' : 'Sonraki parapet parçasının genişliği sıfır veya negatif olur.'; return; }
+      if (before) before.end = start;
+      if (after) after.start = end;
+      const originalId = String(list[index].id || meta.parapetSegmentId || `parapet_${Date.now()}`);
+      const replacement = [];
+      const piece = (end - start) / divide;
+      for (let i = 0; i < divide; i += 1) replacement.push({
+        id: divide === 1 ? originalId : `${originalId}_${Date.now()}_${i + 1}`,
+        start: start + piece * i,
+        end: i === divide - 1 ? end : start + piece * (i + 1),
+        height
+      });
+      list.splice(index, 1, ...replacement);
+      storeParapetSegments(meta, list);
+      close();
+      updatePreview(false);
+      statusText.textContent = divide > 1
+        ? (currentLanguage === 'en' ? `Parapet divided into ${divide} equal parts.` : `Parapet ${divide} eşit parçaya bölündü.`)
+        : (currentLanguage === 'en' ? 'Parapet segment updated.' : 'Parapet parçası güncellendi.');
+    });
+    return overlay;
+  }
+
+  function showParapetEditorOverlay(meta) {
+    const overlay = ensureParapetEditorOverlay();
+    const isEn = currentLanguage === 'en';
+    const list = materializeParapetSegments(meta);
+    let index = list.findIndex(item => String(item.id) === String(meta.parapetSegmentId));
+    if (index < 0) index = Math.max(0, Math.min(list.length - 1, Number(meta.parapetSegmentIndex) || 0));
+    const segment = list[index] || { start: meta.segmentStart, end: meta.segmentEnd, height: meta.segmentHeight };
+    overlay._meta = { ...meta, parapetSegmentId: segment.id || meta.parapetSegmentId, parapetSegmentIndex: index };
+    overlay.querySelector('#parapetEditorTitle').textContent = isEn ? 'Edit Parapet Segment' : 'Parapet Parçasını Düzenle';
+    overlay.querySelector('#parapetEditorMeta').textContent = `${isEn ? 'View' : 'Görünüş'}: ${String(meta.parapetView).toLowerCase() === 'side' ? (sideViewKeyFromMeta(meta) === 'right' ? (isEn ? 'Right Side' : 'Sağ Yan') : (sideViewKeyFromMeta(meta) === '0' ? (isEn ? 'Left Side' : 'Sol Yan') : `${isEn ? 'Intermediate Position' : 'Ara Poz'} ${Number(meta.sideIndex || 0) + 1}`)) : (isEn ? 'Front View' : 'Ön Görünüş')} · ${index + 1}/${Math.max(1, list.length)}`;
+    overlay.querySelector('#parapetStartLabel').textContent = isEn ? 'Start X *(mm)' : 'Başlangıç X *(mm)';
+    overlay.querySelector('#parapetEndLabel').textContent = isEn ? 'End X *(mm)' : 'Bitiş X *(mm)';
+    overlay.querySelector('#parapetHeightLabel').textContent = isEn ? 'Height *(mm)' : 'Yükseklik *(mm)';
+    overlay.querySelector('#parapetDivideLabel').textContent = isEn ? 'Divide into equal parts' : 'Eşit parçaya böl';
+    overlay.querySelector('#parapetEditorNote').textContent = isEn ? 'Changing a shared boundary also moves the adjacent segment boundary. Enter a number greater than 1 to split this segment.' : 'Ortak sınır değiştirildiğinde komşu parapet parçasının sınırı da birlikte hareket eder. Bu parçayı bölmek için 1’den büyük sayı gir.';
+    overlay.querySelector('#parapetMergeAll').textContent = isEn ? 'Return to One Piece' : 'Tek Parçaya Döndür';
+    overlay.querySelector('#parapetEditorCancel').textContent = isEn ? 'Cancel' : 'İptal';
+    overlay.querySelector('#parapetStartInput').value = String(Math.round(Number(segment.start) || 0));
+    overlay.querySelector('#parapetEndInput').value = String(Math.round(Number(segment.end) || 0));
+    overlay.querySelector('#parapetSegmentHeightInput').value = String(Math.round(Number(segment.height) || 0));
+    overlay.querySelector('#parapetDivideInput').value = '1';
+    overlay.querySelector('#parapetEditorError').textContent = '';
+    overlay.hidden = false;
+    window.setTimeout(() => overlay.querySelector('#parapetSegmentHeightInput').focus({ preventScroll: true }), 20);
+  }
+
+  function ensurePostEditorOverlay() {
+    let overlay = $('postEditorOverlay');
+    if (overlay) return overlay;
+    overlay = document.createElement('div');
+    overlay.id = 'postEditorOverlay';
+    overlay.className = 'dim-edit-overlay post-editor-overlay';
+    overlay.hidden = true;
+    overlay.innerHTML = `
+      <form id="postEditorForm" class="dim-edit-card">
+        <div class="dim-edit-title" id="postEditorTitle">Ön Dikme Düzenle</div>
+        <div class="dim-edit-meta" id="postEditorMeta"></div>
+        <div class="post-editor-grid">
+          <label><span id="postEditorCountLabel">Dikme adedi</span><input id="postEditorCountInput" type="text" inputmode="numeric" autocomplete="off" /></label>
+          <div>
+            <div class="dim-edit-label"><span id="postPlacementLegend">Dikme yerleşim mantığı</span></div>
+            <div class="post-placement-options">
+              <label><input type="radio" name="postPlacementMode" value="standard" checked /> <span id="postPlacementStandard">Standart bölme</span></label>
+              <label><input type="radio" name="postPlacementMode" value="equal" /> <span id="postPlacementEqual">Eşit bölme</span></label>
+            </div>
+          </div>
+          <div id="postEditorNote" class="post-editor-note"></div>
+        </div>
+        <div class="dim-edit-actions">
+          <button id="postEditorChangeProfile" type="button" class="secondary-btn">Dikmeyi Değiştir</button>
+          <button id="postEditorExtend" type="button" class="secondary-btn">Dikmeyi Uzat</button>
+          <button id="postEditorDelete" type="button" class="dim-edit-delete">Dikmeyi Sil</button>
+          <button id="postEditorCancel" type="button" class="dim-edit-cancel">İptal</button>
+          <button id="postEditorApply" type="submit" class="dim-edit-apply">Tamam</button>
+        </div>
+      </form>`;
+    previewPanel.appendChild(overlay);
+    overlay.querySelector('#postEditorCancel').addEventListener('click', () => { overlay.hidden = true; });
+    overlay.querySelector('#postEditorChangeProfile').addEventListener('click', () => { const idx=Number(overlay.dataset.postIndex||0)||0; overlay.hidden=true; showFrontPostProfileOverlay(idx); });
+    overlay.querySelector('#postEditorExtend').addEventListener('click', () => { const idx=Number(overlay.dataset.postIndex||0)||0; overlay.hidden=true; showFrontPostExtensionOverlay(idx); });
+    overlay.querySelector('#postEditorDelete').addEventListener('click', () => {
+      const idx = Number(overlay.dataset.postIndex || 0) || 0;
+      if (!window.confirm(currentLanguage === 'en' ? 'Delete this front post?' : 'Bu ön dikme silinsin mi?')) return;
+      try { deleteFrontPost(idx); }
+      catch (err) { window.alert(err.message); return; }
+      overlay.hidden = true;
+      updatePreview(false);
+      statusText.textContent = currentLanguage === 'en' ? 'Front post deleted.' : 'Ön dikme silindi.';
+    });
+    overlay.addEventListener('click', evt => { if (evt.target === overlay) overlay.hidden = true; });
+    overlay.addEventListener('keydown', evt => { if (evt.key === 'Escape') { evt.preventDefault(); overlay.hidden = true; } });
+    overlay.querySelector('#postEditorForm').addEventListener('submit', evt => {
+      evt.preventDefault();
+      const countInput = overlay.querySelector('#postEditorCountInput');
+      const nextCount = Math.max(0, Number(String(countInput.value || '').replace(/[^0-9]/g, '')) || 0);
+      const mode = (overlay.querySelector('input[name="postPlacementMode"]:checked') || {}).value || 'standard';
+      const postEl = $('postCount');
+      if (postEl) {
+        postEl.value = String(nextCount);
+        postEl.dataset.userEdited = 'true';
+      }
+      manualPostPlacementMode = mode === 'equal' ? 'equal' : 'standard';
+      customFrontPostCenters = null;
+      // Dikme adedi değiştiğinde profil ve manuel -Y uzatma bilgileri indeks bazında
+      // korunur; fazla kayıtlar atılır, yeni dikmeler standart/sıfır değerle başlar.
+      frontPostProfiles = Array.from({ length: nextCount }, (_, index) => frontPostProfiles[index] ? deepCloneJson(frontPostProfiles[index]) : null);
+      frontPostExtensions = Array.from({ length: nextCount }, (_, index) => Math.max(0, Number(frontPostExtensions[index]) || 0));
+      slidingPlacements = [];
+      guillotinePlacements = [];
+      overlay.hidden = true;
+      updatePreview(false);
+      statusText.textContent = currentLanguage === 'en'
+        ? `Front post count set to ${nextCount}. Placement mode: ${manualPostPlacementMode === 'equal' ? 'equal division' : 'standard division'}.`
+        : `Ön dikme adedi ${nextCount} olarak ayarlandı. Yerleşim modu: ${manualPostPlacementMode === 'equal' ? 'eşit bölme' : 'standart bölme'}.`;
+    });
+    return overlay;
+  }
+
+  function showPostEditorOverlay(meta) {
+    const overlay = ensurePostEditorOverlay();
+    const isEn = currentLanguage === 'en';
+    overlay.querySelector('#postEditorTitle').textContent = isEn ? 'Edit Front Posts' : 'Ön Dikme Düzenle';
+    overlay.querySelector('#postEditorCountLabel').textContent = isEn ? 'Post count' : 'Dikme adedi';
+    overlay.querySelector('#postPlacementLegend').textContent = isEn ? 'Post placement logic' : 'Dikme yerleşim mantığı';
+    overlay.querySelector('#postPlacementStandard').textContent = isEn ? 'Standard division' : 'Standart bölme';
+    overlay.querySelector('#postPlacementEqual').textContent = isEn ? 'Equal division' : 'Eşit bölme';
+    overlay.querySelector('#postEditorCancel').textContent = isEn ? 'Cancel' : 'İptal';
+    overlay.querySelector('#postEditorApply').textContent = isEn ? 'OK' : 'Tamam';
+    overlay.querySelector('#postEditorChangeProfile').textContent = isEn ? 'Change Post' : 'Dikmeyi Değiştir';
+    overlay.querySelector('#postEditorExtend').textContent = isEn ? 'Extend Post' : 'Dikmeyi Uzat';
+    overlay.querySelector('#postEditorDelete').textContent = isEn ? 'Delete Post' : 'Dikmeyi Sil';
+    overlay.querySelector('#postEditorDelete').disabled = Number(meta.currentPostCount || 0) <= 2;
+    overlay.querySelector('#postEditorDelete').classList.toggle('disabled', Number(meta.currentPostCount || 0) <= 2);
+    overlay.dataset.postIndex = String(meta.postIndex || 0);
+    overlay.querySelector('#postEditorMeta').innerHTML = `
+      <b>${isEn ? 'Clicked front post' : 'Tıklanan ön dikme'}:</b> ${meta.postIndex + 1} / ${Math.max(meta.currentPostCount || 0, meta.postIndex + 1)}<br>
+      <b>${isEn ? 'Current post count' : 'Mevcut dikme adedi'}:</b> ${meta.currentPostCount}<br>
+      <b>${isEn ? 'Ray axis count' : 'Ray aks adedi'}:</b> ${meta.totalRayCount}<br>
+      <b>${isEn ? 'Profile' : 'Profil'}:</b> ${Math.round(meta.en || 100)} × ${Math.round(meta.boy || 100)} × ${Math.round(meta.et || 2)} mm<br>
+      <b>${isEn ? '-Y extension' : '-Y uzatma'}:</b> ${Math.round(meta.postExtension || frontPostExtensions[meta.postIndex] || 0)} mm`;
+    overlay.querySelector('#postEditorCountInput').value = String(meta.currentPostCount || ($('postCount') ? $('postCount').value : '') || '');
+    overlay.querySelectorAll('input[name="postPlacementMode"]').forEach(r => { r.checked = r.value === manualPostPlacementMode; });
+    overlay.querySelector('#postEditorNote').textContent = isEn
+      ? 'Standard division keeps the existing axis-based logic when post count and ray axis count match. Equal division always distributes posts equally.'
+      : 'Standart bölme, dikme sayısı ile ray aks sayısı eşitse mevcut aks mantığını korur. Eşit bölme seçilirse dikmeler her durumda eşit aralıkla dağıtılır.';
+    overlay.hidden = false;
+    const input = overlay.querySelector('#postEditorCountInput');
+    window.setTimeout(() => { input.focus({ preventScroll: true }); input.select(); }, 20);
+  }
+
+
+  function ensureTriangleEditorOverlay() {
+    let overlay = $('triangleEditorOverlay');
+    if (overlay) return overlay;
+    overlay = document.createElement('div');
+    overlay.id = 'triangleEditorOverlay';
+    overlay.className = 'dim-edit-overlay triangle-editor-overlay';
+    overlay.hidden = true;
+    overlay.innerHTML = `
+      <form id="triangleEditorForm" class="dim-edit-card">
+        <div class="dim-edit-title" id="triangleEditorTitle">Üçgen Doğrama Düzenle</div>
+        <div class="dim-edit-meta" id="triangleEditorMeta"></div>
+        <label class="dim-edit-value-wrap"><span id="triangleDivisionLabel">Bölme sayısı</span><input id="triangleDivisionInput" type="text" inputmode="numeric" autocomplete="off" /></label>
+        <div id="triangleEditorError" class="dim-edit-error" aria-live="polite"></div>
+        <div class="dim-edit-actions">
+          <button id="triangleEditorDelete" type="button" class="dim-edit-delete">Üçgen Doğramayı Sil</button>
+          <button id="triangleEditorCancel" type="button" class="dim-edit-cancel">İptal</button>
+          <button id="triangleEditorApply" type="submit" class="dim-edit-apply">Tamam</button>
+        </div>
+      </form>`;
+    previewPanel.appendChild(overlay);
+    overlay.addEventListener('click', evt => { if (evt.target === overlay) overlay.hidden = true; });
+    overlay.querySelector('#triangleEditorCancel').addEventListener('click', () => { overlay.hidden = true; });
+    overlay.querySelector('#triangleEditorDelete').addEventListener('click', () => {
+      const key = normalizeSideViewKey(overlay.dataset.sideViewKey, Number(overlay.dataset.sideIndex || 0));
+      if (!window.confirm(currentLanguage === 'en' ? 'Delete this triangle joinery?' : 'Bu üçgen doğrama silinsin mi?')) return;
+      setSideFeatureValue('triangle', key, false);
+      setSideScopedStateValue(triangleDivisionState, key, null);
+      syncMainFormFromSideFeature('triangle');
+      syncToolboxBooleanButtons();
+      overlay.hidden = true;
+      updatePreview(false);
+      statusText.textContent = currentLanguage === 'en' ? 'Triangle joinery deleted from this side.' : 'Üçgen doğrama yalnızca bu yan görünüşten silindi.';
+    });
+    overlay.querySelector('#triangleEditorForm').addEventListener('submit', evt => {
+      evt.preventDefault();
+      const input = overlay.querySelector('#triangleDivisionInput');
+      const count = Math.max(1, Math.min(50, Number(String(input.value || '').replace(/[^0-9]/g, '')) || 1));
+      const key = normalizeSideViewKey(overlay.dataset.sideViewKey, Number(overlay.dataset.sideIndex || 0));
+      setSideScopedStateValue(triangleDivisionState, key, count);
+      setSideFeatureValue('triangle', key, true);
+      syncMainFormFromSideFeature('triangle');
+      syncToolboxBooleanButtons();
+      overlay.hidden = true;
+      updatePreview(false);
+      statusText.textContent = currentLanguage === 'en' ? `Triangle joinery division count set to ${count}.` : `Üçgen doğrama bölme sayısı ${count} olarak ayarlandı.`;
+    });
+    return overlay;
+  }
+
+  function showTriangleEditorOverlay(meta) {
+    const overlay = ensureTriangleEditorOverlay();
+    const isEn = currentLanguage === 'en';
+    const key = normalizeSideViewKey(meta.sideViewKey, meta.sideIndex);
+    overlay.dataset.sideViewKey = key;
+    overlay.dataset.sideIndex = String(meta.sideIndex || 0);
+    overlay.querySelector('#triangleEditorTitle').textContent = isEn ? 'Edit Triangle Joinery' : 'Üçgen Doğrama Düzenle';
+    overlay.querySelector('#triangleEditorMeta').innerHTML = `<b>${isEn ? 'Side view' : 'Yan görünüş'}:</b> ${key === 'right' ? (isEn ? 'Right' : 'Sağ') : (key === '0' ? (isEn ? 'Left' : 'Sol') : `${Number(meta.sideIndex || 0) + 1}. ${isEn ? 'position' : 'poz'}`)}<br><b>${isEn ? 'Outer frame' : 'Dış çerçeve'}:</b> ${isEn ? 'kept unchanged' : 'değişmeden korunur'}`;
+    overlay.querySelector('#triangleDivisionLabel').textContent = isEn ? 'Division count' : 'Bölme sayısı';
+    overlay.querySelector('#triangleEditorDelete').textContent = isEn ? 'Delete Triangle' : 'Üçgen Doğramayı Sil';
+    overlay.querySelector('#triangleEditorCancel').textContent = isEn ? 'Cancel' : 'İptal';
+    overlay.querySelector('#triangleEditorApply').textContent = isEn ? 'OK' : 'Tamam';
+    overlay.querySelector('#triangleEditorError').textContent = '';
+    overlay.querySelector('#triangleDivisionInput').value = String(triangleDivisionForKey(key, meta.triangleDivisionCount || 1) || 1);
+    overlay.hidden = false;
+    window.setTimeout(() => { const input = overlay.querySelector('#triangleDivisionInput'); input.focus({ preventScroll: true }); input.select(); }, 20);
+  }
+
+  function ensureBackWallEditorOverlay() {
+    let overlay = $('backWallEditorOverlay');
+    if (overlay) return overlay;
+    overlay = document.createElement('div');
+    overlay.id = 'backWallEditorOverlay';
+    overlay.className = 'dim-edit-overlay back-wall-editor-overlay';
+    overlay.hidden = true;
+    overlay.innerHTML = `
+      <form id="backWallEditorForm" class="dim-edit-card">
+        <div class="dim-edit-title" id="backWallEditorTitle">Arka Duvarı Düzenle</div>
+        <div class="dim-edit-meta" id="backWallEditorMeta"></div>
+        <div class="parapet-editor-grid">
+          <label><span id="backWallOffsetLabel">X Ofset</span><input id="backWallOffsetInput" type="text" inputmode="decimal" autocomplete="off" /></label>
+          <label><span id="backWallStartLabel">Başlangıç</span><input id="backWallStartInput" type="text" inputmode="decimal" autocomplete="off" /></label>
+          <label><span id="backWallEndLabel">Bitiş</span><input id="backWallEndInput" type="text" inputmode="decimal" autocomplete="off" /></label>
+          <label><span id="backWallHeightLabel">Yükseklik</span><input id="backWallHeightInput" type="text" inputmode="decimal" autocomplete="off" /></label>
+          <label><span id="backWallDivideLabel">Eşit parçaya böl</span><input id="backWallDivideInput" type="text" inputmode="numeric" autocomplete="off" value="1" /></label>
+        </div>
+        <div class="post-editor-note" id="backWallEditorNote"></div>
+        <div id="backWallEditorError" class="dim-edit-error" aria-live="polite"></div>
+        <div class="dim-edit-actions">
+          <button id="backWallEditorReset" type="button" class="dim-edit-delete">Sıfırla</button>
+          <button id="backWallEditorCancel" type="button" class="dim-edit-cancel">İptal</button>
+          <button id="backWallEditorApply" type="submit" class="dim-edit-apply">Tamam</button>
+        </div>
+      </form>`;
+    previewPanel.appendChild(overlay);
+    const close = () => { overlay.hidden = true; focusPreviewCanvas(); };
+    overlay.addEventListener('click', evt => { if (evt.target === overlay) close(); });
+    overlay.querySelector('#backWallEditorCancel').addEventListener('click', close);
+    overlay.querySelectorAll('input').forEach(input => input.addEventListener('input', () => {
+      if (input.id === 'backWallDivideInput') input.value = String(input.value || '').replace(/[^0-9]/g, '');
+      else input.value = String(input.value || '').replace(/[^0-9,.-]/g, '');
+      overlay.querySelector('#backWallEditorError').textContent = '';
+    }));
+    overlay.querySelector('#backWallEditorReset').addEventListener('click', () => {
+      const key = normalizeSideViewKey(overlay.dataset.sideViewKey, Number(overlay.dataset.sideIndex || 0));
+      setSideScopedStateValue(backWallState, key, { xOffset: 0, depth: 600, height: 0 });
+      if (backWallSegments && backWallSegments.side) delete backWallSegments.side[key];
+      close();
+      updatePreview(false);
+      statusText.textContent = currentLanguage === 'en' ? 'Back wall restored to default.' : 'Arka duvar varsayılan ölçülerine döndürüldü.';
+    });
+    overlay.querySelector('#backWallEditorForm').addEventListener('submit', evt => {
+      evt.preventDefault();
+      const read = id => Number(String(overlay.querySelector(id).value || '').replace(',', '.'));
+      const xOffset = read('#backWallOffsetInput');
+      const startValue = read('#backWallStartInput');
+      const endValue = read('#backWallEndInput');
+      const height = read('#backWallHeightInput');
+      const divide = Math.max(1, Math.floor(read('#backWallDivideInput') || 1));
+      const error = overlay.querySelector('#backWallEditorError');
+      if (![xOffset, startValue, endValue, height].every(Number.isFinite) || startValue < 0 || endValue <= startValue || height <= 0 || divide > 50) {
+        error.textContent = currentLanguage === 'en' ? 'Enter a valid wall segment and division count (1–50).' : 'Geçerli duvar parçası ve 1–50 arasında bölme sayısı gir.';
+        return;
+      }
+      const key = normalizeSideViewKey(overlay.dataset.sideViewKey, Number(overlay.dataset.sideIndex || 0));
+      const rearHeight = Number(overlay.dataset.rearHeight || 0) || height;
+      const list = backWallSegmentsForKey(key, rearHeight);
+      let index = list.findIndex(item => String(item.id) === String(overlay.dataset.wallSegmentId || ''));
+      if (index < 0) index = Math.max(0, Math.min(list.length - 1, Number(overlay.dataset.wallSegmentIndex) || 0));
+      let start = startValue;
+      let end = endValue;
+      if (index === 0) start = 0; // tüm duvar X konumu X Ofset ile değiştirilir.
+      const previous = index > 0 ? list[index - 1] : null;
+      const next = index < list.length - 1 ? list[index + 1] : null;
+      if (previous && start <= Number(previous.start || 0)) {
+        error.textContent = currentLanguage === 'en' ? 'The previous wall segment would become zero or negative.' : 'Önceki duvar parçası sıfır veya negatif kalır.';
+        return;
+      }
+      if (next && end >= Number(next.end || 0)) {
+        error.textContent = currentLanguage === 'en' ? 'The next wall segment would become zero or negative.' : 'Sonraki duvar parçası sıfır veya negatif kalır.';
+        return;
+      }
+      if (previous) previous.end = start;
+      if (next) next.start = end;
+      const original = list[index] || {};
+      const baseId = String(original.id || `back_wall_${key}_${Date.now()}`);
+      const piece = (end - start) / divide;
+      const replacement = Array.from({ length: divide }, (_, i) => ({
+        id: divide === 1 ? baseId : `${baseId}_${Date.now()}_${i + 1}`,
+        start: start + piece * i,
+        end: i === divide - 1 ? end : start + piece * (i + 1),
+        height
+      }));
+      list.splice(index, 1, ...replacement);
+      storeBackWallSegmentsForKey(key, list);
+      const depth = Math.max(1, ...list.map(item => Number(item.end) || 0));
+      setSideScopedStateValue(backWallState, key, { xOffset, depth, height: 0 });
+      close();
+      updatePreview(false);
+      statusText.textContent = currentLanguage === 'en' ? 'Back wall segment updated.' : 'Arka duvar parçası güncellendi.';
+    });
+    return overlay;
+  }
+
+  function showBackWallEditorOverlay(meta) {
+    const overlay = ensureBackWallEditorOverlay();
+    const isEn = currentLanguage === 'en';
+    const key = normalizeSideViewKey(meta.sideViewKey, meta.sideIndex);
+    const positionIndex = key === 'right'
+      ? Math.max(0, Number(lastDrawing && lastDrawing.input && lastDrawing.input.sidePositionCount || 1) - 1)
+      : Math.max(0, Number(meta.sideIndex) || Number(key) || 0);
+    const rearHeight = lastDrawing && lastDrawing.input && lastDrawing.input.positions && lastDrawing.input.positions[positionIndex]
+      ? Number(lastDrawing.input.positions[positionIndex].rearHeight)
+      : Number(meta.wallHeight || 1);
+    const state = wallStateForKey(key, rearHeight);
+    const list = backWallSegmentsForKey(key, rearHeight);
+    let index = list.findIndex(item => String(item.id) === String(meta.wallSegmentId || ''));
+    if (index < 0) index = Math.max(0, Math.min(list.length - 1, Number(meta.wallSegmentIndex) || 0));
+    const segment = list[index] || { id: `back_wall_${key}_1`, start: 0, end: state.depth, height: state.height };
+    overlay.dataset.sideViewKey = key;
+    overlay.dataset.sideIndex = String(positionIndex);
+    overlay.dataset.rearHeight = String(rearHeight || 1);
+    overlay.dataset.wallSegmentId = String(segment.id || '');
+    overlay.dataset.wallSegmentIndex = String(index);
+    overlay.querySelector('#backWallEditorTitle').textContent = isEn ? 'Edit Back Wall' : 'Arka Duvarı Düzenle';
+    const sideLabel = key === 'right' ? (isEn ? 'Right' : 'Sağ') : (key === '0' ? (isEn ? 'Left' : 'Sol') : `${positionIndex + 1}. ${isEn ? 'position' : 'poz'}`);
+    overlay.querySelector('#backWallEditorMeta').innerHTML = `<b>${isEn ? 'Side view' : 'Yan görünüş'}:</b> ${sideLabel}<br><b>${isEn ? 'Segment' : 'Parça'}:</b> ${index + 1} / ${list.length}`;
+    overlay.querySelector('#backWallOffsetLabel').textContent = isEn ? 'Wall X Offset' : 'Duvar X Ofset';
+    overlay.querySelector('#backWallStartLabel').textContent = isEn ? 'Segment Start' : 'Parça Başlangıcı';
+    overlay.querySelector('#backWallEndLabel').textContent = isEn ? 'Segment End' : 'Parça Bitişi';
+    overlay.querySelector('#backWallHeightLabel').textContent = isEn ? 'Segment Height' : 'Parça Yüksekliği';
+    overlay.querySelector('#backWallDivideLabel').textContent = isEn ? 'Divide Equally' : 'Eşit Parçaya Böl';
+    overlay.querySelector('#backWallEditorNote').textContent = isEn
+      ? 'The first segment starts at zero. Adjacent boundaries move together; wall offset changes the whole wall. Wall edits update support limits and glass-track wall fit.'
+      : 'İlk parça sıfırdan başlar. Komşu sınırlar birlikte hareket eder; X ofset tüm duvarı taşır. Duvar değişikliği destek sınırlarını ve cam kaydı duvara oturtma referansını günceller.';
+    overlay.querySelector('#backWallEditorReset').textContent = isEn ? 'Reset Wall' : 'Duvarı Sıfırla';
+    overlay.querySelector('#backWallEditorCancel').textContent = isEn ? 'Cancel' : 'İptal';
+    overlay.querySelector('#backWallEditorApply').textContent = isEn ? 'OK' : 'Tamam';
+    overlay.querySelector('#backWallOffsetInput').value = String(Math.round(state.xOffset));
+    overlay.querySelector('#backWallStartInput').value = String(Math.round(Number(segment.start) || 0));
+    overlay.querySelector('#backWallEndInput').value = String(Math.round(Number(segment.end) || state.depth));
+    overlay.querySelector('#backWallHeightInput').value = String(Math.round(Number(segment.height) || state.height));
+    overlay.querySelector('#backWallDivideInput').value = '1';
+    overlay.querySelector('#backWallEditorError').textContent = '';
+    overlay.hidden = false;
+    window.setTimeout(() => { const input = overlay.querySelector('#backWallHeightInput'); input.focus({ preventScroll: true }); input.select(); }, 20);
+  }
+
+  function toggleMiddleSideView(sideIndex) {
+    const index = Math.max(1, Number(sideIndex) || 1), key = String(index);
+    ensureSideFeatureStateInitialized();
+    if (!sideFeatureState.middleEnabled[key]) {
+      const initialized = Object.prototype.hasOwnProperty.call(customSidePosts || {}, key)
+        || !!(parapetSegments && parapetSegments.side && Object.prototype.hasOwnProperty.call(parapetSegments.side, key))
+        || (sideSlidingPlacements || []).some(item => normalizeSideViewKey(item.sideViewKey, item.sideIndex) === key)
+        || (sideGuillotinePlacements || []).some(item => normalizeSideViewKey(item.sideViewKey, item.sideIndex) === key)
+        || !!(triangleDivisionState && triangleDivisionState.middle && Object.prototype.hasOwnProperty.call(triangleDivisionState.middle, key))
+        || !!(backWallState && backWallState.middle && Object.prototype.hasOwnProperty.call(backWallState.middle, key))
+        || !!(backWallSegments && backWallSegments.side && Object.prototype.hasOwnProperty.call(backWallSegments.side, key));
+      if (initialized) {
+        sideFeatureState.middleEnabled[key] = true;
+        updatePreview(false);
+        statusText.textContent = currentLanguage === 'en' ? `Intermediate side view ${index + 1} re-enabled.` : `${index + 1}. ara poz yan görünüşü yeniden açıldı.`;
+      } else activateMiddleSideView(index);
+      return;
+    }
+    sideFeatureState.middleEnabled[key] = false;
+    updatePreview(false);
+    statusText.textContent = currentLanguage === 'en' ? `Intermediate side view ${index + 1} disabled. Its settings were preserved.` : `${index + 1}. ara poz yan görünüşü kapatıldı; özel ayarları korundu.`;
+  }
+
+  function handlePreviewDimensionEdit(evt) {
+    if (toolboxSelectionMode) {
+      evt.preventDefault();
+      evt.stopPropagation();
+      toggleToolboxSelectionFromHit(evt.target);
+      return;
+    }
+    const dimHit = evt.target && evt.target.closest ? evt.target.closest('[data-dim-id],[data-edit-field]') : null;
+    const interactionHit = !dimHit && evt.target && evt.target.closest ? evt.target.closest('[data-interaction-type="postEditor"],[data-interaction-type="frontPostProfileEditor"],[data-interaction-type="glassTrackEditor"],[data-interaction-type="productEditor"],[data-interaction-type="parapetEditor"],[data-interaction-type="sideViewEnable"],[data-interaction-type="triangleEditor"],[data-interaction-type="backWallEditor"]') : null;
+    if (!dimHit && !interactionHit) return;
+    evt.preventDefault();
+    evt.stopPropagation();
+    if (previewState.dragMoved) {
+      previewState.dragMoved = false;
+      return;
+    }
+    if (interactionHit) {
+      const interactionMeta = previewInteractionMetaFromHit(interactionHit);
+      if (interactionMeta.interactionType === 'glassTrackEditor') showGlassTrackEditorOverlay(interactionMeta);
+      else if (interactionMeta.interactionType === 'postEditor' || interactionMeta.interactionType === 'frontPostProfileEditor') showFrontPostProfileOverlay(interactionMeta.postIndex);
+      else if (interactionMeta.interactionType === 'sideViewEnable') toggleMiddleSideView(interactionMeta.sideIndex);
+      else if (interactionMeta.interactionType === 'parapetEditor') showParapetEditorOverlay(interactionMeta);
+      else if (interactionMeta.interactionType === 'triangleEditor') showTriangleEditorOverlay(interactionMeta);
+      else if (interactionMeta.interactionType === 'backWallEditor') showBackWallEditorOverlay(interactionMeta);
+      else if (interactionMeta.interactionType === 'productEditor') {
+        const record = findProductByInteraction(interactionMeta);
+        if (!record) return;
+        const editMeta = interactionMetaToProductMeta(interactionMeta, record);
+        editMeta.editProduct = true;
+        editMeta.placementId = record.placement.id;
+        editMeta.productType = record.type;
+        if (record.type === 'guillotine_glass') showGuillotineDetailsOverlay(editMeta, { editExisting: true });
+        else showSlidingDetailsOverlay(editMeta, { editExisting: true });
+      }
+      return;
+    }
+    const meta = dimensionMetaFromHit(dimHit);
+    restoreActiveDimensionPanelParts();
+    if (!meta.editable && !meta.canAddSameProfile && !meta.canAddDifferentProfile && !meta.canPlaceProduct && !findProductForMeta(normalizedProductMeta(meta))) {
+      showPassiveDimensionInfo(meta);
+      return;
+    }
+    showDimensionEditOverlay(meta);
+  }
+
+  function bindPreviewKeyboardGuard() {
+    document.addEventListener('keydown', evt => {
+      if (toolboxSelectionMode) {
+        const active = document.activeElement;
+        const tag = active && active.tagName ? active.tagName.toLowerCase() : '';
+        const isFormField = ['input','select','textarea','button'].includes(tag) && active !== preview;
+        if (evt.key === 'Escape') {
+          evt.preventDefault();
+          cancelToolboxSelection(currentLanguage === 'en' ? 'Selection cancelled.' : 'Seçim iptal edildi.');
+          return;
+        }
+        if (evt.key === 'Enter' && !isFormField) {
+          evt.preventDefault();
+          finishToolboxSelection();
+          return;
+        }
+      }
+      if (evt.key !== 'Enter' && evt.key !== ' ') return;
+      const expanded = !!(previewPanel && previewPanel.classList.contains('is-expanded'));
+      if (!expanded) return;
+      const active = document.activeElement;
+      if (active && active.id === 'expandPreviewBtn') {
+        evt.preventDefault();
+        evt.stopPropagation();
+        focusPreviewCanvas();
+      }
+    }, true);
+  }
+
+  function bindPreviewInteractions() {
+    preview.addEventListener('click', handlePreviewDimensionEdit);
+    preview.addEventListener('keydown', evt => {
+      if (!toolboxSelectionMode || !['Enter', ' '].includes(evt.key)) return;
+      const marker = evt.target && evt.target.closest ? evt.target.closest('.toolbox-selection-marker') : null;
+      if (!marker) return;
+      evt.preventDefault();
+      evt.stopPropagation();
+      toggleToolboxSelectionFromHit(marker);
+    });
+    preview.addEventListener('contextmenu', evt => {
+      if (!toolboxSelectionMode) return;
+      evt.preventDefault();
+      evt.stopPropagation();
+      showToolboxContextMenu(evt.clientX, evt.clientY);
+    });
+
+    preview.addEventListener('wheel', evt => {
+      if (!getPreviewSvg()) return;
+      evt.preventDefault();
+      const factor = evt.deltaY < 0 ? 1.14 : (1 / 1.14);
+      setPreviewZoom(previewState.zoom * factor, evt.clientX, evt.clientY);
+    }, { passive: false });
+
+    preview.addEventListener('pointerdown', evt => {
+      if (beginPreviewDimensionDrag(evt)) return;
+      if (evt.target && evt.target.closest && evt.target.closest('[data-dim-id],[data-edit-field],[data-interaction-type],.preview-dimension-plain')) return;
+      if (evt.button !== 0 || !getPreviewSvg()) return;
+      previewState.dragActive = true;
+      previewState.pointerId = evt.pointerId;
+      previewState.dragStartX = evt.clientX;
+      previewState.dragStartY = evt.clientY;
+      previewState.dragMoved = false;
+      previewState.dragScrollLeft = preview.scrollLeft;
+      previewState.dragScrollTop = preview.scrollTop;
+      preview.classList.add('is-dragging');
+      if (preview.setPointerCapture) {
+        try { preview.setPointerCapture(evt.pointerId); } catch (_) {}
+      }
+      evt.preventDefault();
+    });
+
+    preview.addEventListener('pointermove', evt => {
+      if (movePreviewDimensionDrag(evt)) return;
+      if (!previewState.dragActive) return;
+      const dx = evt.clientX - previewState.dragStartX;
+      const dy = evt.clientY - previewState.dragStartY;
+      if (Math.abs(dx) + Math.abs(dy) > 6) previewState.dragMoved = true;
+      preview.scrollLeft = previewState.dragScrollLeft - dx;
+      preview.scrollTop = previewState.dragScrollTop - dy;
+    });
+
+    const stopDrag = evt => {
+      if (endPreviewDimensionDrag(evt)) return;
+      if (evt && preview.releasePointerCapture && previewState.pointerId !== null) {
+        try { preview.releasePointerCapture(previewState.pointerId); } catch (_) {}
+      }
+      previewState.dragActive = false;
+      previewState.pointerId = null;
+      preview.classList.remove('is-dragging');
     };
 
-    Object.entries(map).forEach(([key, btn]) => {
-      if (!btn) return;
-      btn.textContent = labels[key];
-      const active = key === mode;
-      btn.classList.toggle('active', active);
-      btn.setAttribute('aria-pressed', active ? 'true' : 'false');
-      btn.dataset.viewMode = key;
+    preview.addEventListener('pointerup', stopDrag);
+    preview.addEventListener('pointercancel', stopDrag);
+    preview.addEventListener('dblclick', evt => {
+      if (evt.target && evt.target.closest && evt.target.closest('.editable-dimension,.preview-dimension-plain')) return;
+      if (!getPreviewSvg()) return;
+      const next = previewState.zoom < 1.6 ? Math.max(1.8, previewState.zoom * 1.6) : 1;
+      setPreviewZoom(next, evt.clientX, evt.clientY);
     });
+    // Pencere boyutu ve ölçü kaydırma işlemleri kullanıcının zoom/pan konumunu değiştirmez.
   }
 
-  function applyViewMode(requestedMode) {
-    const mode = safeMode(requestedMode);
-    clearModeClasses();
+  function deepCloneJson(value) {
+    if (value === undefined) return undefined;
+    return JSON.parse(JSON.stringify(value));
+  }
 
-    document.documentElement.classList.add(`force-${mode}-view`);
-    if (document.body) document.body.classList.add(`force-${mode}-view`);
+  function cleanProjectFileToken(value, fallback) {
+    const raw = String(value ?? '').trim();
+    const safe = window.PulumurModernDXF && typeof window.PulumurModernDXF.safeFileName === 'function'
+      ? window.PulumurModernDXF.safeFileName(raw)
+      : raw.replace(/[\\/:*?"<>|]+/g, '-').replace(/\s+/g, '-').replace(/^-+|-+$/g, '');
+    return safe || fallback;
+  }
 
-    const z = zoomFor(mode);
-    document.documentElement.style.setProperty('--forced-view-zoom', String(z));
+  function createProjectSnapshot() {
+    const formData = {};
+    ids.forEach(id => {
+      const el = $(id);
+      if (!el) return;
+      const rawValue = String(el.value ?? '');
+      formData[id] = BOOLEAN_FIELD_IDS.includes(id)
+        ? normalizeYesNo(rawValue)
+        : (upperTableFieldIds.includes(id) ? rawValue.replace(/\r\n/g, ' ').replace(/\r/g, ' ').replace(/\n/g, ' ').replace(/\s+/g, ' ').trim() : rawValue);
+    });
 
-    updateButtons(mode);
+    return {
+      format: PROJECT_FORMAT,
+      schemaVersion: PROJECT_SCHEMA_VERSION,
+      appVersion: APP_VERSION,
+      savedAt: new Date().toISOString(),
+      record: deepCloneJson(currentProjectRecord),
+      metadata: {
+        customerName: formData.customer || '',
+        projectName: formData.project || '',
+        drawingVersion: formData.version || '',
+        productType: formData.product || 'Pergo Rise',
+        moduleName: formData.moduleName || 'Module 1',
+        drawingEngine: formData.engine || 'Web DXF'
+      },
+      formData,
+      drawingState: {
+        manualPostPlacementMode,
+        glassTrackProfile: sanitizeGlassTrackProfile(glassTrackProfileState),
+        glassTrackSupportProfiles: {
+          left: sanitizeOptionalGlassTrackProfile(glassSupportProfileState.left),
+          right: sanitizeOptionalGlassTrackProfile(glassSupportProfileState.right)
+        },
+        frontPostCenters: Array.isArray(customFrontPostCenters) ? customFrontPostCenters.map(Number) : null,
+        customRayPositions: deepCloneJson(customRayPositions),
+        sideSupportCenters: { ...customSideSupportCenters },
+        sidePosts: deepCloneJson(customSidePosts) || {},
+        frontPostProfiles: deepCloneJson(frontPostProfiles) || [],
+        frontPostExtensions: deepCloneJson(frontPostExtensions) || [],
+        parapetSegments: deepCloneJson(parapetSegments) || { front: [], side: {} },
+        sideFeatureState: deepCloneJson(sideFeatureState) || normalizeSideFeatureStateForApp(),
+        glassTrackLengthOffsets: deepCloneJson(glassTrackLengthOffsets) || { left: 0, right: 0, middle: {} },
+        triangleDivisionState: deepCloneJson(triangleDivisionState) || { left: null, right: null, middle: {} },
+        backWallState: deepCloneJson(backWallState) || { left: { xOffset: 0, depth: 600, height: 0 }, right: { xOffset: 0, depth: 600, height: 0 }, middle: {} },
+        backWallSegments: deepCloneJson(backWallSegments) || { side: {} },
+        previewDimensionOffsets: deepCloneJson(previewDimensionOffsets) || {},
+        slidingPlacements: deepCloneJson(slidingPlacements) || [],
+        sideSlidingPlacements: deepCloneJson(sideSlidingPlacements) || [],
+        guillotinePlacements: deepCloneJson(guillotinePlacements) || [],
+        sideGuillotinePlacements: deepCloneJson(sideGuillotinePlacements) || [],
+        manualInputFlags: {
+          rayCount: Boolean($('rayCount') && $('rayCount').dataset.userEdited === 'true'),
+          postCount: Boolean($('postCount') && $('postCount').dataset.userEdited === 'true')
+        }
+      },
+      uiSettings: {
+        language: currentLanguage,
+        dimensions: serializePreviewDimensionFilter()
+      }
+    };
+  }
 
-    // Mobile must always return to exact screen fit.
-    if (mode === 'mobile') {
-      document.documentElement.style.setProperty('--forced-view-zoom', '1');
-      if (document.body) document.body.scrollLeft = 0;
-      document.documentElement.scrollLeft = 0;
-      window.scrollTo({ left: 0, top: window.scrollY });
+  function normalizeProjectSnapshot(raw) {
+    if (!raw || typeof raw !== 'object' || Array.isArray(raw)) {
+      throw new Error(currentLanguage === 'en' ? 'The project file is not a valid JSON object.' : 'Proje dosyası geçerli bir JSON nesnesi değil.');
+    }
+    if (raw.format !== PROJECT_FORMAT) {
+      throw new Error(currentLanguage === 'en' ? 'This is not a Pülümür project file.' : 'Bu dosya Pülümür proje dosyası değil.');
+    }
+    const schemaVersion = Number(raw.schemaVersion);
+    if (!Number.isInteger(schemaVersion) || schemaVersion < 1) {
+      throw new Error(currentLanguage === 'en' ? 'The project schema version is invalid.' : 'Proje veri şeması sürümü geçersiz.');
+    }
+    if (schemaVersion > PROJECT_SCHEMA_VERSION) {
+      throw new Error(currentLanguage === 'en'
+        ? `This project was created with a newer data schema (v${schemaVersion}).`
+        : `Bu proje daha yeni bir veri şemasıyla oluşturulmuş (v${schemaVersion}).`);
+    }
+    if (!raw.formData || typeof raw.formData !== 'object' || Array.isArray(raw.formData)) {
+      throw new Error(currentLanguage === 'en' ? 'The project form data is missing.' : 'Projenin form verileri eksik.');
+    }
+    return deepCloneJson(raw);
+  }
+
+  function restoreProjectSnapshot(rawSnapshot, options = {}) {
+    const snapshot = normalizeProjectSnapshot(rawSnapshot);
+    const formData = snapshot.formData || {};
+    const record = snapshot.record || {};
+    const drawingState = snapshot.drawingState || {};
+    const uiSettings = snapshot.uiSettings || {};
+    const nextLanguage = uiSettings.language === 'en' ? 'en' : 'tr';
+
+    suppressFormPreviewUpdate = true;
+    try {
+      currentProjectRecord = {
+        projectId: record.projectId ? String(record.projectId) : null,
+        projectCode: record.projectCode ? String(record.projectCode) : null,
+        revisionNo: Number.isInteger(Number(record.revisionNo)) && Number(record.revisionNo) > 0 ? Number(record.revisionNo) : 1
+      };
+
+      if ($('languageSelect')) $('languageSelect').value = nextLanguage;
+      translateUI(nextLanguage);
+
+      ids.forEach(id => {
+        const el = $(id);
+        if (!el || formData[id] === undefined || formData[id] === null) return;
+        el.value = BOOLEAN_FIELD_IDS.includes(id) ? normalizeYesNo(formData[id]) : String(formData[id]);
+        autosizeTextarea(el);
+      });
+
+      manualPostPlacementMode = typeof drawingState.manualPostPlacementMode === 'string'
+        ? drawingState.manualPostPlacementMode
+        : 'standard';
+      glassTrackProfileState = sanitizeGlassTrackProfile(drawingState.glassTrackProfile);
+      const supports = drawingState.glassTrackSupportProfiles || {};
+      glassSupportProfileState = {
+        left: sanitizeOptionalGlassTrackProfile(supports.left),
+        right: sanitizeOptionalGlassTrackProfile(supports.right)
+      };
+      customRayPositions = drawingState.customRayPositions && typeof drawingState.customRayPositions === 'object' ? deepCloneJson(drawingState.customRayPositions) : null;
+      customFrontPostCenters = Array.isArray(drawingState.frontPostCenters)
+        ? drawingState.frontPostCenters.map(Number).filter(Number.isFinite)
+        : null;
+      customSideSupportCenters = drawingState.sideSupportCenters && typeof drawingState.sideSupportCenters === 'object'
+        ? Object.fromEntries(Object.entries(drawingState.sideSupportCenters).map(([key, value]) => [String(key), Number(value)]).filter(([, value]) => Number.isFinite(value)))
+        : {};
+      customSidePosts = drawingState.sidePosts && typeof drawingState.sidePosts === 'object'
+        ? deepCloneJson(drawingState.sidePosts) || {}
+        : {};
+      frontPostProfiles = Array.isArray(drawingState.frontPostProfiles)
+        ? deepCloneJson(drawingState.frontPostProfiles) || []
+        : [];
+      frontPostExtensions = Array.isArray(drawingState.frontPostExtensions)
+        ? drawingState.frontPostExtensions.map(value => Math.max(0, Number(value) || 0))
+        : [];
+      parapetSegments = drawingState.parapetSegments && typeof drawingState.parapetSegments === 'object'
+        ? deepCloneJson(drawingState.parapetSegments) || { front: [], side: {} }
+        : { front: [], side: {} };
+      sideFeatureState = normalizeSideFeatureStateForApp(drawingState.sideFeatureState);
+      glassTrackLengthOffsets = normalizeGlassTrackLengthOffsetsForApp(drawingState.glassTrackLengthOffsets);
+      triangleDivisionState = normalizeTriangleDivisionStateForApp(drawingState.triangleDivisionState);
+      backWallState = normalizeBackWallStateForApp(drawingState.backWallState);
+      backWallSegments = normalizeBackWallSegmentsForApp(drawingState.backWallSegments);
+      previewDimensionOffsets = drawingState.previewDimensionOffsets && typeof drawingState.previewDimensionOffsets === 'object'
+        ? normalizePreviewDimensionOffsets(drawingState.previewDimensionOffsets)
+        : {};
+      slidingPlacements = Array.isArray(drawingState.slidingPlacements)
+        ? deepCloneJson(drawingState.slidingPlacements)
+        : [];
+      sideSlidingPlacements = Array.isArray(drawingState.sideSlidingPlacements)
+        ? (deepCloneJson(drawingState.sideSlidingPlacements) || []).map(item => {
+            const key = normalizeSideViewKey(item.sideViewKey, item.sideIndex);
+            return { ...item, sideViewKey: key, placementView: key === 'right' ? 'side-right' : 'side-left' };
+          })
+        : [];
+      guillotinePlacements = Array.isArray(drawingState.guillotinePlacements)
+        ? deepCloneJson(drawingState.guillotinePlacements)
+        : [];
+      sideGuillotinePlacements = Array.isArray(drawingState.sideGuillotinePlacements)
+        ? (deepCloneJson(drawingState.sideGuillotinePlacements) || []).map(item => {
+            const key = normalizeSideViewKey(item.sideViewKey, item.sideIndex);
+            return { ...item, sideViewKey: key, placementView: key === 'right' ? 'side-right' : 'side-left' };
+          })
+        : [];
+      pendingSlidingPlacementMeta = null;
+      pendingGuillotinePlacementMeta = null;
+
+      const manualFlags = drawingState.manualInputFlags || {};
+      if ($('rayCount')) $('rayCount').dataset.userEdited = manualFlags.rayCount ? 'true' : 'false';
+      if ($('postCount')) $('postCount').dataset.userEdited = manualFlags.postCount ? 'true' : 'false';
+
+      updateRemoteOptions(true);
+
+      const dimensions = uiSettings.dimensions || {};
+      restorePreviewDimensionFilter(dimensions);
+      syncDimensionFilterControls();
+
+      document.querySelectorAll('.quick-test-btn.active').forEach(btn => btn.classList.remove('active'));
+    } finally {
+      suppressFormPreviewUpdate = false;
     }
 
-    setTimeout(() => window.dispatchEvent(new Event('resize')), 40);
-    setTimeout(() => window.dispatchEvent(new Event('resize')), 250);
+    const drawing = updatePreview(options.resetZoom === true);
+    if (!drawing && options.requireValidDrawing === true) {
+      throw new Error(currentLanguage === 'en'
+        ? 'The project data was loaded, but the drawing could not be rebuilt.'
+        : 'Proje verileri yüklendi ancak çizim yeniden oluşturulamadı.');
+    }
+    return drawing;
   }
 
-  function currentMode() {
-    return safeMode(localStorage.getItem(STORAGE_KEY) || 'mobile');
+
+  function restoreProjectSnapshotWithHistory(rawSnapshot, options = {}) {
+    const shouldResetHistory = options.resetHistory === true;
+    const previousRestoring = projectHistory.restoring;
+    if (shouldResetHistory) projectHistory.restoring = true;
+    let drawing;
+    try {
+      drawing = restoreProjectSnapshot(rawSnapshot, options);
+    } finally {
+      if (shouldResetHistory) projectHistory.restoring = previousRestoring;
+    }
+    if (shouldResetHistory) {
+      resetProjectHistory(false);
+      if (drawing) recordProjectHistoryState({ force: true });
+    }
+    return drawing;
   }
 
-  function setViewMode(mode) {
-    const next = safeMode(mode);
-    localStorage.setItem(STORAGE_KEY, next);
-    OLD_KEYS.forEach((key) => {
-      try { localStorage.removeItem(key); } catch {}
+  function serializeProjectSnapshot(snapshot = createProjectSnapshot()) {
+    return JSON.stringify(normalizeProjectSnapshot(snapshot), null, 2);
+  }
+
+  function parseProjectSnapshot(text) {
+    let raw;
+    try {
+      raw = JSON.parse(String(text ?? ''));
+    } catch (err) {
+      throw new Error(currentLanguage === 'en' ? 'The project file contains invalid JSON.' : 'Proje dosyasındaki JSON içeriği geçersiz.');
+    }
+    return normalizeProjectSnapshot(raw);
+  }
+
+  function projectSnapshotFileName(snapshot) {
+    const meta = (snapshot && snapshot.metadata) || {};
+    const record = (snapshot && snapshot.record) || {};
+    const projectName = cleanProjectFileToken(meta.projectName, currentLanguage === 'en' ? 'project' : 'proje');
+    const revisionNo = Number(record.revisionNo) > 0 ? Number(record.revisionNo) : 1;
+    const revision = `R${String(revisionNo).padStart(2, '0')}`;
+    const projectCode = cleanProjectFileToken(record.projectCode, 'LOCAL');
+    return `${projectCode}-${projectName}-${revision}.plmr`;
+  }
+
+  function exportProjectSnapshot() {
+    try {
+      const snapshot = createProjectSnapshot();
+      const filename = projectSnapshotFileName(snapshot);
+      downloadText(filename, serializeProjectSnapshot(snapshot), 'application/json;charset=utf-8');
+      statusText.textContent = currentLanguage === 'en'
+        ? `Project file downloaded: ${filename}`
+        : `Proje dosyası indirildi: ${filename}`;
+      if (window.PulumurActivity) {
+        const record = getCurrentProjectRecord();
+        void window.PulumurActivity.log('project_file_download', {
+          projectId: record.projectId, projectCode: record.projectCode, revisionNo: record.revisionNo,
+          detail: { filename }
+        });
+      }
+    } catch (err) {
+      statusText.textContent = err.message;
+      window.alert(err.message);
+      console.error(err);
+    }
+  }
+
+  async function importProjectSnapshotFile(file) {
+    if (!file) return;
+    if (file.size > 5 * 1024 * 1024) {
+      throw new Error(currentLanguage === 'en' ? 'The project file is larger than 5 MB.' : 'Proje dosyası 5 MB sınırından büyük.');
+    }
+    const text = await file.text();
+    const snapshot = parseProjectSnapshot(text);
+    restoreProjectSnapshotWithHistory(snapshot, { resetZoom: false, resetHistory: true });
+    statusText.textContent = currentLanguage === 'en'
+      ? `Project loaded: ${file.name}`
+      : `Proje yüklendi: ${file.name}`;
+  }
+
+  function openProjectSnapshotPicker() {
+    const input = $('projectImportInput');
+    if (!input) return;
+    input.value = '';
+    input.click();
+  }
+
+  function getCurrentProjectRecord() {
+    return deepCloneJson(currentProjectRecord);
+  }
+
+  function setCurrentProjectRecord(record = {}) {
+    currentProjectRecord = {
+      projectId: record.projectId ? String(record.projectId) : null,
+      projectCode: record.projectCode ? String(record.projectCode) : null,
+      revisionNo: Number.isInteger(Number(record.revisionNo)) && Number(record.revisionNo) > 0 ? Number(record.revisionNo) : 1
+    };
+    return getCurrentProjectRecord();
+  }
+
+  window.PulumurProjectState = Object.freeze({
+    format: PROJECT_FORMAT,
+    schemaVersion: PROJECT_SCHEMA_VERSION,
+    appVersion: APP_VERSION,
+    createSnapshot: createProjectSnapshot,
+    restoreSnapshot: restoreProjectSnapshotWithHistory,
+    resetHistory: (captureCurrent = true) => resetProjectHistory(captureCurrent),
+    serialize: serializeProjectSnapshot,
+    parse: parseProjectSnapshot,
+    getRecord: getCurrentProjectRecord,
+    setRecord: setCurrentProjectRecord
+  });
+
+  function downloadBlob(filename, blob) {
+    if (window.navigator && typeof window.navigator.msSaveOrOpenBlob === 'function') {
+      window.navigator.msSaveOrOpenBlob(blob, filename);
+      return;
+    }
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = filename;
+    a.rel = 'noopener';
+    a.style.display = 'none';
+    document.body.appendChild(a);
+    a.click();
+    window.setTimeout(() => {
+      URL.revokeObjectURL(url);
+      a.remove();
+    }, 1500);
+  }
+
+  function downloadText(filename, text, mime = 'application/octet-stream;charset=utf-8') {
+    downloadBlob(filename, new Blob([text], { type: mime }));
+  }
+
+  function buildNameRoot(drawing) {
+    const record = currentProjectRecord || {};
+    const revisionNo = Number(record.revisionNo) > 0 ? Number(record.revisionNo) : 1;
+    const revision = `R${String(revisionNo).padStart(2, '0')}`;
+    const projectCode = record.projectCode || 'LOCAL';
+    return window.PulumurModernDXF.safeFileName(`${projectCode}-${drawing.input.project}-${revision}-${drawing.input.product}-web-dxf-v8_6_0-v${drawing.input.version}`);
+  }
+
+  function currentDxfDimensionHiddenLayers() {
+    const mainOn = previewDimensionFilter.main !== false;
+    const allOn = mainOn && previewDimensionFilter.all === true;
+    return {
+      'Ölçüler - Ana': !mainOn,
+      'Ölçüler - Detay': !allOn
+    };
+  }
+
+  function generateDxf() {
+    try {
+      const drawing = updatePreview();
+      if (!drawing) return;
+      drawing.hiddenLayers = currentDxfDimensionHiddenLayers();
+      const engine = window.PulumurModernDXF;
+      if (!engine || typeof engine.toDxf !== 'function') {
+        throw new Error(currentLanguage === 'en'
+          ? 'The Modern DXF engine could not be loaded (modernDxfTemplate.js / dxfModernEngine.js).'
+          : 'Modern DXF motoru yüklenemedi (modernDxfTemplate.js / dxfModernEngine.js).');
+      }
+      const dxf = engine.toDxf(drawing);
+      if (!dxf || dxf.length < 100) throw new Error(currentLanguage === 'en' ? 'The generated DXF is empty.' : 'DXF içeriği boş oluştu.');
+      const nameRoot = buildNameRoot(drawing);
+      downloadText(`${nameRoot}.dxf`, dxf, 'application/dxf;charset=utf-8');
+      statusText.textContent = currentLanguage === 'en'
+        ? `DXF downloaded: ${nameRoot}.dxf`
+        : `DXF indirildi: ${nameRoot}.dxf`;
+      if (window.PulumurActivity) {
+        const record = getCurrentProjectRecord();
+        void window.PulumurActivity.log('dxf_download', {
+          projectId: record.projectId, projectCode: record.projectCode, revisionNo: record.revisionNo,
+          detail: { filename: `${nameRoot}.dxf` }
+        });
+      }
+    } catch (err) {
+      statusText.textContent = currentLanguage === 'en' ? `DXF generation error: ${err.message}` : `DXF oluşturma hatası: ${err.message}`;
+      window.alert(currentLanguage === 'en' ? `DXF generation error:
+${err.message}` : `DXF oluşturma hatası:
+${err.message}`);
+      console.error(err);
+    }
+  }
+
+  function ensureJsPdf() {
+    if (window.jspdf && window.jspdf.jsPDF) return Promise.resolve(window.jspdf.jsPDF);
+    const existing = document.querySelector('script[data-jspdf="1"]');
+    if (existing) {
+      return new Promise((resolve, reject) => {
+        existing.addEventListener('load', () => resolve(window.jspdf && window.jspdf.jsPDF), { once: true });
+        existing.addEventListener('error', () => reject(new Error(currentLanguage === 'en' ? 'jsPDF could not be loaded.' : 'jsPDF yüklenemedi.')), { once: true });
+      });
+    }
+    return new Promise((resolve, reject) => {
+      const script = document.createElement('script');
+      script.src = 'https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js';
+      script.async = true;
+      script.dataset.jspdf = '1';
+      script.onload = () => resolve(window.jspdf && window.jspdf.jsPDF);
+      script.onerror = () => reject(new Error(currentLanguage === 'en' ? 'PDF library could not be loaded.' : 'PDF kütüphanesi yüklenemedi.'));
+      document.head.appendChild(script);
     });
-    applyViewMode(next);
   }
 
-  function bindButtons() {
-    [
-      ['mobileViewBtn', 'mobile'],
-      ['tabletViewBtn', 'tablet'],
-      ['desktopViewBtn', 'desktop']
-    ].forEach(([id, mode]) => {
-      const btn = document.getElementById(id);
-      if (!btn || btn.dataset.viewModeBound) return;
-      btn.dataset.viewModeBound = '1';
-      btn.addEventListener('click', () => setViewMode(mode));
+  function hexToRgb(hex) {
+    const clean = String(hex || '#000000').replace('#', '').trim();
+    if (clean.length !== 6) return [0, 0, 0];
+    const value = Number.parseInt(clean, 16);
+    if (!Number.isFinite(value)) return [0, 0, 0];
+    return [(value >> 16) & 255, (value >> 8) & 255, value & 255];
+  }
+
+  const ACI_HEX = {
+    1: '#ff0000',
+    2: '#ffff00',
+    3: '#00ff00',
+    4: '#00ffff',
+    5: '#0000ff',
+    6: '#ff00ff',
+    7: '#000000',
+    8: '#808080',
+    9: '#c0c0c0',
+    42: '#ffbf00',
+    130: '#00bf00',
+    256: null
+  };
+
+  function aciColorToHex(color, fallback = '#000000') {
+    if (window.PulumurGeometry && typeof window.PulumurGeometry.aciColorToHex === 'function') {
+      return window.PulumurGeometry.aciColorToHex(color, fallback);
+    }
+    const n = Number(color);
+    if (!Number.isFinite(n) || n === 256 || n === 0) return fallback;
+    return ACI_HEX[n] || fallback;
+  }
+
+  function entityPdfColor(ent, st) {
+    return aciColorToHex(ent && ent.color, (st && st.stroke) || '#000000');
+  }
+
+  function pdfPageForBounds(box) {
+    const ratio = Math.max(0.1, Math.min(10, box.width / Math.max(1, box.height)));
+    const landscape = ratio >= 1;
+    return landscape
+      ? { width: 1189, height: 841, orientation: 'landscape' }
+      : { width: 841, height: 1189, orientation: 'portrait' };
+  }
+
+  function setPdfStroke(pdf, ent, layerStyle, scale) {
+    const st = layerStyle[ent.layer] || layerStyle.OUTLINE || { stroke: '#000000', width: 1 };
+    const [r, g, b] = hexToRgb(entityPdfColor(ent, st));
+    pdf.setDrawColor(r, g, b);
+    pdf.setTextColor(r, g, b);
+    // DraftSight çıktısına yakın A0 görünümü: ince, vektörel ve keskin çizgi.
+    const lw = Math.max(0.04, Math.min(0.30, (Number(st.width) || 1) * scale * 0.85));
+    pdf.setLineWidth(lw);
+    if (st.dash && typeof pdf.setLineDashPattern === 'function') {
+      const dash = String(st.dash).split(/\s+/).map(Number).filter(Number.isFinite).map(v => Math.max(0.12, v * scale));
+      pdf.setLineDashPattern(dash.length ? dash : [], 0);
+    } else if (typeof pdf.setLineDashPattern === 'function') {
+      pdf.setLineDashPattern([], 0);
+    }
+  }
+
+  function writePdfText(pdf, ent, mx, my, scale) {
+    const raw = String(ent.value || '');
+    if (!raw) return;
+    const fontMm = Math.max(0.75, (Number(ent.height) || 100) * scale);
+    pdf.setFont('helvetica', 'normal');
+    pdf.setFontSize(fontMm * 72 / 25.4);
+    const align = ent.align === 'center' ? 'center' : (ent.align === 'right' ? 'right' : 'left');
+    const lines = ent.type === 'mtext' ? raw.split('\\P') : [raw];
+    lines.forEach((line, idx) => {
+      pdf.text(line, mx(ent.x), my(ent.y) + idx * fontMm * 1.15, {
+        align,
+        baseline: 'middle',
+        angle: -(Number(ent.rotation) || 0)
+      });
     });
   }
 
-  function init() {
-    bindButtons();
-    // Always prefer the v4 key; old desktop/tablet selections must not leak into the new logic.
-    applyViewMode(currentMode());
+  function drawVectorPdf(pdf, drawing, page, margin) {
+    const flat = window.PulumurGeometry.flattenDrawingForExport
+      ? window.PulumurGeometry.flattenDrawingForExport(drawing)
+      : { entities: drawing.entities || [], bounds: window.PulumurGeometry.bounds(drawing.entities || []), layerStyle: drawing.layerStyle || window.PulumurGeometry.LAYER_STYLE };
+    const box = flat.bounds;
+    const usableW = Math.max(1, page.width - margin * 2);
+    const usableH = Math.max(1, page.height - margin * 2);
+    const scale = Math.min(usableW / Math.max(1, box.width), usableH / Math.max(1, box.height));
+    const contentW = box.width * scale;
+    const contentH = box.height * scale;
+    const offsetX = (page.width - contentW) / 2 - box.minX * scale;
+    const offsetY = (page.height - contentH) / 2 + box.maxY * scale;
+    const mx = x => offsetX + x * scale;
+    const my = y => offsetY - y * scale;
+    const layerStyle = flat.layerStyle || window.PulumurGeometry.LAYER_STYLE;
+
+    pdf.setFillColor(255, 255, 255);
+    pdf.rect(0, 0, page.width, page.height, 'F');
+    (flat.entities || []).forEach(ent => {
+      setPdfStroke(pdf, ent, layerStyle, scale);
+      if (ent.type === 'line') {
+        pdf.line(mx(ent.x1), my(ent.y1), mx(ent.x2), my(ent.y2));
+      } else if (ent.type === 'polyline') {
+        const pts = ent.points || [];
+        for (let i = 0; i < pts.length - 1; i += 1) pdf.line(mx(pts[i][0]), my(pts[i][1]), mx(pts[i + 1][0]), my(pts[i + 1][1]));
+        if (ent.closed && pts.length > 2) pdf.line(mx(pts[pts.length - 1][0]), my(pts[pts.length - 1][1]), mx(pts[0][0]), my(pts[0][1]));
+      } else if (ent.type === 'circle') {
+        pdf.circle(mx(ent.x), my(ent.y), Math.abs(ent.r) * scale, 'S');
+      } else if (ent.type === 'text' || ent.type === 'mtext') {
+        writePdfText(pdf, ent, mx, my, scale);
+      }
+    });
+    if (typeof pdf.setLineDashPattern === 'function') pdf.setLineDashPattern([], 0);
   }
 
-  window.addEventListener('load', () => setTimeout(init, 80));
-  window.addEventListener('resize', () => setTimeout(() => applyViewMode(currentMode()), 80));
-  window.addEventListener('orientationchange', () => setTimeout(() => applyViewMode(currentMode()), 260));
-  document.addEventListener('click', () => setTimeout(() => applyViewMode(currentMode()), 120), true);
-  document.addEventListener('change', () => setTimeout(() => applyViewMode(currentMode()), 120), true);
+  async function generatePdf() {
+    preview.classList.add('is-loading');
+    try {
+      const drawing = updatePreview();
+      if (!drawing) return;
+      const jsPDF = await ensureJsPdf();
+      if (!jsPDF) throw new Error(currentLanguage === 'en' ? 'PDF library is not available.' : 'PDF kütüphanesi aktif değil.');
+      const flat = window.PulumurGeometry.flattenDrawingForExport
+        ? window.PulumurGeometry.flattenDrawingForExport(drawing)
+        : { bounds: window.PulumurGeometry.bounds(drawing.entities || []) };
+      const page = pdfPageForBounds(flat.bounds);
+      const pdf = new jsPDF({ orientation: page.orientation, unit: 'mm', format: [page.width, page.height], compress: true, precision: 12, putOnlyUsedFonts: true });
+      drawVectorPdf(pdf, drawing, page, 6);
+      const blob = pdf.output('blob');
+      const nameRoot = buildNameRoot(drawing);
+      downloadBlob(`${nameRoot}.pdf`, blob);
+      statusText.textContent = currentLanguage === 'en' ? `PDF downloaded: ${nameRoot}.pdf` : `PDF indirildi: ${nameRoot}.pdf`;
+      if (window.PulumurActivity) {
+        const record = getCurrentProjectRecord();
+        void window.PulumurActivity.log('pdf_download', {
+          projectId: record.projectId, projectCode: record.projectCode, revisionNo: record.revisionNo,
+          detail: { filename: `${nameRoot}.pdf` }
+        });
+      }
+    } catch (err) {
+      statusText.textContent = currentLanguage === 'en' ? `PDF generation error: ${err.message}` : `PDF oluşturma hatası: ${err.message}`;
+      window.alert(currentLanguage === 'en' ? `PDF generation error:\n${err.message}` : `PDF oluşturma hatası:\n${err.message}`);
+      console.error(err);
+    } finally {
+      preview.classList.remove('is-loading');
+    }
+  }
 
-  setTimeout(init, 50);
-  setTimeout(init, 300);
-  setTimeout(init, 900);
+  function syncExpandButton() {
+    const btn = $('expandPreviewBtn');
+    if (!btn || !previewPanel) return;
+    const expanded = previewPanel.classList.contains('is-expanded');
+    const txt = UI_TEXT[currentLanguage] || UI_TEXT.tr;
+    btn.textContent = expanded ? txt.shrinkPreviewBtn : txt.expandPreviewBtn;
+  }
 
-  window.setProductRequestViewMode = setViewMode;
-  window.applyProductRequestViewMode = applyViewMode;
+  function focusPreviewCanvas() {
+    if (document.activeElement && typeof document.activeElement.blur === 'function') {
+      document.activeElement.blur();
+    }
+    if (preview && typeof preview.focus === 'function') {
+      window.setTimeout(() => preview.focus({ preventScroll: true }), 30);
+    }
+  }
+
+  function capturePreviewViewport() {
+    const totalScale = Math.max(0.0001, (Number(previewState.baseScale) || 1) * (Number(previewState.zoom) || 1));
+    return {
+      worldCenterX: (preview.scrollLeft + preview.clientWidth / 2) / totalScale,
+      worldCenterY: (preview.scrollTop + preview.clientHeight / 2) / totalScale,
+      totalScale
+    };
+  }
+
+  function restorePreviewViewport(viewport) {
+    if (!viewport) return;
+    const totalScale = Math.max(0.0001, viewport.totalScale || ((Number(previewState.baseScale) || 1) * (Number(previewState.zoom) || 1)));
+    preview.scrollLeft = Math.max(0, viewport.worldCenterX * totalScale - preview.clientWidth / 2);
+    preview.scrollTop = Math.max(0, viewport.worldCenterY * totalScale - preview.clientHeight / 2);
+  }
+
+  async function togglePreviewFullscreen() {
+    if (!previewPanel) return;
+    const viewport = capturePreviewViewport();
+    const expanded = !previewPanel.classList.contains('is-expanded');
+    // Native Fullscreen API kullanılmaz: tarayıcının Esc davranışı büyük önizlemeyi
+    // istemeden küçültmesin. Büyük önizleme sadece bu butonla açılır/kapanır.
+    previewPanel.classList.toggle('is-expanded', expanded);
+    document.body.classList.toggle('preview-expanded-open', expanded);
+    window.requestAnimationFrame(() => {
+      restorePreviewViewport(viewport);
+      window.requestAnimationFrame(() => restorePreviewViewport(viewport));
+      focusPreviewCanvas();
+    });
+    syncExpandButton();
+  }
+
+  function resetForm() {
+    resetProjectHistory(false);
+    fillInitial();
+    document.querySelectorAll('.quick-test-btn.active').forEach(btn => btn.classList.remove('active'));
+    updatePreview();
+  }
+
+  function n(id) {
+    const value = $(id).value;
+    if (value === '') return null;
+    const parsed = Number(String(value).replace(',', '.'));
+    return Number.isFinite(parsed) ? parsed : null;
+  }
+
+  function setValue(id, value, digits = 0) {
+    if (value === null || value === undefined || !Number.isFinite(value)) return;
+    $(id).value = Number(value).toFixed(digits).replace(/\.0+$/, '').replace(/(\.\d*?)0+$/, '$1');
+  }
+
+  function calculateMissing() {
+    const angle = $('calcAngle').value;
+    const opening = $('calcOpening').value;
+    const rear = $('calcRear').value;
+    const front = $('calcFront').value;
+    try {
+      const br = window.PulumurExcelBridge;
+      const result = br.calculateSystem({ angle, opening, rear, front });
+      lastCalc = result;
+
+      const ids = ['calcAngle', 'calcOpening', 'calcRear', 'calcFront'];
+      const targetId = ids[result.missingIndex];
+      $(targetId).value = result.resultText;
+      {
+        const txt = UI_TEXT[currentLanguage] || UI_TEXT.tr;
+        $('calcResult').textContent = `${txt.calcReady} (${result.pozSay} ${txt.calcPoz}): ${result.resultText}`;
+      }
+      return result;
+    } catch (err) {
+      $('calcResult').textContent = err.message;
+      lastCalc = null;
+      return null;
+    }
+  }
+
+  function transferCalc() {
+    const result = lastCalc || calculateMissing();
+    if (!result) return;
+    const ids = ['calcAngle', 'calcOpening', 'calcRear', 'calcFront'];
+    // Excel "Değerleri Hücrelere Aktar" davranışına web karşılığı:
+    // Açılım / Arka Yükseklik / Ön Yükseklik ana forma aktarılır.
+    if ($('calcOpening').value) $('opening').value = $('calcOpening').value;
+    if ($('calcRear').value) $('rearHeight').value = $('calcRear').value;
+    if ($('calcFront').value) $('frontHeight').value = $('calcFront').value;
+    updatePreview();
+    $('calculatorDialog').close();
+  }
+
+  function clearCalc() {
+    ['calcAngle', 'calcOpening', 'calcRear', 'calcFront'].forEach(id => { $(id).value = ''; });
+    $('calcResult').textContent = (UI_TEXT[currentLanguage] || UI_TEXT.tr).calcWaiting;
+    lastCalc = null;
+  }
+
+  function openCalculator() {
+    $('calcOpening').value = $('opening').value || '';
+    $('calcRear').value = $('rearHeight').value || '';
+    $('calcFront').value = $('frontHeight').value || '';
+    $('calcAngle').value = '';
+    $('calcResult').textContent = (UI_TEXT[currentLanguage] || UI_TEXT.tr).calcOpenNote;
+    $('calculatorDialog').showModal();
+  }
+
+  const WEB_HELP_TEXT_TR = `WEB KULLANIM KILAVUZU
+Pülümür Automation Studio, Pergo Rise Module 1 için DXF ve A0 PDF üretir.
+
+1) Temel kullanım
+- Proje bilgilerini yaz.
+- Sistem ölçülerini mm olarak gir.
+- Önizleme otomatik oluşur.
+- PDF İndir veya DXF İndir butonlarını kullan.
+- DXF İndir butonu düzenlenebilir modern DXF dosyası üretir.
+
+2) Çoklu poz
+- Değerleri noktalı virgül (;) ile ayır.
+- Örnek genişlik: 4000;4500;5000
+- Örnek açılım: 4500;5200;6000
+- Tek değer yazarsan tüm pozlar için ortak kabul edilir.
+
+3) NO modu
+- Genişlikte sonuna ;NO yazabilirsin.
+- Örnek: 3000;100;3000;NO
+- Bu durumda aradaki 100 ara boşluktur.
+
+4) Otomatik ray ve dikme
+- Ray sayısı genişliğe göre otomatik gelir.
+- Cam Kaydı EVET ise ray hesabı gerçek çizim genişliğine göre yapılır.
+- Ray veya dikme sayısını manuel yazarsan o değer kullanılır.
+
+5) Önizleme
+- Mouse tekerleği ile yakınlaş / uzaklaş.
+- Sol tuşa basılı tutup sürükle.
+- Çizimi Sığdır ile tekrar ekrana oturt.
+
+6) Dil
+- Türkçe veya İngilizce seçebilirsin.`;
+
+  const WEB_HELP_TEXT_EN = `WEB USER GUIDE
+Pulumur Automation Studio creates DXF and A0 PDF files for Pergo Rise Module 1.
+
+1) Basic use
+- Write the project information.
+- Enter the system dimensions in mm.
+- The preview is created automatically.
+- Use Download PDF or Download DXF.
+- Download DXF creates an editable modern DXF file.
+
+2) Multiple positions
+- Separate values with semicolon (;).
+- Width example: 4000;4500;5000
+- Projection example: 4500;5200;6000
+- If you write one value, it is used for all positions.
+
+3) NO mode
+- In Width, you can write ;NO at the end.
+- Example: 3000;100;3000;NO
+- Here, 100 is the gap between systems.
+
+4) Automatic rail and post count
+- Rail count is calculated from the width.
+- If Glass Gable is YES, the rail count uses the real drawing width.
+- If you write rail or post count manually, your value is used.
+
+5) Preview
+- Use the mouse wheel to zoom in and out.
+- Hold left mouse button and drag to move.
+- Use Fit Drawing to fit the drawing again.
+
+6) Language
+- You can use Turkish or English.`;
+
+  function showHelp() {
+    const dialog = $('helpDialog');
+    const box = $('helpContent');
+    const text = currentLanguage === 'en' ? WEB_HELP_TEXT_EN : WEB_HELP_TEXT_TR;
+    if (dialog && box) {
+      box.textContent = text;
+      dialog.showModal();
+    } else {
+      alert(text);
+    }
+  }
+
+  function escapeHtml(value) {
+    return String(value ?? '')
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#39;');
+  }
+
+  function optionValuesForInput(input) {
+    const key = input && input.dataset ? input.dataset.excelCombo : '';
+    if (key === 'remote') {
+      const motorValue = $('motor') ? $('motor').value : '-';
+      const motorKey = String(motorValue || '-').trim().toLocaleUpperCase('tr-TR');
+      return REMOTE_OPTIONS_BY_MOTOR[motorKey] || ['-'];
+    }
+    return key && EXCEL_COMBO_OPTIONS[key] ? EXCEL_COMBO_OPTIONS[key] : [];
+  }
+
+  function closeAllCombos(except) {
+    document.querySelectorAll('.excel-combo.open').forEach(box => {
+      if (box !== except) box.classList.remove('open');
+    });
+  }
+
+  function buildComboMenu(input, box) {
+    let menu = box.querySelector('.excel-combo-menu');
+    if (!menu) {
+      menu = document.createElement('div');
+      menu.className = 'excel-combo-menu';
+      box.appendChild(menu);
+    }
+    const values = optionValuesForInput(input);
+    const current = String(input.value || '').trim().toLocaleUpperCase('tr-TR');
+    menu.innerHTML = values.map(v => {
+      const selected = String(v).trim().toLocaleUpperCase('tr-TR') === current ? ' selected' : '';
+      return `<button type="button" class="excel-combo-option${selected}" data-value="${escapeHtml(v)}">${escapeHtml(v)}</button>`;
+    }).join('') || '<div class="excel-combo-empty">Liste yok</div>';
+    menu.querySelectorAll('.excel-combo-option').forEach(btn => {
+      btn.addEventListener('mousedown', evt => evt.preventDefault());
+      btn.addEventListener('click', () => {
+        input.value = btn.dataset.value || '';
+        input.dispatchEvent(new Event('input', { bubbles: true }));
+        input.dispatchEvent(new Event('change', { bubbles: true }));
+        box.classList.remove('open');
+        input.focus();
+      });
+    });
+  }
+
+  function enhanceExcelCombos() {
+    document.querySelectorAll('input[data-excel-combo]').forEach(input => {
+      if (input.closest('.excel-combo')) return;
+      const box = document.createElement('div');
+      box.className = 'excel-combo';
+      const parent = input.parentNode;
+      parent.insertBefore(box, input);
+      box.appendChild(input);
+      input.setAttribute('autocomplete', 'off');
+      input.classList.add('excel-combo-input');
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'excel-combo-button';
+      btn.setAttribute('aria-label', 'Listeyi aç');
+      btn.textContent = '▾';
+      box.appendChild(btn);
+      const toggle = () => {
+        const willOpen = !box.classList.contains('open');
+        closeAllCombos(box);
+        if (willOpen) {
+          buildComboMenu(input, box);
+          box.classList.add('open');
+        } else {
+          box.classList.remove('open');
+        }
+      };
+      btn.addEventListener('click', evt => { evt.preventDefault(); toggle(); });
+      input.addEventListener('focus', () => buildComboMenu(input, box));
+      input.addEventListener('keydown', evt => {
+        if (evt.key === 'ArrowDown' && evt.altKey) {
+          evt.preventDefault();
+          closeAllCombos(box);
+          buildComboMenu(input, box);
+          box.classList.add('open');
+        } else if (evt.key === 'Escape') {
+          box.classList.remove('open');
+        }
+      });
+    });
+    document.addEventListener('click', evt => {
+      if (!evt.target.closest('.excel-combo')) closeAllCombos(null);
+    });
+  }
+
+  function updateRemoteOptions(preserve = true) {
+    const remoteEl = $('remote');
+    if (!remoteEl) return;
+    const options = optionValuesForInput(remoteEl);
+    const previous = preserve ? String(remoteEl.value || '-') : '-';
+    if (!preserve || !options.includes(previous)) remoteEl.value = '-';
+    const box = remoteEl.closest('.excel-combo');
+    if (box && box.classList.contains('open')) buildComboMenu(remoteEl, box);
+  }
+
+  function filterSemiNumeric(value, allowNo) {
+    const src = String(value || '').toLocaleUpperCase('tr-TR');
+    let out = '';
+    let hasN = false;
+    let hasO = false;
+    for (const ch of src) {
+      if (/[0-9;]/.test(ch)) {
+        out += ch;
+      } else if (allowNo && ch === 'N' && !hasN && !hasO) {
+        out += 'N';
+        hasN = true;
+      } else if (allowNo && ch === 'O' && hasN && !hasO && out.endsWith('N')) {
+        out += 'O';
+        hasO = true;
+      }
+    }
+    return out;
+  }
+
+  function applyPresetValues(values) {
+    resetProjectHistory(false);
+    fillInitial();
+    const deferredManual = {};
+    Object.entries(values || {}).forEach(([id, value]) => {
+      const el = $(id);
+      if (!el) return;
+      if (id === 'rayCount' || id === 'postCount') {
+        deferredManual[id] = value;
+        return;
+      }
+      el.value = value;
+    });
+    if (Object.prototype.hasOwnProperty.call(values || {}, 'glassTrack')) setMainSideFeatureValue('glassTrack', normalizeYesNo(values.glassTrack) === 'EVET');
+    if (Object.prototype.hasOwnProperty.call(values || {}, 'triangleJoinery')) setMainSideFeatureValue('triangleJoinery', normalizeYesNo(values.triangleJoinery) === 'EVET');
+    updateRemoteOptions(false);
+    applyAutoRayPost(true);
+    ['rayCount', 'postCount'].forEach(id => {
+      if (!$(id)) return;
+      $(id).dataset.userEdited = 'false';
+    });
+    if (deferredManual.rayCount !== undefined && $('rayCount')) {
+      $('rayCount').value = deferredManual.rayCount;
+      $('rayCount').dataset.userEdited = String(deferredManual.rayCount || '').trim() ? 'true' : 'false';
+      if (deferredManual.postCount === undefined && $('postCount')) {
+        const raw = collectForm();
+        const br = window.PulumurExcelBridge;
+        if (br && br.postCountFromRayText) $('postCount').value = br.postCountFromRayText($('rayCount').value, raw.systemCount, raw.width, raw.frontHeight);
+      }
+    }
+    if (deferredManual.postCount !== undefined && $('postCount')) {
+      $('postCount').value = deferredManual.postCount;
+      $('postCount').dataset.userEdited = String(deferredManual.postCount || '').trim() ? 'true' : 'false';
+    }
+    updateRemoteOptions(true);
+    updatePreview();
+  }
+
+  function renderQuickTests() {
+    const host = $('quickTestsGrid');
+    if (!host) return;
+    host.innerHTML = QUICK_TEST_PRESETS.map((preset, index) => (
+      `<button type="button" class="quick-test-btn" data-test-index="${index}" title="${escapeHtml(preset.title)}">${escapeHtml(preset.name)}</button>`
+    )).join('');
+    host.querySelectorAll('.quick-test-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const idx = Number(btn.dataset.testIndex);
+        const preset = QUICK_TEST_PRESETS[idx];
+        if (!preset) return;
+        host.querySelectorAll('.quick-test-btn').forEach(x => x.classList.remove('active'));
+        btn.classList.add('active');
+        applyPresetValues(preset.values);
+        statusText.textContent = currentLanguage === 'en' ? `${preset.name} loaded.` : `${preset.name} yüklendi: ${preset.title}`;
+      });
+    });
+  }
+
+
+  function syncParapetQuickInput() {
+    const quick=$('parapetQuickInput'), wrap=$('parapetQuickWrap'), source=$('parapetHeight');
+    if(!quick||!wrap||!source) return;
+    if(document.activeElement!==quick) quick.value=String(source.value||'').replace(/[^0-9]/g,'');
+    const has=Number(quick.value)>0;
+    wrap.classList.toggle('is-filled',has); wrap.classList.toggle('is-empty',!has);
+  }
+  function applyParapetQuickValue() {
+    const quick=$('parapetQuickInput'), source=$('parapetHeight'), select=$('parapet'); if(!quick||!source||!select)return;
+    const clean=String(quick.value||'').replace(/[^0-9]/g,''); quick.value=clean;
+    const value=Number(clean||0); const front=Math.max(0,...numericTokens($('frontHeight')?$('frontHeight').value:0));
+    if(value>front && front>0){ quick.value=String(front); source.value=String(front); window.alert(currentLanguage==='en'?'Parapet height cannot exceed front height.':'Parapet yüksekliği ön H değerinden büyük olamaz.'); }
+    else source.value=value>0?String(value):'';
+    select.value=Number(source.value)>0?'EVET':'HAYIR'; syncToolboxBooleanButtons(); syncParapetQuickInput(); updatePreview(false);
+  }
+
+  function cloneSideParapetSegments(sourceKey, targetKey, sourceOpening, targetOpening) {
+    const source = parapetSegments && parapetSegments.side ? parapetSegments.side[sourceKey] : [];
+    if (!Array.isArray(source) || !source.length) return [];
+    const ratio = targetOpening > 0 && sourceOpening > 0 ? targetOpening / sourceOpening : 1;
+    return source.map((item, index) => ({ ...item, id: `side_${targetKey}_parapet_${index+1}_${Date.now()}`, start: Number(item.start||0)*ratio, end: Number(item.end||0)*ratio }));
+  }
+
+  function cloneSidePreviewDimensionOffsets(sourceKey, targetKey, sourceIndex, targetIndex, parapetIdMap = {}) {
+    const sourceSideKey = normalizeSideViewKey(sourceKey, sourceIndex);
+    const targetSideKey = normalizeSideViewKey(targetKey, targetIndex);
+    const replacements = [
+      [`side_parapet_width_${sourceIndex}_`, `side_parapet_width_${targetIndex}_`],
+      [`side_gap_${sourceSideKey}_${sourceIndex}_`, `side_gap_${targetSideKey}_${targetIndex}_`],
+      [`side_glass_track_to_wall_${sourceSideKey}_${sourceIndex}`, `side_glass_track_to_wall_${targetSideKey}_${targetIndex}`],
+      [`side_parapet_height_${sourceSideKey}_${sourceIndex}_`, `side_parapet_height_${targetSideKey}_${targetIndex}_`],
+      [`side_gutter_to_parapet_${sourceSideKey}_${sourceIndex}_`, `side_gutter_to_parapet_${targetSideKey}_${targetIndex}_`],
+      [`side_opening_${sourceSideKey}_pos_${sourceIndex + 1}`, `side_opening_${targetSideKey}_pos_${targetIndex + 1}`],
+      [`side_rear_height_${sourceSideKey}_pos_${sourceIndex + 1}`, `side_rear_height_${targetSideKey}_pos_${targetIndex + 1}`],
+      [`side_front_height_${sourceSideKey}_pos_${sourceIndex + 1}`, `side_front_height_${targetSideKey}_pos_${targetIndex + 1}`]
+    ];
+    const copied = {};
+    Object.entries(previewDimensionOffsets || {}).forEach(([rawKey, value]) => {
+      const key = String(rawKey || '');
+      const rule = replacements.find(([from]) => key.startsWith(from));
+      if (!rule) return;
+      let nextKey = `${rule[1]}${key.slice(rule[0].length)}`;
+      Object.entries(parapetIdMap || {}).forEach(([sourceId, targetId]) => {
+        if (sourceId && targetId) nextKey = nextKey.split(String(sourceId)).join(String(targetId));
+      });
+      copied[nextKey] = { x: Number(value && value.x) || 0, y: Number(value && value.y) || 0 };
+    });
+    Object.assign(previewDimensionOffsets, copied);
+  }
+
+  function activateMiddleSideView(sideIndex) {
+    const index = Math.max(1, Number(sideIndex) || 1), key = String(index);
+    ensureSideFeatureStateInitialized();
+    if (sideFeatureState.middleEnabled[key]) return;
+    const d = lastDrawing && lastDrawing.input;
+    const sourceGeom = d && d.sideSupportGeometry ? d.sideSupportGeometry['0'] : null;
+    const targetOpening = d && d.positions && d.positions[index] ? Number(d.positions[index].opening) : 0;
+    const sourceOpening = d && d.positions && d.positions[0] ? Number(d.positions[0].opening) : targetOpening;
+    sideFeatureState.middleEnabled[key] = true;
+    sideFeatureState.glassTrack.middle[key] = sideFeatureValue('glassTrack','0');
+    sideFeatureState.triangle.middle[key] = sideFeatureValue('triangle','0');
+    setSideScopedStateValue(triangleDivisionState, key, triangleDivisionForKey('0', null));
+    // Arka duvarın ham ayarını kopyala. Yükseklik 0 ise bu, her pozun kendi
+    // arka yüksekliğini otomatik kullanma kuralını korur; 1 mm'lik duvar hatası
+    // oluşturacak şekilde çözülmüş fallback değer kopyalanmaz.
+    const sourceWallRaw = sideScopedStateValue(backWallState, '0', { xOffset: 0, depth: 600, height: 0 }) || { xOffset: 0, depth: 600, height: 0 };
+    setSideScopedStateValue(backWallState, key, { ...sourceWallRaw });
+    const sourceWallSegments = backWallSegmentsForKey('0', d && d.positions && d.positions[0] ? Number(d.positions[0].rearHeight) : 0);
+    storeBackWallSegmentsForKey(key, deepCloneJson(sourceWallSegments) || []);
+    if (sourceGeom && Array.isArray(sourceGeom.posts)) {
+      const sourceSpan = Number(sourceGeom.frontPostRearFace) - Number(sourceGeom.wallX);
+      const targetSpan = Math.max(1, sourceSpan + targetOpening - sourceOpening);
+      const targetFront = Number(sourceGeom.frontPostRearFace);
+      const targetWall = targetFront - targetSpan;
+      customSidePosts[key] = sourceGeom.posts.map((post, i) => {
+        const fraction = sourceSpan > 0 ? (Number(post.centerX)-Number(sourceGeom.wallX))/sourceSpan : 0.5;
+        return { id:`side_${key}_${Date.now()}_${i}`, centerX:targetWall+fraction*targetSpan, profile:sanitizeGlassTrackProfile(post.profile), extension:Number(post.extension)||0 };
+      });
+    }
+    if (!parapetSegments.side) parapetSegments.side = {};
+    const sourceParapets = Array.isArray(parapetSegments.side['0']) ? parapetSegments.side['0'] : [];
+    const targetParapets = cloneSideParapetSegments('0', key, sourceOpening, targetOpening);
+    parapetSegments.side[key] = targetParapets;
+    const parapetIdMap = {};
+    sourceParapets.forEach((segment, i) => {
+      if (segment && targetParapets[i]) parapetIdMap[String(segment.id || '')] = String(targetParapets[i].id || '');
+    });
+    if (!glassTrackLengthOffsets.middle) glassTrackLengthOffsets.middle = {};
+    glassTrackLengthOffsets.middle[key] = glassTrackLengthOffsetForKey('0');
+    cloneSidePreviewDimensionOffsets('0', key, 0, index, parapetIdMap);
+    const copyPlacements = (items, prefix) => {
+      const source = items.filter(item => normalizeSideViewKey(item.sideViewKey, item.sideIndex) === '0');
+      const pozNos = allocatePozNos(prefix === 'sliding' ? 'S' : 'G', source.length);
+      return source.map((item, i) => ({
+        ...deepCloneJson(item),
+        id: `${prefix}_${key}_${Date.now()}_${i}`,
+        sideIndex: index,
+        sideViewKey: key,
+        placementView: 'side-left',
+        pozNo: pozNos[i]
+      }));
+    };
+    const copiedSliding = copyPlacements(sideSlidingPlacements, 'sliding');
+    const copiedGuillotine = copyPlacements(sideGuillotinePlacements, 'guillotine');
+    sideSlidingPlacements.push(...copiedSliding);
+    sideGuillotinePlacements.push(...copiedGuillotine);
+    updatePreview(false);
+    statusText.textContent=currentLanguage==='en'?`Intermediate side view ${index+1} activated from the left-side template.`:`${index+1}. ara poz yan görünüşü sol yan görünüş kopyasıyla düzenlemeye açıldı.`;
+  }
+
+  function openPostSettingsFromToolbox() {
+    const d=lastDrawing&&lastDrawing.input;
+    showPostEditorOverlay({postIndex:0,currentPostCount:Number(d&&d.postCount)||Number($('postCount')&&$('postCount').value)||0,totalRayCount:Number(d&&d.totalRayCount)||0});
+  }
+
+  function ensureBulkExtendOverlay() {
+    let overlay=$('bulkExtendOverlay'); if(overlay)return overlay;
+    overlay=document.createElement('div'); overlay.id='bulkExtendOverlay'; overlay.className='dim-edit-overlay'; overlay.hidden=true;
+    overlay.innerHTML=`<form class="dim-edit-card"><div class="dim-edit-title" id="bulkExtendTitle">Çoklu Profil Uzat / Kısalt</div><div id="bulkExtendRows" class="bulk-selection-list"></div><label class="dim-edit-label"><span id="bulkExtendLabel">Alt uç / duvar yönü ofseti *(mm)</span><input id="bulkExtendInput" type="text" inputmode="decimal"></label><div id="bulkExtendError" class="dim-edit-error"></div><div class="dim-edit-actions"><button id="bulkExtendCancel" type="button" class="dim-edit-cancel">İptal</button><button type="submit" class="dim-edit-apply">Tamam</button></div></form>`;
+    previewPanel.appendChild(overlay); const input=overlay.querySelector('#bulkExtendInput');
+    input.addEventListener('input',()=>{input.value=normalizeSignedMillimeterInput(input.value);overlay.querySelector('#bulkExtendError').textContent='';});
+    overlay.querySelector('#bulkExtendCancel').addEventListener('click',()=>overlay.hidden=true);
+    overlay.querySelector('form').addEventListener('submit',evt=>{evt.preventDefault();const value=Number(input.value);if(!Number.isFinite(value)){overlay.querySelector('#bulkExtendError').textContent='Geçerli işaretli değer gir.';return;}beginHistoryTransaction();try{(overlay._items||[]).forEach(meta=>{if(meta.interactionType==='glassTrackEditor'&&meta.profilePart==='track')setGlassTrackLengthOffsetForKey(meta.sideViewKey,value);else if(meta.interactionType==='glassTrackEditor'&&meta.sidePostId){const posts=materializeSidePosts({index:meta.sideIndex,sideViewKey:meta.sideViewKey});const target=posts.find(p=>String(p.id)===String(meta.sidePostId));if(target)target.extension=Math.round(value);storeSidePosts({index:meta.sideIndex,sideViewKey:meta.sideViewKey},posts);}else if(['postEditor','frontPostProfileEditor'].includes(meta.interactionType)){while(frontPostExtensions.length<=meta.postIndex)frontPostExtensions.push(0);frontPostExtensions[meta.postIndex]=Math.max(0,Math.round(value));}});overlay.hidden=true;updatePreview(false);}finally{endHistoryTransaction(true);}});
+    return overlay;
+  }
+
+  function showBulkExtendOverlay(items){const o=ensureBulkExtendOverlay();o._items=items;o.querySelector('#bulkExtendRows').innerHTML=items.map((m,i)=>`<div><b>${i+1}.</b> ${escapeHtml(m.interactionType==='glassTrackEditor'?(m.profilePart==='track'?'Cam kaydı':'Destek dikmesi'):'Ön dikme')}</div>`).join('');o.querySelector('#bulkExtendInput').value='';o.hidden=false;}
+
+  function bindStrictInputs() {
+    const numericOnly = id => {
+      const el = $(id);
+      if (!el) return;
+      el.addEventListener('input', () => {
+        const clean = String(el.value || '').replace(/[^0-9]/g, '');
+        if (el.value !== clean) el.value = clean;
+      });
+    };
+    const semiNumeric = (id, allowNo = false) => {
+      const el = $(id);
+      if (!el) return;
+      el.addEventListener('input', () => {
+        const clean = filterSemiNumeric(el.value, allowNo);
+        if (el.value !== clean) el.value = clean;
+      });
+    };
+    numericOnly('parapetHeight');
+    numericOnly('parapetQuickInput');
+    semiNumeric('width', true);
+    ['opening', 'rearHeight', 'frontHeight', 'rayCount', 'postCount'].forEach(id => semiNumeric(id, false));
+  }
+
+  function showToolboxPlaceholder(command) {
+    const isEn = currentLanguage === 'en';
+    const message = command === 'product'
+      ? (isEn ? 'Multiple product placement will be activated in the next toolbox revision.' : 'Çoklu ürün ekleme komutu sonraki toolbox revizyonunda aktif edilecek.')
+      : (isEn ? 'Multiple dimension editing will be activated in the next toolbox revision.' : 'Çoklu ölçü düzenleme komutu sonraki toolbox revizyonunda aktif edilecek.');
+    statusText.textContent = message;
+    window.alert(message);
+  }
+
+  function bindEvents() {
+    $('generateBtn').addEventListener('click', generateDxf);
+    $('pdfBtn').addEventListener('click', () => { void generatePdf(); });
+    $('previewBtn').addEventListener('click', updatePreview);
+    $('resetBtn').addEventListener('click', resetForm);
+    $('expandPreviewBtn').addEventListener('click', () => { void togglePreviewFullscreen(); });
+    if ($('undoPreviewBtn')) $('undoPreviewBtn').addEventListener('click', undoProjectHistory);
+    if ($('redoPreviewBtn')) $('redoPreviewBtn').addEventListener('click', redoProjectHistory);
+    $('calcBtn').addEventListener('click', openCalculator);
+    if ($('projectExportBtn')) $('projectExportBtn').addEventListener('click', exportProjectSnapshot);
+    if ($('previewProjectExportBtn')) $('previewProjectExportBtn').addEventListener('click', exportProjectSnapshot);
+    if ($('checkDrawingBtn')) $('checkDrawingBtn').addEventListener('click', checkDrawingForProduction);
+    if ($('multiProductBtn')) $('multiProductBtn').addEventListener('click', () => startToolboxSelection('multi-product'));
+    if ($('multiDimensionBtn')) $('multiDimensionBtn').addEventListener('click', () => startToolboxSelection('multi-dimension'));
+    if ($('equalizeGapsBtn')) $('equalizeGapsBtn').addEventListener('click', () => startToolboxSelection('equalize-gaps'));
+    if ($('convertProductBtn')) $('convertProductBtn').addEventListener('click', () => startToolboxSelection('convert-product'));
+    if ($('fitProductsBtn')) $('fitProductsBtn').addEventListener('click', () => startToolboxSelection('fit-products'));
+    if ($('multiDeleteBtn')) $('multiDeleteBtn').addEventListener('click', () => startToolboxSelection('multi-delete'));
+    if ($('deleteAllProductsBtn')) $('deleteAllProductsBtn').addEventListener('click', deleteAllProducts);
+    if ($('postSettingsBtn')) $('postSettingsBtn').addEventListener('click', openPostSettingsFromToolbox);
+    if ($('bulkExtendBtn')) $('bulkExtendBtn').addEventListener('click', () => startToolboxSelection('bulk-extend'));
+    ['glassTrack','triangleJoinery'].forEach(field=>{const btn=$(`${field}SideMenuBtn`);if(btn)btn.addEventListener('click',evt=>{evt.stopPropagation();toggleSideFeatureMenu(field);});const menu=$(`${field}SideMenu`);if(menu){menu.addEventListener('click',evt=>evt.stopPropagation());menu.querySelectorAll('[data-side-feature-field]').forEach(input=>input.addEventListener('change',()=>applySideFeatureCheckbox(input)));}});
+    document.addEventListener('click',()=>document.querySelectorAll('.side-feature-menu').forEach(menu=>{menu.hidden=true;}));
+    document.querySelectorAll('[data-boolean-field]').forEach(btn => btn.addEventListener('click', () => toggleToolboxBoolean(btn.dataset.booleanField)));
+    if($('parapetQuickInput')){ $('parapetQuickInput').addEventListener('change',applyParapetQuickValue); $('parapetQuickInput').addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();applyParapetQuickValue();}}); }
+    if($('parapetHeight')) $('parapetHeight').addEventListener('input',syncParapetQuickInput);
+    $('projectImportBtn').addEventListener('click', openProjectSnapshotPicker);
+    $('projectImportInput').addEventListener('change', async evt => {
+      try {
+        await importProjectSnapshotFile(evt.target.files && evt.target.files[0]);
+      } catch (err) {
+        statusText.textContent = err.message;
+        window.alert(err.message);
+        console.error(err);
+      } finally {
+        evt.target.value = '';
+      }
+    });
+    $('helpBtn').addEventListener('click', showHelp);
+    $('languageSelect').addEventListener('change', evt => { translateUI(evt.target.value); updatePreview(); });
+    $('motor').addEventListener('input', () => { updateRemoteOptions(true); });
+    $('motor').addEventListener('change', () => { updateRemoteOptions(true); updatePreview(); });
+    $('calcComputeBtn').addEventListener('click', () => {
+      try { calculateMissing(); } catch (err) { $('calcResult').textContent = err.message; }
+    });
+    $('calcTransferBtn').addEventListener('click', () => {
+      try { transferCalc(); } catch (err) { $('calcResult').textContent = err.message; }
+    });
+    $('calcClearBtn').addEventListener('click', clearCalc);
+    ids.forEach(id => {
+      const el = $(id);
+      if (!el) return;
+      el.addEventListener('change', () => {
+        if (suppressFormPreviewUpdate) return;
+        if (BOOLEAN_FIELD_IDS.includes(id)) {
+          if (!syncingSideFeatureForm && (id === 'glassTrack' || id === 'triangleJoinery')) setMainSideFeatureValue(id, normalizeYesNo(el.value) === 'EVET');
+          syncToolboxBooleanButtons();
+        }
+        updatePreview();
+      });
+      el.addEventListener('input', () => {
+        if (suppressFormPreviewUpdate) return;
+        if (wrappingFields) return;
+        autosizeTextarea(el);
+        if (id === 'rayCount' || id === 'postCount') {
+          el.dataset.userEdited = String(el.value || '').trim() ? 'true' : 'false';
+          if (id === 'rayCount' && $('postCount') && $('postCount').dataset.userEdited !== 'true') {
+            const raw = collectForm();
+            const br = window.PulumurExcelBridge;
+            if (br && br.postCountFromRayText) $('postCount').value = br.postCountFromRayText(el.value, raw.systemCount, raw.width, raw.frontHeight);
+          }
+        }
+        if (id === 'width') {
+          if ($('rayCount')) $('rayCount').dataset.userEdited = 'false';
+          if ($('postCount')) $('postCount').dataset.userEdited = 'false';
+        }
+        if (['systemCount', 'width', 'rayCount', 'postCount'].includes(id)) {
+          customFrontPostCenters = null;
+          frontPostProfiles = [];
+          customSidePosts = {};
+          slidingPlacements = [];
+          guillotinePlacements = [];
+        }
+        if (['systemCount', 'width', 'frontHeight', 'glassTrack'].includes(id)) {
+          applyAutoRayPost(false);
+        }
+        window.clearTimeout(el._previewTimer);
+        el._previewTimer = window.setTimeout(updatePreview, 350);
+      });
+    });
+  }
+
+  document.addEventListener('fullscreenchange', syncExpandButton);
+  bindPreviewInteractions();
+  bindPreviewKeyboardGuard();
+  bindHistoryKeyboardShortcuts();
+  bindPreviewFilterControls();
+  enhanceExcelCombos();
+  bindStrictInputs();
+  renderQuickTests();
+  fillInitial();
+  bindEvents();
+  setupPwaInstall();
+  const savedLang = (() => { try { return localStorage.getItem('pulumur_lang') || 'tr'; } catch (e) { return 'tr'; } })();
+  if ($('languageSelect')) $('languageSelect').value = savedLang === 'en' ? 'en' : 'tr';
+  translateUI(savedLang);
+  updatePreview();
+  syncExpandButton();
 })();
-

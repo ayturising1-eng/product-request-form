@@ -1,0 +1,31 @@
+Pülümür Automation Studio v8.9.19
+Tarih: 2026-07-13
+
+1. Geri Al / İleri Al kısayolları
+- Ctrl+Z ve Ctrl+Shift+Z yazıları artık düğmelerin içindedir.
+
+2. Üst görünüş ray ölçüleri
+- Bütün pozların ray ölçüleri aynı Y hizasında gösterilir.
+- Hizalama son pozun üst ölçü hattına göre sabittir; açılıma göre poz bazlı düşey kayma yapılmaz.
+- 2 raylı sistemde ray ölçüsü gösterilmez ve düzenleme açılmaz. NO kuralıyla birlikte sonraki revizyona bırakılmıştır.
+- 3 raylı sistemde: dıştan merkeze + merkezden dışa.
+- 4 raylı sistemde: dıştan merkeze + merkezden merkeze + merkezden dışa.
+- Ölçüler rayın iç boşluğunu değil, dış ray sınırı / iç ray merkezi mantığını kullanır.
+- Tek pozlu 3 ve 4 raylı sistemlerde de aynı ölçüler kullanılabilir.
+- Ölçü düzenleme kutusu ölçü yazısının üst orta noktasındadır.
+
+3. Ray konumu düzenleme
+- İlk ve son ray sabittir; toplam sistem genişliği değişmez.
+- 3 raylı sistemde orta ray X ekseninde hareket eder.
+- 4 raylı sistemin orta bölmesi değiştirildiğinde iki iç ray, mevcut orta noktayı koruyarak eşit miktarda -X ve +X yönüne hareket eder.
+- 25 mm / 4000 mm üretim değerleri uyarıdır. Fiziksel ray üst üste binmesi dışında çizim güncellemesi engellenmez.
+
+4. Çizimi Kontrol Et
+- Ray açısı üretim tavsiye aralığı 6°–15° olarak güncellendi.
+- Açılım 7000 mm, ray net aralığı 25–4000 mm, ön dikme aralığı 4000 mm ve yan destek aralığı 5000 mm kontrolleri tavsiye niteliğinde uyarı üretir.
+- Üretim kuralı uyarıları önizleme, DXF veya PDF oluşturmayı engellemez.
+
+5. Teknik
+- Ray sistem ve bölüm indeksleri SVG etkileşim verisine eksiksiz aktarılır.
+- Özel ray konumları proje durumu, Geri Al / İleri Al ve üst/ön görünüş ortak X koordinatlarıyla uyumludur.
+- Geliştirme kuralları DEVELOPMENT_RULES.md içine işlendi.

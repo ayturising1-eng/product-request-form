@@ -1,0 +1,7 @@
+PÜLÜMÜR AUTOMATION STUDIO v8.9.33
+
+- Yan Görünüşü Düzenle işleminden sonra Geri Al / İleri Al zinciri düzeltildi.
+- Geri alınmış bir adımda İleri Al öncesi gereksiz önizleme kaydı oluşturulması engellendi.
+- Bekleyen form girişi varsa geçmiş hareketinden önce yine güvenli biçimde kaydedilir.
+- Yan Görünüşü Düzenle butonu pasifte kırmızı fon/beyaz yazı, aktifte yeşil fon/beyaz yazı olarak sabitlendi.
+- Genel şeffaf etkileşim alanı CSS kuralının buton rengini ezmesi engellendi.
