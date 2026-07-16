@@ -1,47 +1,114 @@
-const CACHE = 'product-request-form-c147-stable-view-modes';
-const ASSETS = [
+const CACHE_PREFIX = 'pulumur-pwa-';
+const CACHE_NAME = `${CACHE_PREFIX}v10_4_r13_2`;
+const NETWORK_TIMEOUT_MS = 8000;
+const CORE_ASSETS = [
   './',
   './index.html',
-  './style.css',
-  './app.js',
-  './technical-sheet-path-fix.js',
-  './assets.js',
-  './assets-1.js',
-  './assets-2.js',
-  './assets-3.js',
-  './assets-4.js',
-  './color-catalogs.js',
-  './pergo-rise-fabrics.js',
-  './pdf-template-assets.js',
-  './assets/pdf/antet-template.jpg',
-  './products.js',
-  './manifest.webmanifest',
-  './assets/fabric-pages/sun-store/sun-store-page-1.jpg',
-  './assets/fabric-pages/sun-store/sun-store-page-2.jpg',
-  './assets/fabric-pages/sun-store/sun-store-hotspots.json'
+  './buildBootstrap.js?v=10.4-r13.2',
+  './core/backendCompatibility.js?v=10.4-r13.2',
+  './diagnostics/runtimeMonitor.js?v=10.4-r13.2',
+  './recovery/recoveryManager.js?v=10.4-r13.2',
+  './style.css?v=10.4-r13.2',
+  './appLimits.js?v=10.4-r13.2',
+  './core/actions.js?v=10.4-r13.2',
+  './core/projectModel.js?v=10.4-r13.2',
+  './core/topologyReconcile.js?v=10.4-r13.2',
+  './core/validation.js?v=10.4-r13.2',
+  './core/reducer.js?v=10.4-r13.2',
+  './history/historyManager.js?v=10.4-r13.2',
+  './persistence/schema.js?v=10.4-r13.2',
+  './render/renderPipeline.js?v=10.4-r13.2',
+  './app.js?v=10.4-r13.2',
+  './supabaseConfig.js?v=10.4-r13.2',
+  './cloudProjects.js?v=10.4-r13.2',
+  './adminUsersApi.js?v=10.4-r13.2',
+  './activityTracker.js?v=10.4-r13.2',
+  './adminPanel.js?v=10.4-r13.2',
+  './peri01ExcelBridge.js?v=10.4-r13.2',
+  './peri01Geometry.js?v=10.4-r13.2',
+  './modernDxfTemplate.js?v=10.4-r13.2',
+  './dxfModernEngine.js?v=10.4-r13.2',
+  './blocks/filteredBlocks.js?v=10.4-r13.2',
+  './assets/plmr-logo-header.png',
+  './icons/icon-192.png',
+  './icons/icon-512.png',
+  './icons/apple-touch-icon.png',
+  './icons/favicon-64.png'
 ];
 
-self.addEventListener('install', (event) => {
-  self.skipWaiting();
-  event.waitUntil(caches.open(CACHE).then((cache) => cache.addAll(ASSETS)));
+async function cacheCoreAssets() {
+  const cache = await caches.open(CACHE_NAME);
+  const results = await Promise.allSettled(CORE_ASSETS.map(async asset => {
+    const request = new Request(asset, { cache: 'reload' });
+    const response = await fetch(request);
+    if (!response || !response.ok) throw new Error(`CACHE_FETCH_FAILED:${asset}`);
+    await cache.put(request, response.clone());
+  }));
+  const criticalAssets = new Set([
+    './index.html', './buildBootstrap.js?v=10.4-r13.2', './core/backendCompatibility.js?v=10.4-r13.2',
+    './diagnostics/runtimeMonitor.js?v=10.4-r13.2', './recovery/recoveryManager.js?v=10.4-r13.2', './appLimits.js?v=10.4-r13.2', './core/actions.js?v=10.4-r13.2', './core/projectModel.js?v=10.4-r13.2',
+    './core/topologyReconcile.js?v=10.4-r13.2', './core/validation.js?v=10.4-r13.2', './core/reducer.js?v=10.4-r13.2',
+    './history/historyManager.js?v=10.4-r13.2', './persistence/schema.js?v=10.4-r13.2', './render/renderPipeline.js?v=10.4-r13.2',
+    './app.js?v=10.4-r13.2', './peri01Geometry.js?v=10.4-r13.2', './blocks/filteredBlocks.js?v=10.4-r13.2'
+  ]);
+  const failures = results.map((result, index) => ({ result, asset: CORE_ASSETS[index] }))
+    .filter(item => criticalAssets.has(item.asset) && item.result.status === 'rejected');
+  if (failures.length) throw new Error(`PULUMUR_CRITICAL_CACHE_FAILED:${failures.map(item => item.asset).join(',')}`);
+}
+
+self.addEventListener('install', event => {
+  event.waitUntil(cacheCoreAssets().then(() => self.skipWaiting()));
 });
 
-self.addEventListener('activate', (event) => {
+self.addEventListener('activate', event => {
   event.waitUntil(
     caches.keys()
-      .then((keys) => Promise.all(keys.filter((key) => key !== CACHE).map((key) => caches.delete(key))))
+      .then(keys => Promise.all(keys.filter(key => key.startsWith(CACHE_PREFIX) && key !== CACHE_NAME).map(key => caches.delete(key))))
       .then(() => self.clients.claim())
   );
 });
 
-self.addEventListener('fetch', (event) => {
-  event.respondWith(
-    fetch(event.request)
-      .then((response) => {
-        const clone = response.clone();
-        caches.open(CACHE).then((cache) => cache.put(event.request, clone));
-        return response;
-      })
-      .catch(() => caches.match(event.request))
+function fetchWithTimeout(request, timeoutMs = NETWORK_TIMEOUT_MS) {
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), timeoutMs);
+  return fetch(request, { cache: 'no-store', signal: controller.signal }).finally(() => clearTimeout(timer));
+}
+
+async function networkFirst(request) {
+  try {
+    const response = await fetchWithTimeout(request);
+    if (response && response.ok) {
+      const cache = await caches.open(CACHE_NAME);
+      cache.put(request, response.clone()).catch(() => {});
+    }
+    return response;
+  } catch (_) {
+    return (await caches.match(request)) || (request.mode === 'navigate' ? caches.match('./index.html') : Response.error());
+  }
+}
+
+async function cacheFirst(request) {
+  const cached = await caches.match(request);
+  if (cached) return cached;
+  try {
+    const response = await fetchWithTimeout(request);
+    if (response && response.ok) {
+      const cache = await caches.open(CACHE_NAME);
+      cache.put(request, response.clone()).catch(() => {});
+    }
+    return response;
+  } catch (_) {
+    return Response.error();
+  }
+}
+
+self.addEventListener('fetch', event => {
+  if (event.request.method !== 'GET') return;
+  const url = new URL(event.request.url);
+  const sameOrigin = url.origin === self.location.origin;
+  const dynamicAsset = sameOrigin && (
+    event.request.mode === 'navigate' ||
+    /\.(?:html|js|css|json|webmanifest)$/i.test(url.pathname)
   );
+  event.respondWith(dynamicAsset ? networkFirst(event.request) : cacheFirst(event.request));
 });
