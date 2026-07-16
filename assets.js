@@ -1,0 +1,1 @@
+window.PRODUCT_IMAGE_ASSETS = window.PRODUCT_IMAGE_ASSETS || {};
