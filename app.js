@@ -7121,7 +7121,7 @@ $('#installBtn').addEventListener('click', async () => {
 
 async function initPwa() {
   if ('serviceWorker' in navigator && location.protocol.startsWith('http')) {
-    try { await navigator.serviceWorker.register('sw.js?v=c147-stable-view-modes'); } catch {}
+    try { await navigator.serviceWorker.register('sw.js?v=c148-quick-nav-view-modes'); } catch {}
   }
 }
 
@@ -8255,10 +8255,11 @@ try {
 
 
 
-// C126: fixed mobile quick navigation for current product form section headings
+// C148: dynamic quick navigation with non-starving refresh and stable fixed-header offsets
 (function setupDynamicFormQuickNav() {
   const nav = document.getElementById('formQuickNav') || document.querySelector('.mobile-quick-nav');
   const formArea = document.getElementById('formArea');
+  const header = document.querySelector('.app-header');
   if (!nav || !formArea) return;
 
   function isVisible(el) {
@@ -8276,10 +8277,32 @@ try {
       .trim();
   }
 
+  function announceLayoutChange() {
+    try { window.dispatchEvent(new CustomEvent('prf:quicknavchange')); } catch {}
+  }
+
   function setNavVisibility(visible) {
+    const wasVisible = !nav.classList.contains('hidden');
     nav.classList.toggle('hidden', !visible);
     document.body.classList.toggle('has-form-quick-nav', visible);
+    const changed = wasVisible !== visible;
+    if (changed) announceLayoutChange();
+    return changed;
   }
+
+  function fixedTopOffset() {
+    const visualCssValue = parseFloat(
+      window.getComputedStyle(document.documentElement)
+        .getPropertyValue('--fixed-top-stack-visual-height')
+    );
+    if (Number.isFinite(visualCssValue) && visualCssValue > 0) return visualCssValue;
+
+    const navHeight = nav.classList.contains('hidden') ? 0 : nav.getBoundingClientRect().height;
+    const headerHeight = header ? header.getBoundingClientRect().height : 0;
+    return Math.max(0, navHeight + headerHeight);
+  }
+
+  let lastSignature = '';
 
   function refreshFormQuickNav() {
     const sections = Array.from(formArea.querySelectorAll('.dynamic-section'))
@@ -8291,51 +8314,85 @@ try {
       })
       .filter(Boolean);
 
-    nav.innerHTML = '';
-    if (!sections.length) {
-      setNavVisibility(false);
-      return;
-    }
-
+    const items = [];
     const seen = new Set();
     sections.forEach((item, index) => {
       const key = item.text.toLocaleLowerCase();
       if (seen.has(key)) return;
       seen.add(key);
-
       if (!item.section.id) item.section.id = `form-section-nav-${index + 1}`;
       item.section.classList.add('form-quick-nav-target');
-
-      const link = document.createElement('a');
-      link.href = `#${item.section.id}`;
-      link.textContent = item.text;
-      link.addEventListener('click', (event) => {
-        event.preventDefault();
-        const navHeight = nav.classList.contains('hidden') ? 0 : nav.offsetHeight;
-        const top = item.section.getBoundingClientRect().top + window.pageYOffset - navHeight - 12;
-        window.scrollTo({ top: Math.max(0, top), behavior: 'smooth' });
-      });
-      nav.appendChild(link);
+      items.push(item);
     });
 
-    setNavVisibility(Boolean(nav.children.length));
+    const signature = items.map((item) => `${item.section.id}::${item.text}`).join('|');
+    const shouldRebuild = signature !== lastSignature || nav.children.length !== items.length;
+
+    if (shouldRebuild) {
+      nav.replaceChildren();
+      items.forEach((item) => {
+        const targetId = item.section.id;
+        const link = document.createElement('a');
+        link.href = `#${targetId}`;
+        link.dataset.targetId = targetId;
+        link.textContent = item.text;
+        link.addEventListener('click', (event) => {
+          event.preventDefault();
+          const target = document.getElementById(targetId);
+          if (!target) return;
+          const targetTop = target.getBoundingClientRect().top + window.scrollY;
+          const top = Math.max(0, targetTop - fixedTopOffset() - 12);
+          window.scrollTo({ top, left: 0, behavior: 'smooth' });
+        });
+        nav.appendChild(link);
+      });
+      lastSignature = signature;
+    }
+
+    const visibilityChanged = setNavVisibility(items.length > 0);
+    if (shouldRebuild && !visibilityChanged) announceLayoutChange();
   }
 
-  let navRefreshTimer = null;
-  const scheduleRefresh = () => {
-    clearTimeout(navRefreshTimer);
-    navRefreshTimer = setTimeout(refreshFormQuickNav, 80);
-  };
+  let refreshFrame = 0;
+  let trailingTimer = 0;
+  function scheduleRefresh() {
+    if (!refreshFrame) {
+      refreshFrame = window.requestAnimationFrame(() => {
+        refreshFrame = 0;
+        refreshFormQuickNav();
+      });
+    }
+    window.clearTimeout(trailingTimer);
+    trailingTimer = window.setTimeout(() => {
+      trailingTimer = 0;
+      if (!refreshFrame) refreshFormQuickNav();
+    }, 180);
+  }
 
-  const observer = new MutationObserver(scheduleRefresh);
-  observer.observe(formArea, { childList: true, subtree: true, characterData: true, attributes: true, attributeFilter: ['hidden', 'style', 'class'] });
+  const observer = new MutationObserver((mutations) => {
+    const affectsNavigation = mutations.some((mutation) => {
+      if (mutation.type === 'childList') return true;
+      if (mutation.type !== 'attributes') return false;
+      return mutation.target?.matches?.('.dynamic-section');
+    });
+    if (affectsNavigation) scheduleRefresh();
+  });
+  observer.observe(formArea, {
+    childList: true,
+    subtree: true,
+    attributes: true,
+    attributeFilter: ['hidden', 'style', 'class']
+  });
 
-  document.addEventListener('change', scheduleRefresh, true);
-  document.addEventListener('click', scheduleRefresh, true);
-  window.addEventListener('resize', scheduleRefresh);
-  window.addEventListener('load', scheduleRefresh);
+  document.addEventListener('change', (event) => {
+    if (formArea.contains(event.target)) scheduleRefresh();
+  }, true);
+  window.addEventListener('resize', scheduleRefresh, { passive: true });
+  window.addEventListener('orientationchange', scheduleRefresh, { passive: true });
+  window.addEventListener('prf:viewmodechange', scheduleRefresh);
+  window.addEventListener('load', scheduleRefresh, { once: true });
+
   window.refreshFormQuickNav = refreshFormQuickNav;
-
   scheduleRefresh();
 })();
 
@@ -8717,11 +8774,12 @@ function closeTechnicalSheet() {
 })();
 
 
-// C135: keep top bars measured and keep Technical Sheet modal above shortcut buttons
+// C148: stable top-bar measurement without scroll/click feedback loops
 (function setupStableTopBarsAndTechnicalSheetModal() {
   const nav = document.getElementById('formQuickNav') || document.querySelector('.mobile-quick-nav');
   const header = document.querySelector('.app-header');
   const modal = document.getElementById('technicalSheetModal');
+  const rootStyle = document.documentElement.style;
 
   function modalIsOpen() {
     return !!(modal && !modal.classList.contains('hidden'));
@@ -8735,57 +8793,98 @@ function closeTechnicalSheet() {
     return rect.width > 0 && rect.height > 0;
   }
 
-  function updateTopBarLayout() {
-    const navVisible = navIsVisible();
-    document.body.classList.toggle('technical-sheet-open', modalIsOpen());
-
-    const navHeight = navVisible && nav ? Math.ceil(nav.getBoundingClientRect().height) : 0;
-    const headerHeight = navVisible && header ? Math.ceil(header.getBoundingClientRect().height) : 0;
-    const totalHeight = navVisible ? navHeight + headerHeight : 0;
-
-    document.documentElement.style.setProperty('--form-quick-nav-height', `${navHeight}px`);
-    document.documentElement.style.setProperty('--app-header-height', `${headerHeight}px`);
-    document.documentElement.style.setProperty('--fixed-top-stack-height', `${totalHeight}px`);
+  function setPxVariable(name, value) {
+    const next = `${Math.max(0, Math.ceil(value))}px`;
+    if (rootStyle.getPropertyValue(name) !== next) rootStyle.setProperty(name, next);
   }
 
-  const delayedUpdate = (delay = 60) => setTimeout(updateTopBarLayout, delay);
+  function effectiveViewZoom() {
+    if (!document.body?.matches?.('.force-tablet-view, .force-desktop-view')) return 1;
+    const value = parseFloat(
+      window.getComputedStyle(document.documentElement).getPropertyValue('--forced-view-zoom')
+    );
+    return Number.isFinite(value) && value > 0 ? value : 1;
+  }
+
+  function updateTopBarLayout() {
+    const isTechnicalSheetOpen = modalIsOpen();
+    document.body.classList.toggle('technical-sheet-open', isTechnicalSheetOpen);
+
+    const navVisible = navIsVisible();
+    const visualNavHeight = navVisible && nav ? nav.getBoundingClientRect().height : 0;
+    const visualHeaderHeight = navVisible && header ? header.getBoundingClientRect().height : 0;
+    const zoom = effectiveViewZoom();
+    const logicalNavHeight = visualNavHeight / zoom;
+    const logicalHeaderHeight = visualHeaderHeight / zoom;
+    const visualTotalHeight = navVisible ? visualNavHeight + visualHeaderHeight : 0;
+
+    // CSS top/padding values live inside the zoomed body, so they need logical sizes.
+    setPxVariable('--form-quick-nav-height', logicalNavHeight);
+    setPxVariable('--app-header-height', logicalHeaderHeight);
+    setPxVariable('--fixed-top-stack-height', navVisible ? logicalNavHeight + logicalHeaderHeight : 0);
+    // JavaScript scrolling uses visual viewport coordinates.
+    setPxVariable('--fixed-top-stack-visual-height', visualTotalHeight);
+  }
+
+  let layoutFrame = 0;
+  let layoutTimer = 0;
+  function scheduleTopBarLayout(delay = 0) {
+    window.clearTimeout(layoutTimer);
+    const run = () => {
+      layoutTimer = 0;
+      if (layoutFrame) return;
+      layoutFrame = window.requestAnimationFrame(() => {
+        layoutFrame = 0;
+        updateTopBarLayout();
+      });
+    };
+    if (delay > 0) layoutTimer = window.setTimeout(run, delay);
+    else run();
+  }
 
   window.addEventListener('load', () => {
-    delayedUpdate(50);
-    delayedUpdate(300);
-    delayedUpdate(800);
-  });
-  window.addEventListener('resize', () => delayedUpdate(80));
-  window.addEventListener('orientationchange', () => delayedUpdate(300));
-  document.addEventListener('click', () => delayedUpdate(120), true);
-  document.addEventListener('change', () => delayedUpdate(120), true);
-  document.addEventListener('scroll', () => delayedUpdate(40), true);
+    scheduleTopBarLayout();
+    scheduleTopBarLayout(250);
+  }, { once: true });
+  window.addEventListener('resize', () => scheduleTopBarLayout(60), { passive: true });
+  window.addEventListener('orientationchange', () => scheduleTopBarLayout(180), { passive: true });
+  window.addEventListener('prf:quicknavchange', () => scheduleTopBarLayout());
+  window.addEventListener('prf:viewmodechange', () => scheduleTopBarLayout());
+
+  try {
+    if (window.ResizeObserver) {
+      const resizeObserver = new ResizeObserver(() => scheduleTopBarLayout());
+      if (nav) resizeObserver.observe(nav);
+      if (header) resizeObserver.observe(header);
+    }
+  } catch {}
 
   try {
     if (nav) {
-      new MutationObserver(() => delayedUpdate(30))
+      new MutationObserver(() => scheduleTopBarLayout())
         .observe(nav, { attributes: true, childList: true, subtree: true });
     }
   } catch {}
 
   try {
     if (modal) {
-      new MutationObserver(() => delayedUpdate(20))
+      new MutationObserver(() => scheduleTopBarLayout())
         .observe(modal, { attributes: true, childList: true, subtree: true });
     }
   } catch {}
 
+  window.updateProductRequestTopBars = updateTopBarLayout;
   updateTopBarLayout();
-  delayedUpdate(100);
-  delayedUpdate(500);
+  scheduleTopBarLayout(100);
 })();
 
 
-// C147: stable translated Mobile / Tablet / Desktop view tabs with defensive class cleanup
+// C148: stable translated Mobile / Tablet / Desktop modes without synthetic resize loops
 (function setupStableViewModeTabs() {
   const STORAGE_KEY = 'prf_view_mode_v4';
   const OLD_KEYS = ['prf_view_mode_v1', 'prf_view_mode_v2', 'prf_view_mode_v3'];
   const WIDTHS = { mobile: 0, tablet: 820, desktop: 1180 };
+  const MODE_CLASSES = ['force-mobile-view', 'force-tablet-view', 'force-desktop-view'];
 
   const LABELS = {
     tr: { mobile: 'Mobil Görünüm', tablet: 'Tablet Görünüm', desktop: 'Masaüstü Görünüm' },
@@ -8795,8 +8894,12 @@ function closeTechnicalSheet() {
     he: { mobile: 'תצוגת מובייל', tablet: 'תצוגת טאבלט', desktop: 'תצוגת מחשב' }
   };
 
+  let appliedMode = '';
+  let resizeTimer = 0;
+  let horizontalLockFrame = 0;
+
   function safeMode(mode) {
-    return WIDTHS.hasOwnProperty(mode) ? mode : 'mobile';
+    return Object.prototype.hasOwnProperty.call(WIDTHS, mode) ? mode : 'mobile';
   }
 
   function normalizeLang(value) {
@@ -8810,11 +8913,14 @@ function closeTechnicalSheet() {
 
   function currentLanguage() {
     const active = document.querySelector('.language-tabs button.active');
-    return normalizeLang(active?.dataset?.lang || document.documentElement.lang || localStorage.getItem('prf_language_v1') || 'en');
+    let storedLanguage = '';
+    try { storedLanguage = localStorage.getItem('prf_language_v1') || ''; } catch {}
+    return normalizeLang(active?.dataset?.lang || document.documentElement.lang || storedLanguage || 'en');
   }
 
   function viewportWidth() {
-    return Math.max(280, window.innerWidth || document.documentElement.clientWidth || 360);
+    const visualWidth = window.visualViewport?.width;
+    return Math.max(280, visualWidth || window.innerWidth || document.documentElement.clientWidth || 360);
   }
 
   function zoomFor(mode) {
@@ -8823,24 +8929,27 @@ function closeTechnicalSheet() {
     return Math.min(1, viewportWidth() / target);
   }
 
-  function clearModeClasses() {
-    const classes = ['force-mobile-view', 'force-tablet-view', 'force-desktop-view'];
-    classes.forEach((cls) => {
-      document.documentElement.classList.remove(cls);
-      if (document.body) document.body.classList.remove(cls);
-    });
+  function readStoredMode() {
+    try { return safeMode(localStorage.getItem(STORAGE_KEY) || 'mobile'); }
+    catch { return 'mobile'; }
+  }
 
-    if (document.body) {
-      document.body.style.removeProperty('zoom');
-      document.body.style.removeProperty('width');
-      document.body.style.removeProperty('min-width');
-      document.body.style.removeProperty('max-width');
-      document.body.style.removeProperty('transform');
-    }
-    document.documentElement.style.removeProperty('zoom');
-    document.documentElement.style.removeProperty('width');
-    document.documentElement.style.removeProperty('min-width');
-    document.documentElement.style.removeProperty('max-width');
+  function writeStoredMode(mode) {
+    try {
+      localStorage.setItem(STORAGE_KEY, mode);
+      OLD_KEYS.forEach((key) => localStorage.removeItem(key));
+    } catch {}
+  }
+
+  function setModeClasses(mode) {
+    if (appliedMode === mode && document.body?.classList.contains(`force-${mode}-view`)) return;
+    MODE_CLASSES.forEach((cls) => {
+      document.documentElement.classList.remove(cls);
+      document.body?.classList.remove(cls);
+    });
+    document.documentElement.classList.add(`force-${mode}-view`);
+    document.body?.classList.add(`force-${mode}-view`);
+    appliedMode = mode;
   }
 
   function updateButtons(mode) {
@@ -8853,7 +8962,7 @@ function closeTechnicalSheet() {
 
     Object.entries(map).forEach(([key, btn]) => {
       if (!btn) return;
-      btn.textContent = labels[key];
+      if (btn.textContent !== labels[key]) btn.textContent = labels[key];
       const active = key === mode;
       btn.classList.toggle('active', active);
       btn.setAttribute('aria-pressed', active ? 'true' : 'false');
@@ -8861,41 +8970,43 @@ function closeTechnicalSheet() {
     });
   }
 
-  function applyViewMode(requestedMode) {
+  function announceModeChange(mode, reason) {
+    try {
+      window.dispatchEvent(new CustomEvent('prf:viewmodechange', {
+        detail: { mode, reason, zoom: zoomFor(mode) }
+      }));
+    } catch {}
+  }
+
+  function applyViewMode(requestedMode, reason = 'apply') {
     const mode = safeMode(requestedMode);
-    clearModeClasses();
+    setModeClasses(mode);
 
-    document.documentElement.classList.add(`force-${mode}-view`);
-    if (document.body) document.body.classList.add(`force-${mode}-view`);
-
-    const z = zoomFor(mode);
-    document.documentElement.style.setProperty('--forced-view-zoom', String(z));
+    const zoom = mode === 'mobile' ? 1 : zoomFor(mode);
+    const zoomValue = String(Math.round(zoom * 10000) / 10000);
+    const currentZoom = document.documentElement.style.getPropertyValue('--forced-view-zoom');
+    if (currentZoom !== zoomValue) {
+      document.documentElement.style.setProperty('--forced-view-zoom', zoomValue);
+    }
 
     updateButtons(mode);
 
-    // Mobile must always return to exact screen fit.
-    if (mode === 'mobile') {
-      document.documentElement.style.setProperty('--forced-view-zoom', '1');
-      if (document.body) document.body.scrollLeft = 0;
-      document.documentElement.scrollLeft = 0;
-      window.scrollTo({ left: 0, top: window.scrollY });
-    }
+    // Reset horizontal drift only. Never rewrite vertical scroll during mode changes.
+    if (document.body && document.body.scrollLeft) document.body.scrollLeft = 0;
+    if (document.documentElement.scrollLeft) document.documentElement.scrollLeft = 0;
+    if (window.scrollX) window.scrollTo({ left: 0, top: window.scrollY, behavior: 'auto' });
 
-    setTimeout(() => window.dispatchEvent(new Event('resize')), 40);
-    setTimeout(() => window.dispatchEvent(new Event('resize')), 250);
-  }
-
-  function currentMode() {
-    return safeMode(localStorage.getItem(STORAGE_KEY) || 'mobile');
+    announceModeChange(mode, reason);
+    window.requestAnimationFrame(() => {
+      try { window.updateProductRequestTopBars?.(); } catch {}
+      try { window.refreshFormQuickNav?.(); } catch {}
+    });
   }
 
   function setViewMode(mode) {
     const next = safeMode(mode);
-    localStorage.setItem(STORAGE_KEY, next);
-    OLD_KEYS.forEach((key) => {
-      try { localStorage.removeItem(key); } catch {}
-    });
-    applyViewMode(next);
+    writeStoredMode(next);
+    applyViewMode(next, 'selection');
   }
 
   function bindButtons() {
@@ -8911,23 +9022,39 @@ function closeTechnicalSheet() {
     });
   }
 
-  function init() {
-    bindButtons();
-    // Always prefer the v4 key; old desktop/tablet selections must not leak into the new logic.
-    applyViewMode(currentMode());
+  function scheduleViewportApply(delay = 70) {
+    window.clearTimeout(resizeTimer);
+    resizeTimer = window.setTimeout(() => {
+      resizeTimer = 0;
+      applyViewMode(readStoredMode(), 'viewport');
+    }, delay);
   }
 
-  window.addEventListener('load', () => setTimeout(init, 80));
-  window.addEventListener('resize', () => setTimeout(() => applyViewMode(currentMode()), 80));
-  window.addEventListener('orientationchange', () => setTimeout(() => applyViewMode(currentMode()), 260));
-  document.addEventListener('click', () => setTimeout(() => applyViewMode(currentMode()), 120), true);
-  document.addEventListener('change', () => setTimeout(() => applyViewMode(currentMode()), 120), true);
+  function init() {
+    bindButtons();
+    applyViewMode(readStoredMode(), 'init');
+  }
 
-  setTimeout(init, 50);
-  setTimeout(init, 300);
-  setTimeout(init, 900);
+  window.addEventListener('load', () => scheduleViewportApply(50), { once: true });
+  window.addEventListener('resize', () => scheduleViewportApply(80), { passive: true });
+  window.addEventListener('orientationchange', () => scheduleViewportApply(180), { passive: true });
+  window.visualViewport?.addEventListener('resize', () => scheduleViewportApply(80), { passive: true });
+  window.addEventListener('scroll', () => {
+    if (!window.scrollX || horizontalLockFrame) return;
+    horizontalLockFrame = window.requestAnimationFrame(() => {
+      horizontalLockFrame = 0;
+      if (window.scrollX) window.scrollTo({ left: 0, top: window.scrollY, behavior: 'auto' });
+    });
+  }, { passive: true });
+
+  document.addEventListener('click', (event) => {
+    if (!event.target?.closest?.('.language-tabs button')) return;
+    window.setTimeout(() => updateButtons(readStoredMode()), 0);
+  });
+
+  init();
 
   window.setProductRequestViewMode = setViewMode;
-  window.applyProductRequestViewMode = applyViewMode;
+  window.applyProductRequestViewMode = (mode) => applyViewMode(mode, 'external');
 })();
 

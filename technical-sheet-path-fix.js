@@ -3,7 +3,7 @@
 // Technical Sheet butonlarını ayrı technical-data reposundaki PDF linklerine bağlar.
 
 (function () {
-  const FIX_VERSION = 'c147-stable-view-modes';
+  const FIX_VERSION = 'c148-quick-nav-view-modes';
   const TECHNICAL_DATA_BASE = 'https://ayturising1-eng.github.io/technical-data/technical-sheets/';
 
   const TECHNICAL_DATA_MAP = {
@@ -200,7 +200,7 @@
     caches.keys()
       .then((keys) => Promise.all(keys
         .filter((key) => key.includes('product-request-form-c129') || key.includes('product-request-form-c130') || key.includes('product-request-form-c131') || key.includes('product-request-form-c132') || key.includes('product-request-form-c133') || key.includes('product-request-form-c134') || key.includes('product-request-form-c135'))
-        .map((key) => key === 'product-request-form-c147-stable-view-modes' ? null : caches.delete(key))
+        .map((key) => key === 'product-request-form-c148-quick-nav-view-modes' ? null : caches.delete(key))
         .filter(Boolean)))
       .catch(() => {});
   }

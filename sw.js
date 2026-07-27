@@ -1,4 +1,4 @@
-const CACHE = 'product-request-form-c147-stable-view-modes';
+const CACHE = 'product-request-form-c148-quick-nav-view-modes';
 const ASSETS = [
   './',
   './index.html',

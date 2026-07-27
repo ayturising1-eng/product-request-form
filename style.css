@@ -1969,6 +1969,7 @@ html[lang="tr"] .print-color-disabled .field-label-text::after {
   --form-quick-nav-height: 0px;
   --app-header-height: 0px;
   --fixed-top-stack-height: 0px;
+  --fixed-top-stack-visual-height: 0px;
 }
 
 /* The PDF modal must always be above header and shortcut buttons */
@@ -3445,7 +3446,7 @@ body.force-desktop-view.technical-sheet-open #formQuickNav {
 }
 
 
-/* C147: STABLE view modes - Mobile always fits, Tablet/Desktop auto zoom out */
+/* C148: STABLE view modes - Mobile always fits, Tablet/Desktop auto zoom out */
 
 /* Mobile selected: kill every wide-canvas rule and force true phone layout */
 html.force-mobile-view,
